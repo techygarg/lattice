@@ -2,7 +2,7 @@
 
 These are the embedded opinionated defaults for clean code. They synthesize principles from Robert Martin's Clean Code, Martin Fowler's Refactoring, and Kent Beck's Smalltalk Best Practice Patterns into one actionable set of guidelines for writing individual units of code.
 
-If the project has a custom `.ai/standards/clean-code.md` (referenced through `.ai/config.yaml`), that document takes precedence over everything here.
+These are the embedded defaults. See the SKILL.md Config Resolution section for how project-specific overrides work.
 
 ## Table of Contents
 
@@ -196,6 +196,20 @@ result = items
 
 Name length should be proportional to scope. A loop variable with a two-line body can be `i`. A module-level constant used across functions should be `MAX_LOGIN_ATTEMPTS_BEFORE_LOCKOUT`. The wider the scope, the more context the name must carry on its own.
 
+### Magic Numbers and Strings
+
+The extraction test: **would a reader pause and ask "why this specific value?"** If yes, extract to a named constant. If the value is self-evident from context, leave it inline — a constant adds indirection without adding clarity.
+
+| Scenario | Action | Example |
+|----------|--------|---------|
+| Meaning not self-evident | Extract to named constant | `MAX_RETRIES = 3`, `SESSION_TIMEOUT_MS = 30_000`, `DEFAULT_PAGE_SIZE = 25` |
+| Appears in multiple places | Extract to named constant | A threshold used in three different validation functions |
+| Empty collection literal | Leave inline | `return []`, `users = []`, `new Map()` |
+| Zero as start index | Leave inline | `startIndex = 0`, `offset = 0` |
+| Mathematical identity | Leave inline | `percentage / 100`, `radians * (180 / Math.PI)` |
+| HTTP status in framework call | Leave inline | `res.status(404).json(...)`, `Response(data, status=200)` |
+| Boolean default | Leave inline | `enabled = false`, `verbose = true` as initial values |
+
 ---
 
 ## 5. Parameter Design
@@ -370,6 +384,8 @@ throw Error("Order total must be positive, got: -42.50")
 throw Error("User with email 'a@b.com' already exists. Use updateUser() to modify existing users.")
 throw Error("Connection to payments API timed out after 5s. Retry or check service status at status.payments.io")
 ```
+
+> **Trust boundary note**: These actionable messages are appropriate for application-level errors (service-to-service, logged server-side). At trust boundaries (HTTP responses, user-facing UI), strip internal details (emails, method names) and return a generic but actionable message with a correlation ID. See `framework:secure-coding`.
 
 **Handle at the right level:**
 

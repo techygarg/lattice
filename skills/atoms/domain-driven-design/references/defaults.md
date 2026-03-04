@@ -2,7 +2,7 @@
 
 These are the embedded opinionated defaults for DDD tactical patterns. They synthesize Eric Evans's Domain-Driven Design, Vaughn Vernon's Implementing Domain-Driven Design, and practical aggregate design heuristics into one actionable set of rules.
 
-If the project has a custom `.ai/standards/ddd-principles.md` (produced by a domain crafter or written manually), that document takes precedence over everything here.
+These are the embedded defaults. See the SKILL.md Config Resolution section for how project-specific overrides work.
 
 ## Table of Contents
 
@@ -293,6 +293,8 @@ These domain concepts should almost always be value objects, not raw primitives:
 | **Percentage** | number | Enforces 0-100 range (or 0-1), prevents misuse |
 | **Typed ID** (OrderId, CustomerId) | string/UUID | Prevents passing wrong ID type to wrong method |
 | **Status** | string/enum | Encapsulates valid transitions, prevents invalid states |
+
+**Guardrail**: Wrap primitives that carry domain meaning, require validation, or prevent type-confusion bugs (Money, Email, typed IDs). Do not wrap low-significance values like pagination sizes, retry counts, or version numbers -- the overhead outweighs the benefit.
 
 ### Code Example: Typed Identifier
 
@@ -832,16 +834,16 @@ class OrderController
       return Error("Cancellation window expired")  // business rule in controller
     orderService.cancel(order)
 
-// RIGHT: Business rule in domain
+// RIGHT: Business rule in domain, time injected for testability
 class Order
-  cancel():
+  cancel(currentTime):
     guard status is not SHIPPED else throw CannotCancelShippedOrderError
-    guard withinCancellationWindow() else throw CancellationWindowExpiredError
+    guard withinCancellationWindow(currentTime) else throw CancellationWindowExpiredError
     status = OrderStatus.CANCELLED
-    raise OrderCancelled(id, now())
+    raise OrderCancelled(id, currentTime)
 
-  withinCancellationWindow(): Boolean
-    return daysBetween(createdAt, now()) <= 30
+  withinCancellationWindow(currentTime): Boolean
+    return daysBetween(createdAt, currentTime) <= 30
 ```
 
 ### 8.6 Misidentified Entity vs Value Object

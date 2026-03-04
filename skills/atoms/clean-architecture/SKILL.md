@@ -68,7 +68,7 @@ Enterprise-wide business rules. Entities, value objects, domain services, domain
 ### Infrastructure (Outer)
 
 - **Repositories** (`infrastructure/repositories/`): Implement interfaces defined in `domain/repositories/`. Accept and return domain objects. Used for **state-changing (command) operations only**. The domain defines the interface; infrastructure implements it. This is Dependency Inversion in action.
-- **Providers** (`infrastructure/providers/`): Concrete classes -- **no interface in the domain layer**. Return DAOs directly to application services. Used for **read-only (query) operations only**. Providers exist entirely in infrastructure; the domain layer does not know they exist.
+- **Providers** (`infrastructure/providers/`): Concrete classes -- **no interface in the domain layer**. Return DAOs directly to application services. Used for **read-only (query) operations only**. Providers exist entirely in infrastructure; the domain layer does not know they exist. If multiple Provider implementations exist, the interface lives in the application layer -- never in domain. Domain only defines contracts for state-changing infrastructure (Repositories).
 - **Other**: External API clients, file system operations, email services, message queues, caches.
 
 ## Two Flows: Commands and Queries
@@ -106,7 +106,7 @@ Key rules: Provider lives in `infrastructure/providers/` with **no interface in 
 
 A single service per domain concept injects both Repository and Provider. Command methods route through domain and Repository; query methods route through Provider directly. This is a *flow* distinction within the service, not a class-level split. Full CQRS with separate command/query handlers is a different architectural choice -- do not conflate the two.
 
-### Self-Validation During Code Generation
+## Self-Validation During Code Generation
 
 When generating code, determine the operation type first:
 
@@ -130,7 +130,7 @@ When generating or reviewing code, verify these constraints.
 | Business logic lives in domain, not in controllers or infrastructure | Controllers that make business decisions become untestable and couple business rules to transport protocol |
 | Domain layer has zero imports from outer layers | Any outward dependency breaks isolation and makes the domain framework-dependent |
 | Outer layers depend on abstractions (interfaces), not concrete implementations | Concrete dependencies make swapping implementations impossible without cascading changes |
-| Each class/module has a single reason to change | A service that handles HTTP parsing, business logic, and database queries changes for three unrelated reasons |
+| No class spans multiple architectural layers | A class that handles HTTP parsing, business logic, and database queries belongs to three layers and changes for three unrelated reasons |
 | I/O is isolated in infrastructure | Business logic mixed with I/O cannot be unit tested without mocking the world |
 | Data crossing boundaries is simple (DTOs, not entities or DB rows) | Passing rich objects outward leaks domain concepts; passing framework objects inward creates coupling |
 | State-changing operations flow through domain before reaching Repository | Bypassing domain on writes means invariants and business rules can be violated |

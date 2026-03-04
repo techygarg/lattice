@@ -27,7 +27,7 @@ specific standards that differ from the defaults.
 
 This skill operates within a single repository, for a single bounded context (e.g., one API -- Order, User, Pricing). It covers tactical DDD patterns only -- not strategic DDD (no context mapping, no microservice topology, no bounded context integration).
 
-Clean Architecture provides the structural envelope -- where code lives, which layers exist, which direction dependencies flow. This skill defines how to craft the domain *within* that envelope: rich models, invariants, aggregate boundaries, and ubiquitous language.
+`framework:clean-architecture` provides the structural envelope -- where code lives, which layers exist, which direction dependencies flow. This skill defines how to craft the domain *within* that envelope: rich models, invariants, aggregate boundaries, and ubiquitous language.
 
 ## Core Principle
 
@@ -88,10 +88,10 @@ Encapsulates complex aggregate creation. Two purposes: initial creation (enforci
 
 When making domain modeling decisions, ask these questions:
 
-1. **Aggregate boundary**: "What must be consistent within a single transaction?" -- not "what is related to what." If two entities do not share a transactional invariant, they are separate aggregates.
-2. **Entity vs Value Object**: "Does this concept have a lifecycle and persistent identity, or is it defined purely by its attributes?" Two identical Addresses are the same address (value object). Two Orders with identical items are still different orders (entity).
-3. **When to use Domain Service**: "Does this business logic span multiple entities or value objects with no natural home in any single one?" If yes, domain service. If it belongs to one entity, put it there. If it involves I/O, it is an application service.
-4. **When to raise Domain Events**: "Does something else need to react to this state change? Would other aggregates, external systems, or audit trails care?" If yes, raise an event.
+1. **Aggregate boundary**: "What must be consistent within a single transaction?" -- not "what is related to what." If two entities share a transactional invariant → same aggregate. If not → separate aggregates, reference by ID. If unsure → start separate, merge only if an invariant forces it.
+2. **Entity vs Value Object**: Does the business track individual instances over time? Yes → entity. No → value object. Two identical Addresses are the same address (value object). Two Orders with identical items are still different orders (entity).
+3. **When to use Domain Service**: Logic belongs to one entity? → put it there. Spans multiple entities or value objects? → domain service. Involves I/O? → application service.
+4. **When to raise Domain Events**: Would other aggregates, external systems, or audit trails react? Yes → raise event. No → skip.
 
 ## Decomposition Signals
 
@@ -112,8 +112,8 @@ When generating domain code, apply these checks:
 1. **Before creating a domain object**: Is this an entity or value object? Apply the identity test -- does the business track individual instances over time?
 2. **Before adding something to an aggregate**: Does a transactional invariant require this? If not, it is a separate aggregate referenced by ID.
 3. **After generating**: Scan for primitive types that should be value objects -- string emails, number amounts, raw UUIDs as identifiers.
-4. **After generating**: Check each aggregate -- does every internal entity participate in at least one invariant enforced by the root?
-5. **After generating**: Are domain events raised for significant state changes that other parts of the system react to?
+4. **After generating**: List the business rules the root enforces. Each internal entity should appear in at least one. If an entity does not participate in any invariant enforced by the root, it belongs in its own aggregate.
+5. **After generating**: Raise domain events for: state transitions other aggregates react to, changes that trigger notifications or side effects, audit/compliance requirements. Do not raise events for internal state changes nothing else reacts to.
 6. **After generating**: Do entities have behavior (methods with guard clauses), or are they just data holders?
 
 ## Validation Checklist

@@ -2,7 +2,7 @@
 
 These are the embedded opinionated defaults for clean architecture. They synthesize Robert Martin's Clean Architecture, Alistair Cockburn's Hexagonal Architecture (Ports & Adapters), and Jeffrey Palermo's Onion Architecture into one actionable set of rules.
 
-If the project has a custom `.ai/standards/clean-architecture.md` (produced by the architecture-crafter or written manually), that document takes precedence over everything here.
+These are the embedded defaults. See the SKILL.md Config Resolution section for how project-specific overrides work.
 
 ## Table of Contents
 
@@ -224,17 +224,20 @@ class PostgresOrderRepository implements OrderRepository
 
 // services/ -- orchestration
 class OrderService
-  constructor(orderRepo: OrderRepository)
+  constructor(orderRepo: OrderRepository, eventPublisher: EventPublisher)
 
   createOrder(command: CreateOrderCommand): OrderId
     order = Order.create(command.items, command.customerId)
     orderRepo.save(order)
+    eventPublisher.publishAll(order.pullDomainEvents())
     return order.id
 ```
 
 ### 4.2 Query Flow (Get, List, Search)
 
 Read operations bypass domain entirely. No invariants to protect, so domain construction is unnecessary overhead.
+
+**DAO (Data Access Object)**: A simple record that mirrors the database query result. It is not a domain entity. The service maps DAOs to response DTOs, selecting only the fields the API consumer needs.
 
 ```
 Controller (Request params)

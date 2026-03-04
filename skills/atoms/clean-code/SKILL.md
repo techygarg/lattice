@@ -35,6 +35,8 @@ A function should have one reason to change. A class should have one axis of coh
 
 The test: describe what a function does without using "and." If you cannot, it does more than one thing.
 
+**Guardrail**: The "and" test catches functions with *independent* responsibilities, not tightly coupled steps of one responsibility. `validateAndNormalizeEmail` does two things that must always happen together in sequence — separating them creates an invalid-state window. When the steps have no valid independent use, they are one responsibility expressed as a pipeline, not two responsibilities to separate.
+
 For classes, the signal is **cohesion**: when most methods use most instance variables, the class is cohesive. When a subset of methods only touches a subset of fields, that subset likely belongs in its own class. See `./references/defaults.md` for extraction patterns and before/after examples.
 
 ## Small, Focused Functions
@@ -62,6 +64,8 @@ Guideline: keep cyclomatic complexity under ~10 per function. Functions above th
 Names are the primary documentation of code. A well-named function, variable, or class eliminates the need for a comment explaining what it does. The rules: names reveal intent, not implementation. No abbreviations that require project-specific context to decode. Boolean names start with `is`, `has`, `can`, or `should`. Function names are verb-first (`calculateTotal`, not `totalCalculation`). Class names are noun-based (`OrderValidator`, not `ValidateOrder`).
 
 Short-lived loop variables can be terse (`i`, `x`). Everything else should be descriptive enough to read in isolation. The general rule: **name length should be proportional to scope**. A two-line loop body tolerates `i`; a module-level constant used across the codebase should be `MAX_LOGIN_ATTEMPTS_BEFORE_LOCKOUT`. See `./references/defaults.md` for naming pattern tables.
+
+**Magic numbers and strings**: Extract a literal to a named constant when its meaning is not self-evident from context or when it appears in multiple places. Do NOT extract self-documenting values: `return []` (empty collection), `startIndex = 0` (universal convention), `percentage / 100` (mathematical identity), or HTTP status codes in framework response calls. The test: would a reader pause and wonder "why this specific value?" If yes, extract and name it. If the value is obvious from context, inlining is cleaner than a constant. See `./references/defaults.md` for extraction decision examples.
 
 ## No Primitive Obsession at the Function Level
 
@@ -133,7 +137,8 @@ Common clean code violations and their fixes. See `./references/defaults.md` for
 | **Premature Abstraction** | Shared utility extracted from two similar but unrelated blocks; diverges under maintenance | Inline until Rule of Three is met with same reason to change |
 | **Swallowed Errors** | Empty catch blocks, generic "something went wrong" messages, silently returning null | Handle explicitly with actionable messages; fail fast at boundaries |
 | **Comments as Deodorant** | Comments explaining convoluted code instead of simplifying the code itself | Refactor the code to be self-documenting; keep only "why" comments |
-| **Hidden Side Effects** | Function named `getUser` that also writes to a cache or sends a notification | Rename to reflect full behavior, or separate the side effect into its own explicit call |
+| **Hidden Side Effects** | Function named `getUser` that also writes to a cache or sends a notification | Caller-visible side effects (sends email, modifies shared state) → rename to reflect full behavior or separate into explicit call. Transparent implementation concerns (caching, metrics, logging) → acceptable in-place; document if non-obvious |
+| **Dead Code** | Commented-out blocks, unused imports, unreachable branches, "just in case" functions that nothing calls | Delete. Version control preserves history. If code is not executed, it is noise that misleads readers and rots as the codebase evolves |
 
 ## Validation Checklist
 
