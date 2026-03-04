@@ -13,7 +13,7 @@ This is not about how to write good code -- that is handled by the `clean-code` 
 
 ## What This Produces
 
-- **Output**: `.ai/knowledge-base.md` (or custom path from `.ai/config.yaml` -> `paths.knowledge_base`)
+- **Output**: `.ai/standards/knowledge-base.md` (or custom path from `.ai/config.yaml` -> `paths.knowledge_base`)
 - **Mode**: Override is the standard approach -- every project's knowledge base is unique, so there are no generic defaults to overlay on. Overlay mode is available for selective revisions of an existing document.
 - **Config key**: `paths.knowledge_base` in `.ai/config.yaml`
 - **Template**: Read `./assets/template.md` for the full document structure and interview guidance comments
@@ -96,7 +96,7 @@ Read `./assets/template.md` and follow the `<!-- INTERVIEW GUIDANCE: -->` commen
 
 **Determine output path:**
 1. If `.ai/config.yaml` exists and has `paths.knowledge_base`, use that path.
-2. Otherwise, default to `.ai/knowledge-base.md`.
+2. Otherwise, default to `.ai/standards/knowledge-base.md`.
 
 **Update config:**
 1. If `.ai/config.yaml` does not exist, create it with `paths.knowledge_base` pointing to the output file.

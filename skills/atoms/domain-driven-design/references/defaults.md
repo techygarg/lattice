@@ -2,7 +2,7 @@
 
 These are the embedded opinionated defaults for DDD tactical patterns. They synthesize Eric Evans's Domain-Driven Design, Vaughn Vernon's Implementing Domain-Driven Design, and practical aggregate design heuristics into one actionable set of rules.
 
-If the project has a custom `.ai/ddd-principles.md` (produced by a domain crafter or written manually), that document takes precedence over everything here.
+If the project has a custom `.ai/standards/ddd-principles.md` (produced by a domain crafter or written manually), that document takes precedence over everything here.
 
 ## Table of Contents
 

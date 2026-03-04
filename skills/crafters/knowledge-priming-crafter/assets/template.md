@@ -1,6 +1,6 @@
 # Knowledge Priming Crafter Template
 
-This template defines the structure of the `.ai/knowledge-base.md` output document. It contains the 5-section anatomy with interview guidance comments for each section.
+This template defines the structure of the `.ai/standards/knowledge-base.md` output document. It contains the 5-section anatomy with interview guidance comments for each section.
 
 When producing the output, strip all `<!-- INTERVIEW GUIDANCE: -->` comments. The final document is a reference, not a conversation log.
 

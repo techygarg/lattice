@@ -2,7 +2,7 @@
 
 These are the embedded opinionated defaults for clean code. They synthesize principles from Robert Martin's Clean Code, Martin Fowler's Refactoring, and Kent Beck's Smalltalk Best Practice Patterns into one actionable set of guidelines for writing individual units of code.
 
-If the project has a custom `.ai/clean-code.md` (referenced through `.ai/config.yaml`), that document takes precedence over everything here.
+If the project has a custom `.ai/standards/clean-code.md` (referenced through `.ai/config.yaml`), that document takes precedence over everything here.
 
 ## Table of Contents
 

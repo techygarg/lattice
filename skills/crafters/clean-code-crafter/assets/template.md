@@ -1,6 +1,6 @@
 # Clean Code Crafter Template
 
-This template defines the structure of the `.ai/clean-code.md` output document. It contains all default content from the clean-code atom's `defaults.md`, interleaved with interview guidance comments.
+This template defines the structure of the `.ai/standards/clean-code.md` output document. It contains all default content from the clean-code atom's `defaults.md`, interleaved with interview guidance comments.
 
 When producing the output, strip all `<!-- INTERVIEW GUIDANCE: -->` comments. The final document is a specification, not a conversation log.
 

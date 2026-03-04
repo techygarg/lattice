@@ -1,6 +1,6 @@
 # DDD Crafter Template
 
-This template defines the structure of the `.ai/ddd-principles.md` output document. It contains all default content from the domain-driven-design atom's `defaults.md`, interleaved with interview guidance comments.
+This template defines the structure of the `.ai/standards/ddd-principles.md` output document. It contains all default content from the domain-driven-design atom's `defaults.md`, interleaved with interview guidance comments.
 
 When producing the output, strip all `<!-- INTERVIEW GUIDANCE: -->` comments. The final document is a specification, not a conversation log.
 

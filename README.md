@@ -1,6 +1,110 @@
-#Lattice
+# Lattice
 
-Composable AI skills that teach assistants how to think — design-first, context-aware, and architecture-guided (DDD + Clean Architecture).
-Atoms: foundational, tool-agnostic skills (priming, design-first, decision capture, DDD, clean architecture, quality reasoning)
-Molecules: workflows composed from atoms (start feature, continue feature, design-with-DDD, implement)
-Crafters + .ai/config.yaml: generate/override project standards and persist decisions across sessions
+Composable AI skills that teach assistants structured thinking -- design-first, context-aware, and architecture-guided.
+
+## What is Lattice?
+
+Lattice is not a code generation template library. It is a set of thinking frameworks that apply design-first methodology, clean architecture, domain-driven design, and other engineering principles as inline guardrails during AI-assisted development. Each skill teaches the AI *how to think* about a category of work, not just what code to produce.
+
+## The Three Tiers
+
+Lattice organizes skills into three tiers, each solving a different problem:
+
+**Atoms** are single-principle guardrails. Each atom teaches one discipline -- clean code, secure coding, DDD -- and applies its validation checks inline during generation. Atoms are the building blocks that molecules compose.
+
+**Molecules** are multi-step workflows that compose atoms into end-to-end processes. A molecule orchestrates which atoms apply, when, and in what order -- so you get design-first thinking, architectural validation, and code quality checks without manually invoking each one.
+
+**Crafters** are optional. Every atom ships with sensible defaults that work out of the box. If you want to tailor those defaults -- enhance a section, adjust thresholds, or add project-specific rules -- crafters guide you through it via a structured interview, producing `.ai/` config files that atoms pick up automatically. You can also edit those config files directly. Crafters are a convenience, not a requirement.
+
+|               | Purpose                              | Standalone? | Composes others? | Produces artifacts?         |
+|---------------|--------------------------------------|-------------|------------------|-----------------------------|
+| **Atoms**     | Single-principle guardrails          | Yes         | No               | No (inline checks)          |
+| **Molecules** | Multi-step workflows                 | Yes         | Yes (atoms)      | Yes (blueprints, reviews)   |
+| **Crafters**  | Optional config customization        | Yes         | No               | Yes (`.ai/` config files)   |
+
+## Skill Inventory
+
+### Atoms (7)
+
+| Skill | What it does |
+|-------|-------------|
+| **clean-code** | Enforces function focus, naming clarity, complexity management, error handling, and self-documenting style |
+| **clean-architecture** | Validates layer responsibilities, dependency direction, command/query flow separation |
+| **domain-driven-design** | Enforces aggregate design, value objects over primitives, entity identity rules, bounded context boundaries |
+| **secure-coding** | Applies trust boundary awareness, input validation, injection prevention, secrets management |
+| **test-quality** | Enforces AAA structure, one behavior per test, assertion quality, test isolation, meaningful naming |
+| **design-first** | Guides structured design through 5 progressive levels (Capabilities, Components, Interactions, Contracts, Implementation) |
+| **context-anchoring** | Manages per-feature living documents that capture decisions and reasoning across sessions |
+
+### Molecules (3)
+
+| Skill | What it does | Atoms composed |
+|-------|-------------|----------------|
+| **design-blueprint** | Runs a complete design workflow -- from context through progressive design levels to an approved blueprint | context-anchoring, design-first, clean-architecture, domain-driven-design |
+| **code-forge** | Generates implementation from an approved blueprint or verbal requirements using inside-out layer ordering | context-anchoring, clean-architecture, clean-code, domain-driven-design, secure-coding, test-quality |
+| **review** | Performs a structured, delta-scoped code review with severity-ordered findings | clean-code (always), clean-architecture, domain-driven-design, secure-coding, test-quality (conditional) |
+
+### Crafters (4)
+
+| Skill | What it produces |
+|-------|-----------------|
+| **architecture-crafter** | `.ai/standards/clean-architecture.md` -- project-specific clean architecture principles for the clean-architecture atom |
+| **ddd-crafter** | `.ai/standards/ddd-principles.md` -- project-specific DDD guardrails for the domain-driven-design atom |
+| **clean-code-crafter** | `.ai/standards/clean-code.md` -- project-specific coding standards for the clean-code atom |
+| **knowledge-priming-crafter** | `.ai/standards/knowledge-base.md` -- project identity, tech stack, directory layout, and trusted sources |
+
+## The Pipeline
+
+Lattice skills form a design-to-code lifecycle:
+
+```
+                            design-blueprint             code-forge                review
+                            ─────────────────            ─────────────────         ─────────────────
+                            Design before coding         Implement from blueprint  Audit the delta
+  ┌ ─ ─ ─ ─ ─ ─ ─ ─┐       ┌─────────────────┐          ┌─────────────────┐       ┌─────────────────┐
+    Crafters                │ Level 1: Caps   │          │ Plan layers     │       │ Classify delta  │
+  │ (optional)      │       │ Level 2: Comps  │          │ Inside-out build│       │ Load atoms      │
+   architecture-    ·····▶  │ Level 3: Flow   │──────▶   │ Code + tests    │──────▶│ Run checklists  │
+  │ ddd-            │       │ Level 4: API    │          │ Cross-component │       │ Severity report  │
+   clean-code-              │                 │          │ verify          │       │                 │
+  │ knowledge-      │       │ Approved        │          │                 │       │                 │
+   priming-                 │ Blueprint       │          │                 │       │                 │
+  └ ─ ─ ─ ─ ─ ─ ─ ─┘       └─────────────────┘          └─────────────────┘       └─────────────────┘
+  Customize atom defaults   Persists to context doc      Honors blueprint          Conditional atoms
+```
+
+**Customize** (optional): Run crafters to tailor atom defaults to your project, or edit `.ai/` config files directly. **Design**: `design-blueprint` walks through progressive design levels and persists the approved blueprint. **Implement**: `code-forge` builds inside-out from the blueprint (or from verbal requirements). **Review**: `review` audits the delta, loading only the atoms relevant to what changed.
+
+Context anchoring ties sessions together -- the context document created during design carries decisions forward into implementation and review.
+
+## Getting Started
+
+1. **Install as Claude Code skills**: Copy the `skills/` directory into your project's `.claude/skills/` folder, or reference it from your Claude Code settings.
+
+2. **Customize atom defaults** (optional): Atoms ship with opinionated defaults that work immediately. If your project needs different standards, you have two paths:
+   - **Run a crafter** -- a guided interview that produces the config file for you:
+     ```
+     /architecture-crafter       # Tailor layer structure and dependency rules
+     /ddd-crafter                # Tailor domain modeling guardrails
+     /clean-code-crafter         # Tailor coding standards and thresholds
+     /knowledge-priming-crafter  # Capture project identity and tech stack
+     ```
+   - **Edit directly** -- create or modify standards documents in `.ai/standards/` by hand (see [how-it-works](docs/how-it-works.md#customizing-atom-defaults) for the format).
+
+   Crafters support enhancing specific sections (overlay mode), adding new sections, or replacing defaults entirely (override mode). Re-run a crafter or edit the config file whenever your standards evolve.
+
+3. **Design a feature**: Invoke `/design-blueprint` to walk through progressive design levels before writing code.
+
+4. **Implement**: Invoke `/code-forge` to generate implementation from the approved blueprint.
+
+5. **Review**: Invoke `/review` to audit code changes against the relevant quality atoms.
+
+Atoms also work standalone -- they activate automatically based on what you're doing (writing domain code triggers DDD, handling user input triggers secure-coding, etc.).
+
+## Learn More
+
+See [docs/how-it-works.md](docs/how-it-works.md) for the conceptual deep dive -- how atoms compose, how config resolution works, and how the tiers differ.
+
+## License
+
+MIT

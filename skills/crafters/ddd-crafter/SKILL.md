@@ -7,7 +7,7 @@ description: "Facilitate a structured conversation to define DDD guardrails for 
 
 ## What This Produces
 
-- **Output**: `.ai/ddd-principles.md` (or custom path from `.ai/config.yaml` → `paths.ddd_principles`)
+- **Output**: `.ai/standards/ddd-principles.md` (or custom path from `.ai/config.yaml` → `paths.ddd_principles`)
 - **Two modes**:
   - **Overlay** (`mode: overlay`): A slim document containing only sections that differ from the defaults. The domain-driven-design atom reads its embedded defaults first, then applies this document's sections on top. This is the expected common case.
   - **Override** (`mode: override`): A comprehensive standalone document that fully replaces the atom's embedded defaults. For teams with fundamentally different domain modeling principles.
@@ -168,17 +168,17 @@ Strip all `<!-- INTERVIEW GUIDANCE: -->` comments from the output. The final doc
 
 **Determine output path:**
 1. If `.ai/config.yaml` exists and has `paths.ddd_principles`, use that path.
-2. Otherwise, default to `.ai/ddd-principles.md`.
+2. Otherwise, default to `.ai/standards/ddd-principles.md`.
 
 **Write the document:**
-1. Create `.ai/` directory if it does not exist.
+1. Create `.ai/standards/` directory (and `.ai/` parent) if it does not exist.
 2. Write the document to the determined path.
 
 **Update config:**
 1. If `.ai/config.yaml` does not exist, create it with:
    ```yaml
    paths:
-     ddd_principles: .ai/ddd-principles.md
+     ddd_principles: .ai/standards/ddd-principles.md
    ```
 2. If `.ai/config.yaml` exists but has no `paths.ddd_principles`, add the key. Preserve all existing content.
 3. If `.ai/config.yaml` exists and already has the key, no config change needed.

@@ -2,7 +2,7 @@
 
 These are the embedded opinionated defaults for clean architecture. They synthesize Robert Martin's Clean Architecture, Alistair Cockburn's Hexagonal Architecture (Ports & Adapters), and Jeffrey Palermo's Onion Architecture into one actionable set of rules.
 
-If the project has a custom `.ai/clean-architecture.md` (produced by the architecture-crafter or written manually), that document takes precedence over everything here.
+If the project has a custom `.ai/standards/clean-architecture.md` (produced by the architecture-crafter or written manually), that document takes precedence over everything here.
 
 ## Table of Contents
 

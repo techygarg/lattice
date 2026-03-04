@@ -7,7 +7,7 @@ description: "Facilitate a structured conversation to define clean architecture 
 
 ## What This Produces
 
-- **Output**: `.ai/clean-architecture.md` (or custom path from `.ai/config.yaml` → `paths.clean_architecture`)
+- **Output**: `.ai/standards/clean-architecture.md` (or custom path from `.ai/config.yaml` → `paths.clean_architecture`)
 - **Two modes**:
   - **Overlay** (`mode: overlay`): A slim document containing only sections that differ from the defaults. The clean-architecture atom reads its embedded defaults first, then applies this document's sections on top. This is the expected common case.
   - **Override** (`mode: override`): A comprehensive standalone document that fully replaces the atom's embedded defaults. For teams with fundamentally different architecture.
@@ -160,17 +160,17 @@ Strip all `<!-- INTERVIEW GUIDANCE: -->` comments from the output. The final doc
 
 **Determine output path:**
 1. If `.ai/config.yaml` exists and has `paths.clean_architecture`, use that path.
-2. Otherwise, default to `.ai/clean-architecture.md`.
+2. Otherwise, default to `.ai/standards/clean-architecture.md`.
 
 **Write the document:**
-1. Create `.ai/` directory if it does not exist.
+1. Create `.ai/standards/` directory (and `.ai/` parent) if it does not exist.
 2. Write the document to the determined path.
 
 **Update config:**
 1. If `.ai/config.yaml` does not exist, create it with:
    ```yaml
    paths:
-     clean_architecture: .ai/clean-architecture.md
+     clean_architecture: .ai/standards/clean-architecture.md
    ```
 2. If `.ai/config.yaml` exists but has no `paths.clean_architecture`, add the key. Preserve all existing content.
 3. If `.ai/config.yaml` exists and already has the key, no config change needed.

@@ -7,7 +7,7 @@ description: "Facilitate a structured conversation to define clean code principl
 
 ## What This Produces
 
-- **Output**: `.ai/clean-code.md` (or custom path from `.ai/config.yaml` -> `paths.clean_code`)
+- **Output**: `.ai/standards/clean-code.md` (or custom path from `.ai/config.yaml` -> `paths.clean_code`)
 - **Two modes**:
   - **Overlay** (`mode: overlay`): A slim document containing only sections that differ from the defaults. The clean-code atom reads its embedded defaults first, then applies this document's sections on top. This is the expected common case.
   - **Override** (`mode: override`): A comprehensive standalone document that fully replaces the atom's embedded defaults. For teams with fundamentally different coding standards.
@@ -172,17 +172,17 @@ Strip all `<!-- INTERVIEW GUIDANCE: -->` comments from the output. The final doc
 
 **Determine output path:**
 1. If `.ai/config.yaml` exists and has `paths.clean_code`, use that path.
-2. Otherwise, default to `.ai/clean-code.md`.
+2. Otherwise, default to `.ai/standards/clean-code.md`.
 
 **Write the document:**
-1. Create `.ai/` directory if it does not exist.
+1. Create `.ai/standards/` directory (and `.ai/` parent) if it does not exist.
 2. Write the document to the determined path.
 
 **Update config:**
 1. If `.ai/config.yaml` does not exist, create it with:
    ```yaml
    paths:
-     clean_code: .ai/clean-code.md
+     clean_code: .ai/standards/clean-code.md
    ```
 2. If `.ai/config.yaml` exists but has no `paths.clean_code`, add the key. Preserve all existing content.
 3. If `.ai/config.yaml` exists and already has the key, no config change needed.
