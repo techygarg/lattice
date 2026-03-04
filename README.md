@@ -83,7 +83,13 @@ Context anchoring ties sessions together -- the context document created during 
 
 ## Getting Started
 
-1. **Install as Claude Code skills**: Copy the `skills/` directory into your project's `.claude/skills/` folder, or reference it from your Claude Code settings.
+1. **Install skills into your project**: Lattice will be available as a proper plugin. For local testing after cloning the repo, use the install script to copy skills into your project:
+   ```bash
+   git clone <lattice-repo-url>
+   cd lattice
+   ./tools/install.sh /path/to/your-project/skill-folder
+   ```
+   This copies all 14 skills (flattened) into `<project>/.claude/skills/` where Claude Code can discover them.
 
 2. **Customize atom defaults** (optional): Atoms ship with opinionated defaults that work immediately. If your project needs different standards, you have two paths:
    - **Run a crafter** -- a guided interview that produces the config file for you:
