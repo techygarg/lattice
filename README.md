@@ -4,7 +4,11 @@ Composable AI skills that teach assistants structured thinking -- design-first, 
 
 ## What is Lattice?
 
-Lattice is not a code generation template library. It is a set of thinking frameworks that apply design-first methodology, clean architecture, domain-driven design, and other engineering principles as inline guardrails during AI-assisted development. Each skill teaches the AI *how to think* about a category of work, not just what code to produce.
+AI coding assistants are fast -- but fast without discipline means jumping straight to code, silently making design decisions, forgetting constraints mid-conversation, and producing output that nobody reviewed against real engineering standards.
+
+Lattice fixes this by embedding battle-tested engineering disciplines -- Clean Architecture, Domain-Driven Design, design-first methodology, secure coding, and more -- directly into AI workflows as composable skills. Not as a post-generation checklist, but as inline thinking that shapes every decision as it happens. Design before code. Validate structure as you build. Enforce domain boundaries while modeling. Carry decisions across sessions so nothing is forgotten.
+
+The result: AI that doesn't just generate code, but thinks holistically -- from design through implementation through review -- following the same principles your best engineers follow, every time.
 
 ## The Three Tiers
 
