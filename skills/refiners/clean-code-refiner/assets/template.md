@@ -1,4 +1,4 @@
-# Clean Code Crafter Template
+# Clean Code Refiner Template
 
 This template defines the structure of the `.ai/standards/clean-code.md` output document. It contains all default content from the clean-code atom's `defaults.md`, interleaved with interview guidance comments.
 
@@ -761,5 +761,5 @@ Example:
 
 ---
 *Generated for [PROJECT NAME] on [DATE]. Mode: [overlay|override].*
-*Produced by the clean-code-crafter skill.*
+*Produced by the clean-code-refiner skill.*
 -->

@@ -18,13 +18,13 @@ Lattice organizes skills into three tiers, each solving a different problem:
 
 **Molecules** are multi-step workflows that compose atoms into end-to-end processes. A molecule orchestrates which atoms apply, when, and in what order -- so you get design-first thinking, architectural validation, and code quality checks without manually invoking each one.
 
-**Crafters** are optional. Every atom ships with sensible defaults that work out of the box. If you want to tailor those defaults -- enhance a section, adjust thresholds, or add project-specific rules -- crafters guide you through it via a structured interview, producing `.ai/` config files that atoms pick up automatically. You can also edit those config files directly. Crafters are a convenience, not a requirement.
+**Refiners** are optional. Every atom ships with sensible defaults that work out of the box. If you want to tailor those defaults -- enhance a section, adjust thresholds, or add project-specific rules -- refiners guide you through it via a structured interview, producing `.ai/` config files that atoms pick up automatically. You can also edit those config files directly. Refiners are a convenience, not a requirement.
 
 |               | Purpose                              | Standalone? | Composes others? | Produces artifacts?         |
 |---------------|--------------------------------------|-------------|------------------|-----------------------------|
 | **Atoms**     | Single-principle guardrails          | Yes         | No               | No (inline checks)          |
 | **Molecules** | Multi-step workflows                 | Yes         | Yes (atoms)      | Yes (blueprints, reviews)   |
-| **Crafters**  | Optional config customization        | Yes         | No               | Yes (`.ai/` config files)   |
+| **Refiners**  | Optional config customization        | Yes         | No               | Yes (`.ai/` config files)   |
 
 ## Skill Inventory
 
@@ -48,14 +48,14 @@ Lattice organizes skills into three tiers, each solving a different problem:
 | **code-forge** | Generates implementation from an approved blueprint or verbal requirements using inside-out layer ordering | context-anchoring, clean-architecture, clean-code, domain-driven-design, secure-coding, test-quality |
 | **review** | Performs a structured, delta-scoped code review with severity-ordered findings | clean-code (always), clean-architecture, domain-driven-design, secure-coding, test-quality (conditional) |
 
-### Crafters (4)
+### Refiners (4)
 
 | Skill | What it produces |
 |-------|-----------------|
-| **architecture-crafter** | `.ai/standards/clean-architecture.md` -- project-specific clean architecture principles for the clean-architecture atom |
-| **ddd-crafter** | `.ai/standards/ddd-principles.md` -- project-specific DDD guardrails for the domain-driven-design atom |
-| **clean-code-crafter** | `.ai/standards/clean-code.md` -- project-specific coding standards for the clean-code atom |
-| **knowledge-priming-crafter** | `.ai/standards/knowledge-base.md` -- project identity, tech stack, directory layout, and trusted sources |
+| **architecture-refiner** | `.ai/standards/clean-architecture.md` -- project-specific clean architecture principles for the clean-architecture atom |
+| **ddd-refiner** | `.ai/standards/ddd-principles.md` -- project-specific DDD guardrails for the domain-driven-design atom |
+| **clean-code-refiner** | `.ai/standards/clean-code.md` -- project-specific coding standards for the clean-code atom |
+| **knowledge-priming-refiner** | `.ai/standards/knowledge-base.md` -- project identity, tech stack, directory layout, and trusted sources |
 
 ## The Pipeline
 
@@ -66,7 +66,7 @@ Lattice skills form a design-to-code lifecycle:
                             ─────────────────            ─────────────────         ─────────────────
                             Design before coding         Implement from blueprint  Audit the delta
   ┌ ─ ─ ─ ─ ─ ─ ─ ─┐       ┌─────────────────┐          ┌─────────────────┐       ┌─────────────────┐
-    Crafters                │ Level 1: Caps   │          │ Plan layers     │       │ Classify delta  │
+    Refiners                │ Level 1: Caps   │          │ Plan layers     │       │ Classify delta  │
   │ (optional)      │       │ Level 2: Comps  │          │ Inside-out build│       │ Load atoms      │
    architecture-    ·····▶  │ Level 3: Flow   │──────▶   │ Code + tests    │──────▶│ Run checklists  │
   │ ddd-            │       │ Level 4: API    │          │ Cross-component │       │ Severity report  │
@@ -77,7 +77,7 @@ Lattice skills form a design-to-code lifecycle:
   Customize atom defaults   Persists to context doc      Honors blueprint          Conditional atoms
 ```
 
-**Customize** (optional): Run crafters to tailor atom defaults to your project, or edit `.ai/` config files directly. **Design**: `design-blueprint` walks through progressive design levels and persists the approved blueprint. **Implement**: `code-forge` builds inside-out from the blueprint (or from verbal requirements). **Review**: `review` audits the delta, loading only the atoms relevant to what changed.
+**Customize** (optional): Run refiners to tailor atom defaults to your project, or edit `.ai/` config files directly. **Design**: `design-blueprint` walks through progressive design levels and persists the approved blueprint. **Implement**: `code-forge` builds inside-out from the blueprint (or from verbal requirements). **Review**: `review` audits the delta, loading only the atoms relevant to what changed.
 
 Context anchoring ties sessions together -- the context document created during design carries decisions forward into implementation and review.
 
@@ -92,16 +92,16 @@ Context anchoring ties sessions together -- the context document created during 
    This copies all 14 skills (flattened) into `<project>/.claude/skills/` where Claude Code can discover them.
 
 2. **Customize atom defaults** (optional): Atoms ship with opinionated defaults that work immediately. If your project needs different standards, you have two paths:
-   - **Run a crafter** -- a guided interview that produces the config file for you:
+   - **Run a refiner** -- a guided interview that produces the config file for you:
      ```
-     /architecture-crafter       # Tailor layer structure and dependency rules
-     /ddd-crafter                # Tailor domain modeling guardrails
-     /clean-code-crafter         # Tailor coding standards and thresholds
-     /knowledge-priming-crafter  # Capture project identity and tech stack
+     /architecture-refiner       # Tailor layer structure and dependency rules
+     /ddd-refiner                # Tailor domain modeling guardrails
+     /clean-code-refiner         # Tailor coding standards and thresholds
+     /knowledge-priming-refiner  # Capture project identity and tech stack
      ```
    - **Edit directly** -- create or modify standards documents in `.ai/standards/` by hand (see [how-it-works](docs/how-it-works.md#customizing-atom-defaults) for the format).
 
-   Crafters support enhancing specific sections (overlay mode), adding new sections, or replacing defaults entirely (override mode). Re-run a crafter or edit the config file whenever your standards evolve.
+   Refiners support enhancing specific sections (overlay mode), adding new sections, or replacing defaults entirely (override mode). Re-run a refiner or edit the config file whenever your standards evolve.
 
 3. **Design a feature**: Invoke `/design-blueprint` to walk through progressive design levels before writing code.
 

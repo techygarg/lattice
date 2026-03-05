@@ -8,9 +8,9 @@ Lattice solves three distinct problems, each with its own tier:
 
 1. **Atoms** solve the guardrail problem: how do you ensure generated code follows a specific principle (clean code, DDD, security) without the AI forgetting halfway through?
 2. **Molecules** solve the orchestration problem: how do you run a multi-step workflow (design → implement → review) that applies the right guardrails at the right time?
-3. **Crafters** solve the customization problem (optionally): how do you tailor atom behavior to your project's specific standards without editing the atom's source?
+3. **Refiners** solve the customization problem (optionally): how do you tailor atom behavior to your project's specific standards without editing the atom's source?
 
-Each tier builds on the one below it. Molecules compose atoms. Crafters optionally configure atoms -- atoms work out of the box without them. The separation means atoms stay generic and reusable, molecules stay focused on workflow, and project-specific decisions live in config files -- not hardcoded in skill definitions.
+Each tier builds on the one below it. Molecules compose atoms. Refiners optionally configure atoms -- atoms work out of the box without them. The separation means atoms stay generic and reusable, molecules stay focused on workflow, and project-specific decisions live in config files -- not hardcoded in skill definitions.
 
 ## Atoms in Depth
 
@@ -112,7 +112,7 @@ Every atom ships with opinionated defaults (in `./references/defaults.md`) that 
 
 When you do want to customize, you have two equivalent paths:
 
-1. **Run a crafter** -- a guided interview that asks about your standards and generates the standards document for you. Useful when you are not sure what to change or want a structured walkthrough.
+1. **Run a refiner** -- a guided interview that asks about your standards and generates the standards document for you. Useful when you are not sure what to change or want a structured walkthrough.
 2. **Edit the standards document directly** -- create or modify the file in `.ai/standards/` by hand. Useful when you know exactly what you want to change.
 
 Both paths produce the same result: a standards document in `.ai/standards/` that the atom picks up through its config resolution mechanism (via `paths` in `.ai/config.yaml`). There is no difference in how the atom consumes the file regardless of how it was created.
@@ -135,24 +135,24 @@ Customization is not a one-time setup task. You might customize when:
 - Tightening or relaxing thresholds as the codebase matures
 - Adding project-specific rules that the defaults do not cover
 
-Re-run a crafter or edit the standards document whenever your standards evolve.
+Re-run a refiner or edit the standards document whenever your standards evolve.
 
-### What each crafter produces
+### What each refiner produces
 
-| Crafter | Output file | Target atom | What it captures |
+| Refiner | Output file | Target atom | What it captures |
 |---------|------------|-------------|-----------------|
-| **architecture-crafter** | `.ai/standards/clean-architecture.md` | clean-architecture | Layer definitions, dependency rules, command/query flow patterns, service patterns |
-| **ddd-crafter** | `.ai/standards/ddd-principles.md` | domain-driven-design | Aggregate design rules, entity/value object patterns, domain event conventions, repository patterns |
-| **clean-code-crafter** | `.ai/standards/clean-code.md` | clean-code | Function size thresholds, complexity limits, naming conventions, error handling strategy |
-| **knowledge-priming-crafter** | `.ai/standards/knowledge-base.md` | (ambient context) | Architecture overview, tech stack with versions, trusted doc sources, project structure, conventions |
+| **architecture-refiner** | `.ai/standards/clean-architecture.md` | clean-architecture | Layer definitions, dependency rules, command/query flow patterns, service patterns |
+| **ddd-refiner** | `.ai/standards/ddd-principles.md` | domain-driven-design | Aggregate design rules, entity/value object patterns, domain event conventions, repository patterns |
+| **clean-code-refiner** | `.ai/standards/clean-code.md` | clean-code | Function size thresholds, complexity limits, naming conventions, error handling strategy |
+| **knowledge-priming-refiner** | `.ai/standards/knowledge-base.md` | (ambient context) | Architecture overview, tech stack with versions, trusted doc sources, project structure, conventions |
 
-The knowledge-priming-crafter is different from the others -- its output is not consumed by a specific atom but serves as ambient project context for all skills.
+The knowledge-priming-refiner is different from the others -- its output is not consumed by a specific atom but serves as ambient project context for all skills.
 
 ## The Design-to-Code Pipeline
 
 ### Customize (optional)
 
-If your project's standards differ from the atom defaults, tailor them by running a crafter or editing the standards documents in `.ai/standards/` directly. Atoms work out of the box without this step. Come back and customize whenever your standards evolve.
+If your project's standards differ from the atom defaults, tailor them by running a refiner or editing the standards documents in `.ai/standards/` directly. Atoms work out of the box without this step. Come back and customize whenever your standards evolve.
 
 ### Design
 
@@ -172,15 +172,15 @@ The context anchor document is the thread that connects these stages. Created du
 
 The document lifecycle is: **Create** (new feature) → **Load** (resume work) → **Enrich** (capture decisions). All three behaviors require explicit user confirmation -- the AI proposes, the user disposes.
 
-## How Atoms, Molecules, and Crafters Differ
+## How Atoms, Molecules, and Refiners Differ
 
-| Dimension | Atoms | Molecules | Crafters |
+| Dimension | Atoms | Molecules | Refiners |
 |-----------|-------|-----------|----------|
 | **Purpose** | Teach one principle | Orchestrate a workflow | Optionally customize atom defaults |
-| **Invocation** | Auto-activate based on context, or invoked by molecules | User invokes explicitly (e.g., `/design-blueprint`) | User invokes when customization is needed (e.g., `/architecture-crafter`) |
+| **Invocation** | Auto-activate based on context, or invoked by molecules | User invokes explicitly (e.g., `/design-blueprint`) | User invokes when customization is needed (e.g., `/architecture-refiner`) |
 | **Artifacts produced** | None (inline checks) | Blueprints, reviews, context documents | `.ai/` config files |
 | **Composes others?** | No | Yes (composes atoms) | No |
-| **Configured by crafters?** | Yes (via `.ai/` config files) | No (molecules have no config) | N/A |
+| **Configured by refiners?** | Yes (via `.ai/` config files) | No (molecules have no config) | N/A |
 | **Frequency of use** | Every generation (automatic) | Per feature or per review | As needed -- when standards are first set or evolve |
 | **Required?** | Yes (core guardrails) | No (but recommended for structured workflows) | No (atoms work with built-in defaults) |
 | **Works standalone?** | Yes | Yes | Yes |

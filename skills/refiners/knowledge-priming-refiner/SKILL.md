@@ -1,13 +1,13 @@
 ---
-name: knowledge-priming-crafter
+name: knowledge-priming-refiner
 description: "Facilitate a structured conversation to create a project-specific knowledge base document. Produces a knowledge-base.md that primes AI with the project's tech stack, architecture, trusted sources, and project structure. Use when the user says 'set up knowledge base', 'prime the project', 'onboard AI', 'create knowledge base', 'set up project context', or 'configure AI context'."
 ---
 
-# Knowledge Priming Crafter
+# Knowledge Priming Refiner
 
 ## Purpose
 
-This crafter facilitates a structured conversation to create a project-specific knowledge base document. The document captures the project's identity -- its tech stack, architecture, directory layout, and the trusted sources that shaped how the team works. Think of it as answering one question: "What does AI need to know about *this project* to avoid defaulting to generic internet patterns?"
+This refiner facilitates a structured conversation to create a project-specific knowledge base document. The document captures the project's identity -- its tech stack, architecture, directory layout, and the trusted sources that shaped how the team works. Think of it as answering one question: "What does AI need to know about *this project* to avoid defaulting to generic internet patterns?"
 
 This is not about how to write good code -- that is handled by the `clean-code` atom (coding principles), `clean-architecture` atom (structural rules), and `domain-driven-design` atom (domain modeling). Knowledge priming covers what those skills cannot know: which framework, which version, which docs to trust, and how the repo is organized.
 

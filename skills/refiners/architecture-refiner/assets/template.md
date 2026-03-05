@@ -1,4 +1,4 @@
-# Architecture Crafter Template
+# Architecture Refiner Template
 
 This template defines the structure of the `.ai/standards/clean-architecture.md` output document. It contains all default content from the clean-architecture atom's `defaults.md`, interleaved with interview guidance comments.
 
@@ -616,5 +616,5 @@ Example:
 
 ---
 *Generated for [PROJECT NAME] on [DATE]. Mode: [overlay|override].*
-*Produced by the architecture-crafter skill.*
+*Produced by the architecture-refiner skill.*
 -->

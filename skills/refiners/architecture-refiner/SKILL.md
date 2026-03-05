@@ -1,9 +1,9 @@
 ---
-name: architecture-crafter
+name: architecture-refiner
 description: "Facilitate a structured conversation to define clean architecture principles for a repository. Produces a formal clean-architecture.md document that the clean-architecture atom will use as its override. Use when setting up a new project, defining architecture standards, or when the user says 'setup architecture', 'define layers', 'architecture principles', or 'help me define my architecture'."
 ---
 
-# Architecture Crafter
+# Architecture Refiner
 
 ## What This Produces
 

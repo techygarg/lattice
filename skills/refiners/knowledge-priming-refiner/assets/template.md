@@ -1,4 +1,4 @@
-# Knowledge Priming Crafter Template
+# Knowledge Priming Refiner Template
 
 This template defines the structure of the `.ai/standards/knowledge-base.md` output document. It contains the 5-section anatomy with interview guidance comments for each section.
 
@@ -206,4 +206,4 @@ Include project name, generation date, and mode indicator in the output.
 
 ---
 *Generated for [PROJECT NAME] on [DATE]. Mode: [override|overlay].*
-*Produced by the knowledge-priming-crafter skill.*
+*Produced by the knowledge-priming-refiner skill.*

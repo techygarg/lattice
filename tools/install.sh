@@ -9,7 +9,7 @@ usage() {
 Usage: ./tools/install.sh <target-project-path>
 
 Copies all Lattice skills into <target-project-path>/.claude/skills/,
-flattening the atoms/molecules/crafters structure so Claude Code can
+flattening the atoms/molecules/refiners structure so Claude Code can
 discover them.
 
 Example:
@@ -36,7 +36,7 @@ DEST="$TARGET/.claude/skills"
 mkdir -p "$DEST"
 
 count=0
-for tier in atoms molecules crafters; do
+for tier in atoms molecules refiners; do
   tier_dir="$SKILLS_SOURCE/$tier"
   [ -d "$tier_dir" ] || continue
 
