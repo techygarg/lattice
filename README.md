@@ -41,10 +41,11 @@ Lattice organizes skills into three tiers, each solving a different problem:
 | **design-first** | Guides structured design through 5 progressive levels (Capabilities, Components, Interactions, Contracts, Implementation) |
 | **context-anchoring** | Manages per-feature living documents that capture decisions and reasoning across sessions |
 
-### Molecules (3)
+### Molecules (4)
 
 | Skill | What it does | Atoms composed |
 |-------|-------------|----------------|
+| **lattice-init** | Guided setup -- scans the project, detects existing config, suggests refiners in priority order, creates `.ai/config.yaml` | knowledge-priming |
 | **design-blueprint** | Runs a complete design workflow -- from context through progressive design levels to an approved blueprint | knowledge-priming, context-anchoring, design-first, clean-architecture, domain-driven-design |
 | **code-forge** | Generates implementation from an approved blueprint or verbal requirements using inside-out layer ordering | knowledge-priming, context-anchoring, clean-architecture, clean-code, domain-driven-design, secure-coding, test-quality |
 | **review** | Performs a structured, delta-scoped code review with severity-ordered findings | knowledge-priming (always), clean-code (always), clean-architecture, domain-driven-design, secure-coding, test-quality (conditional) |
@@ -63,22 +64,23 @@ Lattice organizes skills into three tiers, each solving a different problem:
 Lattice skills form a design-to-code lifecycle:
 
 ```
-                            design-blueprint             code-forge                review
-                            ─────────────────            ─────────────────         ─────────────────
-                            Design before coding         Implement from blueprint  Audit the delta
-  ┌ ─ ─ ─ ─ ─ ─ ─ ─┐       ┌─────────────────┐          ┌─────────────────┐       ┌─────────────────┐
-    Refiners                │ Level 1: Caps   │          │ Plan layers     │       │ Classify delta  │
-  │ (optional)      │       │ Level 2: Comps  │          │ Inside-out build│       │ Load atoms      │
-   architecture-    ·····▶  │ Level 3: Flow   │──────▶   │ Code + tests    │──────▶│ Run checklists  │
-  │ ddd-            │       │ Level 4: API    │          │ Cross-component │       │ Severity report  │
-   clean-code-              │                 │          │ verify          │       │                 │
-  │ knowledge-      │       │ Approved        │          │                 │       │                 │
-   priming-                 │ Blueprint       │          │                 │       │                 │
-  └ ─ ─ ─ ─ ─ ─ ─ ─┘       └─────────────────┘          └─────────────────┘       └─────────────────┘
-  Customize atom defaults   Persists to context doc      Honors blueprint          Conditional atoms
+  lattice-init          design-blueprint             code-forge                review
+  ─────────────────     ─────────────────            ─────────────────         ─────────────────
+  Guided setup          Design before coding         Implement from blueprint  Audit the delta
+  ┌─────────────────┐   ┌─────────────────┐          ┌─────────────────┐       ┌─────────────────┐
+  │ Scan project    │   │ Level 1: Caps   │          │ Plan layers     │       │ Classify delta  │
+  │ Detect config   │   │ Level 2: Comps  │          │ Inside-out build│       │ Load atoms      │
+  │ Suggest refiners│──▶│ Level 3: Flow   │──────▶   │ Code + tests    │──────▶│ Run checklists  │
+  │ Create .ai/     │   │ Level 4: API    │          │ Cross-component │       │ Severity report  │
+  │ config          │   │                 │          │ verify          │       │                 │
+  │                 │   │ Approved        │          │                 │       │                 │
+  │                 │   │ Blueprint       │          │                 │       │                 │
+  └─────────────────┘   └─────────────────┘          └─────────────────┘       └─────────────────┘
+  One-time project      Persists to context doc      Honors blueprint          Conditional atoms
+  setup
 ```
 
-**Customize** (optional): Run refiners to tailor atom defaults to your project, or edit `.ai/` config files directly. **Design**: `design-blueprint` walks through progressive design levels and persists the approved blueprint. **Implement**: `code-forge` builds inside-out from the blueprint (or from verbal requirements). **Review**: `review` audits the delta, loading only the atoms relevant to what changed.
+**Init** (one-time): `/lattice-init` scans the project and walks through refiner setup. **Design**: `design-blueprint` walks through progressive design levels and persists the approved blueprint. **Implement**: `code-forge` builds inside-out from the blueprint (or from verbal requirements). **Review**: `review` audits the delta, loading only the atoms relevant to what changed.
 
 Context anchoring ties sessions together -- the context document created during design carries decisions forward into implementation and review.
 
@@ -90,9 +92,11 @@ Context anchoring ties sessions together -- the context document created during 
    cd lattice
    ./tools/install.sh /path/to/your-project/skill-folder
    ```
-   This copies all 15 skills (flattened) into `<project>/.claude/skills/` where Claude Code can discover them.
+   This copies all 16 skills (flattened) into `<project>/.claude/skills/` where Claude Code can discover them.
 
-2. **Customize atom defaults** (optional): Atoms ship with opinionated defaults that work immediately. If your project needs different standards, you have two paths:
+2. **Run `/lattice-init`** (recommended): Guided setup experience -- scans your project, suggests which refiners to run, and creates the `.ai/config.yaml`. This is the fastest path from install to first value.
+
+3. **Or customize manually** (optional): Atoms ship with opinionated defaults that work immediately. If you prefer to set up manually instead of using `/lattice-init`, you have two paths:
    - **Run a refiner** -- a guided interview that produces the config file for you:
      ```
      /architecture-refiner       # Tailor layer structure and dependency rules
@@ -104,11 +108,11 @@ Context anchoring ties sessions together -- the context document created during 
 
    Refiners support enhancing specific sections (overlay mode), adding new sections, or replacing defaults entirely (override mode). Re-run a refiner or edit the config file whenever your standards evolve.
 
-3. **Design a feature**: Invoke `/design-blueprint` to walk through progressive design levels before writing code.
+4. **Design a feature**: Invoke `/design-blueprint` to walk through progressive design levels before writing code.
 
-4. **Implement**: Invoke `/code-forge` to generate implementation from the approved blueprint.
+5. **Implement**: Invoke `/code-forge` to generate implementation from the approved blueprint.
 
-5. **Review**: Invoke `/review` to audit code changes against the relevant quality atoms.
+6. **Review**: Invoke `/review` to audit code changes against the relevant quality atoms.
 
 Atoms also work standalone -- they activate automatically based on what you're doing (writing domain code triggers DDD, handling user input triggers secure-coding, etc.).
 

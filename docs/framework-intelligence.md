@@ -167,6 +167,11 @@ How all mechanisms connect across a complete feature lifecycle:
 
 ```
 ┌─────────────────┐
+│  lattice-init   │  One-time: scans project, suggests refiners,
+│                 │  creates .ai/config.yaml
+└────────┬────────┘
+         ↓
+┌─────────────────┐
 │ design-blueprint │  Produces: context document + component plan
 └────────┬────────┘
          ↓
@@ -190,4 +195,4 @@ How all mechanisms connect across a complete feature lifecycle:
     └────────────┘
 ```
 
-The key insight: each tool in the pipeline both consumes and produces persistent artifacts. Design-blueprint produces the context document. Code-forge consumes it and enriches it. Review consumes the code delta and produces learnings and health logs. Those learnings feed back into the next code-forge session. The system improves with every cycle.
+The key insight: each tool in the pipeline both consumes and produces persistent artifacts. Lattice-init bootstraps the project config and refiner outputs. Design-blueprint produces the context document. Code-forge consumes it and enriches it. Review consumes the code delta and produces learnings and health logs. Those learnings feed back into the next code-forge session. The system improves with every cycle.

@@ -63,6 +63,20 @@ This means atoms work out of the box with opinionated defaults. Customization is
 
 Molecules are orchestrated multi-step workflows. Each molecule composes multiple atoms, applying them at the right stage of the workflow. Molecules reference atoms -- they do not duplicate atom content.
 
+### lattice-init
+
+Guided setup experience that bridges the gap between installing Lattice and getting first value.
+
+**Composes**: knowledge-priming
+
+**How it works**:
+1. **Scan the project**: Detects language/framework, directory structure, and existing `.ai/` state.
+2. **Present findings**: Shows a concise setup status -- what exists, what is missing.
+3. **Guided setup**: Suggests refiners in priority order (knowledge-priming first, then architecture, DDD, clean-code). For each gap, the user can run the refiner, skip it, or skip all remaining.
+4. **Next steps**: Presents the design-to-review workflow so the user knows what to do next.
+
+Run once per project. If Lattice is already fully configured, acknowledges it and shows the workflow.
+
 ### design-blueprint
 
 A complete design workflow that produces an approved blueprint before any code is written.
