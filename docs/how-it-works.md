@@ -16,11 +16,11 @@ Each tier builds on the one below it. Molecules compose atoms. Refiners optional
 
 ### What they are
 
-Each atom is a single-concern skill file that teaches one engineering principle. It contains the principle's rules, a self-validation checklist, an anti-pattern catalog, and a config resolution mechanism. Atoms do not produce artifacts -- they apply their checks inline during code generation, the same way a skilled developer applies principles as they write.
+Each atom is a single-concern skill file that teaches one engineering principle. It contains the principle's rules, a self-validation checklist (with imperative STOP-and-verify language), an active anti-pattern scan (checkbox format), and a config resolution mechanism. Atoms do not produce artifacts -- they apply their checks during post-generation verification, the same way a skilled developer reviews their own code before presenting it.
 
 ### How they work
 
-When an atom is active, the AI applies its self-validation checklist as it generates each unit of code. This is not a post-generation review pass -- it is an inline discipline. The clean-code atom checks function focus, naming, and complexity *while writing each function*. The DDD atom checks aggregate boundaries and value object usage *while writing domain code*.
+When an atom is active, it provides two verification tools: a **Self-Validation Checklist** (numbered, labeled checks with imperative STOP language) and an **Active Anti-Pattern Scan** (checkbox format for scanning output). These are used by code-forge's post-generation verification pass — after generating each component, the AI runs the relevant atom checklists against its output and fixes violations before presenting. This two-pass model (generate, then verify) is more reliable than simultaneous generation and validation.
 
 ### Always vs conditional atoms
 
@@ -84,11 +84,11 @@ Generates implementation from an approved blueprint or verbal requirements.
 **Composes**: knowledge-priming (always), context-anchoring (always), clean-architecture (always), clean-code (always), domain-driven-design (conditional: domain layer), secure-coding (conditional: trust boundaries), test-quality (always when writing tests)
 
 **How it works**:
-1. **Load context**: Uses context-anchoring to find and load the feature's blueprint. If none exists, works from verbal requirements -- all atom guardrails still apply.
+1. **Load context**: Loads learnings from `.ai/learnings/review-insights.md` (if they exist) to avoid repeating past mistakes. Uses context-anchoring to find and load the feature's blueprint. If none exists, works from verbal requirements -- all atom guardrails still apply.
 2. **Plan implementation order**: Classifies components into architectural layers and plans an inside-out build order: Domain → Infrastructure → Application → Interface. Each layer's dependencies already exist when it is built.
-3. **Implement per component**: Generates code and tests together. Applies clean-code and clean-architecture to all code. Applies DDD only to domain layer code. Applies secure-coding only at trust boundaries.
-4. **Cross-component verification**: Checks that interaction flows match the blueprint and that no unplanned components were introduced.
-5. **Enrich context**: Captures implementation decisions in the living document.
+3. **Implement per component**: Generates code and tests together. After generating each component, runs a post-generation verification pass — atom self-validation checklists and anti-pattern scans — fixing violations before presenting. Applies clean-code and clean-architecture to all code. Applies DDD only to domain layer code. Applies secure-coding only at trust boundaries.
+4. **Cross-component verification**: Checks architectural coherence — interaction flows match the blueprint, dependency direction is correct, no unplanned components, and past learnings don't recur.
+5. **Enrich context**: Captures implementation decisions in the living document. Recommends running `/review` before considering the feature complete.
 
 The user chooses a review mode: layer-by-layer (recommended), full autonomy, or component-by-component.
 
@@ -102,9 +102,8 @@ A structured, delta-scoped code review that loads atoms conditionally based on w
 1. **Identify the delta**: Determines the set of changed files (PR, commit, or specified files).
 2. **Classify and load**: Analyzes which layers, domains, and boundaries the delta touches. Loads only the relevant atoms -- a change to a single value object does not trigger the security checklist.
 3. **Run targeted validation**: For each loaded atom, runs two passes: the validation checklist (hard rules) and the anti-pattern scan (smell-level issues).
-4. **Produce report**: Findings are severity-ordered (critical → warning → suggestion) with specific file locations and concrete fixes. Summary mode by default; full mode on request.
-
-Every review ends with a "what's done well" observation -- reviews should acknowledge what works, not just what is broken.
+4. **Produce report**: Findings are severity-ordered (critical → warning → suggestion) with specific file locations and concrete fixes. Summary mode by default; full mode on request. Every review ends with a "what's done well" observation.
+5. **Capture insights and log**: Appends recurring patterns to `.ai/learnings/review-insights.md` (fed back into code-forge's next session) and logs a structured summary to `.ai/reviews/review-log.md` (project health visibility).
 
 ## Customizing Atom Defaults
 
@@ -173,6 +172,43 @@ Invoke `review` to audit the delta. The molecule classifies what changed, loads 
 The context anchor document is the thread that connects these stages. Created during design, it carries the approved blueprint into implementation. Enriched during implementation, it captures decisions that inform review. Loaded in any future session, it restores the full context of what was decided and why.
 
 The document lifecycle is: **Create** (new feature) → **Load** (resume work) → **Enrich** (capture decisions). All three behaviors require explicit user confirmation -- the AI proposes, the user disposes.
+
+## The `.ai/` Folder
+
+The `.ai/` folder is the project's AI-specific memory. All persistent artifacts produced by the framework live here, organized into subfolders with distinct lifecycles.
+
+### Structure
+
+```
+.ai/
+├── config.yaml          # Central config (only file at root)
+├── standards/           # Refiner-produced customization documents
+│   ├── knowledge-base.md
+│   ├── clean-code.md
+│   ├── clean-architecture.md
+│   └── ddd-principles.md
+├── context/             # Per-feature living documents
+│   └── <feature>.md
+├── learnings/           # Accumulated review insights
+│   └── review-insights.md
+└── reviews/             # Review log for project health
+    └── review-log.md
+```
+
+### Subfolder Lifecycles
+
+| Subfolder | Purpose | Lifecycle |
+|-----------|---------|-----------|
+| `standards/` | Refiner-produced customization docs consumed by atoms via config resolution | Stable — set once during project setup, rarely changed |
+| `context/` | Per-feature living documents managed by context-anchoring | Per feature — created when feature starts, enriched during design and implementation |
+| `learnings/` | Accumulated review insights loaded by code-forge at session start | Append-only with pruning — capped at ~50 entries |
+| `reviews/` | Review log entries for project health visibility | Rolling window — capped at ~20 entries, older entries summarized |
+
+### Convention
+
+**Rule**: All persistent artifacts go into subfolders. Never place files directly in `.ai/` root except `config.yaml`.
+
+This convention ensures the folder stays organized as the framework adds new capabilities. Every new output type gets its own subfolder with a clear lifecycle.
 
 ## How Atoms, Molecules, and Refiners Differ
 

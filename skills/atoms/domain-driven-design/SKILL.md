@@ -23,6 +23,28 @@ The defaults ship with this skill and represent opinionated best practices.
 They work out of the box for any project. Override only when your team has
 specific standards that differ from the defaults.
 
+## Self-Validation Checklist
+
+STOP after generating each component. Verify ALL of the following before proceeding. If any check fails, fix the code before presenting it.
+
+1. **ENTITY VS VALUE OBJECT**: For each domain object — does the business track individual instances over time? Yes → entity with identity. No → value object with immutability and self-validation.
+2. **AGGREGATE BOUNDARY**: Does a transactional invariant require this object inside the aggregate? If not → separate aggregate referenced by ID.
+3. **RICH BEHAVIOR**: Do entities have methods that enforce business rules, guard state transitions, and raise events? If entities are just data holders → move logic from services into entities.
+4. **VALUE OBJECT COVERAGE**: Scan for primitive types that should be value objects — string emails, number amounts, raw UUIDs as identifiers → wrap in value objects with validation.
+5. **AGGREGATE COHESION**: List the business rules the root enforces. Does each internal entity participate in at least one invariant? If not → it belongs in its own aggregate.
+6. **DOMAIN EVENTS**: Are domain events raised for state transitions other aggregates react to, changes that trigger notifications, and audit/compliance requirements? Don't raise events for internal changes nothing reacts to.
+
+## Active Anti-Pattern Scan
+
+After verifying the checklist above, scan your output for these specific anti-patterns. If you find any, fix them before presenting the code.
+
+- [ ] **Anemic Domain Model**: Entities are data holders with only getters/setters; all logic lives in services → move business rules into entities and value objects
+- [ ] **Primitive Obsession**: Raw strings for email, numbers for money, UUIDs for IDs → wrap in value objects with validation and behavior
+- [ ] **God Aggregate**: Aggregate with many entities, slow to load, high contention → decompose to keep only what shares a transactional invariant
+- [ ] **Cross-Aggregate Transaction**: Service updates two aggregates in one transaction → use domain events for eventual consistency
+- [ ] **Leaking Domain Logic**: Business rules in controllers, application services, or infrastructure → extract to domain objects or domain services
+- [ ] **Misidentified Entity/Value Object**: Entity without lifecycle, or value object with identity tracking → apply the identity test
+
 ## Scope Statement
 
 This skill operates within a single repository, for a single bounded context (e.g., one API -- Order, User, Pricing). It covers tactical DDD patterns only -- not strategic DDD (no context mapping, no microservice topology, no bounded context integration).
@@ -105,17 +127,6 @@ Recognize when an aggregate has grown too large:
 
 **Sizing heuristic**: Start with the smallest possible aggregate (root + value objects). Add internal entities only when an invariant forces them inside. If you are debating whether something belongs, it probably does not. See `./references/defaults.md` for the full decomposition guide with step-by-step approach and before/after examples.
 
-## Self-Validation During Code Generation
-
-When generating domain code, apply these checks:
-
-1. **Before creating a domain object**: Is this an entity or value object? Apply the identity test -- does the business track individual instances over time?
-2. **Before adding something to an aggregate**: Does a transactional invariant require this? If not, it is a separate aggregate referenced by ID.
-3. **After generating**: Scan for primitive types that should be value objects -- string emails, number amounts, raw UUIDs as identifiers.
-4. **After generating**: List the business rules the root enforces. Each internal entity should appear in at least one. If an entity does not participate in any invariant enforced by the root, it belongs in its own aggregate.
-5. **After generating**: Raise domain events for: state transitions other aggregates react to, changes that trigger notifications or side effects, audit/compliance requirements. Do not raise events for internal state changes nothing else reacts to.
-6. **After generating**: Do entities have behavior (methods with guard clauses), or are they just data holders?
-
 ## Validation Checklist
 
 When generating or reviewing domain code, verify these constraints.
@@ -131,15 +142,3 @@ When generating or reviewing domain code, verify these constraints.
 | Each aggregate fits within a single transaction | Multi-aggregate transactions indicate wrong boundaries |
 | Domain layer has zero infrastructure dependencies | Already enforced by Clean Architecture; DDD reinforces the reason -- domain purity |
 
-## Anti-Patterns
-
-Common DDD violations. See `./references/defaults.md` for full code examples showing each violation and its fix.
-
-| Anti-Pattern | Symptom | Fix |
-|-------------|---------|-----|
-| **Anemic Domain Model** | Entities are data holders; all logic in services | Move business rules into entities and value objects |
-| **Primitive Obsession** | string for email, number for money, raw IDs everywhere | Wrap in value objects with validation and behavior |
-| **God Aggregate** | One aggregate with many entities, slow to load, high contention | Decompose: keep only what shares a transactional invariant |
-| **Cross-Aggregate Transaction** | Service updates two aggregates in one transaction | Use domain events for eventual consistency |
-| **Leaking Domain Logic** | Business rules in controllers, services, or infrastructure | Extract to domain objects; if multi-entity, use domain service |
-| **Misidentified Entity/Value Object** | Entity without lifecycle, or value object with identity tracking | Apply the identity test: does the business track individual instances? |

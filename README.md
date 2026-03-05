@@ -112,6 +112,21 @@ Context anchoring ties sessions together -- the context document created during 
 
 Atoms also work standalone -- they activate automatically based on what you're doing (writing domain code triggers DDD, handling user input triggers secure-coding, etc.).
 
+### The `.ai/` folder
+
+Lattice stores all project-specific artifacts in `.ai/`:
+
+```
+.ai/
+├── config.yaml      # Central config (only file at root)
+├── standards/       # Refiner-produced customization docs
+├── context/         # Per-feature living documents
+├── learnings/       # Accumulated review insights (fed back into code-forge)
+└── reviews/         # Review log for project health visibility
+```
+
+All persistent outputs go into subfolders — never `.ai/` root except `config.yaml`. See [docs/how-it-works.md](docs/how-it-works.md#the-ai-folder) for lifecycle details.
+
 ## Learn More
 
 See [docs/how-it-works.md](docs/how-it-works.md) for the conceptual deep dive -- how atoms compose, how config resolution works, and how the tiers differ.

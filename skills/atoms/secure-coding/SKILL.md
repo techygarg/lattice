@@ -23,6 +23,32 @@ The defaults ship with this skill and represent opinionated best practices.
 They work out of the box for any project. Override only when your team has
 specific standards that differ from the defaults.
 
+## Self-Validation Checklist
+
+STOP after generating each component. Verify ALL of the following before proceeding. If any check fails, fix the code before presenting it.
+
+1. **TRUST BOUNDARIES**: Where does trusted code meet untrusted data? Are all boundaries explicitly identified?
+2. **INPUT VALIDATION**: Is every external input validated at the boundary with allowlists before reaching business logic?
+3. **QUERY SAFETY**: Are all database queries parameterized? Is there any string concatenation in query building?
+4. **COMMAND SAFETY**: Is there any shell/command execution? If so, is input strictly allowlisted?
+5. **SECRETS**: Are there any API keys, passwords, tokens, or connection strings in the code? If so → move to environment variables or secret manager.
+6. **OUTPUT ENCODING**: Is output encoded appropriately for its rendering context (HTML, JSON, URL)?
+7. **AUTHORIZATION**: Is authorization verified at the service layer, not just at the controller? Does each endpoint enforce least privilege?
+8. **ERROR MESSAGES**: Do error messages exposed to users avoid revealing internal details (stack traces, SQL queries, file paths)?
+
+## Active Anti-Pattern Scan
+
+After verifying the checklist above, scan your output for these specific anti-patterns. If you find any, fix them before presenting the code.
+
+- [ ] **Trust All Input**: No validation on request parameters; data flows directly to business logic → validate at boundary with allowlists
+- [ ] **SQL String Concatenation**: User input interpolated into SQL queries → use parameterized queries or ORM query builders
+- [ ] **Hardcoded Secrets**: API keys, passwords, or tokens in source code → use environment variables or secret managers
+- [ ] **Missing Authorization**: Auth checked at login but not re-verified at service or resource level → check at every layer
+- [ ] **Overly Broad Permissions**: Admin access granted where read-only would suffice → apply least privilege
+- [ ] **Unvalidated Redirects**: User-controlled URLs used in redirects → allowlist permitted destinations
+- [ ] **Verbose Error Messages**: Stack traces or SQL in API responses → return generic messages, log details server-side
+- [ ] **Logging Sensitive Data**: Passwords, tokens, or PII in log files → log events, not values; mask sensitive fields
+
 ## Core Principle
 
 Security is about **thinking in trust boundaries**. Every data flow crosses a boundary somewhere -- between the user and the server, between the application and the database, between your code and a third-party API. The question is not "could this be exploited?" but "where does trusted meet untrusted, and what happens at that boundary?"
@@ -100,34 +126,6 @@ Your code is only as secure as its weakest dependency. When adding or updating d
 - **Ask the question**: does this dependency expand the attack surface? Could a compromised version affect our system? Is there a simpler alternative?
 
 See `./references/defaults.md` for dependency evaluation criteria and supply chain risk patterns.
-
-## Self-Validation During Code Generation
-
-When generating code, apply these checks as you write -- not as a post-generation review, but as an inline discipline:
-
-1. **Identify trust boundaries**: Where does trusted code meet untrusted data in this code? Are all boundaries explicit?
-2. **Validate inputs at boundaries**: Is every external input validated before it reaches business logic?
-3. **Check query construction**: Are all database queries parameterized? Any string concatenation in query building?
-4. **Scan for shell execution**: Is there any shell/command execution? If so, is input allowlisted?
-5. **Check for hardcoded secrets**: Are there any API keys, passwords, tokens, or connection strings in the code?
-6. **Verify output encoding**: Is output encoded appropriately for its context (HTML, JSON, URL)?
-7. **Check authorization**: Is authorization verified at the service layer, not just at the controller?
-8. **Review error messages**: Do error messages exposed to users avoid revealing internal details (stack traces, SQL queries, file paths)?
-
-## Anti-Patterns
-
-Common security violations and their fixes. See `./references/defaults.md` for code examples showing each violation and its correction.
-
-| Anti-Pattern | Symptom | Fix |
-|-------------|---------|-----|
-| **Trust All Input** | No validation on request parameters; data flows directly to business logic | Validate at the boundary with allowlists; type-check, range-check, format-check |
-| **SQL String Concatenation** | User input interpolated directly into SQL queries | Use parameterized queries or ORM query builders with bound parameters |
-| **Hardcoded Secrets** | API keys, passwords, or tokens embedded in source code or config files | Use environment variables or secret managers; add secret patterns to `.gitignore` |
-| **Missing Authorization** | Auth checked at login but not re-verified at service or resource level | Check authorization at every layer; enforce at the service level, not just the UI |
-| **Overly Broad Permissions** | Admin-level access granted where read-only would suffice | Apply principle of least privilege; grant minimum permissions per operation |
-| **Unvalidated Redirects** | User-controlled URLs used in redirects without validation | Allowlist permitted redirect destinations; reject absolute URLs or external domains |
-| **Verbose Error Messages** | Stack traces, SQL queries, or file paths exposed in API error responses | Return generic messages to users; log detailed errors server-side only |
-| **Logging Sensitive Data** | Passwords, tokens, or PII written to log files | Log events, not values; mask or omit sensitive fields in log output |
 
 ## Validation Checklist
 

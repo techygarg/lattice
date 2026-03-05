@@ -23,6 +23,35 @@ The defaults ship with this skill and represent opinionated best practices.
 They work out of the box for any project. Override only when your team has
 specific standards that differ from the defaults.
 
+## Self-Validation Checklist
+
+STOP after generating each component. Verify ALL of the following before proceeding. If any check fails, fix the code before presenting it.
+
+1. **SINGLE RESPONSIBILITY**: Can you describe each function's purpose without the word "and"? If not → extract into separate functions.
+2. **SIZE**: Is each function under ~20 lines? If not → extract sub-operations into named functions.
+3. **COMPLEXITY**: Is cyclomatic complexity under ~10 per function? If not → flatten with guard clauses, extract branches.
+4. **ABSTRACTION LEVEL**: Does each function operate at one level of abstraction? If high-level orchestration is mixed with low-level detail → extract the detail.
+5. **NAMING**: Do function and variable names reveal intent without requiring surrounding context? If not → rename to be self-documenting.
+6. **PARAMETERS**: Does each function have four or fewer parameters? If not → group related parameters into an object.
+7. **PRIMITIVE OBSESSION**: Are there string, number, or boolean parameters that would be clearer as named types or objects? If so → introduce parameter objects or typed wrappers.
+8. **ERROR HANDLING**: Does every operation that can fail have explicit handling with actionable messages? Are errors handled at the right level?
+9. **COMMENTS**: Can any comment be eliminated by renaming the code it describes? Remove "what" comments, keep only "why" comments.
+10. **TESTABILITY**: Are side effects pushed to boundaries? Could a unit test exercise this logic without mocking I/O? If not → inject dependencies, extract pure logic.
+
+## Active Anti-Pattern Scan
+
+After verifying the checklist above, scan your output for these specific anti-patterns. If you find any, fix them before presenting the code.
+
+- [ ] **God Function**: Any function exceeding ~30 lines that does multiple things; description requires "and" → extract into focused functions
+- [ ] **Deep Nesting**: Three or more levels of indentation → flatten with early returns and guard clauses
+- [ ] **Cryptic Naming**: Variables like `d`, `tmp2`, `processData` → rename to reveal intent
+- [ ] **Long Parameter Lists**: Functions with five or more parameters → group into objects or split functions
+- [ ] **Premature Abstraction**: Utility extracted from only two similar blocks → inline until Rule of Three with same reason to change
+- [ ] **Swallowed Errors**: Empty catch blocks, generic "something went wrong," silently returning null → handle explicitly
+- [ ] **Comments as Deodorant**: Comments explaining convoluted code → refactor the code to be self-documenting
+- [ ] **Hidden Side Effects**: Function named `getX` that also writes to cache or sends notification → rename or separate
+- [ ] **Dead Code**: Commented-out blocks, unused imports, unreachable branches → delete (version control preserves history)
+
 ## Core Principle
 
 Clean code is about the **craft of writing individual units of code** -- functions, classes, modules. It operates at a different level than architecture (which governs where code lives and how layers interact) and domain modeling (which governs how business rules are expressed). The goal: code that is readable, maintainable, and communicates its intent without requiring the reader to hold unrelated context in their head.
@@ -108,37 +137,6 @@ See `./references/defaults.md` for error handling patterns by language paradigm.
 Code that is easy to test is usually well-structured code -- the two properties are deeply correlated. Prefer pure functions (same input, same output, no side effects) where possible. Inject dependencies rather than hardcoding them. Avoid hidden state -- global variables, singletons mutated at runtime, and static mutable fields make tests order-dependent and flaky.
 
 Push side effects to the boundaries. Business logic in the center should be pure computation; I/O and state changes happen at the edges. This structure -- sometimes called the Functional Core, Imperative Shell pattern -- is not just about testability. It makes the code easier to reason about in every context because the reader can understand the logic without knowing what external systems are involved. See `./references/defaults.md` for patterns that improve testability.
-
-## Self-Validation During Code Generation
-
-When generating code, apply these checks as you write each function -- not as a post-generation review, but as an inline discipline:
-
-1. **Read each function**: Can you describe its purpose without "and"? If not, extract.
-2. **Check abstraction level**: Does the function mix high-level orchestration with low-level detail? Extract the detail.
-3. **Scan for nesting**: More than two levels of indentation? Flatten with guard clauses or extract.
-4. **Check parameter lists**: More than three or four parameters? Group into a parameter object.
-5. **Review names**: Do function and variable names reveal intent without requiring context from surrounding code?
-6. **Look for primitive obsession**: Are there string, number, or boolean parameters that would be clearer as named types or objects?
-7. **Verify error paths**: Does every operation that can fail have explicit handling? Are error messages actionable?
-8. **Check for comments explaining "what"**: Can any comment be eliminated by renaming the code it describes?
-9. **Assess duplication**: Is any duplicated code justified by serving different reasons to change?
-10. **Confirm testability**: Are side effects at the boundaries? Could a unit test exercise this logic without mocking I/O?
-
-## Anti-Patterns
-
-Common clean code violations and their fixes. See `./references/defaults.md` for code examples showing each violation and its correction.
-
-| Anti-Pattern | Symptom | Fix |
-|-------------|---------|-----|
-| **God Function** | Function exceeds ~30 lines and does multiple things; description requires "and" | Extract into focused functions named for their intent |
-| **Deep Nesting** | Three or more levels of indentation; reader loses track of conditions | Flatten with early returns and guard clauses; extract nested blocks |
-| **Cryptic Naming** | Variables like `d`, `tmp2`, `processData`; readers need surrounding context to understand | Rename to reveal intent: `daysSinceLastLogin`, `pendingOrderCount` |
-| **Long Parameter Lists** | Functions with five or more parameters; call sites are error-prone | Group related parameters into objects; use builder pattern for complex construction |
-| **Premature Abstraction** | Shared utility extracted from two similar but unrelated blocks; diverges under maintenance | Inline until Rule of Three is met with same reason to change |
-| **Swallowed Errors** | Empty catch blocks, generic "something went wrong" messages, silently returning null | Handle explicitly with actionable messages; fail fast at boundaries |
-| **Comments as Deodorant** | Comments explaining convoluted code instead of simplifying the code itself | Refactor the code to be self-documenting; keep only "why" comments |
-| **Hidden Side Effects** | Function named `getUser` that also writes to a cache or sends a notification | Caller-visible side effects (sends email, modifies shared state) → rename to reflect full behavior or separate into explicit call. Transparent implementation concerns (caching, metrics, logging) → acceptable in-place; document if non-obvious |
-| **Dead Code** | Commented-out blocks, unused imports, unreachable branches, "just in case" functions that nothing calls | Delete. Version control preserves history. If code is not executed, it is noise that misleads readers and rots as the codebase evolves |
 
 ## Validation Checklist
 

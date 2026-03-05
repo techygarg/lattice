@@ -23,6 +23,29 @@ The defaults ship with this skill and represent opinionated best practices.
 They work out of the box for any project. Override only when your team has
 specific standards that differ from the defaults.
 
+## Self-Validation Checklist
+
+STOP after generating each component. Verify ALL of the following before proceeding. If any check fails, fix the code before presenting it.
+
+1. **OPERATION TYPE**: Is this a state-changing operation (command) or read operation (query)? Determine FIRST — it dictates the entire flow.
+2. **COMMAND FLOW**: For state-changing operations — does data flow through domain before reaching Repository? Are domain invariants enforced before persistence?
+3. **QUERY FLOW**: For read operations — does it use Provider (not Repository)? Are domain objects avoided where no invariant needs enforcement?
+4. **DEPENDENCY DIRECTION**: Do all source code dependencies point inward? Does the domain layer have zero imports from outer layers?
+5. **LAYER PLACEMENT**: Is each class in the correct layer? Controllers do translation only, application services orchestrate, domain enforces rules, infrastructure implements interfaces.
+6. **BOUNDARY DATA**: Does data crossing layer boundaries use simple structures (DTOs, plain objects)? No framework-specific types or entities leaking outward.
+7. **INTERFACE OWNERSHIP**: Are Repository interfaces defined in the domain layer? Are Provider contracts absent from the domain layer?
+8. **SINGLE LAYER**: Does each class belong to exactly one architectural layer? No class should span HTTP parsing, business logic, and database access.
+
+## Active Anti-Pattern Scan
+
+After verifying the checklist above, scan your output for these specific anti-patterns. If you find any, fix them before presenting the code.
+
+- [ ] **Business Logic in Controllers**: Controller makes business decisions beyond translation → extract to domain or use case
+- [ ] **Domain Depending on Infrastructure**: Domain imports database client, HTTP library, or external service → define interface in domain, implement in infrastructure
+- [ ] **God Classes**: Single class changes for every kind of requirement → decompose into focused classes per layer
+- [ ] **Anemic Architecture**: Layers exist in folders but dependency rule is not enforced → verify imports, add interfaces
+- [ ] **Leaking Data Formats**: Database schema change breaks API contract → map between DAO, domain object, and response DTO at each boundary
+
 ## Core Principle
 
 Clean Architecture is about **structure** -- where code lives, which layers exist, and which direction dependencies flow. It is distinct from DDD, which is about crafting domain logic *within* the domain layer. This skill handles the structural envelope; DDD handles the domain crafting inside it.
@@ -106,21 +129,6 @@ Key rules: Provider lives in `infrastructure/providers/` with **no interface in 
 
 A single service per domain concept injects both Repository and Provider. Command methods route through domain and Repository; query methods route through Provider directly. This is a *flow* distinction within the service, not a class-level split. Full CQRS with separate command/query handlers is a different architectural choice -- do not conflate the two.
 
-## Self-Validation During Code Generation
-
-When generating code, determine the operation type first:
-
-1. **Is this a state-changing operation?** (create, update, delete) → Use the Command Flow. Construct domain objects. Use Repository with domain-defined interface.
-2. **Is this a read operation?** (get, list, search, filter) → Use the Query Flow. Use Provider. Return DAOs mapped to response DTOs. Do not construct domain objects.
-3. **Does a read also enforce business rules?** (rare -- e.g., access control that depends on domain state) → Use the Command Flow structure. The domain involvement is justified by the business rule, not the read/write nature.
-
-After generating code, verify:
-- Command operations flow through domain before reaching Repository
-- Query operations use Provider, not Repository
-- Providers do not appear in domain layer (no interface there)
-- Repository interfaces are defined in domain layer
-- No domain objects are constructed in query flows without justification
-
 ## Structural Validation Checklist
 
 When generating or reviewing code, verify these constraints.
@@ -137,14 +145,3 @@ When generating or reviewing code, verify these constraints.
 | Read operations use Provider, not Repository; no unnecessary domain construction | Forcing reads through domain adds complexity without protecting any invariant |
 | Provider contracts are not defined in domain layer | Providers serve reads; domain only defines contracts for state-changing infrastructure (Repositories) |
 
-## Anti-Patterns
-
-Common structural violations. See `./references/defaults.md` for code examples showing each violation and its fix.
-
-| Anti-Pattern | Symptom | Fix |
-|-------------|---------|-----|
-| **Business Logic in Controllers** | Cannot test business rules without constructing an HTTP request | Extract logic into domain objects or use cases |
-| **Domain Depending on Infrastructure** | Domain cannot be tested without a running database or external service | Define interface in domain, implement in infrastructure, inject |
-| **God Classes** | A single class changes for every kind of requirement | Decompose into focused classes with single responsibilities, each in the appropriate layer |
-| **Anemic Architecture** | Layers exist in folders but dependency rule is not enforced; layers are cosmetic | Enforce dependency rule through interfaces; validate imports |
-| **Leaking Data Formats** | Changing the database schema breaks the API contract, or vice versa | Map between representations at each boundary (DAO, domain, response DTO) |

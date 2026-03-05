@@ -21,6 +21,8 @@ Read and apply these skills:
 
 ### Step 1: Establish Implementation Context
 
+**Load learnings**: If `.ai/learnings/review-insights.md` exists, read it. Use recent insights to inform generation — e.g., if learnings say "anemic domain models keep appearing," actively push behavior into entities. If learnings flag "missing input validation on value objects," validate in constructors from the start. These are patterns from past reviews — use them to avoid repeating the same mistakes.
+
 Use `framework:context-anchoring` Document Discovery to check for an existing context anchor document for the feature being implemented.
 
 - **If found** → Load it (context-anchoring Load behavior). Present the structured acknowledgment -- feature name, decision count, open questions, constraints. Honor all logged decisions and constraints as active commitments.
@@ -81,6 +83,17 @@ Conditional checks applied per component:
 - **If trust boundary** (HTTP handler, external API call, user input processing, file I/O) → Apply `framework:secure-coding` self-validation. Verify: input validation at boundary, parameterized queries, no hardcoded secrets, output encoding, authentication/authorization checks, secure defaults, error messages that don't leak internals, dependency on trusted libraries.
 - **If blueprint exists** → Verify the component fulfills its Level 4 (Contracts) specification. Flag any deviation from the agreed contract.
 
+**Post-Generation Verification** (applies to every component, in all review modes):
+
+After generating each component and before presenting it to the user:
+
+1. Run the **Self-Validation Checklist** from each applicable atom against every function/class in this component. The atoms use imperative STOP-and-verify language -- follow it literally.
+2. Run the **Active Anti-Pattern Scan** from each applicable atom. Check every box in the scan list.
+3. If violations are found → fix them before presenting. Do not present code you know violates an atom checklist.
+4. If all checks pass → present with a brief compliance note (e.g., "All clean-code and DDD checks pass"). Keep it to one line when clean -- only be verbose when reporting violations and fixes.
+
+<!-- AI reasoning: This is the two-pass model -- generate first (creative task), then verify (analytical task). Separating these tasks produces more reliable compliance than trying to do both simultaneously. The atoms' Self-Validation Checklists are written with STOP language specifically for this checkpoint. -->
+
 **Pacing -- follow the user's chosen review mode**:
 
 - **Layer-by-layer**: Implement all components within a layer, then present the full layer (code + tests) for review before moving to the next layer.
@@ -92,13 +105,15 @@ Conditional checks applied per component:
 
 ### Step 4: Cross-Component Verification
 
-After all components are implemented:
+This step checks **architectural coherence** -- not code quality (that was verified per-component in Step 3). After all components are implemented:
 
 - **With blueprint**: Verify that interaction flows match the Level 3 (Interactions) design. Every designed interaction should be traceable in the code.
+- **Dependency direction**: Verify that all dependencies point inward. No domain imports from infrastructure. No application layer bypassed by controllers calling infrastructure directly.
 - **Zero Implementation Rule**: Check that no new components, interactions, or contracts were introduced beyond what was planned in Step 2. If something was added, flag it -- it may be necessary, but it should be a conscious decision, not scope creep.
 - **Final security scan**: Apply `framework:secure-coding` across component boundaries. Check that data flowing between components crosses trust boundaries safely.
+- **Learnings check**: If `.ai/learnings/review-insights.md` was loaded in Step 1, verify that previously-flagged patterns do not recur in this implementation. If a past insight said "anemic domain models keep appearing" -- check that entities in this implementation have behavior.
 
-<!-- AI reasoning: The Zero Implementation Rule is borrowed from design-first methodology. It catches scope creep during implementation -- the most common source of architectural drift. New components may be legitimate, but they should be discussed and planned, not silently introduced. -->
+<!-- AI reasoning: The Zero Implementation Rule is borrowed from design-first methodology. It catches scope creep during implementation -- the most common source of architectural drift. The learnings check closes the feedback loop -- past review findings should influence current implementation. Cross-component verification is the second level of the two-level verification model; per-component checks in Step 3 were the first level. -->
 
 ### Step 5: Enrich Context
 
@@ -109,4 +124,8 @@ Throughout Steps 3 and 4, use `framework:context-anchoring` Enrich behavior to k
 - **Resolve open questions** -- if questions from the design phase are answered during implementation, log the resolution.
 - **If no context document exists** and significant implementation decisions were made → suggest creating one. The decisions are worth preserving for future sessions.
 
-<!-- AI reasoning: Enrichment during implementation is where context documents become most valuable. Design decisions are relatively stable, but implementation surfaces dozens of micro-decisions (which library, which pattern, which error strategy) that are easy to forget but painful to re-derive. Capturing them as they happen costs almost nothing; recovering them later costs real time. -->
+After enriching the context document, recommend a review:
+
+> "The implementation is complete. I recommend running `/review` on the generated code before considering this feature done -- it provides an independent quality assessment against the same atom standards, catches issues the generator may be blind to, and captures learnings for future sessions."
+
+<!-- AI reasoning: Enrichment during implementation is where context documents become most valuable. Design decisions are relatively stable, but implementation surfaces dozens of micro-decisions (which library, which pattern, which error strategy) that are easy to forget but painful to re-derive. Capturing them as they happen costs almost nothing; recovering them later costs real time. The review recommendation closes the design → implement → review loop. Code-forge's own verification (Steps 3-4) is self-review; /review is independent assessment -- a different cognitive perspective on the same code. -->

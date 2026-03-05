@@ -60,7 +60,7 @@ For each loaded atom, apply two passes against the delta:
 - Why it matters (from the checklist's "Why It Matters" column)
 - A concrete suggested fix
 
-**Pass 2 -- Anti-Pattern Scan**: Walk through the atom's Anti-Patterns table. For each anti-pattern, check if the delta exhibits the symptom. Record matches with:
+**Pass 2 -- Anti-Pattern Scan**: Walk through the atom's Active Anti-Pattern Scan checklist. For each anti-pattern, check if the delta exhibits the symptom. Record matches with:
 - The anti-pattern name
 - The symptom observed in the delta
 - The fix from the anti-pattern table, adapted to the specific code
@@ -113,3 +113,38 @@ After all atom sections, add:
 - **Improvement suggestions** (optional): If there are broader patterns beyond individual findings -- e.g., "consider extracting a shared validation layer" -- note them here. Keep to 1-2 suggestions maximum.
 
 <!-- AI reasoning: Summary mode respects the user's time -- most reviews need a quick hit list, not an essay. Full mode is for thorough reviews before merging or when the user wants to learn from the findings. The severity classification prevents "wall of warnings" fatigue by surfacing what actually matters first. -->
+
+### Step 5: Capture Insights and Log Review
+
+After presenting the report to the user, capture learnings and log the review for project health visibility.
+
+**Capture Insights** — append to `.ai/learnings/review-insights.md`:
+
+If recurring patterns or notable findings emerged from this review:
+
+1. Create `.ai/learnings/` directory if it doesn't exist.
+2. Append concise bullet points to `.ai/learnings/review-insights.md`. Create the file with a `# Review Insights` heading if it doesn't exist.
+3. Format: `- YYYY-MM-DD [Feature]: Pattern observed — actionable takeaway`
+4. Each insight is ONE bullet point, max 2 lines. Keep entries concise — bullet points that help AI remember patterns, not verbose reports. Each entry should be scannable in under 10 seconds.
+5. Only capture patterns that would help future code generation — not every finding. A one-off typo is not an insight; "domain services keep doing repository work" is.
+6. If the file exceeds ~50 entries, suggest pruning oldest entries that haven't recurred in recent reviews.
+
+**Log Review** — append to `.ai/reviews/review-log.md`:
+
+1. Create `.ai/reviews/` directory if it doesn't exist.
+2. Append a structured summary to `.ai/reviews/review-log.md`. Create the file with a `# Review Log` heading if it doesn't exist.
+3. Format — keep each entry under 8 lines:
+
+```
+## YYYY-MM-DD — [feature/scope name]
+- **Scope**: [file count], [layers touched]
+- **Atoms**: [atoms loaded for this review]
+- **Result**: [critical count] critical, [warning count] warning, [suggestion count] suggestion
+- **Key findings**: [top 2-3 specific findings, one line]
+- **Strengths**: [one positive highlight]
+```
+
+4. This is a health signal, not a detailed report. Keep entries concise — bullet points that help track trends, not replicate the full review.
+5. If the log exceeds ~20 entries, move the oldest entries to a one-line `## History` summary section at the top of the file.
+
+<!-- AI reasoning: Insights feed the learning flywheel -- code-forge loads them at session start and uses them to avoid repeating mistakes. The review log provides project health visibility -- trends in finding counts, recurring atoms, and quality direction over time. Both use rolling limits to prevent unbounded growth. The separation (insights for AI consumption, log for human consumption) keeps each artifact focused. -->
