@@ -41,6 +41,7 @@ Detect signals about the project to understand its shape and existing Lattice st
 - `.ai/standards/clean-architecture.md` → architecture refiner output
 - `.ai/standards/clean-code.md` → clean code refiner output
 - `.ai/standards/ddd-principles.md` → DDD refiner output
+- `.ai/standards/review-standards.md` → review refiner output
 - `.ai/context/` → feature context documents (count them)
 - `.ai/learnings/review-insights.md` → accumulated review insights
 - `.ai/reviews/review-log.md` → review log
@@ -63,12 +64,13 @@ Report what was found -- concise, structured. Present to the user:
 - Clean architecture standards: [found / not found]
 - Clean code standards: [found / not found]
 - DDD standards: [found / not found]
+- Review standards: [found / not found]
 - Context documents: [N found / none]
 - Review learnings: [found / none]
 - Review log: [found / none]
 ```
 
-**If everything is already set up** (config exists and all four standards documents exist): acknowledge "Lattice is fully configured for this project" and skip directly to Step 4.
+**If everything is already set up** (config exists and all core standards documents exist): acknowledge "Lattice is fully configured for this project" and skip directly to Step 4.
 
 ### Step 3: Guided Setup
 
@@ -82,6 +84,7 @@ Based on gaps found in Step 2, suggest refiners in priority order. Walk the user
 2. **Architecture-refiner** (if `.ai/standards/clean-architecture.md` is missing AND the project has multi-layer structure like `src/`, `domain/`, `infrastructure/`, `application/`) -- "Defines your project's layer structure, dependency rules, and service patterns so the clean-architecture atom validates against your actual architecture."
 3. **DDD-refiner** (if `.ai/standards/ddd-principles.md` is missing AND the project has a domain folder or domain-like structure) -- "Captures your aggregate design rules, entity patterns, and domain event conventions so the DDD atom enforces your domain modeling style."
 4. **Clean-code-refiner** (if `.ai/standards/clean-code.md` is missing) -- "Tailors coding standards -- function size limits, complexity thresholds, naming conventions. The defaults work well for most projects, so this is optional."
+5. **Review-refiner** (if `.ai/standards/review-standards.md` is missing) -- "Customizes how the review molecule works -- atom loading rules, severity levels, report format, scope rules. The defaults work well for most projects, so this is optional."
 
 **For each gap**, present to the user:
 - What the refiner does (one sentence, from the descriptions above)
@@ -98,7 +101,7 @@ Based on gaps found in Step 2, suggest refiners in priority order. Walk the user
 ```yaml
 # .ai/config.yaml -- Lattice Framework Configuration
 # All paths are relative to the repository root.
-# Run refiners to populate: /knowledge-priming-refiner, /architecture-refiner, /ddd-refiner, /clean-code-refiner
+# Run refiners to populate: /knowledge-priming-refiner, /architecture-refiner, /ddd-refiner, /clean-code-refiner, /review-refiner
 
 version: 1
 paths: {}

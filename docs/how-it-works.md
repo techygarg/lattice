@@ -8,9 +8,9 @@ Lattice solves three distinct problems, each with its own tier:
 
 1. **Atoms** solve the guardrail problem: how do you ensure generated code follows a specific principle (clean code, DDD, security) without the AI forgetting halfway through?
 2. **Molecules** solve the orchestration problem: how do you run a multi-step workflow (design → implement → review) that applies the right guardrails at the right time?
-3. **Refiners** solve the customization problem (optionally): how do you tailor atom behavior to your project's specific standards without editing the atom's source?
+3. **Refiners** solve the customization problem (optionally): how do you tailor atom defaults or molecule behavior to your project's specific standards without editing the skill's source?
 
-Each tier builds on the one below it. Molecules compose atoms. Refiners optionally configure atoms -- atoms work out of the box without them. The separation means atoms stay generic and reusable, molecules stay focused on workflow, and project-specific decisions live in config files -- not hardcoded in skill definitions.
+Each tier builds on the one below it. Molecules compose atoms. Refiners optionally configure atoms or molecule behavior -- skills work out of the box without them. The separation means atoms stay generic and reusable, molecules stay focused on workflow, and project-specific decisions live in config files -- not hardcoded in skill definitions.
 
 ## The Two Layers
 
@@ -118,9 +118,11 @@ The user chooses a review mode: layer-by-layer (recommended), full autonomy, or 
 
 ### review
 
-A structured, delta-scoped code review that loads atoms conditionally based on what changed.
+A structured, delta-scoped code review that loads atoms conditionally based on what changed. Supports optional process configuration via the review-refiner.
 
 **Composes**: knowledge-priming (always), clean-code (always), clean-architecture (conditional), domain-driven-design (conditional), secure-coding (conditional), test-quality (conditional)
+
+**Config**: Optionally reads `.ai/standards/review-standards.md` (produced by the review-refiner or written by hand) to customize atom loading rules, severity classification, report format, scope rules, insight capture, and health logging. When no review-standards document exists, all defaults apply — identical behavior to a review without config.
 
 **How it works**:
 1. **Identify the delta**: Determines the set of changed files (PR, commit, or specified files).
@@ -128,6 +130,14 @@ A structured, delta-scoped code review that loads atoms conditionally based on w
 3. **Run targeted validation**: For each loaded atom, runs two passes: the validation checklist (hard rules) and the anti-pattern scan (smell-level issues).
 4. **Produce report**: Findings are severity-ordered (critical → warning → suggestion) with specific file locations and concrete fixes. Summary mode by default; full mode on request. Every review ends with a "what's done well" observation.
 5. **Capture insights and log**: Appends recurring patterns to `.ai/learnings/review-insights.md` (fed back into code-forge's next session) and logs a structured summary to `.ai/reviews/review-log.md` (project health visibility).
+
+## Customizing the Review Process
+
+The review molecule is the first molecule to support config resolution. While atom refiners customize *what atoms check for*, the review-refiner customizes *how the review process works* — a molecule-level concern.
+
+The review-refiner produces `.ai/standards/review-standards.md`, which the review molecule reads through the same overlay/override mechanism atoms use. The document has 7 sections covering atom loading policy, severity classification, report preferences, scope rules, insight capture preferences, health log preferences, and custom review dimensions.
+
+This is entirely optional. Without a review-standards document, the review molecule uses its embedded defaults — identical to how atoms work without atom-level config. The boundary is clear: if it changes what an atom checks for, it belongs in that atom's refiner. If it changes how the review process uses atom output, it belongs in the review-refiner.
 
 ## Customizing Atom Defaults
 
@@ -170,8 +180,11 @@ Re-run a refiner or edit the standards document whenever your standards evolve.
 | **ddd-refiner** | `.ai/standards/ddd-principles.md` | domain-driven-design | Aggregate design rules, entity/value object patterns, domain event conventions, repository patterns |
 | **clean-code-refiner** | `.ai/standards/clean-code.md` | clean-code | Function size thresholds, complexity limits, naming conventions, error handling strategy |
 | **knowledge-priming-refiner** | `.ai/standards/knowledge-base.md` | knowledge-priming | Architecture overview, tech stack with versions, trusted doc sources, project structure, conventions |
+| **review-refiner** | `.ai/standards/review-standards.md` | review (molecule) | Atom loading policy, severity classification, report format, scope rules, insight capture, health log format, custom review dimensions |
 
-The knowledge-priming-refiner completes the pattern -- like the other refiners, its output is consumed by a matching atom (knowledge-priming) through config resolution. The knowledge-priming atom loads the document and makes it available as ambient project context for all skills and molecules.
+The knowledge-priming-refiner completes the atom-level pattern -- like the other atom refiners, its output is consumed by a matching atom (knowledge-priming) through config resolution. The knowledge-priming atom loads the document and makes it available as ambient project context for all skills and molecules.
+
+The review-refiner introduces a new pattern -- molecule-level config. Its output is consumed by the review molecule (not an atom), configuring how the review *process* works rather than what individual atoms check for. This establishes a path for future molecule customization if needed.
 
 ## The Design-to-Code Pipeline
 
@@ -210,7 +223,8 @@ The `.ai/` folder is the living context layer described earlier -- the project's
 │   ├── knowledge-base.md
 │   ├── clean-code.md
 │   ├── clean-architecture.md
-│   └── ddd-principles.md
+│   ├── ddd-principles.md
+│   └── review-standards.md
 ├── context/             # Per-feature living documents
 │   └── <feature>.md
 ├── learnings/           # Accumulated review insights
@@ -242,7 +256,7 @@ This convention ensures the folder stays organized as the framework adds new cap
 | **Invocation** | Auto-activate based on context, or invoked by molecules | User invokes explicitly (e.g., `/design-blueprint`) | User invokes when customization is needed (e.g., `/architecture-refiner`) |
 | **Artifacts produced** | None (inline checks) | Blueprints, reviews, context documents | `.ai/` config files |
 | **Composes others?** | No | Yes (composes atoms) | No |
-| **Configured by refiners?** | Yes (via `.ai/` config files) | No (molecules have no config) | N/A |
+| **Configured by refiners?** | Yes (via `.ai/` config files) | review molecule supports config via review-refiner | N/A |
 | **Frequency of use** | Every generation (automatic) | Per feature or per review | As needed -- when standards are first set or evolve |
 | **Required?** | Yes (core guardrails) | No (but recommended for structured workflows) | No (atoms work with built-in defaults) |
 | **Works standalone?** | Yes | Yes | Yes |

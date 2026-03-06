@@ -16,6 +16,33 @@ Load and apply these skills based on the scope of the review (see Step 2 for con
 5. `framework:secure-coding` -- Security validation: trust boundaries, injection, secrets, input handling (conditional)
 6. `framework:test-quality` -- Test validation: AAA structure, isolation, assertions, naming (conditional)
 
+## Config Resolution
+
+The review molecule supports optional process configuration through a review-standards document produced by the review-refiner (or written by hand). This configures how the review *process* works — not what atoms check for (that's atom-level config via atom refiners).
+
+**Resolution steps:**
+
+1. Look for `.ai/config.yaml` in the repository root.
+2. Check for the config key `paths.review_standards`.
+3. If a document exists at that path, read it and check its YAML frontmatter for `mode`:
+   - **`mode: overlay`**: Read the embedded defaults in this workflow first, then apply the document's sections on top. Sections are matched by heading — custom sections replace matching defaults, new sections are appended.
+   - **`mode: override`** (or no mode specified): The custom document takes full precedence. It must be comprehensive.
+4. If no config exists or no review-standards document is found, use the embedded defaults throughout this workflow (full backward compatibility — identical behavior to a review with no config).
+
+The review-standards document has 7 sections that map to workflow steps:
+
+| Section | Affects step |
+|---------|-------------|
+| §1 Atom Loading Policy | Step 2 (Load Relevant Atoms) |
+| §2 Severity Classification | Step 4 (Produce Report) |
+| §3 Report Preferences | Step 4 (Produce Report) |
+| §4 Scope Rules | Step 1 (Identify the Delta) |
+| §5 Insight Capture Preferences | Step 5 (Capture Insights and Log Review) |
+| §6 Health Log Preferences | Step 5 (Capture Insights and Log Review) |
+| §7 Custom Review Dimensions | Step 3 (Run Targeted Validation) |
+
+Each step below notes where config applies with "**Config override**" callouts. When no review-standards document exists, these callouts are ignored and defaults apply.
+
 ## Workflow
 
 ### Step 1: Identify the Delta
@@ -32,6 +59,12 @@ Classify the delta by answering these questions:
 2. **Is domain code included?** (files in the configured `domain_folder` or containing aggregates, entities, value objects) -- determines if `domain-driven-design` loads.
 3. **Are security-sensitive areas touched?** (authentication, authorization, input handling, database queries, external API calls, file I/O, configuration, secrets) -- determines if `secure-coding` loads.
 4. **Are test files included?** -- determines if `test-quality` loads.
+
+**Config override (§4 Scope Rules):** If the review-standards document defines scope rules, apply them after identifying the delta:
+- **Directory exclusions**: Remove files matching exclusion patterns from the delta before classification.
+- **Directory inclusions (always-full-scan)**: When the delta touches a file in an always-full-scan directory, expand the delta to include all files in that directory.
+- **Surrounding-code policy**: Use the configured policy (strict/default/expansive) instead of the default.
+- **Dependency expansion**: If enabled, also include files that directly import from changed files.
 
 <!-- AI reasoning: Classification happens before loading atoms to avoid wasting context on irrelevant checklists. A change to a single value object does not need the full security checklist. A CSS-only change does not need architecture validation. Targeted loading keeps the review focused. -->
 
@@ -50,6 +83,12 @@ Classify the delta by answering these questions:
 
 When multiple atoms load, they run independently -- each atom's checklist is applied to the parts of the delta relevant to it. Findings from different atoms are merged in Step 4.
 
+**Config override (§1 Atom Loading Policy):** If the review-standards document defines atom loading rules, apply them instead of (override) or on top of (overlay) the table above:
+- **Always-load overrides**: Additional atoms moved to always-load (e.g., `secure-coding` on every review). `clean-code` and `knowledge-priming` must remain always-loaded regardless of config.
+- **Suppressed atoms**: Atoms listed as suppressed are never loaded, even if the delta matches their trigger condition.
+- **Custom path-based triggers**: If the delta includes files matching a custom path pattern, load the associated atom regardless of the standard conditions.
+- **Modified conditions**: Replacement trigger conditions for conditional atoms.
+
 ### Step 3: Run Targeted Validation
 
 For each loaded atom, apply two passes against the delta:
@@ -66,6 +105,11 @@ For each loaded atom, apply two passes against the delta:
 - The fix from the anti-pattern table, adapted to the specific code
 
 **Scope rule**: Focus on the delta. Do not review unchanged code unless a change in the delta creates a new violation in surrounding code (e.g., a new dependency that breaks the dependency rule for an existing file). When reviewing surrounding code, note that the finding originates from the delta's impact, not from pre-existing issues.
+
+**Config override (§7 Custom Review Dimensions):** If the review-standards document defines custom review dimensions, run them after the atom validation passes:
+- For each custom dimension, check whether the delta matches its trigger condition.
+- For matching dimensions, apply the dimension's checklist against the delta using the same two-pass approach: check each criterion, record findings with the dimension's default severity (or classified severity), file location, and suggested fix.
+- Custom dimension findings are merged with atom findings in Step 4.
 
 <!-- AI reasoning: Two passes ensure nothing is missed. The checklist catches structural violations (hard rules). The anti-pattern scan catches smell-level issues (patterns that indicate deeper problems). Running both produces a thorough review without requiring the AI to invent checks from scratch. -->
 
@@ -112,6 +156,19 @@ After all atom sections, add:
 - **What's done well**: List 2-3 positive observations.
 - **Improvement suggestions** (optional): If there are broader patterns beyond individual findings -- e.g., "consider extracting a shared validation layer" -- note them here. Keep to 1-2 suggestions maximum.
 
+**Config override (§2 Severity Classification):** If the review-standards document defines custom severity levels or per-atom overrides:
+- Use the custom severity level definitions instead of (override) or merged with (overlay) the defaults above.
+- Apply per-atom severity overrides: if an atom has a minimum severity floor, promote findings below that floor. If an atom has a maximum severity ceiling, cap findings above that ceiling.
+- Custom dimensions from §7 use severity levels from this section.
+
+**Config override (§3 Report Preferences):** If the review-standards document defines report preferences:
+- **Default mode**: Use the configured default (summary or full) instead of summary.
+- **Finding cap**: Apply the configured cap for summary mode.
+- **Grouping strategy**: Use the configured grouping (by-severity, by-atom, by-file) instead of the defaults.
+- **"What's done well" toggle**: If disabled, omit the positive observation section.
+- **Custom report sections**: Include any configured custom sections at the specified position.
+- Custom dimension findings merge into the report alongside atom findings, following the same grouping and severity ordering.
+
 <!-- AI reasoning: Summary mode respects the user's time -- most reviews need a quick hit list, not an essay. Full mode is for thorough reviews before merging or when the user wants to learn from the findings. The severity classification prevents "wall of warnings" fatigue by surfacing what actually matters first. -->
 
 ### Step 5: Capture Insights and Log Review
@@ -146,5 +203,18 @@ If recurring patterns or notable findings emerged from this review:
 
 4. This is a health signal, not a detailed report. Keep entries concise — bullet points that help track trends, not replicate the full review.
 5. If the log exceeds ~20 entries, move the oldest entries to a one-line `## History` summary section at the top of the file.
+
+**Config override (§5 Insight Capture Preferences):** If the review-standards document defines insight capture preferences:
+- **Pruning threshold**: Use the configured threshold instead of ~50.
+- **Categorization tags**: If enabled, prefix each insight with the configured category tag (e.g., `[security]`, `[domain]`).
+- **Capture criteria**: Apply custom criteria (e.g., "always capture security findings") in addition to the default pattern-based capture.
+- **Format**: Use grouped format (organized under category headings) instead of flat chronological if configured.
+
+**Config override (§6 Health Log Preferences):** If the review-standards document defines health log preferences:
+- **Custom fields**: Include additional fields in each log entry (e.g., "Confidence", "Estimated fix time").
+- **Entry cap**: Use the configured line limit instead of 8 lines per entry.
+- **History cap**: Use the configured entry limit instead of ~20 before rolloff.
+- **Additional metrics**: Include configured metrics (e.g., findings-per-file ratio, most-firing atoms) in each entry.
+- **History compression format**: Use the configured format for rolled-off entries.
 
 <!-- AI reasoning: Insights feed the learning flywheel -- code-forge loads them at session start and uses them to avoid repeating mistakes. The review log provides project health visibility -- trends in finding counts, recurring atoms, and quality direction over time. Both use rolling limits to prevent unbounded growth. The separation (insights for AI consumption, log for human consumption) keeps each artifact focused. -->

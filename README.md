@@ -48,9 +48,9 @@ Lattice organizes skills into three tiers, each solving a different problem:
 | **lattice-init** | Guided setup -- scans the project, detects existing config, suggests refiners in priority order, creates `.ai/config.yaml` | knowledge-priming |
 | **design-blueprint** | Runs a complete design workflow -- from context through progressive design levels to an approved blueprint | knowledge-priming, context-anchoring, design-first, clean-architecture, domain-driven-design |
 | **code-forge** | Generates implementation from an approved blueprint or verbal requirements using inside-out layer ordering | knowledge-priming, context-anchoring, clean-architecture, clean-code, domain-driven-design, secure-coding, test-quality |
-| **review** | Performs a structured, delta-scoped code review with severity-ordered findings | knowledge-priming (always), clean-code (always), clean-architecture, domain-driven-design, secure-coding, test-quality (conditional) |
+| **review** | Performs a structured, delta-scoped code review with severity-ordered findings. Supports optional process config via review-refiner | knowledge-priming (always), clean-code (always), clean-architecture, domain-driven-design, secure-coding, test-quality (conditional) |
 
-### Refiners (4)
+### Refiners (5)
 
 | Skill | What it produces |
 |-------|-----------------|
@@ -58,6 +58,7 @@ Lattice organizes skills into three tiers, each solving a different problem:
 | **ddd-refiner** | `.ai/standards/ddd-principles.md` -- project-specific DDD guardrails for the domain-driven-design atom |
 | **clean-code-refiner** | `.ai/standards/clean-code.md` -- project-specific coding standards for the clean-code atom |
 | **knowledge-priming-refiner** | `.ai/standards/knowledge-base.md` -- project identity, tech stack, directory layout, and trusted sources |
+| **review-refiner** | `.ai/standards/review-standards.md` -- project-specific review process configuration for the review molecule |
 
 ## The Pipeline
 
@@ -94,7 +95,7 @@ Context anchoring ties sessions together -- the context document created during 
    cd lattice
    ./tools/install.sh /path/to/your-project/skill-folder
    ```
-   This copies all 16 skills (flattened) into `<project>/.claude/skills/` where Claude Code can discover them.
+   This copies all 17 skills (flattened) into `<project>/.claude/skills/` where Claude Code can discover them.
 
 2. **Run `/lattice-init`** (recommended): Guided setup experience -- scans your project, suggests which refiners to run, and creates the `.ai/config.yaml`. This is the fastest path from install to first value.
 
@@ -105,6 +106,7 @@ Context anchoring ties sessions together -- the context document created during 
      /ddd-refiner                # Tailor domain modeling guardrails
      /clean-code-refiner         # Tailor coding standards and thresholds
      /knowledge-priming-refiner  # Capture project identity and tech stack
+     /review-refiner             # Customize the review process (atom loading, severity, report format)
      ```
    - **Edit directly** -- create or modify standards documents in `.ai/standards/` by hand (see [how-it-works](docs/how-it-works.md#customizing-atom-defaults) for the format).
 
@@ -126,6 +128,7 @@ The `.ai/` folder is Lattice's living context layer -- the second half of the ar
 .ai/
 ├── config.yaml      # Central config (only file at root)
 ├── standards/       # Refiner-produced customization docs
+│   └── review-standards.md  # (optional) Review process config
 ├── context/         # Per-feature living documents
 ├── learnings/       # Accumulated review insights (fed back into code-forge)
 └── reviews/         # Review log for project health visibility
