@@ -6,9 +6,9 @@ Composable AI skills that teach assistants structured thinking -- design-first, 
 
 AI coding assistants are fast -- but fast without discipline means jumping straight to code, silently making design decisions, forgetting constraints mid-conversation, and producing output that nobody reviewed against real engineering standards.
 
-Lattice fixes this by embedding battle-tested engineering disciplines -- Clean Architecture, Domain-Driven Design, design-first methodology, secure coding, and more -- directly into AI workflows as composable skills. Not as a post-generation checklist, but as inline thinking that shapes every decision as it happens. Design before code. Validate structure as you build. Enforce domain boundaries while modeling. Carry decisions across sessions so nothing is forgotten.
+Lattice addresses this with two layers working together. The **base framework** embeds battle-tested engineering disciplines -- Clean Architecture, Domain-Driven Design, design-first methodology, secure coding, and more -- as composable skills organized in three tiers (atoms, molecules, refiners). The **living context layer** (the `.ai/` folder) accumulates project-specific standards, feature decisions, review insights, and health trends -- growing richer with every feature cycle.
 
-The result: AI that doesn't just generate code, but thinks holistically -- from design through implementation through review -- following the same principles your best engineers follow, every time.
+The base framework provides the rails: design before code, validate structure as you build, enforce domain boundaries while modeling. The living context layer makes those rails project-specific: your architecture standards, your coding conventions, your accumulated learnings. Together they create AI that self-improves -- after a few cycles, atoms aren't applying generic rules, they're applying *your* rules, informed by *your* history.
 
 ## The Three Tiers
 
@@ -82,6 +82,8 @@ Lattice skills form a design-to-code lifecycle:
 
 **Init** (one-time): `/lattice-init` scans the project and walks through refiner setup. **Design**: `design-blueprint` walks through progressive design levels and persists the approved blueprint. **Implement**: `code-forge` builds inside-out from the blueprint (or from verbal requirements). **Review**: `review` audits the delta, loading only the atoms relevant to what changed.
 
+Each stage both consumes and produces artifacts in `.ai/` -- the pipeline is the engine that grows the living context layer.
+
 Context anchoring ties sessions together -- the context document created during design carries decisions forward into implementation and review.
 
 ## Getting Started
@@ -118,7 +120,7 @@ Atoms also work standalone -- they activate automatically based on what you're d
 
 ### The `.ai/` folder
 
-Lattice stores all project-specific artifacts in `.ai/`:
+The `.ai/` folder is Lattice's living context layer -- the second half of the architecture. It stores all project-specific artifacts that grow with every feature cycle:
 
 ```
 .ai/

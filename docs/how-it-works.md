@@ -12,6 +12,16 @@ Lattice solves three distinct problems, each with its own tier:
 
 Each tier builds on the one below it. Molecules compose atoms. Refiners optionally configure atoms -- atoms work out of the box without them. The separation means atoms stay generic and reusable, molecules stay focused on workflow, and project-specific decisions live in config files -- not hardcoded in skill definitions.
 
+## The Two Layers
+
+The three tiers described above are one half of Lattice -- the **base framework**. Atoms, molecules, and refiners are static, composable engineering skills. They ship with the framework, they encode principles and workflows, and they work the same way on every project. The base framework is the skeleton -- structurally correct, portable, and stable.
+
+The second half is the **living context layer**: the `.ai/` folder. Standards produced by refiners, feature context documents, accumulated review insights, and health logs -- all project-specific, all growing with every feature cycle. The living context layer is the muscle -- it strengthens with use, adapts to the work you do, and makes the base framework increasingly capable.
+
+The two layers interact through a read/write loop. The base framework *reads* from the context layer: atoms load project-specific standards, code-forge loads past learnings, knowledge-priming loads the project's identity. The pipeline *writes* to the context layer: refiners produce standards documents, design-blueprint and code-forge create and enrich context documents, review captures insights and logs health summaries. Each cycle enriches the next.
+
+The payoff compounds over time. After a few feature cycles, atoms aren't applying generic rules -- they're applying *your* rules, informed by *your* review history. Code-forge doesn't repeat mistakes that review already caught. Standards grow more precise as refiners are re-run. Health logs reveal trends across features, not just snapshots. The base framework never changes, but the context layer makes it smarter with every use.
+
 ## Atoms in Depth
 
 ### What they are
@@ -189,7 +199,7 @@ The document lifecycle is: **Create** (new feature) â†’ **Load** (resume work) â
 
 ## The `.ai/` Folder
 
-The `.ai/` folder is the project's AI-specific memory. All persistent artifacts produced by the framework live here, organized into subfolders with distinct lifecycles.
+The `.ai/` folder is the living context layer described earlier -- the project's AI-specific memory that grows with every feature cycle. All persistent artifacts produced by the framework live here, organized into subfolders with distinct lifecycles.
 
 ### Structure
 

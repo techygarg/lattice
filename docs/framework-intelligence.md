@@ -1,6 +1,6 @@
 # Framework Intelligence
 
-Lattice isn't just instructions for AI — it has built-in quality mechanisms that create feedback loops, enforce compliance, and accumulate institutional knowledge. This document explains the thinking patterns behind how Lattice works.
+Lattice has two layers: the **base framework** (static, composable engineering skills) and the **living context layer** (the `.ai/` folder that accumulates standards, decisions, and review insights). This document explains how those two layers interact to create intelligence -- generation and verification passes, feedback loops that connect them, and institutional knowledge that grows with every cycle.
 
 > **Audience**: Framework consumers and contributors who want to understand *why* things are designed this way, not just *what* to do.
 
@@ -53,6 +53,8 @@ Why three levels: Same reason human teams have self-review, then peer review, th
 ---
 
 ## 3. The Learning Flywheel
+
+The flywheel is the central mechanism of the living context layer -- the engine that turns review findings into institutional memory and feeds them back into generation.
 
 **Problem**: Without feedback loops, the same mistakes repeat across features. Review finds "anemic domain models" in Payment, then again in User, then again in Order. Each review starts from zero.
 
@@ -132,6 +134,8 @@ Creative task (generation) and analytical task (validation) in separate passes. 
 
 ## 6. The `.ai/` Folder as Institutional Memory
 
+This is where the living context layer takes physical form -- every subfolder is a different kind of accumulated intelligence that the base framework reads from and writes to.
+
 The `.ai/` folder is the project's AI-specific memory. Each subfolder has a distinct lifecycle:
 
 ```
@@ -196,3 +200,5 @@ How all mechanisms connect across a complete feature lifecycle:
 ```
 
 The key insight: each tool in the pipeline both consumes and produces persistent artifacts. Lattice-init bootstraps the project config and refiner outputs. Design-blueprint produces the context document. Code-forge consumes it and enriches it. Review consumes the code delta and produces learnings and health logs. Those learnings feed back into the next code-forge session. The system improves with every cycle.
+
+This is the dual-layer architecture in action. The base framework -- atoms, molecules, refiners -- never changes between feature cycles. But the living context layer grows richer with each one. Standards become more precise as teams re-run refiners. Learnings capture more patterns as reviews accumulate. Health logs reveal longer trends as the review history deepens. The skeleton stays the same; the muscle gets stronger.
