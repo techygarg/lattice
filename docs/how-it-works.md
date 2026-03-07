@@ -61,11 +61,13 @@ Every code-quality atom supports project-specific customization through the same
 1. Look for `.ai/config.yaml` in the repository root
 2. Check for the atom's config key (e.g., `paths.clean_code`, `paths.clean_architecture`)
 3. If a custom document exists at that path, check its YAML frontmatter for `mode`:
-   - **`mode: overlay`**: Read the atom's embedded defaults first, then apply the custom document's sections on top. Sections are matched by heading -- custom sections replace matching defaults, new sections are appended.
-   - **`mode: override`** (or no mode specified): The custom document takes full precedence. It must be comprehensive.
+   - **`mode: overlay`** (default, recommended): Read the atom's embedded defaults first, then apply the custom document's sections on top. Sections are matched by heading -- custom sections replace matching defaults, new sections are appended. You can also add entirely new sections (e.g., language-specific idioms, team-specific rules) that do not exist in the defaults.
+   - **`mode: override`**: The custom document fully replaces the atom's defaults. Use this when your standards are fundamentally different and you want complete control.
 4. If no config exists, use the atom's embedded `./references/defaults.md`
 
-This means atoms work out of the box with opinionated defaults. Customization is opt-in, not required.
+Atoms work out of the box with opinionated defaults. Customization is opt-in, not required. Most teams use overlay -- the defaults are good starting points, and typically only a few sections need adjustment.
+
+**Two paths to customization**: Run a refiner (guided interview that generates the standards document) or edit the standards document in `.ai/standards/` directly. Both produce the same result: a file the atom picks up through config resolution. Re-run a refiner or edit the file whenever your standards evolve.
 
 ## Molecules in Depth
 
@@ -122,7 +124,7 @@ A structured, delta-scoped code review that loads atoms conditionally based on w
 
 **Composes**: knowledge-priming (always), clean-code (always), clean-architecture (conditional), domain-driven-design (conditional), secure-coding (conditional), test-quality (conditional)
 
-**Config**: Optionally reads `.ai/standards/review-standards.md` (produced by the review-refiner or written by hand) to customize atom loading rules, severity classification, report format, scope rules, insight capture, and health logging. When no review-standards document exists, all defaults apply — identical behavior to a review without config.
+**Config**: Optionally reads `.ai/standards/review-standards.md` (produced by the review-refiner or written by hand) to customize atom loading rules, severity classification, report format, scope rules, insight capture, and health logging. When no review-standards document exists, all defaults apply — identical behavior to a review without config. The boundary: if it changes *what an atom checks for*, it belongs in that atom's refiner; if it changes *how the review process works*, it belongs in the review-refiner.
 
 **How it works**:
 1. **Identify the delta**: Determines the set of changed files (PR, commit, or specified files).
@@ -131,84 +133,30 @@ A structured, delta-scoped code review that loads atoms conditionally based on w
 4. **Produce report**: Findings are severity-ordered (critical → warning → suggestion) with specific file locations and concrete fixes. Summary mode by default; full mode on request. Every review ends with a "what's done well" observation.
 5. **Capture insights and log**: Appends recurring patterns to `.ai/learnings/review-insights.md` (fed back into code-forge's next session) and logs a structured summary to `.ai/reviews/review-log.md` (project health visibility).
 
-## Customizing the Review Process
-
-The review molecule is the first molecule to support config resolution. While atom refiners customize *what atoms check for*, the review-refiner customizes *how the review process works* — a molecule-level concern.
-
-The review-refiner produces `.ai/standards/review-standards.md`, which the review molecule reads through the same overlay/override mechanism atoms use. The document has 7 sections covering atom loading policy, severity classification, report preferences, scope rules, insight capture preferences, health log preferences, and custom review dimensions.
-
-This is entirely optional. Without a review-standards document, the review molecule uses its embedded defaults — identical to how atoms work without atom-level config. The boundary is clear: if it changes what an atom checks for, it belongs in that atom's refiner. If it changes how the review process uses atom output, it belongs in the review-refiner.
-
-## Customizing Atom Defaults
-
-Every atom ships with opinionated defaults (in `./references/defaults.md`) that work out of the box. Customization is entirely optional -- you only need it when your project's standards differ from the defaults.
-
-### Two paths to customization
-
-When you do want to customize, you have two equivalent paths:
-
-1. **Run a refiner** -- a guided interview that asks about your standards and generates the standards document for you. Useful when you are not sure what to change or want a structured walkthrough.
-2. **Edit the standards document directly** -- create or modify the file in `.ai/standards/` by hand. Useful when you know exactly what you want to change.
-
-Both paths produce the same result: a standards document in `.ai/standards/` that the atom picks up through its config resolution mechanism (via `paths` in `.ai/config.yaml`). There is no difference in how the atom consumes the file regardless of how it was created.
-
-### Overlay, override, and adding new sections
-
-The config file's YAML frontmatter controls how the atom uses it:
-
-- **Overlay** (default, recommended): The atom reads its embedded defaults first, then applies the custom document's sections on top. Only include sections you want to change or add -- everything else stays at defaults. You can also add entirely new sections (e.g., language-specific idioms, team-specific rules) that do not exist in the defaults.
-- **Override**: The custom document fully replaces the atom's defaults. Use this when your standards are fundamentally different and you want complete control.
-
-Most teams use overlay -- the defaults are good starting points, and typically only a few sections need adjustment.
-
-### When to customize
-
-Customization is not a one-time setup task. You might customize when:
-
-- Starting a new project and your team's standards differ from the defaults
-- Adopting a new pattern or convention mid-project
-- Tightening or relaxing thresholds as the codebase matures
-- Adding project-specific rules that the defaults do not cover
-
-Re-run a refiner or edit the standards document whenever your standards evolve.
-
-### What each refiner produces
-
-| Refiner | Output file | Target atom | What it captures |
-|---------|------------|-------------|-----------------|
-| **architecture-refiner** | `.ai/standards/clean-architecture.md` | clean-architecture | Layer definitions, dependency rules, command/query flow patterns, service patterns |
-| **ddd-refiner** | `.ai/standards/ddd-principles.md` | domain-driven-design | Aggregate design rules, entity/value object patterns, domain event conventions, repository patterns |
-| **clean-code-refiner** | `.ai/standards/clean-code.md` | clean-code | Function size thresholds, complexity limits, naming conventions, error handling strategy |
-| **knowledge-priming-refiner** | `.ai/standards/knowledge-base.md` | knowledge-priming | Architecture overview, tech stack with versions, trusted doc sources, project structure, conventions |
-| **review-refiner** | `.ai/standards/review-standards.md` | review (molecule) | Atom loading policy, severity classification, report format, scope rules, insight capture, health log format, custom review dimensions |
-
-The knowledge-priming-refiner completes the atom-level pattern -- like the other atom refiners, its output is consumed by a matching atom (knowledge-priming) through config resolution. The knowledge-priming atom loads the document and makes it available as ambient project context for all skills and molecules.
-
-The review-refiner introduces a new pattern -- molecule-level config. Its output is consumed by the review molecule (not an atom), configuring how the review *process* works rather than what individual atoms check for. This establishes a path for future molecule customization if needed.
+See the [refiner inventory](../README.md#refiners-5) for what each refiner produces and which atom or molecule each one targets.
 
 ## The Design-to-Code Pipeline
 
-### Customize (optional)
+```
+  lattice-init          design-blueprint             code-forge                review
+  ─────────────────     ─────────────────            ─────────────────         ─────────────────
+  Guided setup          Design before coding         Implement from blueprint  Audit the delta
+  ┌─────────────────┐   ┌─────────────────┐          ┌─────────────────┐       ┌─────────────────┐
+  │ Scan project    │   │ Level 1: Caps   │          │ Plan layers     │       │ Classify delta  │
+  │ Detect config   │   │ Level 2: Comps  │          │ Inside-out build│       │ Load atoms      │
+  │ Suggest refiners│──▶│ Level 3: Flow   │──────▶   │ Code + tests    │──────▶│ Run checklists  │
+  │ Create .ai/     │   │ Level 4: API    │          │ Cross-component │       │ Severity report  │
+  │ config          │   │                 │          │ verify          │       │                 │
+  │                 │   │ Approved        │          │                 │       │                 │
+  │                 │   │ Blueprint       │          │                 │       │                 │
+  └─────────────────┘   └─────────────────┘          └─────────────────┘       └─────────────────┘
+  One-time project      Persists to context doc      Honors blueprint          Conditional atoms
+  setup
+```
 
-If your project's standards differ from the atom defaults, tailor them by running a refiner or editing the standards documents in `.ai/standards/` directly. Atoms work out of the box without this step. Come back and customize whenever your standards evolve.
+Each stage both consumes and produces artifacts in `.ai/` -- the pipeline is the engine that grows the living context layer. Context anchoring ties the stages together: the context document created during design carries the approved blueprint into implementation, captures decisions that inform review, and restores full context in any future session.
 
-### Design
-
-Invoke `design-blueprint` to create an approved blueprint for a feature. The molecule walks through progressive design levels, applying architectural and domain modeling atoms at each level. Every approved level is persisted to a context anchor document -- the blueprint is durable, not ephemeral.
-
-### Implement
-
-Invoke `code-forge` to build from the blueprint. The molecule loads the context document, plans an inside-out implementation order, and generates code with tests. Each component gets exactly the atom guardrails it needs based on its layer and purpose. Implementation decisions are captured back into the context document.
-
-### Review
-
-Invoke `review` to audit the delta. The molecule classifies what changed, loads only the relevant atoms, and runs targeted validation. Findings are severity-ordered with specific locations and fixes.
-
-### Context anchoring ties it together
-
-The context anchor document is the thread that connects these stages. Created during design, it carries the approved blueprint into implementation. Enriched during implementation, it captures decisions that inform review. Loaded in any future session, it restores the full context of what was decided and why.
-
-The document lifecycle is: **Create** (new feature) → **Load** (resume work) → **Enrich** (capture decisions). All three behaviors require explicit user confirmation -- the AI proposes, the user disposes.
+The context document lifecycle is: **Create** (new feature) → **Load** (resume work) → **Enrich** (capture decisions). All three behaviors require explicit user confirmation -- the AI proposes, the user disposes.
 
 ## The `.ai/` Folder
 

@@ -4,21 +4,11 @@ Composable AI skills that teach assistants structured thinking -- design-first, 
 
 ## What is Lattice?
 
-AI coding assistants are fast -- but fast without discipline means jumping straight to code, silently making design decisions, forgetting constraints mid-conversation, and producing output that nobody reviewed against real engineering standards.
-
-Lattice addresses this with two layers working together. The **base framework** embeds battle-tested engineering disciplines -- Clean Architecture, Domain-Driven Design, design-first methodology, secure coding, and more -- as composable skills organized in three tiers (atoms, molecules, refiners). The **living context layer** (the `.ai/` folder) accumulates project-specific standards, feature decisions, review insights, and health trends -- growing richer with every feature cycle.
-
-The base framework provides the rails: design before code, validate structure as you build, enforce domain boundaries while modeling. The living context layer makes those rails project-specific: your architecture standards, your coding conventions, your accumulated learnings. Together they create AI that self-improves -- after a few cycles, atoms aren't applying generic rules, they're applying *your* rules, informed by *your* history.
+AI coding assistants jump straight to code, silently make design decisions, forget constraints mid-conversation, and produce output nobody reviewed against real engineering standards. Lattice fixes this with composable skills in [three tiers](#the-three-tiers) -- atoms, molecules, refiners -- that embed battle-tested engineering disciplines (Clean Architecture, DDD, design-first methodology, secure coding, and more), plus a [living context layer](docs/how-it-works.md#the-two-layers) (the `.ai/` folder) that accumulates your project's standards, decisions, and review insights. The system gets smarter with use -- after a few feature cycles, atoms aren't applying generic rules, they're applying *your* rules, informed by *your* history.
 
 ## The Three Tiers
 
-Lattice organizes skills into three tiers, each solving a different problem:
-
-**Atoms** are single-principle guardrails. Each atom teaches one discipline -- clean code, secure coding, DDD -- and applies its validation checks inline during generation. Atoms are the building blocks that molecules compose.
-
-**Molecules** are multi-step workflows that compose atoms into end-to-end processes. A molecule orchestrates which atoms apply, when, and in what order -- so you get design-first thinking, architectural validation, and code quality checks without manually invoking each one.
-
-**Refiners** are optional. Every atom ships with sensible defaults that work out of the box. If you want to tailor those defaults -- enhance a section, adjust thresholds, or add project-specific rules -- refiners guide you through it via a structured interview, producing `.ai/` config files that atoms pick up automatically. You can also edit those config files directly. Refiners are a convenience, not a requirement.
+Lattice organizes skills into three tiers. See [how-it-works](docs/how-it-works.md#how-atoms-molecules-and-refiners-differ) for detailed comparison.
 
 |               | Purpose                              | Standalone? | Composes others? | Produces artifacts?         |
 |---------------|--------------------------------------|-------------|------------------|-----------------------------|
@@ -62,30 +52,7 @@ Lattice organizes skills into three tiers, each solving a different problem:
 
 ## The Pipeline
 
-Lattice skills form a design-to-code lifecycle:
-
-```
-  lattice-init          design-blueprint             code-forge                review
-  ─────────────────     ─────────────────            ─────────────────         ─────────────────
-  Guided setup          Design before coding         Implement from blueprint  Audit the delta
-  ┌─────────────────┐   ┌─────────────────┐          ┌─────────────────┐       ┌─────────────────┐
-  │ Scan project    │   │ Level 1: Caps   │          │ Plan layers     │       │ Classify delta  │
-  │ Detect config   │   │ Level 2: Comps  │          │ Inside-out build│       │ Load atoms      │
-  │ Suggest refiners│──▶│ Level 3: Flow   │──────▶   │ Code + tests    │──────▶│ Run checklists  │
-  │ Create .ai/     │   │ Level 4: API    │          │ Cross-component │       │ Severity report  │
-  │ config          │   │                 │          │ verify          │       │                 │
-  │                 │   │ Approved        │          │                 │       │                 │
-  │                 │   │ Blueprint       │          │                 │       │                 │
-  └─────────────────┘   └─────────────────┘          └─────────────────┘       └─────────────────┘
-  One-time project      Persists to context doc      Honors blueprint          Conditional atoms
-  setup
-```
-
-**Init** (one-time): `/lattice-init` scans the project and walks through refiner setup. **Design**: `design-blueprint` walks through progressive design levels and persists the approved blueprint. **Implement**: `code-forge` builds inside-out from the blueprint (or from verbal requirements). **Review**: `review` audits the delta, loading only the atoms relevant to what changed.
-
-Each stage both consumes and produces artifacts in `.ai/` -- the pipeline is the engine that grows the living context layer.
-
-Context anchoring ties sessions together -- the context document created during design carries decisions forward into implementation and review.
+Skills form a design-to-code lifecycle: **lattice-init** → **design-blueprint** → **code-forge** → **review**. Each stage consumes and produces artifacts in `.ai/`, growing the living context layer. See [how-it-works](docs/how-it-works.md#the-design-to-code-pipeline) for the detailed flow.
 
 ## Getting Started
 
@@ -108,7 +75,7 @@ Context anchoring ties sessions together -- the context document created during 
      /knowledge-priming-refiner  # Capture project identity and tech stack
      /review-refiner             # Customize the review process (atom loading, severity, report format)
      ```
-   - **Edit directly** -- create or modify standards documents in `.ai/standards/` by hand (see [how-it-works](docs/how-it-works.md#customizing-atom-defaults) for the format).
+   - **Edit directly** -- create or modify standards documents in `.ai/standards/` by hand (see [how-it-works](docs/how-it-works.md#config-resolution) for the format).
 
    Refiners support enhancing specific sections (overlay mode), adding new sections, or replacing defaults entirely (override mode). Re-run a refiner or edit the config file whenever your standards evolve.
 
@@ -117,8 +84,6 @@ Context anchoring ties sessions together -- the context document created during 
 5. **Implement**: Invoke `/code-forge` to generate implementation from the approved blueprint.
 
 6. **Review**: Invoke `/review` to audit code changes against the relevant quality atoms.
-
-Atoms also work standalone -- they activate automatically based on what you're doing (writing domain code triggers DDD, handling user input triggers secure-coding, etc.).
 
 ### The `.ai/` folder
 
@@ -138,7 +103,8 @@ All persistent outputs go into subfolders — never `.ai/` root except `config.y
 
 ## Learn More
 
-See [docs/how-it-works.md](docs/how-it-works.md) for the conceptual deep dive -- how atoms compose, how config resolution works, and how the tiers differ.
+- [How It Works](docs/how-it-works.md) -- how atoms compose, config resolution, the pipeline, and tier comparison
+- [Framework Intelligence](docs/framework-intelligence.md) -- why things are designed this way: verification passes, feedback loops, AI compliance techniques
 
 ## License
 

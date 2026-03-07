@@ -1,6 +1,6 @@
 # Framework Intelligence
 
-Lattice has two layers: the **base framework** (static, composable engineering skills) and the **living context layer** (the `.ai/` folder that accumulates standards, decisions, and review insights). This document explains how those two layers interact to create intelligence -- generation and verification passes, feedback loops that connect them, and institutional knowledge that grows with every cycle.
+How Lattice's base framework and living context layer create intelligence through feedback loops, verification passes, and AI compliance techniques.
 
 > **Audience**: Framework consumers and contributors who want to understand *why* things are designed this way, not just *what* to do.
 
@@ -134,71 +134,12 @@ Creative task (generation) and analytical task (validation) in separate passes. 
 
 ## 6. The `.ai/` Folder as Institutional Memory
 
-This is where the living context layer takes physical form -- every subfolder is a different kind of accumulated intelligence that the base framework reads from and writes to.
-
-The `.ai/` folder is the project's AI-specific memory. Each subfolder has a distinct lifecycle:
-
-```
-.ai/
-├── config.yaml        ← Central config (only file at root)
-├── standards/          ← Refiner-produced customization docs
-│   ├── knowledge-base.md
-│   ├── clean-code.md
-│   ├── clean-architecture.md
-│   └── ddd-principles.md
-├── context/            ← Per-feature living documents
-│   └── <feature>.md
-├── learnings/          ← Accumulated review insights
-│   └── review-insights.md
-└── reviews/            ← Review log for project health
-    └── review-log.md
-```
-
-| Subfolder | Lifecycle | Frequency |
-|-----------|-----------|-----------|
-| `standards/` | Stable — set once during project setup, rarely changed | Once per project |
-| `context/` | Per-feature — created when feature starts, enriched during design and implementation | Per feature |
-| `learnings/` | Accumulated — appended by review, pruned when over ~50 entries | Append-only with pruning |
-| `reviews/` | Rolling window — appended by review, older entries summarized when over 15-20 | Append with rolloff |
-
-**Rule**: All persistent artifacts go into subfolders. Never place files directly in `.ai/` root except `config.yaml`.
+The `.ai/` folder is where the living context layer takes physical form -- standards, context documents, learnings, and health logs, each with a distinct lifecycle. See [how-it-works: The .ai/ Folder](how-it-works.md#the-ai-folder) for the folder structure and lifecycle details.
 
 ---
 
 ## 7. End-to-End Flow
 
-How all mechanisms connect across a complete feature lifecycle:
+Each tool in the pipeline both consumes and produces persistent artifacts -- this is the compounding cycle that makes Lattice improve with use. Design-blueprint produces the context document; code-forge consumes and enriches it; review produces learnings and health logs; those learnings feed back into the next code-forge session. The base framework never changes between feature cycles, but the living context layer grows richer with each one -- standards become more precise, learnings capture more patterns, health logs reveal longer trends.
 
-```
-┌─────────────────┐
-│  lattice-init   │  One-time: scans project, suggests refiners,
-│                 │  creates .ai/config.yaml
-└────────┬────────┘
-         ↓
-┌─────────────────┐
-│ design-blueprint │  Produces: context document + component plan
-└────────┬────────┘
-         ↓
-┌─────────────────┐  Loads: context + learnings + atom standards
-│   code-forge    │  For each component:
-│                 │    Generate → Verify (Level 1) → Present
-│                 │  After all components:
-│                 │    Cross-Component Verify (Level 2)
-│                 │  Enriches: context document
-│                 │  Recommends: /review
-└────────┬────────┘
-         ↓
-┌─────────────────┐  Checks: delta against atom rules
-│     review      │  Produces: report to user
-│                 │  Captures: insights → .ai/learnings/
-│                 │  Logs: summary → .ai/reviews/
-└────────┬────────┘
-         ↓
-    ┌────────────┐
-    │  FLYWHEEL  │  Learnings feed back into next code-forge session
-    └────────────┘
-```
-
-The key insight: each tool in the pipeline both consumes and produces persistent artifacts. Lattice-init bootstraps the project config and refiner outputs. Design-blueprint produces the context document. Code-forge consumes it and enriches it. Review consumes the code delta and produces learnings and health logs. Those learnings feed back into the next code-forge session. The system improves with every cycle.
-
-This is the dual-layer architecture in action. The base framework -- atoms, molecules, refiners -- never changes between feature cycles. But the living context layer grows richer with each one. Standards become more precise as teams re-run refiners. Learnings capture more patterns as reviews accumulate. Health logs reveal longer trends as the review history deepens. The skeleton stays the same; the muscle gets stronger.
+See [how-it-works: The Pipeline](how-it-works.md#the-design-to-code-pipeline) for the detailed stage-by-stage flow.
