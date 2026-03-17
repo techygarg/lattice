@@ -40,6 +40,7 @@ Not every atom applies to every piece of code. The distinction matters for both 
 - **clean-code** -- Every piece of code benefits from SRP, clear naming, managed complexity, and proper error handling.
 - **clean-architecture** -- Every file lives in a layer, and every dependency has a direction. Structural rules apply universally.
 - **knowledge-priming** -- Project context (tech stack, architecture, conventions) is always relevant. Without it, the AI defaults to generic assumptions.
+- **collaborative-judgment** -- Genuine judgment calls should be surfaced with options, not silently resolved. Composed by molecules alongside other atoms.
 
 **Conditionally apply:**
 - **domain-driven-design** -- Only when touching domain layer code. A controller or infrastructure adapter does not need aggregate boundary checks.
@@ -48,11 +49,12 @@ Not every atom applies to every piece of code. The distinction matters for both 
 
 ### The special ones
 
-Three atoms serve different purposes than the code-quality atoms:
+Four atoms serve different purposes than the code-quality atoms:
 
 - **knowledge-priming** is a context atom. It loads the project's identity -- tech stack, architecture overview, directory layout, trusted sources, and conventions -- so that all other skills operate with awareness of what the project actually is. Without it, the AI defaults to "the average of the internet." Unlike quality atoms, it has no embedded defaults -- every project's identity is unique. The knowledge base document is created by the `knowledge-priming-refiner` or written by hand.
 - **design-first** is a methodology atom, not a code quality atom. It guides structured thinking through 5 progressive levels (Capabilities → Components → Interactions → Contracts → Implementation) before any code is written. It prevents the AI from jumping straight to implementation.
 - **context-anchoring** is a persistence mechanism. It manages per-feature living documents that capture decisions, constraints, and reasoning across sessions. It solves the problem of AI context decay -- by message 30+, early decisions get contradicted unless they are written down.
+- **collaborative-judgment** is an ambiguity protocol. It ensures the AI surfaces genuine judgment calls with structured options instead of silently assuming. Each code-quality atom defines its own Ambiguity Signals (domain-specific gray areas); this atom defines how to present, batch, and resolve them. It becomes less active as the project's standards grow more specific. See [docs/collaborative-judgment.md](collaborative-judgment.md) for the full design rationale.
 
 ### Config resolution
 
@@ -93,7 +95,7 @@ Run once per project. If Lattice is already fully configured, acknowledges it an
 
 A complete design workflow that produces an approved blueprint before any code is written.
 
-**Composes**: knowledge-priming, context-anchoring, design-first, clean-architecture, domain-driven-design
+**Composes**: knowledge-priming, context-anchoring, collaborative-judgment, design-first, clean-architecture, domain-driven-design
 
 **How it works**:
 1. **Establish context**: Uses context-anchoring to create or load the feature's living document.
@@ -107,7 +109,7 @@ The blueprint stops at Level 4 (Contracts). It does not proceed to Level 5 (Impl
 
 Generates implementation from an approved blueprint or verbal requirements.
 
-**Composes**: knowledge-priming (always), context-anchoring (always), clean-architecture (always), clean-code (always), domain-driven-design (conditional: domain layer), secure-coding (conditional: trust boundaries), test-quality (always when writing tests)
+**Composes**: knowledge-priming (always), context-anchoring (always), collaborative-judgment (always), clean-architecture (always), clean-code (always), domain-driven-design (conditional: domain layer), secure-coding (conditional: trust boundaries), test-quality (always when writing tests)
 
 **How it works**:
 1. **Load context**: Loads learnings from `.ai/learnings/review-insights.md` (if they exist) to avoid repeating past mistakes. Uses context-anchoring to find and load the feature's blueprint. If none exists, works from verbal requirements -- all atom guardrails still apply.
@@ -122,7 +124,7 @@ The user chooses a review mode: layer-by-layer (recommended), full autonomy, or 
 
 A structured, delta-scoped code review that loads atoms conditionally based on what changed. Supports optional process configuration via the review-refiner.
 
-**Composes**: knowledge-priming (always), clean-code (always), clean-architecture (conditional), domain-driven-design (conditional), secure-coding (conditional), test-quality (conditional)
+**Composes**: knowledge-priming (always), collaborative-judgment (always), clean-code (always), clean-architecture (conditional), domain-driven-design (conditional), secure-coding (conditional), test-quality (conditional)
 
 **Config**: Optionally reads `.ai/standards/review-standards.md` (produced by the review-refiner or written by hand) to customize atom loading rules, severity classification, report format, scope rules, insight capture, and health logging. When no review-standards document exists, all defaults apply — identical behavior to a review without config. The boundary: if it changes *what an atom checks for*, it belongs in that atom's refiner; if it changes *how the review process works*, it belongs in the review-refiner.
 

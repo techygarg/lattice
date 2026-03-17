@@ -10,11 +10,12 @@ description: "Perform a structured code review by composing validation checklist
 Load and apply these skills based on the scope of the review (see Step 2 for conditional loading):
 
 1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) to evaluate changes against real project standards (always loaded)
-2. `framework:clean-code` -- Code craft validation: SRP, naming, complexity, error handling (always loaded)
-3. `framework:clean-architecture` -- Structural validation: layer rules, dependency direction, command/query flows (conditional)
-4. `framework:domain-driven-design` -- Domain modeling validation: aggregates, entities, value objects (conditional)
-5. `framework:secure-coding` -- Security validation: trust boundaries, injection, secrets, input handling (conditional)
-6. `framework:test-quality` -- Test validation: AAA structure, isolation, assertions, naming (conditional)
+2. `framework:collaborative-judgment` -- Surface borderline findings with both interpretations instead of silently classifying (always loaded)
+3. `framework:clean-code` -- Code craft validation: SRP, naming, complexity, error handling (always loaded)
+4. `framework:clean-architecture` -- Structural validation: layer rules, dependency direction, command/query flows (conditional)
+5. `framework:domain-driven-design` -- Domain modeling validation: aggregates, entities, value objects (conditional)
+6. `framework:secure-coding` -- Security validation: trust boundaries, injection, secrets, input handling (conditional)
+7. `framework:test-quality` -- Test validation: AAA structure, isolation, assertions, naming (conditional)
 
 ## Config Resolution
 
@@ -130,6 +131,8 @@ Severity levels:
 - **critical** -- Will cause bugs, security vulnerabilities, or data loss. Must fix.
 - **warning** -- Violates a principle and will cause maintenance pain. Should fix.
 - **suggestion** -- Could be improved but works correctly as-is. Consider fixing.
+
+When a finding is borderline between severity levels, use `framework:collaborative-judgment` — note the uncertainty inline with both interpretations rather than silently classifying.
 
 End with a **"What's done well"** sentence highlighting something positive about the delta -- good naming, proper error handling, clean test structure, correct layer placement. Every review should acknowledge what's working, not just what's broken.
 

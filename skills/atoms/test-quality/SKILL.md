@@ -114,7 +114,7 @@ See `./references/defaults.md` for test pyramid distribution guidance.
 
 ## Self-Validation During Code Generation
 
-When generating test code, apply these checks as you write -- not as a post-generation review, but as an inline discipline:
+When generating test code, apply these checks as you write -- not as a post-generation review, but as an inline discipline. If any check clearly fails, fix it. If a check is a judgment call with multiple valid approaches (see Ambiguity Signals), flag it — present your options and reasoning rather than silently choosing.
 
 1. **Check AAA structure**: Are arrange, act, and assert phases clearly separated with blank lines? Is there logic in arrange or assert?
 2. **Verify one behavior per test**: Does this test verify a single behavior? Could the test name describe it without "and"?
@@ -138,6 +138,14 @@ Common test quality violations and their fixes. See `./references/defaults.md` f
 | **Slow Tests by Default** | Unit test suite takes minutes because tests hit the database, network, or filesystem | Mock or fake I/O at boundaries; push tests down the pyramid; use in-memory alternatives |
 | **Conditional Test Logic** | Tests contain if/else, loops, or try/catch -- tests are programs that need their own tests | Remove logic from tests; use parameterized tests for multiple inputs; let assertions fail naturally |
 | **Copy-Paste Tests** | Near-identical tests with minor variations; changing one pattern requires changing twenty tests | Extract shared setup into builders/factories; use parameterized tests for input variations |
+
+## Ambiguity Signals
+
+These checks often have multiple valid outcomes. When you encounter one, present options rather than silently choosing.
+
+- **Unit vs Integration**: A service that coordinates two components could be tested in isolation (mocking dependencies) or with real collaborators. The choice depends on how tightly coupled the components are and what the test is verifying.
+- **Mock Depth**: Whether to mock the direct dependency or let it call through to its own dependencies. Over-mocking tests implementation; under-mocking creates slow, flaky tests.
+- **Test Granularity**: One test with multiple related assertions vs multiple tests with one assertion each. When assertions verify facets of the same behavior, grouping is reasonable.
 
 ## Validation Checklist
 

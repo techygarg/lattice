@@ -25,7 +25,7 @@ specific standards that differ from the defaults.
 
 ## Self-Validation Checklist
 
-STOP after generating each component. Verify ALL of the following before proceeding. If any check fails, fix the code before presenting it.
+STOP after generating each component. Verify ALL of the following before proceeding. If any check clearly fails, fix the code before presenting it. If a check is a judgment call with multiple valid approaches (see Ambiguity Signals), flag it — present your options and reasoning rather than silently choosing.
 
 1. **SINGLE RESPONSIBILITY**: Can you describe each function's purpose without the word "and"? If not → extract into separate functions.
 2. **SIZE**: Is each function under ~20 lines? If not → extract sub-operations into named functions.
@@ -51,6 +51,15 @@ After verifying the checklist above, scan your output for these specific anti-pa
 - [ ] **Comments as Deodorant**: Comments explaining convoluted code → refactor the code to be self-documenting
 - [ ] **Hidden Side Effects**: Function named `getX` that also writes to cache or sends notification → rename or separate
 - [ ] **Dead Code**: Commented-out blocks, unused imports, unreachable branches → delete (version control preserves history)
+
+## Ambiguity Signals
+
+These checks often have multiple valid outcomes. When you encounter one, present options rather than silently choosing.
+
+- **Single Responsibility**: Two tightly-coupled sequential operations may be one responsibility (a pipeline), not two. The "and" test catches both true violations and false positives.
+- **Function Size**: A 25-line function with one clear purpose may be better than five unclear 5-line functions. Near-threshold cases are judgment calls.
+- **DRY vs Premature Abstraction**: Two identical blocks may serve different business purposes and diverge later. Until the third instance with the same reason to change, this is genuinely ambiguous.
+- **Error Handling Strategy**: Exceptions vs Result types vs error codes depends on language idioms and team convention, not a universal rule.
 
 ## Core Principle
 

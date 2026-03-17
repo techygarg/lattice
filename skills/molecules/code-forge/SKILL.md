@@ -11,11 +11,12 @@ Read and apply these skills:
 
 1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) so implementation matches the real project (always)
 2. `framework:context-anchoring` -- Load or discover an existing context anchor document; enrich it as implementation decisions are made (always)
-3. `framework:clean-architecture` -- Layer placement, dependency direction, command/query flow classification (always)
-4. `framework:clean-code` -- Code craft guardrails: SRP, naming, complexity, error handling (always)
-5. `framework:domain-driven-design` -- Aggregates, entities, value objects, domain services (conditional: only when touching domain folder)
-6. `framework:secure-coding` -- Trust boundaries, injection prevention, secrets management (conditional: only for boundary-crossing code)
-7. `framework:test-quality` -- AAA structure, isolation, assertion quality, naming (always when writing tests)
+3. `framework:collaborative-judgment` -- Surface genuine judgment calls with structured options instead of silently assuming (always)
+4. `framework:clean-architecture` -- Layer placement, dependency direction, command/query flow classification (always)
+5. `framework:clean-code` -- Code craft guardrails: SRP, naming, complexity, error handling (always)
+6. `framework:domain-driven-design` -- Aggregates, entities, value objects, domain services (conditional: only when touching domain folder)
+7. `framework:secure-coding` -- Trust boundaries, injection prevention, secrets management (conditional: only for boundary-crossing code)
+8. `framework:test-quality` -- AAA structure, isolation, assertion quality, naming (always when writing tests)
 
 ## Workflow
 
@@ -90,7 +91,8 @@ After generating each component and before presenting it to the user:
 1. Run the **Self-Validation Checklist** from each applicable atom against every function/class in this component. The atoms use imperative STOP-and-verify language -- follow it literally.
 2. Run the **Active Anti-Pattern Scan** from each applicable atom. Check every box in the scan list.
 3. If violations are found → fix them before presenting. Do not present code you know violates an atom checklist.
-4. If all checks pass → present with a brief compliance note (e.g., "All clean-code and DDD checks pass"). Keep it to one line when clean -- only be verbose when reporting violations and fixes.
+4. If judgment calls are flagged (see each atom's Ambiguity Signals) → collect them. Present using `framework:collaborative-judgment` protocol before showing the code. Do not silently resolve.
+5. If all checks pass with no flagged judgment calls → present with a brief compliance note (e.g., "All clean-code and DDD checks pass"). Keep it to one line when clean -- only be verbose when reporting violations and fixes.
 
 <!-- AI reasoning: This is the two-pass model -- generate first (creative task), then verify (analytical task). Separating these tasks produces more reliable compliance than trying to do both simultaneously. The atoms' Self-Validation Checklists are written with STOP language specifically for this checkpoint. -->
 

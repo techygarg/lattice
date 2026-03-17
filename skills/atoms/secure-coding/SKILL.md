@@ -25,7 +25,7 @@ specific standards that differ from the defaults.
 
 ## Self-Validation Checklist
 
-STOP after generating each component. Verify ALL of the following before proceeding. If any check fails, fix the code before presenting it.
+STOP after generating each component. Verify ALL of the following before proceeding. If any check clearly fails, fix the code before presenting it. If a check is a judgment call with multiple valid approaches (see Ambiguity Signals), flag it — present your options and reasoning rather than silently choosing.
 
 1. **TRUST BOUNDARIES**: Where does trusted code meet untrusted data? Are all boundaries explicitly identified?
 2. **INPUT VALIDATION**: Is every external input validated at the boundary with allowlists before reaching business logic?
@@ -48,6 +48,14 @@ After verifying the checklist above, scan your output for these specific anti-pa
 - [ ] **Unvalidated Redirects**: User-controlled URLs used in redirects → allowlist permitted destinations
 - [ ] **Verbose Error Messages**: Stack traces or SQL in API responses → return generic messages, log details server-side
 - [ ] **Logging Sensitive Data**: Passwords, tokens, or PII in log files → log events, not values; mask sensitive fields
+
+## Ambiguity Signals
+
+These checks often have multiple valid outcomes. When you encounter one, present options rather than silently choosing.
+
+- **Trust Boundary Scope**: An internal API behind a trusted gateway may or may not need full boundary validation. The answer depends on the deployment topology and threat model.
+- **Error Message Detail**: How much information is "actionable but safe" depends on whether the consumer is a human user, a frontend client, or an internal service.
+- **Validation Depth**: Whether to re-validate data at inner layers (defense-in-depth) or trust the boundary validation depends on the risk profile and performance requirements.
 
 ## Core Principle
 
