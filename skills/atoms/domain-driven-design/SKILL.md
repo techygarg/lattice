@@ -25,7 +25,7 @@ specific standards that differ from the defaults.
 
 ## Self-Validation Checklist
 
-STOP after generating each component. Verify ALL of the following before proceeding. If any check fails, fix the code before presenting it.
+STOP after generating each component. Verify ALL of the following before proceeding. If any check clearly fails, fix the code before presenting it. If a check is a judgment call with multiple valid approaches (see Ambiguity Signals), flag it — present your options and reasoning rather than silently choosing.
 
 1. **ENTITY VS VALUE OBJECT**: For each domain object — does the business track individual instances over time? Yes → entity with identity. No → value object with immutability and self-validation.
 2. **AGGREGATE BOUNDARY**: Does a transactional invariant require this object inside the aggregate? If not → separate aggregate referenced by ID.
@@ -44,6 +44,14 @@ After verifying the checklist above, scan your output for these specific anti-pa
 - [ ] **Cross-Aggregate Transaction**: Service updates two aggregates in one transaction → use domain events for eventual consistency
 - [ ] **Leaking Domain Logic**: Business rules in controllers, application services, or infrastructure → extract to domain objects or domain services
 - [ ] **Misidentified Entity/Value Object**: Entity without lifecycle, or value object with identity tracking → apply the identity test
+
+## Ambiguity Signals
+
+These checks often have multiple valid outcomes. When you encounter one, present options rather than silently choosing.
+
+- **Aggregate Boundary Size**: Smaller aggregates (more events, eventual consistency) vs larger aggregates (simpler transactions, immediate consistency). Neither is inherently correct — it depends on contention patterns and invariant scope.
+- **Entity vs Value Object**: Some concepts (like `Address` or `Money`) may or may not need identity depending on the domain's complexity. Apply the identity test, but acknowledge when it's borderline.
+- **Domain Service vs Entity Method**: Logic that spans multiple entities could live in a domain service or be a method on the primary entity. The choice depends on which entity "owns" the invariant.
 
 ## Scope Statement
 

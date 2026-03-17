@@ -25,7 +25,7 @@ specific standards that differ from the defaults.
 
 ## Self-Validation Checklist
 
-STOP after generating each component. Verify ALL of the following before proceeding. If any check fails, fix the code before presenting it.
+STOP after generating each component. Verify ALL of the following before proceeding. If any check clearly fails, fix the code before presenting it. If a check is a judgment call with multiple valid approaches (see Ambiguity Signals), flag it — present your options and reasoning rather than silently choosing.
 
 1. **OPERATION TYPE**: Is this a state-changing operation (command) or read operation (query)? Determine FIRST — it dictates the entire flow.
 2. **COMMAND FLOW**: For state-changing operations — does data flow through domain before reaching Repository? Are domain invariants enforced before persistence?
@@ -45,6 +45,14 @@ After verifying the checklist above, scan your output for these specific anti-pa
 - [ ] **God Classes**: Single class changes for every kind of requirement → decompose into focused classes per layer
 - [ ] **Anemic Architecture**: Layers exist in folders but dependency rule is not enforced → verify imports, add interfaces
 - [ ] **Leaking Data Formats**: Database schema change breaks API contract → map between DAO, domain object, and response DTO at each boundary
+
+## Ambiguity Signals
+
+These checks often have multiple valid outcomes. When you encounter one, present options rather than silently choosing.
+
+- **Layer Placement**: Logic that coordinates domain objects but also contains business rules could be a domain service or an application service. The distinction is whether the logic IS a business rule or ORCHESTRATES business rules.
+- **Query Complexity**: A read operation that needs to enforce business rules before returning data blurs the Provider vs Repository boundary.
+- **DTO Granularity**: One DTO per endpoint vs shared DTOs across related endpoints — tradeoff between type safety and duplication.
 
 ## Core Principle
 

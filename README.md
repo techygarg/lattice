@@ -18,7 +18,7 @@ Lattice organizes skills into three tiers. See [how-it-works](docs/how-it-works.
 
 ## Skill Inventory
 
-### Atoms (8)
+### Atoms (9)
 
 | Skill | What it does |
 |-------|-------------|
@@ -30,15 +30,16 @@ Lattice organizes skills into three tiers. See [how-it-works](docs/how-it-works.
 | **knowledge-priming** | Loads project-specific context (tech stack, architecture, conventions) so all skills operate with awareness of the real project |
 | **design-first** | Guides structured design through 5 progressive levels (Capabilities, Components, Interactions, Contracts, Implementation) |
 | **context-anchoring** | Manages per-feature living documents that capture decisions and reasoning across sessions |
+| **collaborative-judgment** | Surfaces genuine judgment calls with structured options instead of silently assuming. See [design rationale](docs/collaborative-judgment.md) |
 
 ### Molecules (4)
 
 | Skill | What it does | Atoms composed |
 |-------|-------------|----------------|
 | **lattice-init** | Guided setup -- scans the project, detects existing config, suggests refiners in priority order, creates `.ai/config.yaml` | knowledge-priming |
-| **design-blueprint** | Runs a complete design workflow -- from context through progressive design levels to an approved blueprint | knowledge-priming, context-anchoring, design-first, clean-architecture, domain-driven-design |
-| **code-forge** | Generates implementation from an approved blueprint or verbal requirements using inside-out layer ordering | knowledge-priming, context-anchoring, clean-architecture, clean-code, domain-driven-design, secure-coding, test-quality |
-| **review** | Performs a structured, delta-scoped code review with severity-ordered findings. Supports optional process config via review-refiner | knowledge-priming (always), clean-code (always), clean-architecture, domain-driven-design, secure-coding, test-quality (conditional) |
+| **design-blueprint** | Runs a complete design workflow -- from context through progressive design levels to an approved blueprint | knowledge-priming, context-anchoring, collaborative-judgment, design-first, clean-architecture, domain-driven-design |
+| **code-forge** | Generates implementation from an approved blueprint or verbal requirements using inside-out layer ordering | knowledge-priming, context-anchoring, collaborative-judgment, clean-architecture, clean-code, domain-driven-design, secure-coding, test-quality |
+| **review** | Performs a structured, delta-scoped code review with severity-ordered findings. Supports optional process config via review-refiner | knowledge-priming (always), collaborative-judgment (always), clean-code (always), clean-architecture, domain-driven-design, secure-coding, test-quality (conditional) |
 
 ### Refiners (5)
 
@@ -105,6 +106,7 @@ All persistent outputs go into subfolders — never `.ai/` root except `config.y
 
 - [How It Works](docs/how-it-works.md) -- how atoms compose, config resolution, the pipeline, and tier comparison
 - [Framework Intelligence](docs/framework-intelligence.md) -- why things are designed this way: verification passes, feedback loops, AI compliance techniques
+- [Collaborative Judgment](docs/collaborative-judgment.md) -- why AI should ask on genuine judgment calls and how this works at runtime
 
 ## License
 

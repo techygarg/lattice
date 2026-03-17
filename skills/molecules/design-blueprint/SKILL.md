@@ -11,9 +11,10 @@ Read and apply these skills in order:
 
 1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) to ground all design decisions in the real project
 2. `framework:context-anchoring` -- Create or load the feature's context anchor document
-3. `framework:design-first` -- Walk through 5 progressive design levels
-4. `framework:clean-architecture` -- Apply structural rules at Component and Interaction levels
-5. `framework:domain-driven-design` -- Apply domain modeling at Component, Interaction, and Contract levels
+3. `framework:collaborative-judgment` -- Surface genuine design judgment calls with structured options instead of silently assuming (always)
+4. `framework:design-first` -- Walk through 5 progressive design levels
+5. `framework:clean-architecture` -- Apply structural rules at Component and Interaction levels
+6. `framework:domain-driven-design` -- Apply domain modeling at Component, Interaction, and Contract levels
 
 ## Workflow
 
@@ -39,6 +40,8 @@ Drive through `framework:design-first`'s 5 levels sequentially. At each level, p
 Do NOT advance to the next level until the current level's output is persisted. The context document must be the single source of truth at every stage.
 
 <!-- AI reasoning: The context document is the handoff artifact to code-forge. If design outputs only exist in the conversation, they are lost when the session ends or context compresses. Every approved level output MUST be written to the document. This is not optional enrichment -- it is the core mechanism that makes the design durable. -->
+
+When applying architectural atoms at each level, use `framework:collaborative-judgment` to surface genuine design judgment calls immediately — do not batch during design, as each level constrains the next.
 
 Apply architectural atoms at the levels where they add value:
 
