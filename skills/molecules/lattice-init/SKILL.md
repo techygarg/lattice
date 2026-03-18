@@ -17,8 +17,6 @@ Read and apply these skills in order:
 
 Detect signals about the project to understand its shape and existing Lattice state.
 
-<!-- AI reasoning: The scan must be fast and non-invasive -- read-only filesystem checks. The goal is to gather enough signal to make intelligent refiner suggestions without overwhelming the user with raw data. -->
-
 **Language/framework detection** -- check for these files at the repository root:
 - `package.json` → Node.js / TypeScript
 - `go.mod` → Go
@@ -50,8 +48,6 @@ Detect signals about the project to understand its shape and existing Lattice st
 
 Report what was found -- concise, structured. Present to the user:
 
-<!-- AI reasoning: The scan results must give the user a clear picture in under 10 seconds. If everything is already configured, acknowledge it and skip to Step 4 -- do not waste the user's time re-running setup. -->
-
 ```
 ## Project Scan Results
 
@@ -75,8 +71,6 @@ Report what was found -- concise, structured. Present to the user:
 ### Step 3: Guided Setup
 
 Based on gaps found in Step 2, suggest refiners in priority order. Walk the user through each missing piece one at a time.
-
-<!-- AI reasoning: The priority order matters. Knowledge-priming is always first because project identity is foundational -- every other atom and molecule benefits from knowing the tech stack, architecture, and conventions. Architecture and DDD come next because they establish structural rules. Clean-code is last because its defaults are usually fine without customization. Asking one at a time prevents decision fatigue. -->
 
 **Priority order**:
 
@@ -112,8 +106,6 @@ If the user runs at least one refiner, the refiner itself will create or update 
 ### Step 4: Next Steps
 
 Present the workflow so the user knows what to do next.
-
-<!-- AI reasoning: This is the payoff moment -- the user now has a configured project and a clear path forward. Keep it actionable and concise. The three molecules are the core workflow; atoms activate automatically and don't need separate instructions. -->
 
 ```
 ## You're Ready

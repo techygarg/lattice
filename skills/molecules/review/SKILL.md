@@ -67,8 +67,6 @@ Classify the delta by answering these questions:
 - **Surrounding-code policy**: Use the configured policy (strict/default/expansive) instead of the default.
 - **Dependency expansion**: If enabled, also include files that directly import from changed files.
 
-<!-- AI reasoning: Classification happens before loading atoms to avoid wasting context on irrelevant checklists. A change to a single value object does not need the full security checklist. A CSS-only change does not need architecture validation. Targeted loading keeps the review focused. -->
-
 ### Step 2: Load Relevant Atoms
 
 **Always load**: `framework:clean-code` -- applies to all code regardless of layer or purpose.
@@ -111,8 +109,6 @@ For each loaded atom, apply two passes against the delta:
 - For each custom dimension, check whether the delta matches its trigger condition.
 - For matching dimensions, apply the dimension's checklist against the delta using the same two-pass approach: check each criterion, record findings with the dimension's default severity (or classified severity), file location, and suggested fix.
 - Custom dimension findings are merged with atom findings in Step 4.
-
-<!-- AI reasoning: Two passes ensure nothing is missed. The checklist catches structural violations (hard rules). The anti-pattern scan catches smell-level issues (patterns that indicate deeper problems). Running both produces a thorough review without requiring the AI to invent checks from scratch. -->
 
 ### Step 4: Produce Report
 
@@ -219,5 +215,3 @@ If recurring patterns or notable findings emerged from this review:
 - **History cap**: Use the configured entry limit instead of ~20 before rolloff.
 - **Additional metrics**: Include configured metrics (e.g., findings-per-file ratio, most-firing atoms) in each entry.
 - **History compression format**: Use the configured format for rolled-off entries.
-
-<!-- AI reasoning: Insights feed the learning flywheel -- code-forge loads them at session start and uses them to avoid repeating mistakes. The review log provides project health visibility -- trends in finding counts, recurring atoms, and quality direction over time. Both use rolling limits to prevent unbounded growth. The separation (insights for AI consumption, log for human consumption) keeps each artifact focused. -->
