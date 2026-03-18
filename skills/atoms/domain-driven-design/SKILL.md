@@ -118,35 +118,20 @@ Encapsulates complex aggregate creation. Two purposes: initial creation (enforci
 
 When making domain modeling decisions, ask these questions:
 
-1. **Aggregate boundary**: "What must be consistent within a single transaction?" -- not "what is related to what." If two entities share a transactional invariant → same aggregate. If not → separate aggregates, reference by ID. If unsure → start separate, merge only if an invariant forces it.
-2. **Entity vs Value Object**: Does the business track individual instances over time? Yes → entity. No → value object. Two identical Addresses are the same address (value object). Two Orders with identical items are still different orders (entity).
-3. **When to use Domain Service**: Logic belongs to one entity? → put it there. Spans multiple entities or value objects? → domain service. Involves I/O? → application service.
-4. **When to raise Domain Events**: Would other aggregates, external systems, or audit trails react? Yes → raise event. No → skip.
+1. **Aggregate boundary**: "What must be consistent within a single transaction?" -- not "what is related to what." If unsure → start separate, merge only if an invariant forces it.
+2. **Entity vs Value Object**: Does the business track individual instances over time? Yes → entity. No → value object.
+3. **Domain Service vs Entity Method**: Logic belongs to one entity? → put it there. Spans multiple entities? → domain service. Involves I/O? → application service.
+4. **Domain Events**: Would other aggregates, external systems, or audit trails react? Yes → raise event. No → skip.
 
 ## Decomposition Signals
 
 Recognize when an aggregate has grown too large:
 
-- **More than ~3-5 internal entities** → question the boundary; not all of them share an invariant with the root
-- **Multiple unrelated invariants** in one aggregate → likely two aggregates merged
-- **Methods on the root that only touch a subset** of internals → that subset may be its own aggregate
+- **More than ~3-5 internal entities** → not all share an invariant with the root
+- **Multiple unrelated invariants** → likely two aggregates merged
+- **Root methods that only touch a subset** of internals → that subset may be its own aggregate
 - **"I need to load everything to validate one thing"** → boundary is too coarse
-- **High contention** — multiple users frequently conflict on the same aggregate → unrelated concerns are lumped together
+- **High contention** → unrelated concerns are lumped together
 
-**Sizing heuristic**: Start with the smallest possible aggregate (root + value objects). Add internal entities only when an invariant forces them inside. If you are debating whether something belongs, it probably does not. See `./references/defaults.md` for the full decomposition guide with step-by-step approach and before/after examples.
-
-## Validation Checklist
-
-When generating or reviewing domain code, verify these constraints.
-
-| Check | Why It Matters |
-|-------|---------------|
-| Aggregates enforce invariants through the root | Bypassing the root means invariants can be violated silently |
-| Entities have behavior, not just data | Data-only entities push logic to services -- anemic domain model |
-| Value objects replace primitives for domain concepts | Primitives carry no validation, no domain meaning, and invite duplication |
-| Domain services are stateless and pure | Stateful domain services blur the line with entities; I/O blurs with application services |
-| Domain events are raised for cross-aggregate concerns | Silent state changes force direct coupling between aggregates |
-| Aggregates reference each other by ID | Object references create implicit coupling and expand transaction scope |
-| Each aggregate fits within a single transaction | Multi-aggregate transactions indicate wrong boundaries |
-| Domain layer has zero infrastructure dependencies | Already enforced by Clean Architecture; DDD reinforces the reason -- domain purity |
+See `./references/defaults.md` for the full decomposition guide with before/after examples.
 

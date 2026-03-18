@@ -7,15 +7,9 @@ description: "Guide structured design thinking through 5 progressive levels befo
 
 ## The Problem
 
-When AI coding assistants receive a feature request, they jump from requirement to implementation -- making every design decision silently along the way. The result is not just misaligned code. It is the cognitive burden of untangling design decisions you were never consulted on, bundled inside an implementation you now have to review line by line.
+AI coding assistants jump from requirement to implementation, making every design decision silently. The result: you review code while simultaneously evaluating scope, architecture, integration, contracts, and quality -- all entangled. Catching a scope mismatch in a two-minute design conversation is fundamentally cheaper than discovering it woven through 400 lines of generated code.
 
-This is the Implementation Trap. The AI produces tangible output so quickly that the natural checkpoint between *thinking about design* and *writing code* disappears. Reviewing AI-generated code then becomes exhausting because you are simultaneously evaluating scope (did it build what I needed?), architecture (are the component boundaries right?), integration (does it fit existing infrastructure?), contracts (are the interfaces correct?), and code quality (is the implementation clean?) -- all at once, all entangled. That is too many dimensions of judgment for a single pass.
-
-Barry Boehm's Cost of Change Curve demonstrated that fixing a requirements misunderstanding at the design stage costs a fraction of fixing it in implementation -- and orders of magnitude less than fixing it in production. The same economics apply to AI collaboration: catching a scope mismatch in a two-minute design conversation is fundamentally cheaper than discovering it woven through 400 lines of generated code.
-
-Additionally, AI tends to add features -- rate limiting, analytics hooks, webhook systems -- none of which were requested. Every unrequested addition is code that must be reviewed, tests that must be written, surface area that must be maintained. This is technical debt injection, and it compounds the cognitive load of review.
-
-The solution is to reconstruct the whiteboarding conversation that human pairs do naturally -- making the AI's implicit design thinking explicit and collaborative. Progressive levels of design alignment before any code, reducing cognitive load and catching misunderstandings at the cheapest possible moment.
+The solution: reconstruct the whiteboarding conversation that human pairs do naturally -- progressive levels of design alignment before any code.
 
 ## The 5 Levels
 
