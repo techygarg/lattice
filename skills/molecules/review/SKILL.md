@@ -92,16 +92,15 @@ When multiple atoms load, they run independently -- each atom's checklist is app
 
 For each loaded atom, apply two passes against the delta:
 
-**Pass 1 -- Validation Checklist**: Walk through the atom's Validation Checklist (the table in each atom's SKILL.md). For each check, examine whether any code in the delta violates it. Record violations with:
+**Pass 1 -- Self-Validation Checklist**: Walk through the atom's Self-Validation Checklist (the numbered items in each atom's SKILL.md). For each check, examine whether any code in the delta violates it. Record violations with:
 - The specific check that failed
 - The exact file and line(s)
-- Why it matters (from the checklist's "Why It Matters" column)
 - A concrete suggested fix
 
-**Pass 2 -- Anti-Pattern Scan**: Walk through the atom's Active Anti-Pattern Scan checklist. For each anti-pattern, check if the delta exhibits the symptom. Record matches with:
+**Pass 2 -- Anti-Pattern Scan**: Walk through the atom's Active Anti-Pattern Scan (the checkbox items in each atom's SKILL.md). For each anti-pattern, check if the delta exhibits the symptom. Record matches with:
 - The anti-pattern name
 - The symptom observed in the delta
-- The fix from the anti-pattern table, adapted to the specific code
+- The fix, adapted to the specific code
 
 **Scope rule**: Focus on the delta. Do not review unchanged code unless a change in the delta creates a new violation in surrounding code (e.g., a new dependency that breaks the dependency rule for an existing file). When reviewing surrounding code, note that the finding originates from the delta's impact, not from pre-existing issues.
 
@@ -167,8 +166,6 @@ After all atom sections, add:
 - **"What's done well" toggle**: If disabled, omit the positive observation section.
 - **Custom report sections**: Include any configured custom sections at the specified position.
 - Custom dimension findings merge into the report alongside atom findings, following the same grouping and severity ordering.
-
-<!-- AI reasoning: Summary mode respects the user's time -- most reviews need a quick hit list, not an essay. Full mode is for thorough reviews before merging or when the user wants to learn from the findings. The severity classification prevents "wall of warnings" fatigue by surfacing what actually matters first. -->
 
 ### Step 5: Capture Insights and Log Review
 
