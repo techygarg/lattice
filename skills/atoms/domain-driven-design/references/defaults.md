@@ -15,7 +15,6 @@ These are the embedded defaults. See the SKILL.md Config Resolution section for 
 7. [Factory Patterns](#7-factory-patterns)
 8. [Anti-Pattern Catalog](#8-anti-pattern-catalog)
 9. [Decomposition Guide](#9-decomposition-guide)
-10. [Validation Checklist — Detailed](#10-validation-checklist--detailed)
 
 ---
 
@@ -955,61 +954,6 @@ class CourseGradebook                      // Grading aggregate
 ```
 
 Each aggregate loads independently. Enrollment contention does not block grading. New grading features do not risk breaking enrollment invariants.
-
----
-
-## 10. Validation Checklist — Detailed
-
-Use after generating or reviewing domain code. Grouped by pattern.
-
-### Aggregate Checks
-
-- [ ] Each aggregate has a clearly identified root entity
-- [ ] Only the root is accessible from outside the aggregate
-- [ ] Internal entities are not referenced directly by external code
-- [ ] Other aggregates are referenced by ID, not by object
-- [ ] Each aggregate fits within a single transaction
-- [ ] No more than ~3-5 internal entities (if more, question the boundary)
-- [ ] Every internal entity participates in at least one invariant enforced by the root
-
-### Entity Checks
-
-- [ ] Each entity has a typed identifier (value object, not raw string/UUID)
-- [ ] Equality is based on identity, not attributes
-- [ ] Business rules are methods on the entity, not in external services
-- [ ] State transitions enforce preconditions (guard clauses)
-- [ ] No public setters that bypass business rules
-
-### Value Object Checks
-
-- [ ] Value objects are immutable — operations return new instances
-- [ ] Self-validating constructors — invalid states are unrepresentable
-- [ ] Equality is based on attributes, not identity
-- [ ] Primitives for domain concepts are replaced with value objects (Money, Email, OrderId)
-- [ ] No identity field (id) on value objects
-
-### Domain Service Checks
-
-- [ ] Stateless — no internal state retained between calls
-- [ ] Pure domain computation — no I/O, no infrastructure dependencies
-- [ ] Logic genuinely spans multiple entities or value objects
-- [ ] Not duplicating logic that belongs in a single entity
-
-### Domain Event Checks
-
-- [ ] Named in past tense (OrderPlaced, not PlaceOrder)
-- [ ] Carries sufficient data to describe what happened (aggregate ID + relevant values)
-- [ ] Does not carry entire aggregate state
-- [ ] Raised for cross-aggregate coordination and significant state changes
-- [ ] Defined in domain layer
-
-### Repository Checks
-
-- [ ] One repository per aggregate root — not per entity
-- [ ] Interface defined in domain layer, implementation in infrastructure
-- [ ] Collection-like semantics (save, findById, remove)
-- [ ] Returns fully-constituted aggregates, not partial objects or DTOs
-- [ ] No complex reporting queries — those belong in Providers
 
 ---
 

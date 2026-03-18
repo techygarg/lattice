@@ -11,7 +11,6 @@ These are the embedded defaults. See the SKILL.md Config Resolution section for 
 3. [Per-Layer Rules](#3-per-layer-rules)
 4. [Command and Query Flows](#4-command-and-query-flows)
 5. [Example Violations and Fixes](#5-example-violations-and-fixes)
-6. [Validation Checklist](#6-validation-checklist)
 
 ---
 
@@ -403,55 +402,6 @@ class OrderService
 // infrastructure/messaging/OrderEventPublisher -- messaging
 // services/OrderService              -- orchestration only
 ```
-
----
-
-## 6. Validation Checklist
-
-Use this after generating or reviewing code. Each item maps to a structural principle.
-
-### Layer Placement
-
-- [ ] Business logic (rules, calculations, decisions) is in the domain layer
-- [ ] Use case orchestration is in application services
-- [ ] HTTP/transport concerns are in controllers only
-- [ ] Database and external API details are in infrastructure only
-
-### Dependency Direction
-
-- [ ] Domain layer has zero imports from outer layers
-- [ ] Application services depend on domain and on interfaces (not concrete infrastructure)
-- [ ] Infrastructure implements domain-defined interfaces
-- [ ] No circular dependencies between layers
-
-### Boundary Integrity
-
-- [ ] Data crossing inward is mapped to domain types (not raw request objects)
-- [ ] Data crossing outward is mapped to response DTOs (not domain entities)
-- [ ] Framework types (ORM models, HTTP request objects) do not appear in domain
-
-### Command / Query Flow Separation
-
-- [ ] State-changing operations use Command Flow: Controller → Service → Domain → Repository
-- [ ] Read operations use Query Flow: Controller → Service → Provider → DAO → Response DTO
-- [ ] Repository interfaces are defined in `domain/repositories/`
-- [ ] Provider contracts are NOT defined in domain
-- [ ] Repositories accept and return domain objects; Providers return DAOs
-- [ ] No domain objects constructed in query flows without explicit justification
-- [ ] Services map DAOs directly to Response DTOs without passing through domain
-
-### Single Responsibility
-
-- [ ] Each class/module has one reason to change
-- [ ] No class spans multiple layers
-- [ ] Infrastructure classes do not contain business rules
-
-### Testability
-
-- [ ] Domain logic can be unit tested without mocking I/O
-- [ ] Application services can be tested by mocking infrastructure interfaces
-- [ ] Controllers can be tested independently from business logic
-- [ ] Query flow services can be tested by mocking Providers (returns DAOs, no domain setup needed)
 
 ---
 

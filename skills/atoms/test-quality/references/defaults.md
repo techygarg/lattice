@@ -14,7 +14,6 @@ If the project has a custom `.ai/test-quality.md` (referenced through `.ai/confi
 6. [Test Data Builders and Factories](#6-test-data-builders-and-factories)
 7. [Test Pyramid Distribution](#7-test-pyramid-distribution)
 8. [Anti-Pattern Catalog](#8-anti-pattern-catalog)
-9. [Validation Checklist -- Detailed](#9-validation-checklist----detailed)
 
 ---
 
@@ -587,19 +586,3 @@ function should_not_apply_discount_for_low_value_order():
   assertFalse(result.hasDiscount)
 ```
 
----
-
-## 9. Validation Checklist -- Detailed
-
-Expanded version of the SKILL.md checklist with specific things to look for.
-
-| Check | What to Look For | Common Violations |
-|-------|-----------------|-------------------|
-| **AAA structure visible** | Blank lines separating arrange, act, assert; no logic in arrange/assert; act is a single operation | Interleaved setup and assertions; loops or conditionals in assert; multiple actions in act phase |
-| **One behavior per test** | Test name describes one scenario; failure message is unambiguous; only one "when" clause | Multiple `// then` comments in one test; test name uses "and"; assertions verify unrelated outcomes |
-| **Assertions on behavior** | Assertions check return values, state changes, or side effects -- not method call counts or internal state | `verify(mock.method, calledTimes: 2)`; assertions on private fields; testing that a cache was populated |
-| **No shared mutable state** | Each test creates its own objects; no class-level mutable fields; setUp creates fresh instances | Static variables modified by tests; instance fields mutated across tests; shared database state |
-| **Names describe behavior** | Test name follows `should_X_when_Y` or `method_scenario_expected` pattern; failure message is meaningful | `test1`, `testHappyPath`, method name echoed without context, generic `testValidation` |
-| **Test data via builders** | Builder or factory functions with sensible defaults; only test-relevant values specified | Raw constructors with 8 parameters; copy-pasted data setup; magic numbers without explanation |
-| **Mocks at boundaries only** | Mocks replace I/O (database, network, filesystem); internal collaborators are real objects | Every dependency mocked; mock returning a mock; test is entirely mocks with no real logic exercised |
-| **Pyramid balance** | Majority of tests are unit tests; integration tests cover boundaries; E2E tests cover critical paths only | Hundreds of E2E tests and few unit tests; no integration tests for database queries; all tests require full app startup |

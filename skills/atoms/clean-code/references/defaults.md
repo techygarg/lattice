@@ -15,7 +15,6 @@ These are the embedded defaults. See the SKILL.md Config Resolution section for 
 7. [Comments and Self-Documentation](#7-comments-and-self-documentation)
 8. [Error Handling](#8-error-handling)
 9. [Test-Friendly Code](#9-test-friendly-code)
-10. [Validation Checklist](#10-validation-checklist)
 
 ---
 
@@ -518,62 +517,6 @@ function applyDiscount(orderId, discountCode):
   notificationService.discountApplied(order.email)
   return newTotal
 ```
-
----
-
-## 10. Validation Checklist
-
-Use this after generating or reviewing code. Each item maps to a principle above.
-
-### Function Design
-
-- [ ] Each function does one thing (passes the "and" test)
-- [ ] Functions are under ~20 lines; exceptions have a single clear purpose
-- [ ] Cyclomatic complexity is under ~10 per function
-- [ ] Indentation depth does not exceed two levels
-- [ ] Guard clauses are used instead of deep nesting
-
-### Naming
-
-- [ ] Function names are verb-first and reveal intent
-- [ ] Class names are noun-based
-- [ ] Boolean names use `is`/`has`/`can`/`should` prefix
-- [ ] No abbreviations that require project-specific context to decode
-- [ ] Name length is proportional to scope
-
-### Parameter Design
-
-- [ ] Functions have four or fewer parameters
-- [ ] Related parameters are grouped into objects
-- [ ] Boolean parameters are avoided or wrapped in named options
-
-### Abstraction
-
-- [ ] Duplication is only extracted after three instances with the same reason to change
-- [ ] Extracted abstractions are named for what they do, not for the fact that they reduce duplication
-- [ ] No premature abstractions coupling unrelated concerns
-
-### Comments
-
-- [ ] No comments explaining "what" the code does (refactor to be self-documenting instead)
-- [ ] Comments explain "why" for non-obvious business rules, workarounds, and constraints
-- [ ] Regex patterns have a plain-English description comment
-- [ ] Public APIs have doc comments with parameter descriptions
-
-### Error Handling
-
-- [ ] Inputs are validated at boundaries with guard clauses
-- [ ] Error messages are actionable (what went wrong, what to do)
-- [ ] No swallowed errors (empty catch blocks)
-- [ ] Exceptions are not used for control flow
-- [ ] Errors are handled at the level with sufficient context to decide
-
-### Testability
-
-- [ ] Business logic is in pure functions where possible
-- [ ] Dependencies are injected, not hardcoded
-- [ ] No hidden mutable global state
-- [ ] Side effects are at the boundaries, not interleaved with logic
 
 ---
 
