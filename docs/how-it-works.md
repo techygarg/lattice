@@ -18,7 +18,7 @@ The three tiers described above are one half of Lattice -- the **base framework*
 
 The second half is the **living context layer**: the `.ai/` folder. Standards produced by refiners, feature context documents, accumulated review insights, and health logs -- all project-specific, all growing with every feature cycle. The living context layer is the muscle -- it strengthens with use, adapts to the work you do, and makes the base framework increasingly capable.
 
-The two layers interact through a read/write loop. The base framework *reads* from the context layer: atoms load project-specific standards, code-forge loads past learnings, knowledge-priming loads the project's identity. The pipeline *writes* to the context layer: refiners produce standards documents, design-blueprint and code-forge create and enrich context documents, review captures insights and logs health summaries. Each cycle enriches the next.
+The two layers interact through a read/write loop. The base framework *reads* from the context layer: atoms load project-specific standards, code-forge and bug-fix load past learnings, knowledge-priming loads the project's identity. The pipeline *writes* to the context layer: refiners produce standards documents, design-blueprint and code-forge create and enrich context documents, bug-fix records root cause and repair decisions, and review captures insights and logs health summaries. Each cycle enriches the next.
 
 The payoff compounds over time. After a few feature cycles, atoms aren't applying generic rules -- they're applying *your* rules, informed by *your* review history. Code-forge doesn't repeat mistakes that review already caught. Standards grow more precise as refiners are re-run. Health logs reveal trends across features, not just snapshots. The base framework never changes, but the context layer makes it smarter with every use.
 
@@ -30,7 +30,7 @@ Each atom is a single-concern skill file that teaches one engineering principle.
 
 ### How they work
 
-When an atom is active, it provides two verification tools: a **Self-Validation Checklist** (numbered, labeled checks with imperative STOP language) and an **Active Anti-Pattern Scan** (checkbox format for scanning output). These are used by code-forge's post-generation verification pass — after generating each component, the AI runs the relevant atom checklists against its output and fixes violations before presenting. This two-pass model (generate, then verify) is more reliable than simultaneous generation and validation.
+When an atom is active, it provides two verification tools: a **Self-Validation Checklist** (numbered, labeled checks with imperative STOP language) and an **Active Anti-Pattern Scan** (checkbox format for scanning output). These are used by molecules such as code-forge and bug-fix during their verification passes — after generating or repairing code, the AI runs the relevant atom checklists against its output and fixes violations before presenting. This two-pass model (generate, then verify) is more reliable than simultaneous generation and validation.
 
 ### Always vs conditional atoms
 
@@ -120,6 +120,19 @@ Generates implementation from an approved blueprint or verbal requirements.
 
 The user chooses a review mode: layer-by-layer (recommended), full autonomy, or component-by-component.
 
+### bug-fix
+
+Investigates, reproduces, and safely fixes a bug with regression protection. This is the defect-driven counterpart to code-forge: it starts from a failing behavior instead of a new requirement.
+
+**Composes**: knowledge-priming (always), context-anchoring (always), collaborative-judgment (always), clean-code (always), test-quality (always), clean-architecture (conditional), domain-driven-design (conditional), secure-coding (conditional)
+
+**How it works**:
+1. **Establish bug context**: Loads review learnings if they exist, then uses context-anchoring to load the relevant feature context when available. Clarifies observed vs expected behavior before touching code.
+2. **Reproduce and localize**: Requires a failing reproduction before repair — preferably an automated test, otherwise the closest executable reproduction path. Classifies the likely source layer and loads only the atoms relevant to the suspected root cause.
+3. **Protect with a regression test**: Converts the reproduction into the smallest failing automated test that faithfully captures the bug. This is the workflow's primary differentiator.
+4. **Implement the minimal safe fix**: Repairs the root cause with clean-code always-on and architecture/DDD/security checks loaded only when the defect touches those dimensions.
+5. **Verify and capture**: Confirms the regression test is green, checks nearby behavior for non-regression, then records root cause and repair rationale in the living context. Recommends `/review` for larger or riskier fixes.
+
 ### review
 
 A structured, delta-scoped code review that loads atoms conditionally based on what changed. Supports optional process configuration via the review-refiner.
@@ -139,24 +152,19 @@ See the [refiner inventory](../README.md#refiners-5) for what each refiner produ
 
 ## The Design-to-Code Pipeline
 
+There are two common entry paths:
+
 ```
-  lattice-init          design-blueprint             code-forge                review
-  ─────────────────     ─────────────────            ─────────────────         ─────────────────
-  Guided setup          Design before coding         Implement from blueprint  Audit the delta
-  ┌─────────────────┐   ┌─────────────────┐          ┌─────────────────┐       ┌─────────────────┐
-  │ Scan project    │   │ Level 1: Caps   │          │ Plan layers     │       │ Classify delta  │
-  │ Detect config   │   │ Level 2: Comps  │          │ Inside-out build│       │ Load atoms      │
-  │ Suggest refiners│──▶│ Level 3: Flow   │──────▶   │ Code + tests    │──────▶│ Run checklists  │
-  │ Create .ai/     │   │ Level 4: API    │          │ Cross-component │       │ Severity report  │
-  │ config          │   │                 │          │ verify          │       │                 │
-  │                 │   │ Approved        │          │                 │       │                 │
-  │                 │   │ Blueprint       │          │                 │       │                 │
-  └─────────────────┘   └─────────────────┘          └─────────────────┘       └─────────────────┘
-  One-time project      Persists to context doc      Honors blueprint          Conditional atoms
-  setup
+Planned feature work:
+  lattice-init → design-blueprint → code-forge → review
+
+Defect-driven work:
+  bug-fix → review
 ```
 
-Each stage both consumes and produces artifacts in `.ai/` -- the pipeline is the engine that grows the living context layer. Context anchoring ties the stages together: the context document created during design carries the approved blueprint into implementation, captures decisions that inform review, and restores full context in any future session.
+Feature work starts from requirements and produces an approved blueprint before implementation. Bug work starts from a failing behavior and produces a failing reproduction before the repair. Both paths converge on review for an independent quality pass.
+
+Each stage both consumes and produces artifacts in `.ai/` -- the pipeline is the engine that grows the living context layer. Context anchoring ties the stages together: the context document created during design carries the approved blueprint into implementation, captures bug root causes and repair decisions, informs review, and restores full context in any future session.
 
 The context document lifecycle is: **Create** (new feature) → **Load** (resume work) → **Enrich** (capture decisions). All three behaviors require explicit user confirmation -- the AI proposes, the user disposes.
 
@@ -189,7 +197,7 @@ The `.ai/` folder is the living context layer described earlier -- the project's
 |-----------|---------|-----------|
 | `standards/` | Refiner-produced customization docs consumed by atoms via config resolution | Stable — set once during project setup, rarely changed |
 | `context/` | Per-feature living documents managed by context-anchoring | Per feature — created when feature starts, enriched during design and implementation |
-| `learnings/` | Accumulated review insights loaded by code-forge at session start | Append-only with pruning — capped at ~50 entries |
+| `learnings/` | Accumulated review insights loaded by code-forge and bug-fix at session start | Append-only with pruning — capped at ~50 entries |
 | `reviews/` | Review log entries for project health visibility | Rolling window — capped at ~20 entries, older entries summarized |
 
 ### Convention
@@ -207,6 +215,6 @@ This convention ensures the folder stays organized as the framework adds new cap
 | **Artifacts produced** | None (inline checks) | Blueprints, reviews, context documents | `.ai/` config files |
 | **Composes others?** | No | Yes (composes atoms) | No |
 | **Configured by refiners?** | Yes (via `.ai/` config files) | review molecule supports config via review-refiner | N/A |
-| **Frequency of use** | Every generation (automatic) | Per feature or per review | As needed -- when standards are first set or evolve |
+| **Frequency of use** | Every generation (automatic) | Per feature, bug, or review | As needed -- when standards are first set or evolve |
 | **Required?** | Yes (core guardrails) | No (but recommended for structured workflows) | No (atoms work with built-in defaults) |
 | **Works standalone?** | Yes | Yes | Yes |

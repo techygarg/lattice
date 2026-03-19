@@ -114,7 +114,8 @@ Lattice is set up. Here's the workflow:
 
 1. **Design a feature**: `/design-blueprint` -- walks through 5 progressive design levels
 2. **Implement**: `/code-forge` -- generates code from the blueprint with built-in quality checks
-3. **Review**: `/review` -- audits generated code against atom standards
+3. **Fix a bug**: `/bug-fix` -- reproduces the failure, adds a regression test, and applies the minimal safe repair
+4. **Review**: `/review` -- audits generated code against atom standards
 
 Atoms (clean-code, DDD, secure-coding, etc.) activate automatically during these workflows.
 You can also use atoms standalone -- they apply checks based on what you're working on.
