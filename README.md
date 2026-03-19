@@ -1,5 +1,10 @@
 # Lattice
 
+<p align="center">
+  <img src="docs/image/icon.png" alt="lattice" width="250" height="250">
+</p>
+
+
 Composable AI skills that teach assistants structured thinking -- design-first, context-aware, and architecture-guided.
 
 ## What is Lattice?
