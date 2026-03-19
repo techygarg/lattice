@@ -58,15 +58,7 @@ These checks often have multiple valid outcomes. When you encounter one, present
 
 Clean Architecture is about **structure** -- where code lives, which layers exist, and which direction dependencies flow. It is distinct from DDD, which is about crafting domain logic *within* the domain layer. This skill handles the structural envelope; DDD handles the domain crafting inside it.
 
-The idea unifies Hexagonal Architecture (Ports & Adapters), Onion Architecture, and Robert Martin's Clean Architecture. They converge on the same fundamental goals:
-
-1. **Independence from frameworks.** Frameworks are tools, not constraints the system is crammed into.
-2. **Testability.** Business rules can be tested without UI, database, web server, or any external element.
-3. **Independence from UI.** The UI can change without changing business rules.
-4. **Independence from database.** Swapping SQL for NoSQL should not require changes to domain logic.
-5. **Independence from external agencies.** Business rules know nothing about the outside world.
-
-These are not aspirational goals -- they are structural constraints that this skill enforces.
+The structural constraints: business rules are independently testable, not coupled to frameworks, UI, database, or external agencies. Any outer-layer component can be swapped without touching domain logic.
 
 ## The Dependency Rule
 
@@ -137,19 +129,4 @@ Key rules: Provider lives in `infrastructure/providers/` with **no interface in 
 
 A single service per domain concept injects both Repository and Provider. Command methods route through domain and Repository; query methods route through Provider directly. This is a *flow* distinction within the service, not a class-level split. Full CQRS with separate command/query handlers is a different architectural choice -- do not conflate the two.
 
-## Structural Validation Checklist
-
-When generating or reviewing code, verify these constraints.
-
-| Check | Why It Matters |
-|-------|---------------|
-| Business logic lives in domain, not in controllers or infrastructure | Controllers that make business decisions become untestable and couple business rules to transport protocol |
-| Domain layer has zero imports from outer layers | Any outward dependency breaks isolation and makes the domain framework-dependent |
-| Outer layers depend on abstractions (interfaces), not concrete implementations | Concrete dependencies make swapping implementations impossible without cascading changes |
-| No class spans multiple architectural layers | A class that handles HTTP parsing, business logic, and database queries belongs to three layers and changes for three unrelated reasons |
-| I/O is isolated in infrastructure | Business logic mixed with I/O cannot be unit tested without mocking the world |
-| Data crossing boundaries is simple (DTOs, not entities or DB rows) | Passing rich objects outward leaks domain concepts; passing framework objects inward creates coupling |
-| State-changing operations flow through domain before reaching Repository | Bypassing domain on writes means invariants and business rules can be violated |
-| Read operations use Provider, not Repository; no unnecessary domain construction | Forcing reads through domain adds complexity without protecting any invariant |
-| Provider contracts are not defined in domain layer | Providers serve reads; domain only defines contracts for state-changing infrastructure (Repositories) |
 

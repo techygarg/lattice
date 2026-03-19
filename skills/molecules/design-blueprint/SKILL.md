@@ -39,8 +39,6 @@ Drive through `framework:design-first`'s 5 levels sequentially. At each level, p
 
 Do NOT advance to the next level until the current level's output is persisted. The context document must be the single source of truth at every stage.
 
-<!-- AI reasoning: The context document is the handoff artifact to code-forge. If design outputs only exist in the conversation, they are lost when the session ends or context compresses. Every approved level output MUST be written to the document. This is not optional enrichment -- it is the core mechanism that makes the design durable. -->
-
 When applying architectural atoms at each level, use `framework:collaborative-judgment` to surface genuine design judgment calls immediately — do not batch during design, as each level constrains the next.
 
 Apply architectural atoms at the levels where they add value:
@@ -79,5 +77,3 @@ After Level 4 (Contracts) is approved and persisted:
 - Present the summary to the user as confirmation.
 - The design is complete. Do NOT proceed to Level 5 (Implementation) -- that is a separate concern handled by the `framework:code-forge` molecule or an equivalent implementation skill.
 - Suggest the user invoke `/code-forge` when ready to begin coding against the approved blueprint.
-
-<!-- AI reasoning: The finalize step is not just a presentation -- it is the final write to the context document. When code-forge loads this document later (possibly in a different session), it must find everything it needs: the approved capabilities, the component list with layer assignments, the interaction flows, the contracts, and the explicit "design approved" marker. If any of this is missing, code-forge is flying blind. -->

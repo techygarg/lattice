@@ -12,9 +12,7 @@ If the project has a custom `.ai/secure-coding.md` (referenced through `.ai/conf
 4. [Output Encoding by Context](#4-output-encoding-by-context)
 5. [Authorization Check Patterns](#5-authorization-check-patterns)
 6. [Secrets Management Patterns](#6-secrets-management-patterns)
-7. [OWASP Top 10 Quick Reference](#7-owasp-top-10-quick-reference)
-8. [Injection Prevention Patterns](#8-injection-prevention-patterns)
-9. [Validation Checklist -- Detailed](#9-validation-checklist----detailed)
+7. [Injection Prevention Patterns](#7-injection-prevention-patterns)
 
 ---
 
@@ -402,24 +400,7 @@ class ApiAuthenticator:
 
 ---
 
-## 7. OWASP Top 10 Quick Reference
-
-| # | Vulnerability | Description | Prevention |
-|---|--------------|-------------|------------|
-| A01 | **Broken Access Control** | Users act outside intended permissions | Deny by default; enforce server-side; check at every layer |
-| A02 | **Cryptographic Failures** | Weak crypto, cleartext data, poor key management | Use strong algorithms; encrypt sensitive data at rest and in transit; manage keys properly |
-| A03 | **Injection** | SQL, NoSQL, OS command, LDAP injection | Parameterized queries; input validation; avoid interpreters |
-| A04 | **Insecure Design** | Missing threat modeling; no security in design phase | Threat model during design; use secure design patterns; establish paved roads |
-| A05 | **Security Misconfiguration** | Default creds, open cloud storage, verbose errors | Harden defaults; remove unused features; automate configuration |
-| A06 | **Vulnerable Components** | Using components with known vulnerabilities | Inventory dependencies; monitor for CVEs; pin versions; update promptly |
-| A07 | **Auth Failures** | Weak passwords, missing MFA, session fixation | MFA; strong password policies; secure session management |
-| A08 | **Data Integrity Failures** | Untrusted deserialization, unsigned updates | Verify integrity of data and software; use digital signatures |
-| A09 | **Logging Failures** | Missing audit logs; logs not monitored | Log security events; ensure log integrity; monitor for anomalies |
-| A10 | **SSRF** | Server fetches attacker-controlled URLs | Validate URLs; allowlist destinations; block private IP ranges |
-
----
-
-## 8. Injection Prevention Patterns
+## 7. Injection Prevention Patterns
 
 ### SQL Injection
 
@@ -504,19 +485,3 @@ function fetchWebhook(url):
   return httpClient.get(url)
 ```
 
----
-
-## 9. Validation Checklist -- Detailed
-
-Expanded version of the SKILL.md checklist with specific things to look for.
-
-| Check | What to Look For | Common Violations |
-|-------|-----------------|-------------------|
-| **Trust boundaries identified** | Every function that receives external data has a comment or clear validation step at the entry point | Data flows from HTTP request directly to database query; third-party API responses used without validation |
-| **Inputs validated at boundary** | Validation happens in controllers or dedicated validators, not in domain or infrastructure layers | Validation scattered through business logic; missing validation on optional fields |
-| **Parameterized queries** | All SQL uses `?` placeholders or ORM query builders; no string concatenation in queries | Raw queries with template literals; dynamic column names from user input; ORM bypass with raw SQL |
-| **No hardcoded secrets** | No string literals that look like API keys, passwords, tokens, or connection strings | Secrets in test files "for convenience"; default passwords in config files; secrets in Docker compose |
-| **Output encoded for context** | HTML output uses encoding; JSON uses serializer; URLs use encoding; no raw interpolation | Template engine escaping disabled; raw HTML rendering of user content; manual JSON string building |
-| **Authorization at service layer** | Service methods check that the requesting user has permission for the specific resource | Auth checked only at controller; no resource-level ownership check; admin endpoints without role verification |
-| **Safe error messages** | API error responses contain user-friendly messages; stack traces only in server logs | Exception messages passed directly to API response; SQL error details in HTTP response; file paths in error messages |
-| **Dependencies pinned** | Package lock files committed; no floating version ranges in dependency specifications | `"^1.0.0"` ranges that auto-upgrade; missing lock file; transitive dependencies not audited |

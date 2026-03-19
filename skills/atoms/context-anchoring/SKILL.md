@@ -117,68 +117,13 @@ When the user asks to load or resume but does not specify which feature:
 
 When the user mentions a feature name in conversation, check if a matching context document exists. If it does and has not been loaded in this session, suggest loading it.
 
-## Proactive Behavior Rules
-
-The AI should suggest context anchoring actions in these situations:
-
-**Suggest Create when**:
-- Feature work begins (design, implementation, or discussion of a new feature)
-- No existing context document matches the feature being discussed
-- The conversation has produced decisions worth capturing
-
-**Suggest Load when**:
-- A new session begins and the user references a feature with an existing doc
-- The user mentions past decisions or asks "what did we decide"
-- Work is about to begin on a feature that has a context document
-
-**Suggest Enrich when**:
-- A technical approach is chosen over alternatives
-- A constraint is identified or agreed upon
-- An open question from the doc is resolved during conversation
-- A key architectural or design decision is made
-- A new file is created that is central to the feature
-
-**The confirmation rule**: Never create, load, or enrich a context document without explicit user confirmation. The AI proposes the action and its content; the user approves, modifies, or rejects. This rule has no exceptions -- not for "obvious" decisions, not for "minor" updates, not for "routine" enrichments.
-
 ## Output Formats
 
-### Load Acknowledgment
+**Load**: Show feature name, requirement doc status, decision count, open questions, constraints, and latest decision. Close with: "All logged decisions are active. Constraints are non-negotiable. I will flag open questions when work touches them."
 
-```
-Context loaded: <Feature Name>
-Requirement doc: <path or "not linked">
-Decisions: <count> logged
-Open questions: <count or "none">
-Constraints: <count or "none">
-Latest decision: <date> -- <brief summary>
-```
+**Enrich**: Show exactly what will be added (decision, reasoning, alternatives considered). Wait for confirmation before writing.
 
-After the summary, state: "All logged decisions are active. Constraints are non-negotiable. I will flag open questions when work touches them."
-
-### Enrich Confirmation
-
-When proposing an enrichment, show exactly what will be added:
-
-```
-Proposed addition to <feature-name>.md:
-
-Decision: <what was decided>
-Reasoning: <why>
-Alternatives: <what was considered>
-```
-
-Wait for confirmation before writing.
-
-### Create Confirmation
-
-```
-Proposed context document:
-Path: <context_base>/<feature-name>.md
-Feature: <Feature Name>
-Requirement doc: <path or "none">
-```
-
-Wait for confirmation before creating.
+**Create**: Show proposed path, feature name, and requirement doc link. Wait for confirmation before creating.
 
 ## Integration with Other Skills
 

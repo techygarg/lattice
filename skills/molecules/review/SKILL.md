@@ -67,8 +67,6 @@ Classify the delta by answering these questions:
 - **Surrounding-code policy**: Use the configured policy (strict/default/expansive) instead of the default.
 - **Dependency expansion**: If enabled, also include files that directly import from changed files.
 
-<!-- AI reasoning: Classification happens before loading atoms to avoid wasting context on irrelevant checklists. A change to a single value object does not need the full security checklist. A CSS-only change does not need architecture validation. Targeted loading keeps the review focused. -->
-
 ### Step 2: Load Relevant Atoms
 
 **Always load**: `framework:clean-code` -- applies to all code regardless of layer or purpose.
@@ -94,16 +92,15 @@ When multiple atoms load, they run independently -- each atom's checklist is app
 
 For each loaded atom, apply two passes against the delta:
 
-**Pass 1 -- Validation Checklist**: Walk through the atom's Validation Checklist (the table in each atom's SKILL.md). For each check, examine whether any code in the delta violates it. Record violations with:
+**Pass 1 -- Self-Validation Checklist**: Walk through the atom's Self-Validation Checklist (the numbered items in each atom's SKILL.md). For each check, examine whether any code in the delta violates it. Record violations with:
 - The specific check that failed
 - The exact file and line(s)
-- Why it matters (from the checklist's "Why It Matters" column)
 - A concrete suggested fix
 
-**Pass 2 -- Anti-Pattern Scan**: Walk through the atom's Active Anti-Pattern Scan checklist. For each anti-pattern, check if the delta exhibits the symptom. Record matches with:
+**Pass 2 -- Anti-Pattern Scan**: Walk through the atom's Active Anti-Pattern Scan (the checkbox items in each atom's SKILL.md). For each anti-pattern, check if the delta exhibits the symptom. Record matches with:
 - The anti-pattern name
 - The symptom observed in the delta
-- The fix from the anti-pattern table, adapted to the specific code
+- The fix, adapted to the specific code
 
 **Scope rule**: Focus on the delta. Do not review unchanged code unless a change in the delta creates a new violation in surrounding code (e.g., a new dependency that breaks the dependency rule for an existing file). When reviewing surrounding code, note that the finding originates from the delta's impact, not from pre-existing issues.
 
@@ -111,8 +108,6 @@ For each loaded atom, apply two passes against the delta:
 - For each custom dimension, check whether the delta matches its trigger condition.
 - For matching dimensions, apply the dimension's checklist against the delta using the same two-pass approach: check each criterion, record findings with the dimension's default severity (or classified severity), file location, and suggested fix.
 - Custom dimension findings are merged with atom findings in Step 4.
-
-<!-- AI reasoning: Two passes ensure nothing is missed. The checklist catches structural violations (hard rules). The anti-pattern scan catches smell-level issues (patterns that indicate deeper problems). Running both produces a thorough review without requiring the AI to invent checks from scratch. -->
 
 ### Step 4: Produce Report
 
@@ -172,8 +167,6 @@ After all atom sections, add:
 - **Custom report sections**: Include any configured custom sections at the specified position.
 - Custom dimension findings merge into the report alongside atom findings, following the same grouping and severity ordering.
 
-<!-- AI reasoning: Summary mode respects the user's time -- most reviews need a quick hit list, not an essay. Full mode is for thorough reviews before merging or when the user wants to learn from the findings. The severity classification prevents "wall of warnings" fatigue by surfacing what actually matters first. -->
-
 ### Step 5: Capture Insights and Log Review
 
 After presenting the report to the user, capture learnings and log the review for project health visibility.
@@ -219,5 +212,3 @@ If recurring patterns or notable findings emerged from this review:
 - **History cap**: Use the configured entry limit instead of ~20 before rolloff.
 - **Additional metrics**: Include configured metrics (e.g., findings-per-file ratio, most-firing atoms) in each entry.
 - **History compression format**: Use the configured format for rolled-off entries.
-
-<!-- AI reasoning: Insights feed the learning flywheel -- code-forge loads them at session start and uses them to avoid repeating mistakes. The review log provides project health visibility -- trends in finding counts, recurring atoms, and quality direction over time. Both use rolling limits to prevent unbounded growth. The separation (insights for AI consumption, log for human consumption) keeps each artifact focused. -->
