@@ -37,13 +37,14 @@ Lattice organizes skills into three tiers. See [how-it-works](docs/how-it-works.
 | **context-anchoring** | Manages per-feature living documents that capture decisions and reasoning across sessions |
 | **collaborative-judgment** | Surfaces genuine judgment calls with structured options instead of silently assuming. See [design rationale](docs/collaborative-judgment.md) |
 
-### Molecules (5)
+### Molecules (6)
 
 | Skill | What it does | Atoms composed |
 |-------|-------------|----------------|
 | **lattice-init** | Guided setup -- scans the project, detects existing config, suggests refiners in priority order, creates `.ai/config.yaml` | knowledge-priming |
 | **design-blueprint** | Runs a complete design workflow -- from context through progressive design levels to an approved blueprint | knowledge-priming, context-anchoring, collaborative-judgment, design-first, clean-architecture, domain-driven-design |
 | **code-forge** | Generates implementation from an approved blueprint or verbal requirements using inside-out layer ordering | knowledge-priming, context-anchoring, collaborative-judgment, clean-architecture, clean-code, domain-driven-design, secure-coding, test-quality |
+| **refactor-safely** | Restructures existing code without changing externally observable behavior. Requires agreement on the target structure before code changes and uses characterization tests as the safety net | knowledge-priming, context-anchoring, collaborative-judgment, clean-code, test-quality (always), design-first, clean-architecture, domain-driven-design, secure-coding (conditional) |
 | **bug-fix** | Investigates, reproduces, and safely fixes a bug with regression protection. Requires a failing reproduction before applying the repair | knowledge-priming, context-anchoring, collaborative-judgment, clean-code, test-quality (always), clean-architecture, domain-driven-design, secure-coding (conditional) |
 | **review** | Performs a structured, delta-scoped code review with severity-ordered findings. Supports optional process config via review-refiner | knowledge-priming (always), collaborative-judgment (always), clean-code (always), clean-architecture, domain-driven-design, secure-coding, test-quality (conditional) |
 
@@ -59,7 +60,7 @@ Lattice organizes skills into three tiers. See [how-it-works](docs/how-it-works.
 
 ## The Pipeline
 
-Skills form a delivery lifecycle: **lattice-init** → **design-blueprint** → **code-forge** → **review**, with **bug-fix** covering defect-driven work that starts from a failing behavior instead of a new design. Each stage consumes and produces artifacts in `.ai/`, growing the living context layer. See [how-it-works](docs/how-it-works.md#the-design-to-code-pipeline) for the detailed flow.
+Skills form a delivery lifecycle: **lattice-init** → **design-blueprint** → **code-forge** → **review**, with **refactor-safely** covering behavior-preserving structural change and **bug-fix** covering defect-driven work that starts from a failing behavior. Each stage consumes and produces artifacts in `.ai/`, growing the living context layer. See [how-it-works](docs/how-it-works.md#the-design-to-code-pipeline) for the detailed flow.
 
 ## Getting Started
 
@@ -69,7 +70,7 @@ Skills form a delivery lifecycle: **lattice-init** → **design-blueprint** → 
    cd lattice
    ./tools/install.sh /path/to/your-project/skill-folder
    ```
-   This copies all 19 skills (flattened) into `<project>/.claude/skills/` where Claude Code can discover them.
+   This copies all 20 skills (flattened) into `<project>/.claude/skills/` where Claude Code can discover them.
 
 2. **Run `/lattice-init`** (recommended): Guided setup experience -- scans your project, suggests which refiners to run, and creates the `.ai/config.yaml`. This is the fastest path from install to first value.
 
@@ -90,9 +91,11 @@ Skills form a delivery lifecycle: **lattice-init** → **design-blueprint** → 
 
 5. **Implement**: Invoke `/code-forge` to generate implementation from the approved blueprint.
 
-6. **Fix regressions**: Invoke `/bug-fix` when starting from a failure. It establishes a failing reproduction first, then applies the smallest safe repair.
+6. **Refactor safely**: Invoke `/refactor-safely` when improving structure without changing behavior. It agrees the target structure first, then uses characterization tests to protect the refactor.
 
-7. **Review**: Invoke `/review` to audit code changes against the relevant quality atoms.
+7. **Fix regressions**: Invoke `/bug-fix` when starting from a failure. It establishes a failing reproduction first, then applies the smallest safe repair.
+
+8. **Review**: Invoke `/review` to audit code changes against the relevant quality atoms.
 
 ### The `.ai/` folder
 
@@ -104,7 +107,7 @@ The `.ai/` folder is Lattice's living context layer -- the second half of the ar
 ├── standards/       # Refiner-produced customization docs
 │   └── review-standards.md  # (optional) Review process config
 ├── context/         # Per-feature living documents
-├── learnings/       # Accumulated review insights (fed back into code-forge and bug-fix)
+├── learnings/       # Accumulated review insights (fed back into code-forge, refactor-safely, and bug-fix)
 └── reviews/         # Review log for project health visibility
 ```
 

@@ -18,7 +18,7 @@ The three tiers described above are one half of Lattice -- the **base framework*
 
 The second half is the **living context layer**: the `.ai/` folder. Standards produced by refiners, feature context documents, accumulated review insights, and health logs -- all project-specific, all growing with every feature cycle. The living context layer is the muscle -- it strengthens with use, adapts to the work you do, and makes the base framework increasingly capable.
 
-The two layers interact through a read/write loop. The base framework *reads* from the context layer: atoms load project-specific standards, code-forge and bug-fix load past learnings, knowledge-priming loads the project's identity. The pipeline *writes* to the context layer: refiners produce standards documents, design-blueprint and code-forge create and enrich context documents, bug-fix records root cause and repair decisions, and review captures insights and logs health summaries. Each cycle enriches the next.
+The two layers interact through a read/write loop. The base framework *reads* from the context layer: atoms load project-specific standards, code-forge, refactor-safely, and bug-fix load past learnings, knowledge-priming loads the project's identity. The pipeline *writes* to the context layer: refiners produce standards documents, design-blueprint and code-forge create and enrich context documents, refactor-safely records approved structural decisions, bug-fix records root cause and repair decisions, and review captures insights and logs health summaries. Each cycle enriches the next.
 
 The payoff compounds over time. After a few feature cycles, atoms aren't applying generic rules -- they're applying *your* rules, informed by *your* review history. Code-forge doesn't repeat mistakes that review already caught. Standards grow more precise as refiners are re-run. Health logs reveal trends across features, not just snapshots. The base framework never changes, but the context layer makes it smarter with every use.
 
@@ -30,7 +30,7 @@ Each atom is a single-concern skill file that teaches one engineering principle.
 
 ### How they work
 
-When an atom is active, it provides two verification tools: a **Self-Validation Checklist** (numbered, labeled checks with imperative STOP language) and an **Active Anti-Pattern Scan** (checkbox format for scanning output). These are used by molecules such as code-forge and bug-fix during their verification passes — after generating or repairing code, the AI runs the relevant atom checklists against its output and fixes violations before presenting. This two-pass model (generate, then verify) is more reliable than simultaneous generation and validation.
+When an atom is active, it provides two verification tools: a **Self-Validation Checklist** (numbered, labeled checks with imperative STOP language) and an **Active Anti-Pattern Scan** (checkbox format for scanning output). These are used by molecules such as code-forge, refactor-safely, and bug-fix during their verification passes — after generating, reshaping, or repairing code, the AI runs the relevant atom checklists against its output and fixes violations before presenting. This two-pass model (generate, then verify) is more reliable than simultaneous generation and validation.
 
 ### Always vs conditional atoms
 
@@ -133,6 +133,19 @@ Investigates, reproduces, and safely fixes a bug with regression protection. Thi
 4. **Implement the minimal safe fix**: Repairs the root cause with clean-code always-on and architecture/DDD/security checks loaded only when the defect touches those dimensions.
 5. **Verify and capture**: Confirms the regression test is green, checks nearby behavior for non-regression, then records root cause and repair rationale in the living context. Recommends `/review` for larger or riskier fixes.
 
+### refactor-safely
+
+Restructures existing code without changing externally observable behavior. This is the preservation-driven counterpart to code-forge: it starts from structural pain in existing code and requires agreement on the target structure before any refactor edits are made.
+
+**Composes**: knowledge-priming (always), context-anchoring (always), collaborative-judgment (always), clean-code (always), test-quality (always), design-first (conditional), clean-architecture (conditional), domain-driven-design (conditional), secure-coding (conditional)
+
+**How it works**:
+1. **Establish refactor context**: Clarifies the current pain, desired structural improvement, and the behavior that must remain unchanged. Loads prior learnings and relevant context documents when available.
+2. **Define preservation boundaries and target structure**: Makes the behavioral contract explicit, then proposes the high-level structural plan. For significant refactors, uses design-first selectively at Levels 2-4. No code changes happen until this plan is approved.
+3. **Protect with characterization tests**: Locks current behavior with tests strong enough to detect drift during the refactor. This is the workflow's primary differentiator.
+4. **Refactor in approved slices**: Applies the structural changes in small, reviewable steps, keeping the characterization tests green and loading architecture/DDD/security atoms only when the refactor touches those concerns.
+5. **Verify and capture**: Confirms both behavior preservation and structural improvement, then records the approved target structure, migration choices, and deferred debt in the living context. Recommends `/review` for broad or risky refactors.
+
 ### review
 
 A structured, delta-scoped code review that loads atoms conditionally based on what changed. Supports optional process configuration via the review-refiner.
@@ -158,13 +171,16 @@ There are two common entry paths:
 Planned feature work:
   lattice-init → design-blueprint → code-forge → review
 
+Refactor-driven work:
+  refactor-safely → review
+
 Defect-driven work:
   bug-fix → review
 ```
 
-Feature work starts from requirements and produces an approved blueprint before implementation. Bug work starts from a failing behavior and produces a failing reproduction before the repair. Both paths converge on review for an independent quality pass.
+Feature work starts from requirements and produces an approved blueprint before implementation. Refactor work starts from structural pain and produces an approved target structure plus characterization tests before code reshaping begins. Bug work starts from a failing behavior and produces a failing reproduction before the repair. All paths converge on review for an independent quality pass.
 
-Each stage both consumes and produces artifacts in `.ai/` -- the pipeline is the engine that grows the living context layer. Context anchoring ties the stages together: the context document created during design carries the approved blueprint into implementation, captures bug root causes and repair decisions, informs review, and restores full context in any future session.
+Each stage both consumes and produces artifacts in `.ai/` -- the pipeline is the engine that grows the living context layer. Context anchoring ties the stages together: the context document created during design carries the approved blueprint into implementation, captures approved refactor plans and bug root causes, informs review, and restores full context in any future session.
 
 The context document lifecycle is: **Create** (new feature) → **Load** (resume work) → **Enrich** (capture decisions). All three behaviors require explicit user confirmation -- the AI proposes, the user disposes.
 
@@ -197,7 +213,7 @@ The `.ai/` folder is the living context layer described earlier -- the project's
 |-----------|---------|-----------|
 | `standards/` | Refiner-produced customization docs consumed by atoms via config resolution | Stable — set once during project setup, rarely changed |
 | `context/` | Per-feature living documents managed by context-anchoring | Per feature — created when feature starts, enriched during design and implementation |
-| `learnings/` | Accumulated review insights loaded by code-forge and bug-fix at session start | Append-only with pruning — capped at ~50 entries |
+| `learnings/` | Accumulated review insights loaded by code-forge, refactor-safely, and bug-fix at session start | Append-only with pruning — capped at ~50 entries |
 | `reviews/` | Review log entries for project health visibility | Rolling window — capped at ~20 entries, older entries summarized |
 
 ### Convention
