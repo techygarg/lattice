@@ -36,6 +36,13 @@ At the end of this step, summarize the bug in one sentence:
 
 If you cannot state the bug that clearly yet, continue gathering evidence before proposing code changes.
 
+**Optional persistence check**:
+
+- If the investigation is complex, involves multiple hypotheses, or is likely to span multiple sessions, ask whether the user wants to persist the diagnosis and repair decisions
+- If a relevant context document already exists → plan to enrich it in Step 7
+- If none exists and the user wants persistence → propose creating one, confirm the document name per `framework:context-anchoring`, then use it as the source of truth
+- If the user does not want persistence or the bug is narrow and local → continue in non-persistent mode. The repair workflow still applies; decisions remain in-session
+
 ### Step 2: Reproduce and Localize
 
 **Primary discipline**: do not present a fix for a bug you have not reproduced.
@@ -57,22 +64,46 @@ Localize the issue before editing:
 
 If multiple plausible root causes remain, use `framework:collaborative-judgment` to present the leading hypotheses and what evidence would distinguish them. Do not guess and patch speculatively.
 
+Before writing the regression test, state the root cause hypothesis explicitly and use `framework:collaborative-judgment` to surface it:
+
+> "The bug is caused by [X]. When [C holds], the correct outcome should be [P].
+>  I will confirm this by writing a test that is red before the fix and green after."
+
+If the user identifies a flaw in the hypothesis, revise it before writing tests.
+
+End this step with an explicit bug contract:
+
+> **C (bug condition):** [exact input/state that triggers the bug]
+> **P (fix postcondition):** [what correct behavior looks like when C holds]
+> **Preserved:** [what must remain identical for all inputs outside C]
+
+If you cannot state all three, continue localizing before writing tests.
+
 ### Step 3: Add Regression Protection First
 
-Convert the reproduction into the **smallest failing automated test** that faithfully captures the bug.
+**Phase A — Bug-Condition Tests (must start RED)**
 
-- Prefer the **lowest-level test** that reproduces the real failure without losing signal
-- If the bug only manifests at a higher level (HTTP, message flow, persistence), write that higher-level test first
+- Write the smallest failing test that fires when C holds
+- Prefer the lowest-level test that reproduces the real failure without losing signal
 - Name the test for the broken behavior, not the implementation detail
-- Apply `framework:test-quality` inline: AAA structure, one behavior per test, specific assertions, isolated setup
+- Assert the correct expected outcome (postcondition P), not just the absence of failure
+- Apply `framework:test-quality` inline
+- Run it against unfixed code and confirm it is RED
+  - If it is green before the fix, the bug condition hypothesis is wrong — stop and re-localize
 
 **Stopping rule**:
 
 - If you cannot create a stable failing automated test, pause and explain why before making code changes
 - Record the closest executable reproduction you do have
 - Do not present a speculative fix as "complete" without an automated reproducer unless the user explicitly accepts that limitation
+- If the bug cannot be tested directly due to tight coupling or deep integration, introduce the minimum structural seam needed to make it testable (method extraction, parameter injection, interface boundary). This is not a refactor — it is a prerequisite for regression protection. Apply `framework:clean-code` inline and keep the seam minimal.
 
-This step is the molecule's differentiator: the bug is not considered properly contained until the failure is executable and red.
+**Phase B — Preservation Baseline (must stay GREEN)**
+
+- Identify existing tests that already cover behavior outside C
+- If important adjacent behavior has no test coverage, add at most 2-3 targeted characterization tests
+- Confirm all preservation baseline tests are green before applying any fix
+- These tests must remain green through every change in Step 5 — any flip to red means the fix has side effects; stop and narrow scope
 
 ### Step 4: Choose the Minimal Safe Fix
 
@@ -93,12 +124,11 @@ Guardrails:
 - Do not widen the task into unrelated cleanup
 - Do not delete or weaken the failing test just to make the suite green
 - If a real fix requires a contract or design change beyond a narrow repair, stop and discuss the scope explicitly
+- Do not add guard clauses, null checks, or defensive handling for inputs outside C — the code path for correct inputs must be byte-for-byte identical before and after the fix.
 
 If there are multiple valid repair strategies with meaningful trade-offs, present them using `framework:collaborative-judgment` before proceeding.
 
 ### Step 5: Implement the Fix
-
-Apply the repair only after the regression test is red and the fix strategy is clear.
 
 Always apply:
 
@@ -120,12 +150,10 @@ After implementing the fix and before presenting it:
 
 ### Step 6: Verify Non-Regression
 
-Do not stop at "the one test passes."
-
 Verify the repair at three levels:
 
-1. **Primary proof** -- the new or existing regression test now passes
-2. **Local confidence** -- adjacent tests for the same module, use case, or boundary still pass
+1. **Fix proof** -- the regression test that was red before the fix is now green. It asserts the correct outcome, not just the absence of the original failure.
+2. **Preservation proof** -- tests covering behavior adjacent to the bug still pass. If preservation baseline tests were added in Step 3, they must remain green. Any flip from green to red means the fix has side effects — stop and narrow the scope before continuing.
 3. **Structural confidence** -- the fix did not introduce a wrong-layer workaround, dependency violation, or weakened security posture
 
 When reporting completion, be explicit about verification scope:
@@ -146,7 +174,7 @@ Use `framework:context-anchoring` Enrich behavior to preserve the important part
 - Protection added: the regression test or executable reproducer that now guards the behavior
 - Key files changed: path and purpose
 
-If no context document exists and the fix exposed a non-trivial design or domain lesson, suggest creating one so the reasoning is not lost in the next session.
+If no context document exists and the fix exposed a non-trivial design or domain lesson, suggest creating one.
 
 After the fix is complete, recommend `/review` when the change:
 
