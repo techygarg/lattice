@@ -1,6 +1,6 @@
 ---
 name: clean-architecture
-description: "Enforce clean architecture structural rules when generating or modifying code. Validates layer responsibilities, dependency direction, and structural constraints. Use when generating code, reviewing architecture, creating new files, or when the user mentions 'architecture', 'layers', 'structure', 'controllers', 'services', 'repositories', 'dependency rules', 'providers', 'provider vs repository', or 'CQRS'. Also use when reviewing generated code for structural compliance."
+description: "Enforce clean architecture structural rules when generating or modifying code. Validates layer responsibilities, dependency direction, and structural constraints. Use when generating code, reviewing architecture, creating new files, or when the user mentions 'architecture', 'layers', 'structure', 'controllers', 'services', 'repositories', 'dependency rules', 'providers', 'provider vs repository', 'CQRS', 'hexagonal architecture', 'ports and adapters', or 'onion architecture'. Also use when reviewing generated code for structural compliance."
 ---
 
 # Clean Architecture
@@ -45,6 +45,9 @@ After verifying the checklist above, scan your output for these specific anti-pa
 - [ ] **God Classes**: Single class changes for every kind of requirement → decompose into focused classes per layer
 - [ ] **Anemic Architecture**: Layers exist in folders but dependency rule is not enforced → verify imports, add interfaces
 - [ ] **Leaking Data Formats**: Database schema change breaks API contract → map between DAO, domain object, and response DTO at each boundary
+- [ ] **Circular Dependency**: Two layers importing each other (e.g., application importing infrastructure type, infrastructure importing application type) → introduce an interface in the inner layer
+- [ ] **Fat Application Service**: Business rules or domain logic accumulating in the orchestration layer → move decisions into domain entities or domain services
+- [ ] **Leaking Entity**: Domain object returned directly from a controller instead of mapped to a response DTO → add a boundary mapping step
 
 ## Ambiguity Signals
 
@@ -128,5 +131,15 @@ Key rules: Provider lives in `infrastructure/providers/` with **no interface in 
 ### Single Service, Two Paths
 
 A single service per domain concept injects both Repository and Provider. Command methods route through domain and Repository; query methods route through Provider directly. This is a *flow* distinction within the service, not a class-level split. Full CQRS with separate command/query handlers is a different architectural choice -- do not conflate the two.
+
+```
+class OrderService(
+  repo: OrderRepository,   // domain-defined interface → command path
+  provider: OrderProvider  // infrastructure-concrete  → query path
+) {
+  placeOrder(cmd):   domain = Order.create(cmd) → repo.save(domain)
+  getOrderById(id):  dao = provider.findById(id) → map to DTO
+}
+```
 
 

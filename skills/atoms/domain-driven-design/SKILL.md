@@ -1,6 +1,6 @@
 ---
 name: domain-driven-design
-description: "Apply DDD tactical patterns when working with domain code. Enforces aggregate design, value objects over primitives, entity identity rules, and bounded context boundaries. Use when creating or modifying domain models, designing aggregates, working in the domain folder, or when the user mentions 'domain', 'aggregate', 'value object', 'entity', 'bounded context', or 'DDD'. This skill auto-activates when code changes touch the configured domain folder."
+description: "Apply DDD tactical patterns when working with domain code. Enforces aggregate design, value objects over primitives, entity identity rules, and bounded context boundaries. Use when creating or modifying domain models, designing aggregates, working in the domain layer, or when the user mentions 'domain', 'aggregate', 'value object', 'entity', 'bounded context', or 'DDD'."
 ---
 
 # Domain-Driven Design
@@ -33,6 +33,8 @@ STOP after generating each component. Verify ALL of the following before proceed
 4. **VALUE OBJECT COVERAGE**: Scan for primitive types that should be value objects — string emails, number amounts, raw UUIDs as identifiers → wrap in value objects with validation.
 5. **AGGREGATE COHESION**: List the business rules the root enforces. Does each internal entity participate in at least one invariant? If not → it belongs in its own aggregate.
 6. **DOMAIN EVENTS**: Are domain events raised for state transitions other aggregates react to, changes that trigger notifications, and audit/compliance requirements? Don't raise events for internal changes nothing reacts to.
+7. **DOMAIN SERVICE**: Is stateless logic that spans multiple entities placed in a domain service rather than an application service? Does it avoid I/O and infrastructure calls?
+8. **FACTORY**: Is complex aggregate creation encapsulated in a factory method (`Order.create(...)`) or standalone factory class? Are initial creation and reconstitution from persistence handled separately?
 
 ## Active Anti-Pattern Scan
 
@@ -56,6 +58,8 @@ These checks often have multiple valid outcomes. When you encounter one, present
 ## Scope Statement
 
 This skill operates within a single repository, for a single bounded context (e.g., one API -- Order, User, Pricing). It covers tactical DDD patterns only -- not strategic DDD (no context mapping, no microservice topology, no bounded context integration).
+
+If the task appears to span multiple bounded contexts (e.g., an Order feature that calls into Shipping logic), flag this before proceeding: "This touches [Context A] and [Context B]. Cross-context integration is strategic DDD — outside this skill's scope. Would you like to scope to one context, or proceed knowing cross-context coordination is your responsibility?"
 
 `framework:clean-architecture` provides the structural envelope -- where code lives, which layers exist, which direction dependencies flow. This skill defines how to craft the domain *within* that envelope: rich models, invariants, aggregate boundaries, and ubiquitous language.
 

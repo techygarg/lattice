@@ -57,6 +57,22 @@ Three behaviors govern the context anchor document lifecycle. Each can be trigge
    - Frontmatter: `feature`, `requirement_doc`, `created` (today's date)
    - H1 heading: the feature name
    - Summary: a one-line description (ask the user or derive from context)
+   - If the template file is not found, generate the document using this minimal structure:
+     ```
+     ---
+     feature: <feature-name>
+     requirement_doc: <path or null>
+     created: <today's date>
+     ---
+     # <Feature Name>
+     <one-line summary>
+     ## Decisions Log
+     | Date | Decision | Reasoning | Alternatives Considered |
+     |------|----------|-----------|------------------------|
+     ## Open Questions
+     ## Constraints
+     ## Key Files
+     ```
 5. **Confirm creation.** Show the user the proposed path and content summary. Create only after confirmation.
 
 ## Load Behavior
@@ -104,6 +120,7 @@ Three behaviors govern the context anchor document lifecycle. Each can be trigge
 4. **Feature-bound only.** Only capture decisions relevant to this specific feature. Cross-cutting concerns, project-wide conventions, and general preferences belong elsewhere.
 5. **Resolve open questions explicitly.** When an open question is answered, add the answer as a decision in the log *and* remove the question from the Open Questions list.
 6. **Constraints are non-negotiable.** Once a constraint is recorded, it is binding. Changing a constraint requires a new decision entry explaining why the constraint is being revised.
+7. **Constraint Override Protocol.** If the user explicitly says to override a constraint (e.g., "forget that constraint, we've changed direction"), do not silently delete it. Instead: (a) ask the user to confirm the override explicitly, (b) strike through the constraint in the Constraints section (prefix with `~~`), and (c) add a decision entry in the Decisions Log recording the override and its reasoning. The constraint history is preserved; its binding status is revoked.
 
 ## Document Discovery
 
@@ -114,6 +131,7 @@ When the user asks to load or resume but does not specify which feature:
 3. **If multiple documents exist**, present a numbered list with feature name, creation date, and decision count. Let the user choose.
 4. **If only one document exists**, suggest loading it. Confirm before proceeding.
 5. **If no documents exist**, inform the user and suggest creating one.
+6. **Fuzzy match**: If the user's term partially matches multiple documents (e.g., "auth" matching `user-authentication.md` and `oauth-authentication.md`), show all partial matches with full filenames and let the user choose. Never guess.
 
 When the user mentions a feature name in conversation, check if a matching context document exists. If it does and has not been loaded in this session, suggest loading it.
 

@@ -1,6 +1,6 @@
 ---
 name: collaborative-judgment
-description: "Protocol for handling ambiguous decisions during code generation, design, and review. Ensures AI surfaces genuine judgment calls with structured options instead of silently assuming. Composed by molecules -- defines the presentation and resolution protocol while individual atoms define their own ambiguity signals. This skill activates when molecules load it alongside other atoms."
+description: "Protocol for handling ambiguous decisions during code generation, design, and review. Ensures AI surfaces genuine judgment calls with structured options instead of silently assuming. Use when a decision has multiple valid approaches, when the user asks 'what should we do here?', 'is this a judgment call?', 'should I ask about this?', 'what are the tradeoffs?', or when deciding between two reasonable architectural or design options. Also composed by molecules to define how judgment calls are surfaced and resolved."
 ---
 
 # Collaborative Judgment
@@ -49,6 +49,7 @@ Do not interrupt for every judgment call. Collect and surface at natural checkpo
 - **During implementation** (code-forge): batch per component. Surface all judgment calls for a component together before presenting the code.
 - **During design** (design-blueprint): surface immediately. Each design level constrains the next -- batching risks cascading misalignment.
 - **During review** (review): note uncertainty inline in the report with both interpretations.
+- **Standalone / freeform**: batch per logical task segment. If the user is discussing a feature, surface all judgment calls when the feature's scope is clear -- not one at a time as they arise.
 
 **Escalation signal**: If a single component produces more than 3 judgment calls, the project needs clearer standards. Suggest running the relevant refiner rather than asking about each one individually.
 
@@ -68,4 +69,4 @@ This protocol becomes less active as the project matures:
 - **After running refiners**: fewer (project standards are documented).
 - **After several features**: rare (context docs and learnings cover most cases).
 
-A well-configured project should see almost no judgment calls. If the AI is still asking frequently after multiple features, the standards documents need improvement.
+A well-configured project should see almost no judgment calls. If the AI is still asking frequently after multiple features, the standards documents need improvement. For example: if aggregate boundary questions keep surfacing, the DDD defaults document may not define a sizing heuristic -- run the domain-driven-design refiner to capture the team's preference and eliminate the question permanently.

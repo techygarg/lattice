@@ -35,6 +35,7 @@ STOP after generating each component. Verify ALL of the following before proceed
 6. **OUTPUT ENCODING**: Is output encoded appropriately for its rendering context (HTML, JSON, URL)?
 7. **AUTHORIZATION**: Is authorization verified at the service layer, not just at the controller? Does each endpoint enforce least privilege?
 8. **ERROR MESSAGES**: Do error messages exposed to users avoid revealing internal details (stack traces, SQL queries, file paths)?
+9. **DEPENDENCIES**: Are newly introduced third-party packages necessary? Are versions pinned or constrained? Are any known-vulnerable packages being added?
 
 ## Active Anti-Pattern Scan
 
@@ -56,6 +57,7 @@ These checks often have multiple valid outcomes. When you encounter one, present
 - **Trust Boundary Scope**: An internal API behind a trusted gateway may or may not need full boundary validation. The answer depends on the deployment topology and threat model.
 - **Error Message Detail**: How much information is "actionable but safe" depends on whether the consumer is a human user, a frontend client, or an internal service.
 - **Validation Depth**: Whether to re-validate data at inner layers (defense-in-depth) or trust the boundary validation depends on the risk profile and performance requirements.
+- **Auth vs Authz Failure Response**: Whether to return 401 (not authenticated) or 403 (not authorized) depends on whether the identity is known. Conflating them leaks information (a 403 confirms the resource exists). When the consumer is a human user, distinguish clearly; when the consumer is an internal service, the separation may differ.
 
 ## Core Principle
 
@@ -64,6 +66,8 @@ Security is about **thinking in trust boundaries**. Every data flow crosses a bo
 This atom teaches adversarial thinking during code generation, not as an afterthought. When writing code, identify trust boundaries as you go -- the same way a skilled developer considers edge cases. The cost of building security in during generation is near zero; the cost of retrofitting it after a breach is catastrophic.
 
 The boundary with clean-code: clean-code says "handle errors explicitly with actionable messages." Secure-coding says "error messages shown to users must not reveal internal details." Both apply; this skill governs the security dimension.
+
+The boundary with clean-architecture: "check authorization at every layer" (this skill) maps directly to clean-architecture's layer structure. Clean-architecture defines *where* each check lives (service layer, not controller); secure-coding defines *what* to check (identity confirmed, permission granted, resource owned).
 
 ## Trust Boundaries
 

@@ -1,6 +1,6 @@
 ---
 name: clean-code
-description: "Apply clean code principles when generating or modifying implementation code. Enforces function focus, naming clarity, complexity management, error handling, and self-documenting style. Use during code generation, refactoring, or when the user mentions 'clean code', 'code quality', 'refactor this', 'simplify this', 'coding guidelines', or 'implementation quality'. This skill governs the craft of writing individual code units -- not architecture (see clean-architecture), not security posture (see secure-coding), and not test structure (see test-quality)."
+description: "Apply clean code principles when generating or modifying implementation code. Enforces function focus, naming clarity, complexity management, error handling, and self-documenting style. Use during code generation, refactoring, or when the user mentions 'clean code', 'code quality', 'refactor this', 'simplify this', 'improve this', 'make this cleaner', 'clean this up', 'tidy this', 'coding guidelines', or 'implementation quality'. This skill governs the craft of writing individual code units -- not architecture (see clean-architecture), not security posture (see secure-coding), and not test structure (see test-quality)."
 ---
 
 # Clean Code
@@ -35,8 +35,6 @@ STOP after generating each component. Verify ALL of the following before proceed
 6. **PARAMETERS**: Does each function have four or fewer parameters? If not → group related parameters into an object.
 7. **PRIMITIVE OBSESSION**: Are there string, number, or boolean parameters that would be clearer as named types or objects? If so → introduce parameter objects or typed wrappers.
 8. **ERROR HANDLING**: Does every operation that can fail have explicit handling with actionable messages? Are errors handled at the right level?
-9. **COMMENTS**: Can any comment be eliminated by renaming the code it describes? Remove "what" comments, keep only "why" comments.
-10. **TESTABILITY**: Are side effects pushed to boundaries? Could a unit test exercise this logic without mocking I/O? If not → inject dependencies, extract pure logic.
 
 ## Active Anti-Pattern Scan
 
@@ -51,14 +49,16 @@ After verifying the checklist above, scan your output for these specific anti-pa
 - [ ] **Comments as Deodorant**: Comments explaining convoluted code → refactor the code to be self-documenting
 - [ ] **Hidden Side Effects**: Function named `getX` that also writes to cache or sends notification → rename or separate
 - [ ] **Dead Code**: Commented-out blocks, unused imports, unreachable branches → delete (version control preserves history)
+- [ ] **Comment Deodorant**: Comments explaining convoluted code instead of refactoring it → rename the code to be self-documenting; keep only "why" comments, remove "what" comments
+- [ ] **Untestable Logic**: Side effects tangled with business logic; unit tests require mocking I/O → push side effects to boundaries, extract pure functions, inject dependencies
 
 ## Ambiguity Signals
 
-These checks often have multiple valid outcomes. When you encounter one, present options rather than silently choosing.
+These checks often have multiple valid outcomes. When you encounter one, present options rather than silently choosing. The Guardrails section below provides the resolution rule for each; flag the tension, then apply the rule.
 
-- **Single Responsibility**: Two tightly-coupled sequential operations may be one responsibility (a pipeline), not two. The "and" test catches both true violations and false positives.
-- **Function Size**: A 25-line function with one clear purpose may be better than five unclear 5-line functions. Near-threshold cases are judgment calls.
-- **DRY vs Premature Abstraction**: Two identical blocks may serve different business purposes and diverge later. Until the third instance with the same reason to change, this is genuinely ambiguous.
+- **Single Responsibility**: Two tightly-coupled sequential operations may be one responsibility (a pipeline), not two. The "and" test catches true violations and false positives alike.
+- **Function Size**: Near-threshold (20-30 lines) with one clear purpose -- extracting may create five unclear smaller functions. Present the tradeoff.
+- **DRY vs Premature Abstraction**: Two identical blocks may serve different purposes and diverge. Until the third instance with the same reason to change, this is genuinely ambiguous.
 - **Error Handling Strategy**: Exceptions vs Result types vs error codes depends on language idioms and team convention, not a universal rule.
 
 ## Core Principle
@@ -67,7 +67,7 @@ Clean code is about the **craft of writing individual units of code** -- functio
 
 ## Guardrails and Nuances
 
-The checklist and anti-patterns above are the primary enforcement mechanism. These nuances prevent over-application of those rules. See `./references/defaults.md` for full explanations, thresholds, and code examples.
+The checklist and anti-patterns above are the primary enforcement mechanism. These nuances resolve the Ambiguity Signals above. See `./references/defaults.md` for full explanations, thresholds, and code examples.
 
 - **SRP pipeline guardrail**: The "and" test catches functions with *independent* responsibilities, not tightly coupled steps of one responsibility. `validateAndNormalizeEmail` does two things that must always happen together in sequence — separating them creates an invalid-state window. When steps have no valid independent use, they are one responsibility expressed as a pipeline.
 

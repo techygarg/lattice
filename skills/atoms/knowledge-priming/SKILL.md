@@ -1,6 +1,6 @@
 ---
 name: knowledge-priming
-description: "Load project-specific context -- tech stack, architecture overview, directory layout, trusted sources, and conventions -- so that all skills operate with awareness of what this project actually is. Activates automatically when a knowledge base document exists. Use the knowledge-priming-refiner to create one."
+description: "Load project-specific context -- tech stack, architecture overview, directory layout, trusted sources, and conventions -- so that all skills operate with awareness of what this project actually is. Use when a knowledge base document exists, or when the user asks about the project's tech stack, architecture, conventions, framework, directory layout, or says 'tell me about this project', 'what are we using?', 'what's our stack?', or 'what framework is this?'. Use the knowledge-priming-refiner to create a knowledge base document."
 ---
 
 # Knowledge Priming
@@ -26,7 +26,7 @@ If no knowledge base document is found during config resolution, inform the user
 
 > No project knowledge base found. Without it, AI skills will work from generic assumptions about your tech stack, architecture, and conventions.
 >
-> To create one, run the **knowledge-priming-refiner** -- a guided conversation that captures your project's identity in a concise document (~50 lines). Once created, every skill in Lattice will use it as ambient context.
+> To create one, trigger the **knowledge-priming-refiner** skill -- a guided interview (~10 questions) that produces a concise document (~50 lines). Once created, every Lattice skill will use it as ambient context.
 >
 > You can also create `.ai/standards/knowledge-base.md` manually and reference it in `.ai/config.yaml` under `paths.knowledge_base`.
 
@@ -48,11 +48,11 @@ The document is intentionally lean -- under 50 lines of focused content. Every t
 
 ## How It Is Used
 
-When a knowledge base document is loaded, it becomes **ambient context** for all skills:
+When a knowledge base document is loaded, it becomes **ambient context** for all skills. Any molecule that composes this atom loads it first, before any design, implementation, or review work begins. Examples of how it is used:
 
-- **design-blueprint** uses it to ground design decisions in the actual tech stack and architecture -- proposing components that fit the real project structure rather than generic patterns
-- **code-forge** uses it to generate code that matches the project's framework, version-specific APIs, directory conventions, and naming patterns
-- **review** uses it to evaluate changes against the project's actual standards -- flagging deviations from documented conventions rather than generic best practices
+- **Design molecules** use it to ground design decisions in the actual tech stack and architecture -- proposing components that fit the real project structure rather than generic patterns
+- **Implementation molecules** use it to generate code that matches the project's framework, version-specific APIs, directory conventions, and naming patterns
+- **Review molecules** use it to evaluate changes against the project's actual standards -- flagging deviations from documented conventions rather than generic best practices
 
 The knowledge base is always-on context. Unlike conditional atoms (DDD, secure-coding, test-quality) that activate based on what code is being touched, the knowledge base applies to every interaction because project identity is always relevant.
 

@@ -1,6 +1,6 @@
 ---
 name: design-first
-description: "Guide structured design thinking through 5 progressive levels before any code is written. Levels: Capabilities, Components, Interactions, Contracts, Implementation. Use when building new features, refactoring significant code, designing modules, or when the user says 'design this', 'architect this', 'let's think before coding', 'walk me through the design', or 'whiteboard this'. Do not use for quick fixes, bug patches, or simple CRUD operations."
+description: "Guide structured design thinking through 5 progressive levels before any code is written. Levels: Capabilities, Components, Interactions, Contracts, Implementation. Use when building new features, refactoring significant code, designing modules, or when the user says 'design this', 'architect this', 'let's think before coding', 'walk me through the design', or 'whiteboard this'. For simple utilities or single-component tasks, enter at Level 4 (Contracts). Do not use for quick bug patches."
 ---
 
 # Design-First (Progressive Design Facilitation)
@@ -97,13 +97,15 @@ At the end of each level:
 
 Each level constrains the decision space for the next. Skipping a level or advancing without approval means the constraints are not established, and later levels will drift.
 
-## Challenge Requirements
+**Mid-level exit**: If the user says "skip to code" or "just implement it" before the design is complete, acknowledge the tradeoff before proceeding: "Skipping Level [N] means [what hasn't been aligned] -- I'll flag any design gaps I notice as I implement. Proceeding now." Then implement. Do not refuse or block; note the risk and move forward.
 
-If something seems over-engineered at any level, propose a simpler alternative. The AI should actively push back on unnecessary complexity -- extra components that could be merged, abstractions that add indirection without value, capabilities that were not requested.
+## Simplicity Check (Every Level)
 
-This applies at every level: a capability list that exceeds the stated requirements, a component structure with unnecessary wrappers, an interaction flow with redundant steps, contracts with utility functions not in the design. Simpler is better. Every addition is surface area that must be reviewed, tested, and maintained.
+At the end of each level output, before asking the gating question, ask: **"Is this simpler than it could be?"**
 
-When the user's requirements could be served by a simpler design, present the simpler alternative first and explain why. Let the user choose to add complexity rather than having to remove it.
+Actively push back on unnecessary complexity: capabilities beyond scope, components that could be merged, interaction steps that add no value, contracts with utility functions nobody requested. Present the simpler alternative first. Let the user choose to add complexity rather than having to remove it.
+
+This is not a post-design concern -- it is an active discipline at every checkpoint. Every addition is surface area that must be reviewed, tested, and maintained. Simpler is better.
 
 ## Anti-Patterns
 
