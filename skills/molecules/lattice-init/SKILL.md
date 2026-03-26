@@ -26,6 +26,8 @@ Detect signals about the project to understand its shape and existing Lattice st
 - `Gemfile` → Ruby
 - `*.csproj` or `*.sln` → C# / .NET
 
+If multiple language markers are found at the repository root, note all of them and ask the user which primary stack to use for refiner suggestions before continuing.
+
 **Directory structure** -- list top-level directories. Identify common patterns:
 - `src/`, `lib/`, `app/` → source code
 - `test/`, `tests/`, `spec/` → test suites
@@ -84,7 +86,7 @@ Based on gaps found in Step 2, suggest refiners in priority order. Walk the user
 - What the refiner does (one sentence, from the descriptions above)
 - Three choices: **Run it now**, **Skip for later**, or **Skip all remaining**
 
-**If user says "run it"** → Tell the user to invoke the refiner: "Run `/[refiner-name]` now to start the guided interview."
+**If user says "run it"** → Tell the user to invoke the refiner: "Run `/[refiner-name]` now to start the guided interview." If a refiner exits before completing, the user can re-run it — existing partial output in `.ai/standards/` will not block the interview from restarting.
 
 **If user says "skip"** → Move to the next refiner in priority order.
 

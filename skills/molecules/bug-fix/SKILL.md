@@ -36,13 +36,6 @@ At the end of this step, summarize the bug in one sentence:
 
 If you cannot state the bug that clearly yet, continue gathering evidence before proposing code changes.
 
-**Optional persistence check**:
-
-- If the investigation is complex, involves multiple hypotheses, or is likely to span multiple sessions, ask whether the user wants to persist the diagnosis and repair decisions
-- If a relevant context document already exists → plan to enrich it in Step 7
-- If none exists and the user wants persistence → propose creating one, confirm the document name per `framework:context-anchoring`, then use it as the source of truth
-- If the user does not want persistence or the bug is narrow and local → continue in non-persistent mode. The repair workflow still applies; decisions remain in-session
-
 ### Step 2: Reproduce and Localize
 
 **Primary discipline**: do not present a fix for a bug you have not reproduced.
@@ -78,6 +71,13 @@ End this step with an explicit bug contract:
 > **Preserved:** [what must remain identical for all inputs outside C]
 
 If you cannot state all three, continue localizing before writing tests.
+
+**Optional persistence check**: Now that the bug is reproduced and localized, decide whether to persist the investigation:
+
+- If the investigation is complex, involves multiple hypotheses, or is likely to span multiple sessions, ask whether the user wants to persist the diagnosis and repair decisions
+- If a relevant context document already exists → plan to enrich it in Step 7
+- If none exists and the user wants persistence → propose creating one, confirm the document name per `framework:context-anchoring`, then use it as the source of truth
+- If the user does not want persistence or the bug is narrow and local → continue in non-persistent mode. The repair workflow still applies; decisions remain in-session
 
 ### Step 3: Add Regression Protection First
 
@@ -120,7 +120,7 @@ Default to the smallest safe fix that restores correct behavior **without archit
 
 Guardrails:
 
-- Do not patch in an outer layer when the rule belongs inward
+- Apply `framework:clean-architecture` layering rules when choosing repair location — do not patch in an outer layer when the rule belongs inward
 - Do not widen the task into unrelated cleanup
 - Do not delete or weaken the failing test just to make the suite green
 - If a real fix requires a contract or design change beyond a narrow repair, stop and discuss the scope explicitly

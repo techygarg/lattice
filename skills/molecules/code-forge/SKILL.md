@@ -59,10 +59,10 @@ After the plan is approved, ask the user to choose a **review mode**:
 
 > "How would you like to review the implementation?"
 > 1. **Layer-by-layer** (recommended) -- I'll implement each layer fully, then pause for your review before starting the next. Four review points.
-> 2. **Full autonomy** -- I'll implement everything end-to-end and present the complete result. One review point at the end.
+> 2. **Full autonomy** -- I'll implement everything end-to-end and present the complete result. One review point at the end. (If a blueprint exists, still pause on any deviation from the approved design.)
 > 3. **Component-by-component** -- I'll pause after each individual component for your feedback. Maximum review points.
 
-Default to **layer-by-layer** if the user does not express a preference. If a blueprint exists and the user chose full autonomy, still pause on any deviation from the approved design.
+Default to **layer-by-layer** if the user does not express a preference.
 
 ### Step 3: Implement Per Component
 
@@ -72,12 +72,12 @@ For every component:
 
 - **Place in the correct architectural layer** per `framework:clean-architecture`. Validate dependency direction -- dependencies point inward, never outward.
 - **Apply `framework:clean-code` self-validation** during generation. Run the inline checks: SRP compliance, meaningful naming, low cyclomatic complexity, proper error handling, no magic values, clean function signatures, no dead code, appropriate abstraction level, clear control flow, minimal comments (code should be self-documenting).
-- **Write tests** using `framework:test-quality` self-validation. Verify: AAA structure, one behavior per test, meaningful assertion messages, test isolation, descriptive test names, no test interdependencies, appropriate use of mocks vs real implementations.
+- **Write tests** using `framework:test-quality` self-validation.
 
 Conditional checks applied per component:
 
-- **If domain layer** → Apply `framework:domain-driven-design` self-validation. Verify: aggregate boundaries enforced, entities have identity, value objects are immutable, domain logic stays in domain, repositories are interface-only in domain, domain events for cross-aggregate communication.
-- **If trust boundary** (HTTP handler, external API call, user input processing, file I/O) → Apply `framework:secure-coding` self-validation. Verify: input validation at boundary, parameterized queries, no hardcoded secrets, output encoding, authentication/authorization checks, secure defaults, error messages that don't leak internals, dependency on trusted libraries.
+- **If domain layer** → Apply `framework:domain-driven-design` self-validation.
+- **If trust boundary** (HTTP handler, external API call, user input processing, file I/O) → Apply `framework:secure-coding` self-validation.
 - **If blueprint exists** → Verify the component fulfills its Level 4 (Contracts) specification. Flag any deviation from the agreed contract.
 
 **Post-Generation Verification** (applies to every component, in all review modes):

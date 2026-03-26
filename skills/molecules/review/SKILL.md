@@ -111,7 +111,7 @@ For each loaded atom, apply two passes against the delta:
 
 ### Step 4: Produce Report
 
-Ask the user which mode they prefer, or default to **summary mode** if not specified.
+Default to **summary mode**. Use **full mode** if the user asked for a detailed or comprehensive review.
 
 **Summary mode** (default):
 
@@ -176,7 +176,7 @@ After presenting the report to the user, capture learnings and log the review fo
 If recurring patterns or notable findings emerged from this review:
 
 1. Create `.ai/learnings/` directory if it doesn't exist.
-2. Append concise bullet points to `.ai/learnings/review-insights.md`. Create the file with a `# Review Insights` heading if it doesn't exist.
+2. Before appending, check for an existing entry describing the same pattern — update it with a recurrence note rather than adding a new entry. Append new concise bullet points to `.ai/learnings/review-insights.md`. Create the file with a `# Review Insights` heading if it doesn't exist.
 3. Format: `- YYYY-MM-DD [Feature]: Pattern observed — actionable takeaway`
 4. Each insight is ONE bullet point, max 2 lines. Keep entries concise — bullet points that help AI remember patterns, not verbose reports. Each entry should be scannable in under 10 seconds.
 5. Only capture patterns that would help future code generation — not every finding. A one-off typo is not an insight; "domain services keep doing repository work" is.

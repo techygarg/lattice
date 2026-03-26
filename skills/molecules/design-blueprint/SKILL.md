@@ -28,6 +28,8 @@ Use `framework:context-anchoring` to set up the feature's living document.
 
 ### Step 2: Walk the Design Levels
 
+If key use cases or success criteria are unclear at this point, use `framework:collaborative-judgment` to surface what needs to be answered before starting Level 1.
+
 Drive through `framework:design-first`'s 5 levels sequentially. At each level, present the design output, get user approval, then **persist the approved output into the context anchor document before advancing**. The context document is the blueprint -- if it is not written down, it does not exist.
 
 **The enrichment rule**: After the user approves each level, use `framework:context-anchoring` Enrich behavior to write the following into the context document:
@@ -59,6 +61,7 @@ Apply architectural atoms at the levels where they add value:
 
 **Level 4 (Contracts)**:
 - Apply `framework:domain-driven-design` -- define repository interfaces, value object types, aggregate root boundaries. Contracts should reflect the tactical patterns agreed at earlier levels.
+- Apply `framework:clean-architecture` -- validate that contracts respect boundary-data rules and interface ownership. No domain contract should reference infrastructure types.
 - On approval → Enrich context document with the approved interfaces and type definitions under a `## Design: Level 4 -- Contracts` section. Log contract decisions in the Decisions Log.
 
 ### Step 3: Finalize Blueprint

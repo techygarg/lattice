@@ -106,7 +106,7 @@ Before changing structure, lock current behavior with tests.
 - Add **characterization tests** for important behaviors that are currently implicit
 - Prefer the **lowest-level test** that faithfully captures the preserved behavior without missing important integration effects
 - Characterization tests must describe **current observable behavior**, not the intended refactored shape
-- Apply `framework:test-quality` inline: AAA structure, one behavior per test, specific assertions, isolated setup
+- Apply `framework:test-quality` inline
 
 **Stopping rule**:
 
@@ -138,7 +138,7 @@ Preferred pacing:
 > "How would you like to review the refactor?"
 > 1. **Slice-by-slice** (recommended) -- I'll refactor one safe slice at a time and pause after each slice. Best for risky legacy code.
 > 2. **Layer-by-layer** -- I'll complete the refactor for one structural layer or concern, then pause for review. Best for broader architectural cleanup.
-> 3. **Full autonomy** -- I'll execute the approved refactor end-to-end and present the complete result at the end. Best for tightly scoped, low-risk refactors.
+> 3. **Full autonomy** -- I'll execute the approved refactor end-to-end and present the complete result at the end. Best for tightly scoped, low-risk refactors. (Still pause if a slice reveals the approved plan is unsafe or invalid — see Step 6 Deviation Rule.)
 
 Default to **slice-by-slice** if the user does not express a preference.
 
