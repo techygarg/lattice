@@ -1,0 +1,41 @@
+{
+  "name": "lattice",
+  "owner": {
+    "name": "Rahul Garg",
+    "url": "https://github.com/techygarg/lattice"
+  },
+  "metadata": {
+    "description": "A marketplace of composable AI skills covering the full software delivery lifecycle — from requirements and design through implementation, testing, and review. Each plugin targets a specific SDLC role: backend engineers, frontend engineers, QA, business analysts, and more.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "lattice",
+      "description": "Composable skills for backend engineers: design-first workflows, clean architecture, DDD, secure coding guardrails, test quality, and structured code review.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/atoms/clean-code",
+        "./skills/atoms/clean-architecture",
+        "./skills/atoms/domain-driven-design",
+        "./skills/atoms/secure-coding",
+        "./skills/atoms/test-quality",
+        "./skills/atoms/knowledge-priming",
+        "./skills/atoms/design-first",
+        "./skills/atoms/context-anchoring",
+        "./skills/atoms/collaborative-judgment",
+        "./skills/molecules/lattice-init",
+        "./skills/molecules/design-blueprint",
+        "./skills/molecules/code-forge",
+        "./skills/molecules/refactor-safely",
+        "./skills/molecules/bug-fix",
+        "./skills/molecules/review",
+        "./skills/refiners/architecture-refiner",
+        "./skills/refiners/clean-code-refiner",
+        "./skills/refiners/ddd-refiner",
+        "./skills/refiners/knowledge-priming-refiner",
+        "./skills/refiners/review-refiner"
+      ]
+    }
+  ]
+}

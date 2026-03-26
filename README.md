@@ -64,13 +64,16 @@ Skills form a delivery lifecycle: **lattice-init** → **design-blueprint** → 
 
 ## Getting Started
 
-1. **Install skills into your project**: Lattice will be available as a proper plugin. For local testing after cloning the repo, use the install script to copy skills into your project:
+1. **Install as a Claude Code plugin** (recommended): Add Lattice directly through Claude Code:
    ```bash
-   git clone <lattice-repo-url>
-   cd lattice
-   ./tools/install.sh /path/to/your-project/skill-folder
+   claude plugins add https://github.com/techygarg/lattice
    ```
-   This copies all 20 skills (flattened) into `<project>/.claude/skills/` where Claude Code can discover them.
+   This registers the `lattice` plugin and makes all 20 skills available as `/lattice:<skill-name>` commands (e.g. `/lattice:design-blueprint`, `/lattice:code-forge`).
+
+   For local testing after cloning the repo, use the install script instead:
+   ```bash
+   ./tools/install.sh /path/to/your-project
+   ```
 
 2. **Run `/lattice-init`** (recommended): Guided setup experience -- scans your project, suggests which refiners to run, and creates the `.ai/config.yaml`. This is the fastest path from install to first value.
 
