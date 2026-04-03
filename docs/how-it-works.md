@@ -71,6 +71,8 @@ Atoms work out of the box with opinionated defaults. Customization is opt-in, no
 
 **Two paths to customization**: Run a refiner (guided interview that generates the standards document) or edit the standards document in `.ai/standards/` directly. Both produce the same result: a file the atom picks up through config resolution. Re-run a refiner or edit the file whenever your standards evolve.
 
+See [docs/configuration.md](configuration.md) for the complete list of valid config keys and what each one does.
+
 ## Molecules in Depth
 
 ### What they are
