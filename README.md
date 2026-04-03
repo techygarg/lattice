@@ -64,13 +64,18 @@ Skills form a delivery lifecycle: **lattice-init** → **design-blueprint** → 
 
 ## Getting Started
 
-1. **Install skills into your project**: Lattice will be available as a proper plugin. For local testing after cloning the repo, use the install script to copy skills into your project:
+1. **Install skills into your project**: Lattice will be available as a proper plugin. For local testing after cloning the repo, use the install script to copy skills directly into your AI tool's skills directory:
    ```bash
    git clone <lattice-repo-url>
    cd lattice
-   ./tools/install.sh /path/to/your-project/skill-folder
+   ./tools/install.sh /absolute/path/to/your/skills/folder
    ```
-   This copies all 20 skills (flattened) into `<project>/.claude/skills/` where Claude Code can discover them.
+   Pass the skills directory of whichever AI tool you are using — the script is tool-agnostic:
+   - **Claude Code**: `~/.claude/skills/` (global) or `/path/to/project/.claude/skills/` (project-local)
+   - **Cursor**: `/path/to/project/.cursor/skills/`
+   - **Any other tool**: the absolute path to that tool's skills folder
+
+   All 20 skills are copied flat into that directory so your tool can discover them.
 
 2. **Run `/lattice-init`** (recommended): Guided setup experience -- scans your project, suggests which refiners to run, and creates the `.ai/config.yaml`. This is the fastest path from install to first value.
 

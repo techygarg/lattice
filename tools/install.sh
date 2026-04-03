@@ -6,15 +6,20 @@ SKILLS_SOURCE="$LATTICE_DIR/skills"
 
 usage() {
   cat <<EOF
-Usage: ./tools/install.sh <target-project-path>
+Usage: ./tools/install.sh <target-skills-dir>
 
-Copies all Lattice skills into <target-project-path>/.claude/skills/,
-flattening the atoms/molecules/refiners structure so Claude Code can
-discover them.
+Copies all Lattice skills into <target-skills-dir>, flattening the
+atoms/molecules/refiners structure so your AI tool can discover them.
 
-Example:
-  ./tools/install.sh ~/projects/my-app
-  ./tools/install.sh .                    # install into current directory
+The target is the skills directory of your AI tool, for example:
+  Claude Code:  ~/.claude/skills/  or  /path/to/project/.claude/skills/
+  Cursor:       /path/to/project/.cursor/skills/
+  Any other:    /absolute/path/to/your/skills/folder/
+
+Examples:
+  ./tools/install.sh ~/.claude/skills
+  ./tools/install.sh /path/to/my-app/.claude/skills
+  ./tools/install.sh /path/to/my-app/.cursor/skills
 EOF
   exit 1
 }
@@ -23,17 +28,11 @@ if [ $# -lt 1 ]; then
   usage
 fi
 
-TARGET="$1"
-
-if [ ! -d "$TARGET" ]; then
-  echo "Error: '$TARGET' is not a directory."
-  exit 1
-fi
-
-TARGET="$(cd "$TARGET" && pwd)"
-DEST="$TARGET/.claude/skills"
+DEST="$1"
 
 mkdir -p "$DEST"
+
+DEST="$(cd "$DEST" && pwd)"
 
 count=0
 for tier in atoms molecules refiners; do
