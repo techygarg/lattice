@@ -10,7 +10,7 @@
   },
   "plugins": [
     {
-      "name": "lattice",
+      "name": "lattice-core",
       "description": "Composable skills for backend engineers: design-first workflows, clean architecture, DDD, secure coding guardrails, test quality, and structured code review.",
       "source": "./",
       "strict": false,
