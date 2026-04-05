@@ -9,7 +9,7 @@ description: "Load project-specific context -- tech stack, architecture overview
 
 AI defaults to the average of the internet. Without project-specific context, it guesses your framework, invents conventions, and produces generic code that does not match your stack. Knowledge priming solves this by loading a concise project identity document that tells the AI what it is working with -- before any design, implementation, or review begins.
 
-This atom does not teach coding principles (that is clean-code), structural rules (that is clean-architecture), or domain modeling (that is domain-driven-design). It answers a different question: **"What is this project?"** -- the tech stack, the architecture style, the directory layout, the trusted documentation sources, and the conventions that other skills cannot infer from code alone.
+This atom does not teach coding principles (that is clean-code), structural rules (that is architecture), or domain modeling (that is domain-driven-design). It answers a different question: **"What is this project?"** -- the tech stack, the architecture style, the directory layout, the trusted documentation sources, and the conventions that other skills cannot infer from code alone.
 
 ## Config Resolution
 
@@ -63,7 +63,7 @@ Knowledge priming captures **project identity and technical context**. It delibe
 | Concern | Where It Belongs | Not Here |
 |---------|-----------------|----------|
 | Coding style, naming principles, function design | clean-code atom | No code examples, no naming rules |
-| Architectural layers, dependency direction | clean-architecture atom | No structural rules |
+| Architectural layers, dependency direction | architecture atom | No structural rules |
 | Domain modeling, aggregate design | domain-driven-design atom | No DDD patterns |
 | Input validation, injection prevention | secure-coding atom | No security rules |
 | Test structure, assertion quality | test-quality atom | No testing patterns |

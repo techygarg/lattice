@@ -53,7 +53,7 @@ Look for signals that inform the conversation:
 - **Existing review history**: Check `.ai/reviews/review-log.md` — what atoms have been loading? What severity patterns exist? Are there recurring findings?
 - **Existing learnings**: Check `.ai/learnings/review-insights.md` — what patterns has the review captured? Is the file growing large (near pruning threshold)?
 - **Project structure**: What does the codebase look like? Are there directories that should be excluded or always-scanned?
-- **Existing atom refiners**: Which atom refiners have been run? (Check `.ai/config.yaml` for `paths.clean_architecture`, `paths.clean_code`, `paths.ddd_principles`) This tells you which atoms the team cares about.
+- **Existing atom refiners**: Which atom refiners have been run? (Check `.ai/config.yaml` for `paths.architecture`, `paths.clean_code`, `paths.ddd_principles`) This tells you which atoms the team cares about.
 
 Share relevant findings with the user at the start: "I looked at your review history and noticed [patterns]. I'll use that as context for our conversation."
 

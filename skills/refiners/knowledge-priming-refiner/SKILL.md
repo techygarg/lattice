@@ -9,7 +9,7 @@ description: "Facilitate a structured conversation to create a project-specific 
 
 This refiner facilitates a structured conversation to create a project-specific knowledge base document. The document captures the project's identity -- its tech stack, architecture, directory layout, and the trusted sources that shaped how the team works. Think of it as answering one question: "What does AI need to know about *this project* to avoid defaulting to generic internet patterns?"
 
-This is not about how to write good code -- that is handled by the `clean-code` atom (coding principles), `clean-architecture` atom (structural rules), and `domain-driven-design` atom (domain modeling). Knowledge priming covers what those skills cannot know: which framework, which version, which docs to trust, and how the repo is organized.
+This is not about how to write good code -- that is handled by the `clean-code` atom (coding principles), `architecture` atom (structural rules), and `domain-driven-design` atom (domain modeling). Knowledge priming covers what those skills cannot know: which framework, which version, which docs to trust, and how the repo is organized.
 
 ## What This Produces
 
@@ -26,7 +26,7 @@ Knowledge priming captures **project identity and technical context**. It delibe
 | Concern | Where It Belongs | Not In Knowledge Priming |
 |---------|-----------------|--------------------------|
 | Coding style, naming principles, function design | `clean-code` atom | No code examples, no naming rules |
-| Architectural layers, dependency direction | `clean-architecture` atom | No structural rules |
+| Architectural layers, dependency direction | `architecture` atom | No structural rules |
 | Domain modeling, aggregate design | `domain-driven-design` atom | No DDD patterns |
 | Code-level anti-patterns (god functions, deep nesting) | `clean-code` atom | No coding anti-patterns |
 

@@ -15,8 +15,7 @@ Load and apply these skills based on the refactor's scope (see Steps 3, 5, and 6
 4. `framework:clean-code` -- Improve readability, responsibility boundaries, and local code craft while preventing scope creep and wrong abstractions (always loaded)
 5. `framework:test-quality` -- Lock current behavior with characterization tests and keep the safety net reliable throughout the refactor (always loaded)
 6. `framework:design-first` -- Use progressive design selectively for significant structural changes so the target structure is agreed before editing code (conditional)
-7. `framework:clean-architecture` -- Validate layer placement, dependency direction, command/query flow, and correct structural boundaries (conditional)
-   → Skip if `disable.clean_architecture: true` in `.ai/config.yaml`
+7. `framework:architecture` -- Validate layer placement, dependency direction, and correct structural boundaries (conditional)
 8. `framework:domain-driven-design` -- Validate domain behavior, aggregate boundaries, and movement of business rules into the correct domain objects (conditional)
    → Skip if `disable.domain_driven_design: true` in `.ai/config.yaml`
 9. `framework:secure-coding` -- Preserve validation, authorization, trust-boundary protections, and safe data handling when the refactor touches security-sensitive code (conditional)
@@ -25,7 +24,7 @@ Load and apply these skills based on the refactor's scope (see Steps 3, 5, and 6
 
 ### Disable Check
 
-Read `.ai/config.yaml`. Note any `disable.*` flags set to `true`. Wherever a skill line above is marked "→ Skip if ...", skip that atom for the entire workflow. All references to the skipped atom in subsequent steps — structural plan validation, conditional atom application in Step 6, and structural verification in Step 7 — are also skipped.
+Read `.ai/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` for the entire workflow. No replacement atom.
 
 ### Step 1: Establish Refactor Context
 
@@ -136,7 +135,7 @@ Preferred strategies:
 
 - **Extract and redirect** -- extract focused units, route callers gradually
 - **Introduce seam, then migrate** -- add an interface or boundary, then move behavior behind it
-- **Move behavior inward** -- shift business rules from controllers/services into domain objects
+- **Move behavior inward** -- shift business rules from outer layers into the appropriate inner layer per `framework:architecture`
 - **Split and collapse** -- separate unrelated responsibilities, then remove the old mixed path
 
 Preferred pacing:
@@ -169,7 +168,7 @@ Always apply:
 
 Conditionally apply:
 
-- **If responsibilities move across layers or dependency direction changes** → Apply `framework:clean-architecture`
+- **If responsibilities move across layers or dependency direction changes** → Apply `framework:architecture`
 - **If business rules, aggregates, value objects, or domain behavior move or sharpen** → Apply `framework:domain-driven-design`
 - **If trust boundaries, authz, validation, queries, or sensitive data handling are touched** → Apply `framework:secure-coding`
 

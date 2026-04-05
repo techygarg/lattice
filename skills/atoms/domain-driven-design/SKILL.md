@@ -61,7 +61,7 @@ This skill operates within a single repository, for a single bounded context (e.
 
 If the task appears to span multiple bounded contexts (e.g., an Order feature that calls into Shipping logic), flag this before proceeding: "This touches [Context A] and [Context B]. Cross-context integration is strategic DDD — outside this skill's scope. Would you like to scope to one context, or proceed knowing cross-context coordination is your responsibility?"
 
-`framework:clean-architecture` provides the structural envelope -- where code lives, which layers exist, which direction dependencies flow. This skill defines how to craft the domain *within* that envelope: rich models, invariants, aggregate boundaries, and ubiquitous language.
+`framework:architecture` provides the structural envelope -- where code lives, which layers exist, which direction dependencies flow. This skill defines how to craft the domain *within* that envelope: rich models, invariants, aggregate boundaries, and ubiquitous language.
 
 ## Core Principle
 
@@ -112,7 +112,7 @@ Something that happened in the domain that domain experts care about. Named in p
 
 One per aggregate root, not per entity. Interface defined in domain layer, implementation in infrastructure. Collection-like semantics (save, findById, remove). Returns fully-constituted aggregates, not partial objects or DTOs.
 
-**Repositories are for command (state-changing) operations only.** Read-only queries belong in Providers (see `framework:clean-architecture` Query Flow). Providers are concrete infrastructure classes with no domain-layer interface -- they return DAOs, not domain objects. Do not conflate Repository and Provider: Repository protects invariants through domain objects; Provider serves reads efficiently by bypassing domain construction.
+**Repositories are for command (state-changing) operations only.** Read-only queries belong in Providers (see `framework:architecture` for the query flow pattern). Providers are concrete infrastructure classes with no domain-layer interface -- they return DAOs, not domain objects. Do not conflate Repository and Provider: Repository protects invariants through domain objects; Provider serves reads efficiently by bypassing domain construction.
 
 ### Factory
 

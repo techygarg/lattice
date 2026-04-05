@@ -14,8 +14,7 @@ Load and apply these skills based on the bug's scope (see Steps 2 and 5 for cond
 3. `framework:collaborative-judgment` -- Surface meaningful repair trade-offs instead of silently choosing a patch strategy (always loaded)
 4. `framework:clean-code` -- Keep the fix focused, readable, and minimal in scope (always loaded)
 5. `framework:test-quality` -- Create and validate the failing regression test that proves the bug exists and the fix works (always loaded)
-6. `framework:clean-architecture` -- Validate layer placement, dependency direction, and correct repair location (conditional)
-   → Skip if `disable.clean_architecture: true` in `.ai/config.yaml`
+6. `framework:architecture` -- Validate layer placement, dependency direction, and correct repair location (conditional)
 7. `framework:domain-driven-design` -- Validate invariants, aggregate boundaries, and domain behavior when the bug involves domain logic (conditional)
    → Skip if `disable.domain_driven_design: true` in `.ai/config.yaml`
 8. `framework:secure-coding` -- Validate trust boundaries, input handling, authorization, and injection safety when the bug touches security-sensitive code (conditional)
@@ -24,7 +23,7 @@ Load and apply these skills based on the bug's scope (see Steps 2 and 5 for cond
 
 ### Disable Check
 
-Read `.ai/config.yaml`. Note any `disable.*` flags set to `true`. Wherever a skill line above is marked "→ Skip if ...", skip that atom for the entire workflow. All references to the skipped atom in subsequent steps — conditional loading in Step 2, atom application in Step 5, and structural verification in Step 6 — are also skipped.
+Read `.ai/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` for the entire workflow. No replacement atom.
 
 ### Step 1: Establish Bug Context
 
@@ -54,12 +53,12 @@ Reproduce the failure using the strongest evidence available, in this order:
 
 Localize the issue before editing:
 
-- **Which layer is the likely source?** Interface, application, domain, or infrastructure
+- **Which layer is the likely source?** Use the layer definitions from `framework:architecture` to identify which architectural layer the defect originates in
 - **Is this a production bug or a test bug?** Sometimes the code is correct and the test or fixture is wrong
 - **Is the failure a symptom or the root cause?** The crashing line is often downstream of the real defect
 - **Does the bug cross a trust boundary?** If yes, plan to load `framework:secure-coding`
 - **Does it involve domain invariants or aggregate behavior?** If yes, plan to load `framework:domain-driven-design`
-- **Does the likely fix touch multiple layers or dependency flow?** If yes, plan to load `framework:clean-architecture`
+- **Does the likely fix touch multiple layers or dependency flow?** If yes, plan to load `framework:architecture`
 
 If multiple plausible root causes remain, use `framework:collaborative-judgment` to present the leading hypotheses and what evidence would distinguish them. Do not guess and patch speculatively.
 
@@ -126,7 +125,7 @@ Default to the smallest safe fix that restores correct behavior **without archit
 
 Guardrails:
 
-- Apply `framework:clean-architecture` layering rules when choosing repair location — do not patch in an outer layer when the rule belongs inward
+- Apply `framework:architecture` layering rules when choosing repair location — do not patch in an outer layer when the rule belongs inward
 - Do not widen the task into unrelated cleanup
 - Do not delete or weaken the failing test just to make the suite green
 - If a real fix requires a contract or design change beyond a narrow repair, stop and discuss the scope explicitly
@@ -143,7 +142,7 @@ Always apply:
 
 Conditionally apply based on the localized root cause:
 
-- **If the fix changes layer responsibilities, dependency direction, or command/query flow** → Apply `framework:clean-architecture`
+- **If the fix changes layer responsibilities, dependency direction, or architectural flow** → Apply `framework:architecture`
 - **If the fix changes domain behavior, invariants, aggregate boundaries, or value objects** → Apply `framework:domain-driven-design`
 - **If the fix touches input validation, authorization, queries, external boundaries, or sensitive data** → Apply `framework:secure-coding`
 

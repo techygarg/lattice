@@ -1,19 +1,47 @@
 ---
 name: architecture-refiner
-description: "Facilitate a structured conversation to define clean architecture principles for a repository. Produces a formal clean-architecture.md document that the clean-architecture atom will use as its override. Use when setting up a new project, defining architecture standards, or when the user says 'setup architecture', 'define layers', 'architecture principles', or 'help me define my architecture'."
+description: "Facilitate a structured conversation to define architecture principles for a repository. Supports multiple architecture styles: clean architecture (default), hexagonal / ports & adapters, modular monolith, or custom. Produces a formal architecture document that the corresponding atom will use. Use when setting up a new project, defining architecture standards, or when the user says 'setup architecture', 'define layers', 'architecture principles', 'help me define my architecture', 'hexagonal architecture', 'modular monolith', 'ports and adapters', or 'define my architecture style'."
 ---
 
 # Architecture Refiner
 
+## Step 0: Style Selection
+
+Before anything else, ask the user which architecture style their team uses:
+
+"What architecture style does your team use?
+
+1. **Clean Architecture** (default) — layers (Domain, Application, Interface, Infrastructure), dependency inversion, command/query separation
+2. **Hexagonal / Ports & Adapters** — core domain surrounded by ports, adapters on the outside
+3. **Modular Monolith** — vertical slices, each module owns its own layers
+4. **Custom / Define from scratch** — you describe the layers and rules"
+
+**Branching:**
+
+- **Option 1** → proceed to the clean architecture flow below (existing interview). Template: `./assets/template-clean-arch.md`. Output: `.ai/standards/architecture.md`. Config key: `paths.architecture`. No `architecture_mode` key needed (defaults to `clean`).
+- **Options 2–4** → proceed to the generic architecture flow. Template: `./assets/template-generic.md`. Output: `.ai/standards/architecture.md`. Config key: `paths.architecture`. Additionally, set `architecture_mode: custom` in `.ai/config.yaml`.
+
+The rest of this document describes the **clean architecture flow** (Option 1). For the **generic flow** (Options 2–4), read `./assets/template-generic.md` and follow its `<!-- INTERVIEW GUIDANCE: -->` comments. The facilitation approach, conversation style, output assembly, and document quality checks below apply to both flows — substitute the appropriate template, output path, and config key.
+
 ## What This Produces
 
-- **Output**: `.ai/standards/clean-architecture.md` (or custom path from `.ai/config.yaml` → `paths.clean_architecture`)
+**For clean architecture (Option 1):**
+
+- **Output**: `.ai/standards/architecture.md` (or custom path from `.ai/config.yaml` → `paths.architecture`)
 - **Two modes**:
-  - **Overlay** (`mode: overlay`): A slim document containing only sections that differ from the defaults. The clean-architecture atom reads its embedded defaults first, then applies this document's sections on top. This is the expected common case.
-  - **Override** (`mode: override`): A comprehensive standalone document that fully replaces the atom's embedded defaults. For teams with fundamentally different architecture.
+  - **Overlay** (`mode: overlay`): A slim document containing only sections that differ from the defaults. The architecture atom reads its embedded clean-architecture defaults first, then applies this document's sections on top. This is the expected common case.
+  - **Override** (`mode: override`): A comprehensive standalone document that fully replaces the atom's embedded defaults. For teams that want to define clean architecture from scratch.
 - **Default mode**: Overlay -- produces only what the user wants to change
-- **Config key**: `paths.clean_architecture` in `.ai/config.yaml`
-- **Template**: Read `./assets/template.md` for the full document structure, default content, and interview guidance comments
+- **Config key**: `paths.architecture` in `.ai/config.yaml`
+- **Template**: Read `./assets/template-clean-arch.md` for the full document structure, default content, and interview guidance comments
+
+**For other styles (Options 2–4):**
+
+- **Output**: `.ai/standards/architecture.md` (or custom path from `.ai/config.yaml` → `paths.architecture`)
+- **Mode**: Always `override` — there are no embedded defaults to overlay onto for non-clean-architecture styles
+- **Config key**: `paths.architecture` in `.ai/config.yaml`
+- **Additional config**: Sets `architecture_mode: custom` in `.ai/config.yaml`
+- **Template**: Read `./assets/template-generic.md` for the document structure and interview guidance comments
 
 ## Before You Begin
 
@@ -21,8 +49,8 @@ description: "Facilitate a structured conversation to define clean architecture 
 
 Before starting the interview, check whether a custom document already exists:
 
-1. Read `.ai/config.yaml` — does `paths.clean_architecture` point to a file?
-2. If yes, read that file. Ask the user:
+1. Read `.ai/config.yaml` — check `paths.architecture`.
+2. If the relevant path exists (based on the style selected in Step 0), read that file. Ask the user:
    - "You already have a custom architecture document. Would you like to **revise** it (update specific sections), **start fresh** (new interview), or **add to it** (add new sections)?"
    - Revise: Load the existing document, walk through only the sections the user wants to change, and update in place.
    - Start fresh: Proceed with the full interview flow below.
@@ -89,7 +117,7 @@ This is thorough. Every section gets attention and appears in the output.
 
 ### Common scenarios
 
-- **"I agree with everything"** → No custom document needed. Tell the user: "The embedded defaults are already active and match your preferences. No custom document is needed — the clean-architecture atom will use the defaults automatically."
+- **"I agree with everything"** → No custom document needed. Tell the user: "The embedded defaults are already active and match your preferences. No custom document is needed — the architecture atom will use the clean-architecture defaults automatically."
 - **"I agree except one section"** → Overlay mode, interview that one section only.
 - **"We use CQRS"** → Overlay §3.2 + §4 (they are coupled — CQRS changes the service pattern which changes both flows).
 - **"We don't use Providers"** → Overlay §3.4 + §4.2 + §4.3 + §6 (Provider removal ripples through query flow and validation).
@@ -97,7 +125,7 @@ This is thorough. Every section gets attention and appears in the output.
 
 ## Section-by-Section Interview Guide
 
-Read `./assets/template.md` and follow the `<!-- INTERVIEW GUIDANCE: -->` comments for each section. Those comments contain the specific questions to ask, probing questions, and what is customizable vs fixed.
+Read `./assets/template-clean-arch.md` (for clean architecture) or `./assets/template-generic.md` (for other styles) and follow the `<!-- INTERVIEW GUIDANCE: -->` comments for each section. Those comments contain the specific questions to ask, probing questions, and what is customizable vs fixed.
 
 ### Cross-section dependency table
 
@@ -142,7 +170,7 @@ For each of the 6 default sections:
 3. Table of contents listing only the included sections
 4. Only the sections the user changed or added
 5. Each section must be self-contained — it is a complete replacement of that section in defaults. Do not write diffs or partial sections.
-6. Section headings must match `defaults.md` exactly (the atom matches sections by heading)
+6. Section headings must match `clean-architecture-defaults.md` exactly (the atom matches sections by heading)
 7. New sections (§7+) are included after the default sections
 8. Footer with project name, date, mode
 
@@ -159,24 +187,46 @@ For each of the 6 default sections:
 Strip all `<!-- INTERVIEW GUIDANCE: -->` comments from the output. The final document is a clean specification.
 
 **Determine output path:**
-1. If `.ai/config.yaml` exists and has `paths.clean_architecture`, use that path.
-2. Otherwise, default to `.ai/standards/clean-architecture.md`.
+
+1. If `.ai/config.yaml` exists and has `paths.architecture`, use that path.
+2. Otherwise, default to `.ai/standards/architecture.md`.
+
+This is the same for all styles — both clean architecture customizations and other styles write to `paths.architecture`.
 
 **Write the document:**
 1. Create `.ai/standards/` directory (and `.ai/` parent) if it does not exist.
 2. Write the document to the determined path.
 
 **Update config:**
+
+For clean architecture (Option 1):
 1. If `.ai/config.yaml` does not exist, create it with:
    ```yaml
    paths:
-     clean_architecture: .ai/standards/clean-architecture.md
+     architecture: .ai/standards/architecture.md
    ```
-2. If `.ai/config.yaml` exists but has no `paths.clean_architecture`, add the key. Preserve all existing content.
+2. If `.ai/config.yaml` exists but has no `paths.architecture`, add the key. Preserve all existing content.
 3. If `.ai/config.yaml` exists and already has the key, no config change needed.
 
+For other styles (Options 2–4):
+1. If `.ai/config.yaml` does not exist, create it with:
+   ```yaml
+   paths:
+     architecture: .ai/standards/architecture.md
+   architecture_mode: custom
+   ```
+2. If `.ai/config.yaml` exists, add or update:
+   - `paths.architecture` pointing to the output path
+   - `architecture_mode: custom`
+   - Preserve all existing content.
+
 **Confirm to user:**
-"Your architecture document has been written to `[PATH]` in **[overlay|override]** mode. The clean-architecture atom will now use it [on top of the defaults | instead of the defaults]."
+
+For clean architecture:
+"Your architecture document has been written to `[PATH]` in **[overlay|override]** mode. The architecture atom will now use it [on top of the clean-architecture defaults | instead of the clean-architecture defaults]."
+
+For other styles:
+"Your architecture document has been written to `[PATH]` with `architecture_mode: custom`. The architecture atom will use it as your project's sole architecture standard."
 
 ## Document Quality Checks
 
@@ -201,7 +251,19 @@ Before writing the final document, verify:
 - [ ] Frontmatter has `mode: override`
 - [ ] Document is readable as a standalone specification
 
-### Both modes
+### Generic flow checks (Options 2–4)
+
+- [ ] Document has `mode: override` in frontmatter
+- [ ] Sections §1 through §7 are present (§8 Ambiguity Signals is optional, plus any new sections)
+- [ ] Layer names are consistent throughout all sections
+- [ ] Dependency diagram (§2) matches the layer table (§1)
+- [ ] §6 (Validation Checklist) contains at least 3 concrete, verifiable checks
+- [ ] §7 (Anti-Patterns) contains at least 3 anti-patterns with symptom and fix
+- [ ] No `<!-- INTERVIEW GUIDANCE: -->` comments remain
+- [ ] Document is readable as a standalone specification
+- [ ] Config has `architecture_mode: custom` set
+
+### Both modes (all flows)
 
 - [ ] Frontmatter is valid YAML with correct mode value
 - [ ] Document is well-formatted markdown

@@ -38,7 +38,7 @@ If multiple language markers are found at the repository root, note all of them 
 **Existing `.ai/` state** -- check what Lattice artifacts already exist:
 - `.ai/config.yaml` → central config
 - `.ai/standards/knowledge-base.md` → knowledge priming output
-- `.ai/standards/clean-architecture.md` → architecture refiner output
+- `.ai/standards/architecture.md` → architecture refiner output (clean architecture, hexagonal, modular monolith, or custom style)
 - `.ai/standards/clean-code.md` → clean code refiner output
 - `.ai/standards/ddd-principles.md` → DDD refiner output
 - `.ai/standards/review-standards.md` → review refiner output
@@ -59,7 +59,7 @@ Report what was found -- concise, structured. Present to the user:
 ### Lattice Setup Status
 - `.ai/config.yaml`: [exists / not found]
 - Knowledge base: [found at .ai/standards/knowledge-base.md / not found]
-- Clean architecture standards: [found / not found]
+- Architecture standards: [found at .ai/standards/architecture.md / not found]
 - Clean code standards: [found / not found]
 - DDD standards: [found / not found]
 - Review standards: [found / not found]
@@ -77,7 +77,7 @@ Based on gaps found in Step 2, suggest refiners in priority order. Walk the user
 **Priority order**:
 
 1. **Knowledge-priming-refiner** (if `.ai/standards/knowledge-base.md` is missing) -- "Captures your project's identity -- tech stack, architecture, directory layout, and conventions. Every other skill uses this context to make better decisions."
-2. **Architecture-refiner** (if `.ai/standards/clean-architecture.md` is missing AND the project has multi-layer structure like `src/`, `domain/`, `infrastructure/`, `application/`) -- "Defines your project's layer structure, dependency rules, and service patterns so the clean-architecture atom validates against your actual architecture."
+2. **Architecture-refiner** (if `.ai/standards/architecture.md` is missing AND the project has a source code directory) -- "Defines your project's architecture standards — layer structure, dependency rules, and validation checklist. Supports multiple styles: clean architecture (default), hexagonal / ports & adapters, modular monolith, or custom."
 3. **DDD-refiner** (if `.ai/standards/ddd-principles.md` is missing AND the project has a domain folder or domain-like structure) -- "Captures your aggregate design rules, entity patterns, and domain event conventions so the DDD atom enforces your domain modeling style."
 4. **Clean-code-refiner** (if `.ai/standards/clean-code.md` is missing) -- "Tailors coding standards -- function size limits, complexity thresholds, naming conventions. The defaults work well for most projects, so this is optional."
 5. **Review-refiner** (if `.ai/standards/review-standards.md` is missing) -- "Customizes how the review molecule works -- atom loading rules, severity levels, report format, scope rules. The defaults work well for most projects, so this is optional."
@@ -120,7 +120,7 @@ Lattice is set up. Here's the workflow:
 4. **Fix a bug**: `/bug-fix` -- reproduces the failure, adds a regression test, and applies the minimal safe repair
 5. **Review**: `/review` -- audits generated code against atom standards
 
-Atoms (clean-code, DDD, secure-coding, etc.) activate automatically during these workflows.
+Atoms (architecture, clean-code, DDD, secure-coding, etc.) activate automatically during these workflows.
 You can also use atoms standalone -- they apply checks based on what you're working on.
 ```
 

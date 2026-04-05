@@ -129,7 +129,7 @@ These atoms load when the delta matches specific criteria:
 
 | Atom | Trigger condition | Why conditional |
 |------|-------------------|-----------------|
-| `clean-architecture` | Delta touches multiple layers, adds new files, or changes file locations | Structural checks are only relevant when structure changes |
+| `architecture` | Delta touches multiple layers, adds new files, or changes file locations | Structural checks are only relevant when structure changes |
 | `domain-driven-design` | Delta includes files in the configured domain folder or modifies domain objects | Domain modeling rules only apply to domain code |
 | `secure-coding` | Delta touches trust boundaries (HTTP handlers, auth, DB queries, external APIs, secrets, config) | Security checks target code that handles untrusted input or sensitive operations |
 | `test-quality` | Delta includes test files | Test standards (AAA, isolation, naming) only apply to test code |
@@ -153,9 +153,9 @@ No custom path triggers by default. Path triggers override the standard conditio
 - path: "src/domain/**"
   loads: domain-driven-design
 
-# Example: Trigger clean-architecture for config and module files
+# Example: Trigger architecture for config and module files
 - path: "src/modules/*/module.ts"
-  loads: clean-architecture
+  loads: architecture
 ```
 
 ---
@@ -216,7 +216,7 @@ No per-atom overrides by default. All atoms use the standard severity classifica
   maximum_severity: warning
 
 # Example: Architecture violations are always at least warning
-- atom: clean-architecture
+- atom: architecture
   minimum_severity: warning
 ```
 

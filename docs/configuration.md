@@ -9,15 +9,16 @@ version: 1
 paths:
   knowledge_base: .ai/standards/knowledge-base.md
   clean_code: .ai/standards/clean-code.md
-  clean_architecture: .ai/standards/clean-architecture.md
+  architecture: .ai/standards/architecture.md
   ddd_principles: .ai/standards/ddd-principles.md
   test_quality: .ai/standards/test-quality.md
   secure_coding: .ai/standards/secure-coding.md
   review_standards: .ai/standards/review-standards.md
   context_base: .ai/context/
 
+architecture_mode: clean
+
 disable:
-  clean_architecture: false
   domain_driven_design: false
 ```
 
@@ -27,6 +28,7 @@ disable:
 |-------|------|-------------|
 | `version` | integer | Schema version. Currently `1`. |
 | `paths` | map | Logical key → file path mappings. All keys are optional. |
+| `architecture_mode` | string | Architecture enforcement mode. `clean` (default) or `custom`. See below. |
 | `disable` | map | Behavioral flags to skip specific atoms in all molecules. All keys default to `false`. |
 
 ## `paths` Keys
@@ -35,29 +37,37 @@ disable:
 |-----|---------|-------------|--------------|-------------|------|
 | `knowledge_base` | Project identity — tech stack, architecture, conventions, trusted sources. No embedded default; every project is unique. | `knowledge-priming-refiner` | `.ai/standards/knowledge-base.md` | `knowledge-priming` atom | `override` (standard) |
 | `clean_code` | Code craftsmanship rules — function size, naming, complexity, error handling. | `clean-code-refiner` | `.ai/standards/clean-code.md` | `clean-code` atom | `overlay` (recommended) |
-| `clean_architecture` | Layer structure and dependency rules — layer assignments, command/query flows, provider and repository patterns. | `architecture-refiner` | `.ai/standards/clean-architecture.md` | `clean-architecture` atom | `overlay` (recommended) |
+| `architecture` | Architecture standards — layer structure, dependency rules, structural validation. Used by both clean architecture mode and custom architecture mode. | `architecture-refiner` | `.ai/standards/architecture.md` | `architecture` atom | `overlay` (clean mode) or `override` (custom mode) |
 | `ddd_principles` | Tactical DDD patterns — aggregate design, entity/value object rules, domain services, domain events. | `ddd-refiner` | `.ai/standards/ddd-principles.md` | `domain-driven-design` atom | `overlay` (recommended) |
 | `test_quality` | Test structure and quality rules — AAA structure, isolation, assertion patterns, naming conventions. | `test-quality-refiner` | `.ai/standards/test-quality.md` | `test-quality` atom | `overlay` (recommended) |
 | `secure_coding` | Trust boundaries and injection prevention — input validation, secrets management, authorization, error message policies. | `secure-coding-refiner` | `.ai/standards/secure-coding.md` | `secure-coding` atom | `overlay` (recommended) |
 | `review_standards` | Review process configuration — atom loading policy, severity classification, report format, insight capture. Molecule-level config, not atom-level. | `review-refiner` | `.ai/standards/review-standards.md` | `review` molecule | `overlay` (recommended) |
 | `context_base` | **Directory** path for per-feature living documents. Unlike all other keys, this is a directory, not a file. | (none — managed by `context-anchoring` atom) | `.ai/context/` | `context-anchoring` atom | N/A |
 
+## `architecture_mode` Key
+
+Controls which enforcement rules the `architecture` atom loads internally. This key determines the atom's behavior — it does not affect what other atoms or molecules do.
+
+| Value | Behavior |
+|-------|----------|
+| `clean` (default if absent) | The architecture atom loads clean architecture enforcement rules (`references/clean-architecture.md`) and uses `references/clean-architecture-defaults.md` as the base content. If `paths.architecture` is set, the custom document is applied as overlay or override on top of the clean-architecture defaults. |
+| `custom` | The architecture atom loads custom architecture enforcement rules (`references/custom-architecture.md`) and reads the team's document at `paths.architecture` as the sole content. No embedded defaults — the document IS the standard. |
+
+**When to use each:**
+
+- **Team uses clean architecture (default, no config needed):** Atom loads built-in clean-arch rules. No setup required.
+- **Team uses clean architecture with customizations:** Run `/architecture-refiner`, choose "Clean Architecture", customize sections. Produces a document with `mode: overlay` or `mode: override`. Config: `paths.architecture` set, `architecture_mode` absent (defaults to `clean`).
+- **Team uses hexagonal, modular monolith, or custom style:** Run `/architecture-refiner`, choose the appropriate style. Produces a document with `mode: override`. Config: `paths.architecture` set, `architecture_mode: custom`.
+
+The `architecture-refiner` sets `architecture_mode` automatically based on the user's style choice.
+
 ## `disable` Keys
 
-The `disable` key is a behavioral section, separate from `paths`. It controls whether specific atoms are loaded by molecules. Omitting a key is equivalent to `false` — existing projects are unaffected. Both flags are independent; you can disable one without the other. Disable means fully skip — there is no "apply with reduced strictness" mode.
+The `disable` key controls whether specific atoms are loaded by molecules. Omitting a key is equivalent to `false` — existing projects are unaffected.
 
 | Key | Type | Default | Purpose | Consumed by |
 |-----|------|---------|---------|-------------|
-| `clean_architecture` | boolean | `false` | When `true`, all molecules skip `framework:clean-architecture` entirely. No defaults loaded, no partial application. | `code-forge`, `review`, `refactor-safely`, `design-blueprint`, `bug-fix` |
-| `domain_driven_design` | boolean | `false` | When `true`, all molecules skip `framework:domain-driven-design` entirely. No defaults loaded, no partial application. | `code-forge`, `review`, `refactor-safely`, `design-blueprint`, `bug-fix` |
-
-**Example — disable both for a team using a non-clean-architecture style:**
-
-```yaml
-disable:
-  clean_architecture: true
-  domain_driven_design: true
-```
+| `domain_driven_design` | boolean | `false` | When `true`, all molecules skip `framework:domain-driven-design` entirely. No defaults loaded, no partial application, no replacement atom. | `code-forge`, `review`, `refactor-safely`, `design-blueprint`, `bug-fix` |
 
 Atom SKILL.md files are unchanged — atoms do not need to know they can be disabled. Config resolution inside atoms is also unchanged. The disable mechanism lives entirely in the molecule layer.
 
@@ -76,7 +86,7 @@ mode: overlay
 | `overlay` (default) | Custom document's sections are applied on top of the atom's embedded defaults. Sections are matched by heading — a custom section replaces the matching default section; new sections are appended. |
 | `override` | Custom document fully replaces the atom's embedded defaults. Use when your standards are fundamentally different and you want complete control. |
 
-`knowledge_base` is always `override` — project identity is unique and replaces generic defaults entirely.
+`knowledge_base` is always `override` — project identity is unique and replaces generic defaults entirely. Custom architecture documents (`architecture_mode: custom`) are also always `override` — there are no defaults to overlay onto.
 
 ## Creating and Updating Config
 

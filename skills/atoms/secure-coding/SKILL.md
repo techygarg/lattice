@@ -1,6 +1,6 @@
 ---
 name: secure-coding
-description: "Apply security-conscious thinking when generating or modifying code. Enforces trust boundary awareness, input validation, injection prevention, secrets management, and defense-in-depth authorization. Use when generating code that handles user input, authentication, authorization, database queries, external APIs, file operations, or when the user mentions 'security review', 'secure this', 'check for vulnerabilities', 'trust boundary', 'input validation', or 'OWASP'. This skill governs the security posture of generated code -- not architecture (see clean-architecture) and not code craft (see clean-code)."
+description: "Apply security-conscious thinking when generating or modifying code. Enforces trust boundary awareness, input validation, injection prevention, secrets management, and defense-in-depth authorization. Use when generating code that handles user input, authentication, authorization, database queries, external APIs, file operations, or when the user mentions 'security review', 'secure this', 'check for vulnerabilities', 'trust boundary', 'input validation', or 'OWASP'. This skill governs the security posture of generated code -- not architecture (see architecture) and not code craft (see clean-code)."
 ---
 
 # Secure Coding
@@ -67,7 +67,7 @@ This atom teaches adversarial thinking during code generation, not as an afterth
 
 The boundary with clean-code: clean-code says "handle errors explicitly with actionable messages." Secure-coding says "error messages shown to users must not reveal internal details." Both apply; this skill governs the security dimension.
 
-The boundary with clean-architecture: "check authorization at every layer" (this skill) maps directly to clean-architecture's layer structure. Clean-architecture defines *where* each check lives (service layer, not controller); secure-coding defines *what* to check (identity confirmed, permission granted, resource owned).
+The boundary with the architecture atom: "check authorization at every layer" (this skill) maps directly to the loaded architecture's layer structure. The architecture atom defines *where* each check lives (e.g., service layer, not controller); secure-coding defines *what* to check (identity confirmed, permission granted, resource owned).
 
 ## Trust Boundaries
 

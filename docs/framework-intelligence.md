@@ -90,7 +90,7 @@ Why this matters: Institutional memory that survives across features and session
 ```
 ## 2026-03-05 — Payment endpoint
 - **Scope**: 8 files, 3 layers (domain, application, interface)
-- **Atoms**: clean-code, clean-architecture, DDD, secure-coding
+- **Atoms**: clean-code, architecture, DDD, secure-coding
 - **Result**: 0 critical, 2 warning, 3 suggestion
 - **Key findings**: Missing input validation on PaymentAmount; domain service doing repository work
 - **Strengths**: Clean aggregate boundaries, proper value objects
