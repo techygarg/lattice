@@ -120,6 +120,7 @@ All persistent outputs go into subfolders — never `.ai/` root except `config.y
 
 ## Learn More
 
+- [Practical Guide](docs/practical-guide.md) -- scenario-driven Q&A: getting started, architecture setup, customization, workflow, team usage, and troubleshooting
 - [How It Works](docs/how-it-works.md) -- how atoms compose, config resolution, the pipeline, and tier comparison
 - [Configuration Reference](docs/configuration.md) -- every `.ai/config.yaml` field documented: valid keys, produced by, consumed by, and merge modes
 - [Framework Intelligence](docs/framework-intelligence.md) -- why things are designed this way: verification passes, feedback loops, AI compliance techniques
