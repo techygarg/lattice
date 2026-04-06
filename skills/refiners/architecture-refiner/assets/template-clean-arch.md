@@ -1,6 +1,6 @@
 # Architecture Refiner Template
 
-This template defines the structure of the `.ai/standards/clean-architecture.md` output document. It contains all default content from the clean-architecture atom's `defaults.md`, interleaved with interview guidance comments.
+This template defines the structure of the `.ai/standards/architecture.md` output document for clean architecture style. It contains all default content from the architecture atom's `clean-architecture-defaults.md`, interleaved with interview guidance comments.
 
 When producing the output, strip all `<!-- INTERVIEW GUIDANCE: -->` comments. The final document is a specification, not a conversation log.
 
@@ -39,13 +39,13 @@ Include the preamble matching the chosen mode. Only one preamble appears in the 
 
 **Overlay preamble:**
 
-> This document overlays project-specific customizations on top of the clean-architecture atom's embedded defaults. Only sections included here differ from the defaults — all other sections remain as-is.
+> This document overlays project-specific customizations on top of the architecture atom's embedded clean-architecture defaults. Only sections included here differ from the defaults — all other sections remain as-is.
 >
 > Sections below replace matching sections in the defaults (matched by heading). New sections are appended after defaults.
 
 **Override preamble:**
 
-> These are the clean architecture principles for [PROJECT NAME]. They fully replace the embedded defaults in the clean-architecture atom.
+> These are the clean architecture principles for [PROJECT NAME]. They fully replace the embedded clean-architecture defaults in the architecture atom.
 
 **Table of contents** (for override mode; overlay mode only lists included sections):
 

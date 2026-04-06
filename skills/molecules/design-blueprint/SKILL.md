@@ -1,6 +1,6 @@
 ---
 name: design-blueprint
-description: "Run a complete design workflow -- from establishing context through 5 progressive design levels to an approved blueprint. Composes context anchoring, design-first methodology, clean architecture, and DDD into a unified process. Handles both new features (create context doc) and resuming existing work (load context doc). Use when starting a design, planning architecture, or when the user says 'design a feature', 'blueprint', 'start designing', 'plan the architecture', or 'let's design before coding'."
+description: "Run a complete design workflow -- from establishing context through 5 progressive design levels to an approved blueprint. Composes context anchoring, design-first methodology, architecture, and DDD into a unified process. Handles both new features (create context doc) and resuming existing work (load context doc). Use when starting a design, planning architecture, or when the user says 'design a feature', 'blueprint', 'start designing', 'plan the architecture', or 'let's design before coding'."
 ---
 
 # Design Blueprint
@@ -13,10 +13,15 @@ Read and apply these skills in order:
 2. `framework:context-anchoring` -- Create or load the feature's context anchor document
 3. `framework:collaborative-judgment` -- Surface genuine design judgment calls with structured options instead of silently assuming (always)
 4. `framework:design-first` -- Walk through 5 progressive design levels
-5. `framework:clean-architecture` -- Apply structural rules at Component and Interaction levels
+5. `framework:architecture` -- Apply structural rules at Component and Interaction levels
 6. `framework:domain-driven-design` -- Apply domain modeling at Component, Interaction, and Contract levels
+   → Skip if `disable.domain_driven_design: true` in `.ai/config.yaml`
 
 ## Workflow
+
+### Disable Check
+
+Read `.ai/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` for the entire workflow. No replacement atom. The design levels themselves still proceed; only the DDD checks within each level are removed.
 
 ### Step 1: Establish Context
 
@@ -50,18 +55,18 @@ Apply architectural atoms at the levels where they add value:
 - On approval → Enrich context document with the approved capabilities under a `## Design: Level 1 -- Capabilities` section.
 
 **Level 2 (Components)**:
-- Apply `framework:clean-architecture` -- validate layer assignments, dependency direction, component boundaries. Each component should map to a clear architectural layer.
+- Apply `framework:architecture` -- validate that each component maps to a defined architectural layer, dependencies follow the loaded architecture rules, and component boundaries are clear.
 - Apply `framework:domain-driven-design` -- identify aggregates, entities, value objects. Determine which components live in the domain layer and which are infrastructure.
 - On approval → Enrich context document with the approved component list, layer assignments, and diagram under a `## Design: Level 2 -- Components` section. Log architectural decisions (layer choices, DDD classifications) in the Decisions Log.
 
 **Level 3 (Interactions)**:
-- Apply `framework:clean-architecture` -- validate command/query flows and boundary crossing. State-changing operations should flow through domain before reaching repositories; read operations use providers.
+- Apply `framework:architecture` -- validate that data flows follow the patterns defined in the loaded architecture document and boundary crossing rules are respected.
 - Apply `framework:domain-driven-design` -- define aggregate interactions, domain events. Cross-aggregate communication should use domain events for eventual consistency.
 - On approval → Enrich context document with the approved interaction flows (sequence diagrams, data flow descriptions) under a `## Design: Level 3 -- Interactions` section. Log flow decisions in the Decisions Log.
 
 **Level 4 (Contracts)**:
 - Apply `framework:domain-driven-design` -- define repository interfaces, value object types, aggregate root boundaries. Contracts should reflect the tactical patterns agreed at earlier levels.
-- Apply `framework:clean-architecture` -- validate that contracts respect boundary-data rules and interface ownership. No domain contract should reference infrastructure types.
+- Apply `framework:architecture` -- validate that contracts respect boundary-data rules and interface ownership per the loaded architecture document.
 - On approval → Enrich context document with the approved interfaces and type definitions under a `## Design: Level 4 -- Contracts` section. Log contract decisions in the Decisions Log.
 
 ### Step 3: Finalize Blueprint

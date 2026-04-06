@@ -188,7 +188,7 @@ Examples of what belongs here:
 Examples of what does NOT belong here (covered by other skills):
 - Function naming principles (clean-code)
 - SRP, complexity, error handling patterns (clean-code)
-- Layer responsibilities, dependency direction (clean-architecture)
+- Layer responsibilities, dependency direction (architecture)
 - Aggregate design, value objects (domain-driven-design)
 
 This section is optional. If the project has no conventions beyond what the tech stack implies, skip it.

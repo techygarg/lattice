@@ -1,31 +1,12 @@
----
-name: clean-architecture
-description: "Enforce clean architecture structural rules when generating or modifying code. Validates layer responsibilities, dependency direction, and structural constraints. Use when generating code, reviewing architecture, creating new files, or when the user mentions 'architecture', 'layers', 'structure', 'controllers', 'services', 'repositories', 'dependency rules', 'providers', 'provider vs repository', 'CQRS', 'hexagonal architecture', 'ports and adapters', or 'onion architecture'. Also use when reviewing generated code for structural compliance."
----
+# Clean Architecture Enforcement Rules
 
-# Clean Architecture
+These are the enforcement instructions for clean architecture mode. They define the Self-Validation Checklist, Anti-Pattern Scan, Ambiguity Signals, and structural principles that the architecture atom applies when `architecture_mode` is `clean` (the default).
 
-## Config Resolution
-
-This skill supports project-specific customizations. Resolution order:
-
-1. Look for `.ai/config.yaml` in the repository root
-2. If found, check `paths.clean_architecture` for a custom document path
-3. If the custom path exists, read that document and check its YAML frontmatter for `mode`:
-   - **`mode: override`** (or no mode specified): The custom document takes full precedence.
-     Use it instead of the embedded defaults. It must be comprehensive -- it is the sole reference.
-   - **`mode: overlay`**: Read the embedded `./references/defaults.md` first, then apply the
-     custom document's sections on top. Sections in the custom document replace matching
-     sections in defaults (matched by heading). New sections are appended after defaults.
-4. If no config, no path, or path not found, read `./references/defaults.md`
-
-The defaults ship with this skill and represent opinionated best practices.
-They work out of the box for any project. Override only when your team has
-specific standards that differ from the defaults.
+The detailed content (layer responsibility tables, per-layer rules, command/query flow examples, violation/fix pairs) is in `./clean-architecture-defaults.md` or the team's overlay/override document.
 
 ## Self-Validation Checklist
 
-STOP after generating each component. Verify ALL of the following before proceeding. If any check clearly fails, fix the code before presenting it. If a check is a judgment call with multiple valid approaches (see Ambiguity Signals), flag it — present your options and reasoning rather than silently choosing.
+STOP after generating each component. Verify ALL of the following before proceeding. If any check clearly fails, fix the code before presenting it. If a check is a judgment call with multiple valid approaches (see Ambiguity Signals below), flag it — present your options and reasoning rather than silently choosing.
 
 1. **OPERATION TYPE**: Is this a state-changing operation (command) or read operation (query)? Determine FIRST — it dictates the entire flow.
 2. **COMMAND FLOW**: For state-changing operations — does data flow through domain before reaching Repository? Are domain invariants enforced before persistence?
@@ -73,11 +54,11 @@ The reason is isolation. When inner layers are ignorant of outer layers, you can
 
 When the flow of control must go outward (e.g., a use case needs to call a repository), use **Dependency Inversion**: the inner layer defines an interface, the outer layer implements it. The source code dependency points inward even though the runtime call goes outward. Data crossing boundaries should be simple structures -- DTOs, plain objects, primitives -- never framework-specific types.
 
-See `./references/defaults.md` for code examples of boundary crossing with Dependency Inversion.
+See `./clean-architecture-defaults.md` for code examples of boundary crossing with Dependency Inversion.
 
 ## Layer Definitions
 
-Four layers, from outermost to innermost. Read `./references/defaults.md` for the complete responsibilities table with per-layer rules and common violations.
+Four layers, from outermost to innermost. Read `./clean-architecture-defaults.md` for the complete responsibilities table with per-layer rules and common violations.
 
 ### Controllers / Handlers (Outermost)
 
@@ -141,5 +122,3 @@ class OrderService(
   getOrderById(id):  dao = provider.findById(id) → map to DTO
 }
 ```
-
-

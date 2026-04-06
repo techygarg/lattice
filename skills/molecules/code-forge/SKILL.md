@@ -1,6 +1,6 @@
 ---
 name: code-forge
-description: "Generate implementation code from an approved design blueprint or verbal requirements. Composes context anchoring, clean architecture, clean code, DDD, security, and test quality into an inside-out implementation workflow. Use when moving from design to code, implementing approved contracts, or when the user says 'implement', 'code this', 'build it', 'forge the code', or 'generate the code'."
+description: "Generate implementation code from an approved design blueprint or verbal requirements. Composes context anchoring, architecture, clean code, DDD, security, and test quality into an inside-out implementation workflow. Use when moving from design to code, implementing approved contracts, or when the user says 'implement', 'code this', 'build it', 'forge the code', or 'generate the code'."
 ---
 
 # Code Forge
@@ -12,13 +12,18 @@ Read and apply these skills:
 1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) so implementation matches the real project (always)
 2. `framework:context-anchoring` -- Load or discover an existing context anchor document; enrich it as implementation decisions are made (always)
 3. `framework:collaborative-judgment` -- Surface genuine judgment calls with structured options instead of silently assuming (always)
-4. `framework:clean-architecture` -- Layer placement, dependency direction, command/query flow classification (always)
+4. `framework:architecture` -- Layer placement, dependency direction, structural validation (always)
 5. `framework:clean-code` -- Code craft guardrails: SRP, naming, complexity, error handling (always)
 6. `framework:domain-driven-design` -- Aggregates, entities, value objects, domain services (conditional: only when touching domain folder)
+   → Skip if `disable.domain_driven_design: true` in `.ai/config.yaml`
 7. `framework:secure-coding` -- Trust boundaries, injection prevention, secrets management (conditional: only for boundary-crossing code)
 8. `framework:test-quality` -- AAA structure, isolation, assertion quality, naming (always when writing tests)
 
 ## Workflow
+
+### Disable Check
+
+Read `.ai/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` for the entire workflow. No replacement atom.
 
 ### Step 1: Establish Implementation Context
 
@@ -35,30 +40,26 @@ Use `framework:context-anchoring` Document Discovery to check for an existing co
 
 **With blueprint**: Extract the component list and layer assignments from the context anchor document. Use Level 2 (Components) decisions for layer placement and Level 3 (Interactions) for dependency flow.
 
-**Without blueprint**: Classify the required components into architectural layers using `framework:clean-architecture` and these heuristics:
+**Without blueprint**: Classify the required components into architectural layers using the layer definitions from `framework:architecture`. For each component, determine:
 
-- **Does it enforce business rules or hold domain state?** → Domain layer (entity, value object, domain service)
-- **Does it persist or retrieve data?** → Infrastructure layer. State-changing persistence → Repository (with domain interface). Read-only retrieval → Provider (concrete, no domain interface).
-- **Does it orchestrate a use case by coordinating domain + infrastructure?** → Application layer (service)
-- **Does it translate external input/output (HTTP, CLI, messages)?** → Interface layer (controller/handler)
+- What is its primary responsibility? (business rules, data access, coordination, external I/O)
+- Which layer in the loaded architecture document matches that responsibility?
+- What are the dependency constraints for that layer?
+
+If `framework:architecture` has no loaded layer definitions (neither defaults nor a custom document were resolved), warn the user: "No architecture rules are available. Run `/architecture-refiner` to define your architecture standards. Proceeding without architectural guidance." Continue with only the remaining atom guardrails.
 
 Present the proposed layer assignments to the user for approval before proceeding.
 
-In both cases, plan an **inside-out implementation order** that follows the dependency rule:
+In both cases, plan an **inside-out implementation order** following the dependency direction from the loaded architecture document — start from the innermost layer (the one with no outward dependencies) and work outward. Each layer's dependencies should already exist when it is built.
 
-1. **Domain** -- entities, value objects, domain services, domain events
-2. **Infrastructure** -- repositories, external providers, adapters
-3. **Application** -- use cases, application services, orchestrators
-4. **Interface** -- HTTP controllers, CLI handlers, message consumers
-
-Classify each operation as a **command flow** (state-changing, flows through domain before reaching repositories) or a **query flow** (read-only, may use providers directly), per `framework:clean-architecture` Two Flows.
+Classify each operation according to the flow patterns defined in the loaded architecture document (e.g., command vs query flows, or the equivalent distinction in your architecture style).
 
 Present the implementation plan -- ordered component list, layer assignments, flow classifications -- and confirm with the user before writing any code.
 
 After the plan is approved, ask the user to choose a **review mode**:
 
 > "How would you like to review the implementation?"
-> 1. **Layer-by-layer** (recommended) -- I'll implement each layer fully, then pause for your review before starting the next. Four review points.
+> 1. **Layer-by-layer** (recommended) -- I'll implement each layer fully, then pause for your review before starting the next. One review point per layer.
 > 2. **Full autonomy** -- I'll implement everything end-to-end and present the complete result. One review point at the end. (If a blueprint exists, still pause on any deviation from the approved design.)
 > 3. **Component-by-component** -- I'll pause after each individual component for your feedback. Maximum review points.
 
@@ -70,7 +71,7 @@ For each component in the planned order, generate **code and tests together** --
 
 For every component:
 
-- **Place in the correct architectural layer** per `framework:clean-architecture`. Validate dependency direction -- dependencies point inward, never outward.
+- **Place in the correct architectural layer** per `framework:architecture`. Validate dependency direction follows the loaded architecture rules.
 - **Apply `framework:clean-code` self-validation** during generation. Run the inline checks: SRP compliance, meaningful naming, low cyclomatic complexity, proper error handling, no magic values, clean function signatures, no dead code, appropriate abstraction level, clear control flow, minimal comments (code should be self-documenting).
 - **Write tests** using `framework:test-quality` self-validation.
 
@@ -102,7 +103,7 @@ After generating each component and before presenting it to the user:
 This step checks **architectural coherence** -- not code quality (that was verified per-component in Step 3). After all components are implemented:
 
 - **With blueprint**: Verify that interaction flows match the Level 3 (Interactions) design. Every designed interaction should be traceable in the code.
-- **Dependency direction**: Verify that all dependencies point inward. No domain imports from infrastructure. No application layer bypassed by controllers calling infrastructure directly.
+- **Dependency direction**: Apply `framework:architecture` verification across all components — verify that inter-component dependency direction follows the loaded architecture rules. No layer should import from a layer it is not permitted to depend on.
 - **Zero Implementation Rule**: Check that no new components, interactions, or contracts were introduced beyond what was planned in Step 2. If something was added, flag it -- it may be necessary, but it should be a conscious decision, not scope creep.
 - **Final security scan**: Apply `framework:secure-coding` across component boundaries. Check that data flowing between components crosses trust boundaries safely.
 - **Learnings check**: If `.ai/learnings/review-insights.md` was loaded in Step 1, verify that previously-flagged patterns do not recur in this implementation. If a past insight said "anemic domain models keep appearing" -- check that entities in this implementation have behavior.

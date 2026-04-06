@@ -1,6 +1,6 @@
 ---
 name: clean-code
-description: "Apply clean code principles when generating or modifying implementation code. Enforces function focus, naming clarity, complexity management, error handling, and self-documenting style. Use during code generation, refactoring, or when the user mentions 'clean code', 'code quality', 'refactor this', 'simplify this', 'improve this', 'make this cleaner', 'clean this up', 'tidy this', 'coding guidelines', or 'implementation quality'. This skill governs the craft of writing individual code units -- not architecture (see clean-architecture), not security posture (see secure-coding), and not test structure (see test-quality)."
+description: "Apply clean code principles when generating or modifying implementation code. Enforces function focus, naming clarity, complexity management, error handling, and self-documenting style. Use during code generation, refactoring, or when the user mentions 'clean code', 'code quality', 'refactor this', 'simplify this', 'improve this', 'make this cleaner', 'clean this up', 'tidy this', 'coding guidelines', or 'implementation quality'. This skill governs the craft of writing individual code units -- not architecture (see architecture), not security posture (see secure-coding), and not test structure (see test-quality)."
 ---
 
 # Clean Code

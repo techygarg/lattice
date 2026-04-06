@@ -28,7 +28,7 @@ Lattice organizes skills into three tiers. See [how-it-works](docs/how-it-works.
 | Skill | What it does |
 |-------|-------------|
 | **clean-code** | Enforces function focus, naming clarity, complexity management, error handling, and self-documenting style |
-| **clean-architecture** | Validates layer responsibilities, dependency direction, command/query flow separation |
+| **architecture** | Validates layer responsibilities, dependency direction, and structural rules. Defaults to clean architecture; supports any style via the architecture-refiner |
 | **domain-driven-design** | Enforces aggregate design, value objects over primitives, entity identity rules, bounded context boundaries |
 | **secure-coding** | Applies trust boundary awareness, input validation, injection prevention, secrets management |
 | **test-quality** | Enforces AAA structure, one behavior per test, assertion quality, test isolation, meaningful naming |
@@ -42,17 +42,17 @@ Lattice organizes skills into three tiers. See [how-it-works](docs/how-it-works.
 | Skill | What it does | Atoms composed |
 |-------|-------------|----------------|
 | **lattice-init** | Guided setup -- scans the project, detects existing config, suggests refiners in priority order, creates `.ai/config.yaml` | knowledge-priming |
-| **design-blueprint** | Runs a complete design workflow -- from context through progressive design levels to an approved blueprint | knowledge-priming, context-anchoring, collaborative-judgment, design-first, clean-architecture, domain-driven-design |
-| **code-forge** | Generates implementation from an approved blueprint or verbal requirements using inside-out layer ordering | knowledge-priming, context-anchoring, collaborative-judgment, clean-architecture, clean-code, domain-driven-design, secure-coding, test-quality |
-| **refactor-safely** | Restructures existing code without changing externally observable behavior. Requires agreement on the target structure before code changes and uses characterization tests as the safety net | knowledge-priming, context-anchoring, collaborative-judgment, clean-code, test-quality (always), design-first, clean-architecture, domain-driven-design, secure-coding (conditional) |
-| **bug-fix** | Investigates, reproduces, and safely fixes a bug with regression protection. Requires a failing reproduction before applying the repair | knowledge-priming, context-anchoring, collaborative-judgment, clean-code, test-quality (always), clean-architecture, domain-driven-design, secure-coding (conditional) |
-| **review** | Performs a structured, delta-scoped code review with severity-ordered findings. Supports optional process config via review-refiner | knowledge-priming (always), collaborative-judgment (always), clean-code (always), clean-architecture, domain-driven-design, secure-coding, test-quality (conditional) |
+| **design-blueprint** | Runs a complete design workflow -- from context through progressive design levels to an approved blueprint | knowledge-priming, context-anchoring, collaborative-judgment, design-first, architecture, domain-driven-design |
+| **code-forge** | Generates implementation from an approved blueprint or verbal requirements using inside-out layer ordering | knowledge-priming, context-anchoring, collaborative-judgment, architecture, clean-code, domain-driven-design, secure-coding, test-quality |
+| **refactor-safely** | Restructures existing code without changing externally observable behavior. Requires agreement on the target structure before code changes and uses characterization tests as the safety net | knowledge-priming, context-anchoring, collaborative-judgment, clean-code, test-quality (always), design-first, architecture, domain-driven-design, secure-coding (conditional) |
+| **bug-fix** | Investigates, reproduces, and safely fixes a bug with regression protection. Requires a failing reproduction before applying the repair | knowledge-priming, context-anchoring, collaborative-judgment, clean-code, test-quality (always), architecture, domain-driven-design, secure-coding (conditional) |
+| **review** | Performs a structured, delta-scoped code review with severity-ordered findings. Supports optional process config via review-refiner | knowledge-priming (always), collaborative-judgment (always), clean-code (always), architecture, domain-driven-design, secure-coding, test-quality (conditional) |
 
 ### Refiners (5)
 
 | Skill | What it produces |
 |-------|-----------------|
-| **architecture-refiner** | `.ai/standards/clean-architecture.md` -- project-specific clean architecture principles for the clean-architecture atom |
+| **architecture-refiner** | `.ai/standards/architecture.md` -- project-specific architecture principles. Supports clean architecture (default), hexagonal, modular monolith, or custom styles |
 | **ddd-refiner** | `.ai/standards/ddd-principles.md` -- project-specific DDD guardrails for the domain-driven-design atom |
 | **clean-code-refiner** | `.ai/standards/clean-code.md` -- project-specific coding standards for the clean-code atom |
 | **knowledge-priming-refiner** | `.ai/standards/knowledge-base.md` -- project identity, tech stack, directory layout, and trusted sources |
@@ -74,6 +74,18 @@ Skills form a delivery lifecycle: **lattice-init** → **design-blueprint** → 
    ```bash
    ./tools/install.sh /path/to/your-project
    ```
+1. **Install skills into your project**: Lattice will be available as a proper plugin. For local testing after cloning the repo, use the install script to copy skills directly into your AI tool's skills directory:
+   ```bash
+   git clone <lattice-repo-url>
+   cd lattice
+   ./tools/install.sh /absolute/path/to/your/skills/folder
+   ```
+   Pass the skills directory of whichever AI tool you are using — the script is tool-agnostic:
+   - **Claude Code**: `~/.claude/skills/` (global) or `/path/to/project/.claude/skills/` (project-local)
+   - **Cursor**: `/path/to/project/.cursor/skills/`
+   - **Any other tool**: the absolute path to that tool's skills folder
+
+   All 20 skills are copied flat into that directory so your tool can discover them.
 
 2. **Run `/lattice-init`** (recommended): Guided setup experience -- scans your project, suggests which refiners to run, and creates the `.ai/config.yaml`. This is the fastest path from install to first value.
 
@@ -118,7 +130,9 @@ All persistent outputs go into subfolders — never `.ai/` root except `config.y
 
 ## Learn More
 
+- [Practical Guide](docs/practical-guide.md) -- scenario-driven Q&A: getting started, architecture setup, customization, workflow, team usage, and troubleshooting
 - [How It Works](docs/how-it-works.md) -- how atoms compose, config resolution, the pipeline, and tier comparison
+- [Configuration Reference](docs/configuration.md) -- every `.ai/config.yaml` field documented: valid keys, produced by, consumed by, and merge modes
 - [Framework Intelligence](docs/framework-intelligence.md) -- why things are designed this way: verification passes, feedback loops, AI compliance techniques
 - [Collaborative Judgment](docs/collaborative-judgment.md) -- why AI should ask on genuine judgment calls and how this works at runtime
 

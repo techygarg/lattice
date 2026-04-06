@@ -40,7 +40,7 @@ Each code-quality atom carries two small embedded pieces that connect to this pr
 
 1. **The checklist header instruction**: *"If a check is a judgment call with multiple valid approaches (see Ambiguity Signals), flag it — present your options and reasoning rather than silently choosing."* This tells the AI: when you hit a gray area during verification, do not silently resolve it.
 
-2. **The Ambiguity Signals section**: domain-specific gray areas where that atom's checks tend to produce judgment calls — borderline SRP in clean-code, layer placement in clean-architecture, aggregate boundaries in DDD, trust boundary scope in secure-coding.
+2. **The Ambiguity Signals section**: domain-specific gray areas where that atom's checks tend to produce judgment calls — borderline SRP in clean-code, layer placement in architecture, aggregate boundaries in DDD, trust boundary scope in secure-coding.
 
 These two pieces form the **detection layer** — each atom knows its own gray areas and tells the AI to flag them. Collaborative-judgment provides the **resolution layer** — how to present, when to batch, how to resolve. The molecule loads both into one context window; the AI applies them as an integrated whole.
 
@@ -56,7 +56,7 @@ Step 2: AI holds ALL instructions in one context window
         │  code-forge workflow                        │
         │  collaborative-judgment protocol            │
         │  clean-code checklist + ambiguity signals   │
-        │  clean-architecture checklist + signals     │
+        │  architecture checklist + signals           │
         │  DDD checklist + signals (if domain code)   │
         └─────────────────────────────────────────────┘
 
@@ -84,7 +84,7 @@ A user invokes `/code-forge` to implement an Order domain entity.
 
 **Without collaborative-judgment**: The AI generates `OrderValidationService`, places it in the application layer, and moves on. It considered the domain layer but silently chose application because "services that coordinate multiple objects" sounded like application-layer work. The user reviews 200 lines of code and eventually realizes validation logic should have been in the domain.
 
-**With collaborative-judgment**: The AI runs the clean-architecture checklist. Check 5 (LAYER PLACEMENT) triggers — clean-architecture's Ambiguity Signals flags "logic that coordinates domain objects but also contains business rules" as a judgment call. At the component checkpoint:
+**With collaborative-judgment**: The AI runs the architecture checklist. Check 5 (LAYER PLACEMENT) triggers — architecture's Ambiguity Signals flags "logic that coordinates domain objects but also contains business rules" as a judgment call. At the component checkpoint:
 
 > **Decision needed**: Where should `OrderValidationService` live?
 >

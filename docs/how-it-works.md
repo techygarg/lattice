@@ -38,7 +38,7 @@ Not every atom applies to every piece of code. The distinction matters for both 
 
 **Always apply:**
 - **clean-code** -- Every piece of code benefits from SRP, clear naming, managed complexity, and proper error handling.
-- **clean-architecture** -- Every file lives in a layer, and every dependency has a direction. Structural rules apply universally.
+- **architecture** -- Defaults to clean architecture (layers, dependency direction) but supports any architectural style you document. Structural rules apply universally.
 - **knowledge-priming** -- Project context (tech stack, architecture, conventions) is always relevant. Without it, the AI defaults to generic assumptions.
 - **collaborative-judgment** -- Genuine judgment calls should be surfaced with options, not silently resolved. Composed by molecules alongside other atoms.
 
@@ -61,7 +61,7 @@ Four atoms serve different purposes than the code-quality atoms:
 Every code-quality atom supports project-specific customization through the same resolution mechanism:
 
 1. Look for `.ai/config.yaml` in the repository root
-2. Check for the atom's config key (e.g., `paths.clean_code`, `paths.clean_architecture`)
+2. Check for the atom's config key (e.g., `paths.clean_code`, `paths.architecture`)
 3. If a custom document exists at that path, check its YAML frontmatter for `mode`:
    - **`mode: overlay`** (default, recommended): Read the atom's embedded defaults first, then apply the custom document's sections on top. Sections are matched by heading -- custom sections replace matching defaults, new sections are appended. You can also add entirely new sections (e.g., language-specific idioms, team-specific rules) that do not exist in the defaults.
    - **`mode: override`**: The custom document fully replaces the atom's defaults. Use this when your standards are fundamentally different and you want complete control.
@@ -70,6 +70,8 @@ Every code-quality atom supports project-specific customization through the same
 Atoms work out of the box with opinionated defaults. Customization is opt-in, not required. Most teams use overlay -- the defaults are good starting points, and typically only a few sections need adjustment.
 
 **Two paths to customization**: Run a refiner (guided interview that generates the standards document) or edit the standards document in `.ai/standards/` directly. Both produce the same result: a file the atom picks up through config resolution. Re-run a refiner or edit the file whenever your standards evolve.
+
+See [docs/configuration.md](configuration.md) for the complete list of valid config keys and what each one does.
 
 ## Molecules in Depth
 
@@ -95,11 +97,11 @@ Run once per project. If Lattice is already fully configured, acknowledges it an
 
 A complete design workflow that produces an approved blueprint before any code is written.
 
-**Composes**: knowledge-priming, context-anchoring, collaborative-judgment, design-first, clean-architecture, domain-driven-design
+**Composes**: knowledge-priming, context-anchoring, collaborative-judgment, design-first, architecture, domain-driven-design
 
 **How it works**:
 1. **Establish context**: Uses context-anchoring to create or load the feature's living document.
-2. **Walk design levels**: Drives through design-first's 5 levels sequentially. At Levels 2-4, applies clean-architecture (layer assignments, dependency direction) and domain-driven-design (aggregate identification, entity/value object classification).
+2. **Walk design levels**: Drives through design-first's 5 levels sequentially. At Levels 2-4, applies architecture (layer assignments, dependency direction) and domain-driven-design (aggregate identification, entity/value object classification).
 3. **Persist at each level**: After the user approves each level, the approved output is written to the context document. The context document *is* the blueprint.
 4. **Finalize**: Writes a design summary with component list, layer assignments, contracts, and a "ready for implementation" marker.
 
@@ -109,12 +111,12 @@ The blueprint stops at Level 4 (Contracts). It does not proceed to Level 5 (Impl
 
 Generates implementation from an approved blueprint or verbal requirements.
 
-**Composes**: knowledge-priming (always), context-anchoring (always), collaborative-judgment (always), clean-architecture (always), clean-code (always), domain-driven-design (conditional: domain layer), secure-coding (conditional: trust boundaries), test-quality (always when writing tests)
+**Composes**: knowledge-priming (always), context-anchoring (always), collaborative-judgment (always), architecture (always), clean-code (always), domain-driven-design (conditional: domain layer), secure-coding (conditional: trust boundaries), test-quality (always when writing tests)
 
 **How it works**:
 1. **Load context**: Loads learnings from `.ai/learnings/review-insights.md` (if they exist) to avoid repeating past mistakes. Uses context-anchoring to find and load the feature's blueprint. If none exists, works from verbal requirements -- all atom guardrails still apply.
 2. **Plan implementation order**: Classifies components into architectural layers and plans an inside-out build order: Domain → Infrastructure → Application → Interface. Each layer's dependencies already exist when it is built.
-3. **Implement per component**: Generates code and tests together. After generating each component, runs a post-generation verification pass — atom self-validation checklists and anti-pattern scans — fixing violations before presenting. Applies clean-code and clean-architecture to all code. Applies DDD only to domain layer code. Applies secure-coding only at trust boundaries.
+3. **Implement per component**: Generates code and tests together. After generating each component, runs a post-generation verification pass — atom self-validation checklists and anti-pattern scans — fixing violations before presenting. Applies clean-code and architecture to all code. Applies DDD only to domain layer code. Applies secure-coding only at trust boundaries.
 4. **Cross-component verification**: Checks architectural coherence — interaction flows match the blueprint, dependency direction is correct, no unplanned components, and past learnings don't recur.
 5. **Enrich context**: Captures implementation decisions in the living document. Recommends running `/review` before considering the feature complete.
 
@@ -124,7 +126,7 @@ The user chooses a review mode: layer-by-layer (recommended), full autonomy, or 
 
 Investigates, reproduces, and safely fixes a bug with regression protection. This is the defect-driven counterpart to code-forge: it starts from a failing behavior instead of a new requirement.
 
-**Composes**: knowledge-priming (always), context-anchoring (always), collaborative-judgment (always), clean-code (always), test-quality (always), clean-architecture (conditional), domain-driven-design (conditional), secure-coding (conditional)
+**Composes**: knowledge-priming (always), context-anchoring (always), collaborative-judgment (always), clean-code (always), test-quality (always), architecture (conditional), domain-driven-design (conditional), secure-coding (conditional)
 
 **How it works**:
 1. **Establish bug context**: Loads review learnings if they exist, then uses context-anchoring to load the relevant feature context when available. Clarifies observed vs expected behavior before touching code.
@@ -137,7 +139,7 @@ Investigates, reproduces, and safely fixes a bug with regression protection. Thi
 
 Restructures existing code without changing externally observable behavior. This is the preservation-driven counterpart to code-forge: it starts from structural pain in existing code and requires agreement on the target structure before any refactor edits are made.
 
-**Composes**: knowledge-priming (always), context-anchoring (always), collaborative-judgment (always), clean-code (always), test-quality (always), design-first (conditional), clean-architecture (conditional), domain-driven-design (conditional), secure-coding (conditional)
+**Composes**: knowledge-priming (always), context-anchoring (always), collaborative-judgment (always), clean-code (always), test-quality (always), design-first (conditional), architecture (conditional), domain-driven-design (conditional), secure-coding (conditional)
 
 **How it works**:
 1. **Establish refactor context**: Clarifies the current pain, desired structural improvement, and the behavior that must remain unchanged. Loads prior learnings and relevant context documents when available.
@@ -150,7 +152,7 @@ Restructures existing code without changing externally observable behavior. This
 
 A structured, delta-scoped code review that loads atoms conditionally based on what changed. Supports optional process configuration via the review-refiner.
 
-**Composes**: knowledge-priming (always), collaborative-judgment (always), clean-code (always), clean-architecture (conditional), domain-driven-design (conditional), secure-coding (conditional), test-quality (conditional)
+**Composes**: knowledge-priming (always), collaborative-judgment (always), clean-code (always), architecture (conditional), domain-driven-design (conditional), secure-coding (conditional), test-quality (conditional)
 
 **Config**: Optionally reads `.ai/standards/review-standards.md` (produced by the review-refiner or written by hand) to customize atom loading rules, severity classification, report format, scope rules, insight capture, and health logging. When no review-standards document exists, all defaults apply — identical behavior to a review without config. The boundary: if it changes *what an atom checks for*, it belongs in that atom's refiner; if it changes *how the review process works*, it belongs in the review-refiner.
 
@@ -196,7 +198,7 @@ The `.ai/` folder is the living context layer described earlier -- the project's
 ├── standards/           # Refiner-produced customization documents
 │   ├── knowledge-base.md
 │   ├── clean-code.md
-│   ├── clean-architecture.md
+│   ├── architecture.md
 │   ├── ddd-principles.md
 │   └── review-standards.md
 ├── context/             # Per-feature living documents

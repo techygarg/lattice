@@ -12,8 +12,9 @@ Load and apply these skills based on the scope of the review (see Step 2 for con
 1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) to evaluate changes against real project standards (always loaded)
 2. `framework:collaborative-judgment` -- Surface borderline findings with both interpretations instead of silently classifying (always loaded)
 3. `framework:clean-code` -- Code craft validation: SRP, naming, complexity, error handling (always loaded)
-4. `framework:clean-architecture` -- Structural validation: layer rules, dependency direction, command/query flows (conditional)
+4. `framework:architecture` -- Structural validation: layer rules, dependency direction, architectural flows (conditional)
 5. `framework:domain-driven-design` -- Domain modeling validation: aggregates, entities, value objects (conditional)
+   → Skip if `disable.domain_driven_design: true` in `.ai/config.yaml`
 6. `framework:secure-coding` -- Security validation: trust boundaries, injection, secrets, input handling (conditional)
 7. `framework:test-quality` -- Test validation: AAA structure, isolation, assertions, naming (conditional)
 
@@ -46,6 +47,10 @@ Each step below notes where config applies with "**Config override**" callouts. 
 
 ## Workflow
 
+### Disable Check
+
+Read `.ai/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` for the entire workflow. No replacement atom. Do not load it in Step 2, do not run its checks in Step 3, and do not include it in the report in Step 4.
+
 ### Step 1: Identify the Delta
 
 Determine what code is being reviewed and establish the scope.
@@ -56,7 +61,7 @@ Determine what code is being reviewed and establish the scope.
 
 Classify the delta by answering these questions:
 
-1. **Which architectural layers are touched?** (controllers, services, domain, infrastructure) -- determines if `clean-architecture` loads.
+1. **Which architectural layers are touched?** (per the loaded architecture rules) -- determines if `architecture` loads.
 2. **Is domain code included?** (files in the configured `domain_folder` or containing aggregates, entities, value objects) -- determines if `domain-driven-design` loads.
 3. **Are security-sensitive areas touched?** (authentication, authorization, input handling, database queries, external API calls, file I/O, configuration, secrets) -- determines if `secure-coding` loads.
 4. **Are test files included?** -- determines if `test-quality` loads.
@@ -75,7 +80,7 @@ Classify the delta by answering these questions:
 
 | Condition | Load | Why |
 |-----------|------|-----|
-| Delta touches multiple layers, adds new files, or changes file locations | `framework:clean-architecture` | Structural changes can break dependency direction or layer responsibilities |
+| Delta touches multiple layers, adds new files, or changes file locations | `framework:architecture` | Structural changes can break dependency direction or layer responsibilities |
 | Delta includes files in the domain folder or modifies domain objects | `framework:domain-driven-design` | Domain changes can break aggregate boundaries, anemic models, or invariant enforcement |
 | Delta touches trust boundaries (HTTP handlers, auth, DB queries, external APIs, secrets, config) | `framework:secure-coding` | Security-sensitive code needs injection, validation, and secrets checks |
 | Delta includes test files | `framework:test-quality` | Test code has its own quality standards (AAA, isolation, naming) |
@@ -143,10 +148,10 @@ Organize findings by atom. For each atom that was loaded:
 - [suggestion] src/services/OrderService.ts:72 -- Parameter list has 5 arguments.
   Group into `ProcessOrderOptions` object.
 
-## Clean Architecture
-- [critical] src/domain/Order.ts:12 -- Domain entity imports from infrastructure
-  (`import { DatabaseClient }`). Domain must have zero outward dependencies.
-  Define a repository interface in domain, implement in infrastructure.
+## Architecture
+- [critical] src/domain/Order.ts:12 -- Inner layer imports from outer layer
+  (`import { DatabaseClient }`). Violates dependency direction rules.
+  Define an interface in the inner layer, implement in the outer layer.
 ```
 
 After all atom sections, add:
