@@ -1,8 +1,8 @@
 # Test Quality: Default Principles
 
-These are the embedded opinionated defaults for test quality. They synthesize Gerard Meszaros's xUnit Test Patterns, Kent Beck's Test-Driven Development, and Martin Fowler's testing guidance into one actionable set of guidelines for writing effective tests.
+These defaults synthesize Gerard Meszaros's xUnit Test Patterns, Kent Beck's TDD, Martin Fowler's testing guidance into one actionable set.
 
-If the project has a custom `.lattice/test-quality.md` (referenced through `.lattice/config.yaml`), that document takes precedence over everything here.
+If project has custom `.lattice/test-quality.md` (referenced through `.lattice/config.yaml`), that doc wins.
 
 ## Table of Contents
 
@@ -19,7 +19,7 @@ If the project has a custom `.lattice/test-quality.md` (referenced through `.lat
 
 ## 1. AAA Structure
 
-Every test should have three clearly separated phases. The reader should be able to identify each phase at a glance.
+Every test: three clear phases. Reader spots each phase at glance.
 
 ### Good Separation
 
@@ -62,7 +62,7 @@ function test_discount():
 
 ### When Arrange Is Long
 
-Extract the complex setup into a builder or factory -- do not tolerate a 20-line arrange phase.
+Extract complex setup into builder/factory -- no 20-line arrange phase.
 
 ```
 // POOR: Long arrange phase obscures the test's intent
@@ -476,31 +476,31 @@ function should_not_apply_discount_when_below_threshold():
 ### When to Write Each Type
 
 **Unit test** when:
-- Testing a pure function or method with clear inputs and outputs
-- Testing business logic that does not depend on I/O
-- Testing edge cases and boundary conditions
-- Testing error handling paths
+- Testing pure function/method with clear inputs/outputs
+- Testing business logic without I/O
+- Testing edge cases/boundaries
+- Testing error paths
 
 **Integration test** when:
-- Verifying database queries return correct results
-- Verifying API client correctly parses external responses
+- Verifying DB queries return correct results
+- Verifying API client parses external responses correctly
 - Verifying message handler processes events correctly
-- Verifying file I/O operations work with real filesystem
+- Verifying file I/O works with real filesystem
 
 **E2E test** when:
-- Verifying a critical user journey (login, checkout, registration)
-- Verifying that independently deployed services work together
-- Smoke testing a deployment
+- Verifying critical user journey (login, checkout, registration)
+- Verifying independently deployed services work together
+- Smoke testing deployment
 
 ### Push Coverage Downward
 
-When an integration or E2E test catches a bug:
+When integration/E2E test catches bug:
 
-1. **Write a unit test** that reproduces the specific failure
-2. **Fix the bug** -- the unit test should go green
-3. **Keep the higher-level test** for regression, but the unit test is now the primary guard
+1. **Write unit test** reproducing specific failure
+2. **Fix bug** -- unit test goes green
+3. **Keep higher-level test** for regression, but unit test is primary guard now
 
-This ensures the bug is caught at the fastest, cheapest level going forward.
+Bug caught at fastest, cheapest level going forward.
 
 ---
 
@@ -585,4 +585,3 @@ function should_not_apply_discount_for_low_value_order():
 
   assertFalse(result.hasDiscount)
 ```
-

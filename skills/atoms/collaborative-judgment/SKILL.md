@@ -2,36 +2,33 @@
 name: collaborative-judgment
 description: "Protocol for handling ambiguous decisions during code generation, design, and review. Ensures AI surfaces genuine judgment calls with structured options instead of silently assuming. Use when a decision has multiple valid approaches, when the user asks 'what should we do here?', 'is this a judgment call?', 'should I ask about this?', 'what are the tradeoffs?', or when deciding between two reasonable architectural or design options. Also composed by molecules to define how judgment calls are surfaced and resolved."
 ---
-
 # Collaborative Judgment
 
-## The Problem
+## Problem
 
-AI coding assistants resolve ambiguity silently. When a checklist result could go either way -- a borderline SRP call, a debatable layer placement, an arguable aggregate boundary -- the AI picks one option and presents it as the only possibility. The user never knows a decision was made on their behalf.
+AI resolve ambiguity silent. User never know decision made. Silent micro-assumption make code feel "off". Undo woven assumption cost more than upfront choice.
 
-The damage is subtle but cumulative. Five silent micro-assumptions produce code that feels "off" but the user can't articulate why. Undoing a woven-in assumption costs more than making an informed choice upfront.
+## When Decide vs When Ask
 
-## When To Decide vs When To Ask
+Most decision NOT ambiguous. AI decide when:
 
-Most decisions are NOT ambiguous. The AI should decide autonomously when:
+- **Rule clear.** 80-line function doing 5 things violate SRP. Domain entity import database break dependency rule. Fix.
+- **Project documented preference.** Knowledge base, refiner docs, context anchor specify choice -- follow. Not ambiguity, documented intent.
+- **Low-impact.** Variable naming, import order, test data -- choose, move on.
 
-- **The rule is clear.** An 80-line function doing 5 things violates SRP. A domain entity importing a database client breaks the dependency rule. Fix it.
-- **The project has documented a preference.** If the knowledge base, refiner-produced docs, or context anchor already specify a choice -- follow it. That is not ambiguity; it is documented intent.
-- **The decision is low-impact.** Variable naming between two reasonable options, import ordering, test data values -- choose and move on.
+Surface decision only when ALL three true:
 
-Surface a decision only when ALL three are true:
+1. **Multiple valid approach** -- genuine fork between reasonable options.
+2. **No project context resolve** -- knowledge base, refiner docs, context anchor silent.
+3. **Meaningful consequences** -- affect architecture, behavior, maintainability. Not cosmetic.
 
-1. **Multiple valid approaches exist** -- not a clear violation, but a genuine fork between reasonable options.
-2. **No project context resolves it** -- knowledge base, refiner docs, and context anchor are silent on this.
-3. **The choice has meaningful consequences** -- it affects architecture, behavior, or maintainability. Not cosmetic.
+**Confidence test**: "Considered two+ approaches, neither clearly better given project context." True → surface. False → decide, move on.
 
-**The confidence test**: "I considered two or more approaches and neither is clearly better given this project's documented context." If true → surface. If false → decide and move on.
-
-**Err on the side of deciding.** A confident AI that occasionally makes a disputable choice is more useful than an uncertain AI that asks about everything. Ask only when genuinely torn and the consequences matter.
+**Err side of deciding.** Confident AI occasionally disputable > uncertain AI ask everything. Ask only when genuinely torn, consequences matter.
 
 ## Presentation Format
 
-When surfacing a judgment call:
+When surface judgment call:
 
 > **Decision needed**: [one-line description of what's being decided]
 >
@@ -40,33 +37,33 @@ When surfacing a judgment call:
 >
 > I lean toward **[option]** because [one sentence of reasoning].
 
-Two options is the norm. Three maximum. No essays -- the user needs to make a quick call, not read a thesis.
+Two options norm. Three maximum. No essays.
 
 ## Batching
 
-Do not interrupt for every judgment call. Collect and surface at natural checkpoints:
+Not interrupt every judgment call. Collect, surface at natural checkpoints:
 
-- **During implementation** (code-forge): batch per component. Surface all judgment calls for a component together before presenting the code.
-- **During design** (design-blueprint): surface immediately. Each design level constrains the next -- batching risks cascading misalignment.
-- **During review** (review): note uncertainty inline in the report with both interpretations.
-- **Standalone / freeform**: batch per logical task segment. If the user is discussing a feature, surface all judgment calls when the feature's scope is clear -- not one at a time as they arise.
+- **During implementation** (code-forge): batch per component. Surface all judgment call for component together before present code.
+- **During design** (design-blueprint): surface immediately. Each design level constrain next -- batching risk cascading misalignment.
+- **During review** (review): note uncertainty inline in report with both interpretations.
+- **Standalone / freeform**: batch per logical task segment. Surface all judgment call when feature scope clear -- not one at time.
 
-**Escalation signal**: If a single component produces more than 3 judgment calls, the project needs clearer standards. Suggest running the relevant refiner rather than asking about each one individually.
+**Escalation signal**: Single component produce >3 judgment calls, project need clearer standards. Suggest run relevant refiner instead ask each individually.
 
 ## Resolution
 
-When the user resolves a judgment call:
+When user resolve judgment call:
 
-1. **Apply immediately** -- implement their choice in the current context.
-2. **Treat as a commitment** -- do not revisit the same decision later in the session.
-3. **Suggest persistence** -- if the decision would apply to similar future situations, suggest capturing it via `framework:context-anchoring` (per-feature) or recommend running the relevant refiner (project-wide).
+1. **Apply immediately** -- implement choice in current context.
+2. **Treat as commitment** -- not revisit same decision later in session.
+3. **Suggest persistence** -- if decision apply similar future situations, suggest capture via `framework:context-anchoring` (per-feature) or recommend run relevant refiner (project-wide).
 
-## The Diminishing Rule
+## Diminishing Rule
 
-This protocol becomes less active as the project matures:
+Protocol become less active as project mature:
 
 - **First feature**: more judgment calls (no documented preferences yet).
-- **After running refiners**: fewer (project standards are documented).
-- **After several features**: rare (context docs and learnings cover most cases).
+- **After run refiners**: fewer (project standards documented).
+- **After several features**: rare (context docs, learnings cover most cases).
 
-A well-configured project should see almost no judgment calls. If the AI is still asking frequently after multiple features, the standards documents need improvement. For example: if aggregate boundary questions keep surfacing, the DDD defaults document may not define a sizing heuristic -- run the domain-driven-design refiner to capture the team's preference and eliminate the question permanently.
+Well-configured project see almost no judgment calls. If AI still ask frequently after multiple features, standards documents need improvement. Example: aggregate boundary questions keep surface, DDD defaults document may not define sizing heuristic -- run domain-driven-design refiner capture team preference, eliminate question permanently.

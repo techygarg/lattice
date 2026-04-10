@@ -1,8 +1,8 @@
 # Secure Coding: Default Principles
 
-These are the embedded opinionated defaults for secure coding. They synthesize OWASP guidelines, SANS secure coding practices, and defensive programming principles into one actionable set of guidelines for writing security-conscious code.
+Embedded defaults for secure code. Synthesizes OWASP, SANS, defensive programming into actionable guidelines.
 
-If the project has a custom `.lattice/secure-coding.md` (referenced through `.lattice/config.yaml`), that document takes precedence over everything here.
+Custom `.lattice/secure-coding.md` (via `.lattice/config.yaml`) overrides this.
 
 ## Table of Contents
 
@@ -18,7 +18,7 @@ If the project has a custom `.lattice/secure-coding.md` (referenced through `.la
 
 ## 1. Trust Boundary Identification
 
-A trust boundary exists wherever data crosses from one trust level to another. Identifying these boundaries is the first step in writing secure code.
+Trust boundary = data crosses trust levels. Find these first.
 
 ### Common Trust Boundaries
 
@@ -43,12 +43,12 @@ A trust boundary exists wherever data crosses from one trust level to another. I
 
 ### Boundary Identification Checklist
 
-For every function or module you write, ask:
+For every function/module ask:
 
-1. **Where does the data come from?** If from outside your application, it crosses a trust boundary.
-2. **Has this data been validated before?** If not, this is where validation must happen.
-3. **Could this data have been tampered with?** Cookies, URL parameters, form fields, and headers are all user-controlled.
-4. **Is this data from another service?** Even internal services can return unexpected data if they are compromised or buggy.
+1. **Where data from?** Outside app = crosses boundary.
+2. **Validated before?** If no, validate here.
+3. **Could be tampered?** Cookies, URL params, forms, headers = user-controlled.
+4. **From another service?** Even internal services can return bad data if compromised/buggy.
 
 ### Pattern: Trust Boundary Annotation
 
@@ -219,7 +219,7 @@ function sortBy(column):
 
 ## 4. Output Encoding by Context
 
-The same data needs different encoding depending on where it is rendered. There is no single "sanitize" function.
+Same data needs different encoding by render location. No single "sanitize" function.
 
 ### HTML Context
 
@@ -484,4 +484,3 @@ function fetchWebhook(url):
     throw SecurityError("URL resolves to a blocked IP range")
   return httpClient.get(url)
 ```
-

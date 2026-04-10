@@ -2,140 +2,138 @@
 name: domain-driven-design
 description: "Apply DDD tactical patterns when working with domain code. Enforces aggregate design, value objects over primitives, entity identity rules, and bounded context boundaries. Use when creating or modifying domain models, designing aggregates, working in the domain layer, or when the user mentions 'domain', 'aggregate', 'value object', 'entity', 'bounded context', or 'DDD'."
 ---
-
 # Domain-Driven Design
 
 ## Config Resolution
 
-This skill supports project-specific customizations. Resolution order:
+Skill support project-custom. Resolution:
 
-1. Look for `.lattice/config.yaml` in the repository root
-2. If found, check `paths.ddd_principles` for a custom document path
-3. If the custom path exists, read that document and check its YAML frontmatter for `mode`:
-   - **`mode: override`** (or no mode specified): The custom document takes full precedence.
-     Use it instead of the embedded defaults. It must be comprehensive -- it is the sole reference.
-   - **`mode: overlay`**: Read the embedded `./references/defaults.md` first, then apply the
-     custom document's sections on top. Sections in the custom document replace matching
-     sections in defaults (matched by heading). New sections are appended after defaults.
+1. Look `.lattice/config.yaml` repo root
+2. If found, check `paths.ddd_principles` custom doc path
+3. If custom path exist, read doc, check YAML frontmatter `mode`:
+   - **`mode: override`** (or no mode): Custom doc full precedence.
+     Use instead embed default. Must comprehensive -- sole reference.
+   - **`mode: overlay`**: Read embed `./references/defaults.md` first, then apply
+     custom doc section on top. Section custom replace match
+     section default (match by heading). New section append after default.
 4. If no config, no path, or path not found, read `./references/defaults.md`
 
-The defaults ship with this skill and represent opinionated best practices.
-They work out of the box for any project. Override only when your team has
-specific standards that differ from the defaults.
+Default ship with skill, represent opinionated best practice.
+Work out box any project. Override only when team have
+specific standard differ from default.
 
 ## Self-Validation Checklist
 
-STOP after generating each component. Verify ALL of the following before proceeding. If any check clearly fails, fix the code before presenting it. If a check is a judgment call with multiple valid approaches (see Ambiguity Signals), flag it — present your options and reasoning rather than silently choosing.
+STOP after generate each component. Verify ALL follow before proceed. If check clearly fail, fix code before present. If check judgment call with multiple valid approach (see Ambiguity Signal), flag — present option and reasoning rather than silent choose.
 
-1. **ENTITY VS VALUE OBJECT**: For each domain object — does the business track individual instances over time? Yes → entity with identity. No → value object with immutability and self-validation.
-2. **AGGREGATE BOUNDARY**: Does a transactional invariant require this object inside the aggregate? If not → separate aggregate referenced by ID.
-3. **RICH BEHAVIOR**: Do entities have methods that enforce business rules, guard state transitions, and raise events? If entities are just data holders → move logic from services into entities.
-4. **VALUE OBJECT COVERAGE**: Scan for primitive types that should be value objects — string emails, number amounts, raw UUIDs as identifiers → wrap in value objects with validation.
-5. **AGGREGATE COHESION**: List the business rules the root enforces. Does each internal entity participate in at least one invariant? If not → it belongs in its own aggregate.
-6. **DOMAIN EVENTS**: Are domain events raised for state transitions other aggregates react to, changes that trigger notifications, and audit/compliance requirements? Don't raise events for internal changes nothing reacts to.
-7. **DOMAIN SERVICE**: Is stateless logic that spans multiple entities placed in a domain service rather than an application service? Does it avoid I/O and infrastructure calls?
-8. **FACTORY**: Is complex aggregate creation encapsulated in a factory method (`Order.create(...)`) or standalone factory class? Are initial creation and reconstitution from persistence handled separately?
+1. **ENTITY VS VALUE OBJECT**: Each domain object — business track individual instance over time? Yes → entity with identity. No → value object with immutable and self-validate.
+2. **AGGREGATE BOUNDARY**: Transactional invariant require this object inside aggregate? If not → separate aggregate reference by ID.
+3. **RICH BEHAVIOR**: Entity have method enforce business rule, guard state transition, raise event? If entity just data holder → move logic from service into entity.
+4. **VALUE OBJECT COVERAGE**: Scan primitive type should be value object — string email, number amount, raw UUID as identifier → wrap value object with validate.
+5. **AGGREGATE COHESION**: List business rule root enforce. Each internal entity participate least one invariant? If not → belong own aggregate.
+6. **DOMAIN EVENTS**: Domain event raise for state transition other aggregate react, change trigger notification, audit/compliance requirement? Don't raise event internal change nothing react.
+7. **DOMAIN SERVICE**: Stateless logic span multiple entity place domain service rather than application service? Avoid I/O and infrastructure call?
+8. **FACTORY**: Complex aggregate creation encapsulate factory method (`Order.create(...)`) or standalone factory class? Initial creation and reconstitution from persistence handle separate?
 
 ## Active Anti-Pattern Scan
 
-After verifying the checklist above, scan your output for these specific anti-patterns. If you find any, fix them before presenting the code.
+After verify checklist above, scan output these specific anti-pattern. If find any, fix before present code.
 
-- [ ] **Anemic Domain Model**: Entities are data holders with only getters/setters; all logic lives in services → move business rules into entities and value objects
-- [ ] **Primitive Obsession**: Raw strings for email, numbers for money, UUIDs for IDs → wrap in value objects with validation and behavior
-- [ ] **God Aggregate**: Aggregate with many entities, slow to load, high contention → decompose to keep only what shares a transactional invariant
-- [ ] **Cross-Aggregate Transaction**: Service updates two aggregates in one transaction → use domain events for eventual consistency
-- [ ] **Leaking Domain Logic**: Business rules in controllers, application services, or infrastructure → extract to domain objects or domain services
-- [ ] **Misidentified Entity/Value Object**: Entity without lifecycle, or value object with identity tracking → apply the identity test
+- [ ] **Anemic Domain Model**: Entity data holder only getter/setter; all logic live service → move business rule into entity and value object
+- [ ] **Primitive Obsession**: Raw string for email, number for money, UUID for ID → wrap value object with validate and behavior
+- [ ] **God Aggregate**: Aggregate many entity, slow load, high contention → decompose keep only what share transactional invariant
+- [ ] **Cross-Aggregate Transaction**: Service update two aggregate one transaction → use domain event eventual consistency
+- [ ] **Leaking Domain Logic**: Business rule in controller, application service, or infrastructure → extract domain object or domain service
+- [ ] **Misidentified Entity/Value Object**: Entity without lifecycle, or value object with identity track → apply identity test
 
 ## Ambiguity Signals
 
-These checks often have multiple valid outcomes. When you encounter one, present options rather than silently choosing.
+These check often have multiple valid outcome. When encounter, present option rather than silent choose.
 
-- **Aggregate Boundary Size**: Smaller aggregates (more events, eventual consistency) vs larger aggregates (simpler transactions, immediate consistency). Neither is inherently correct — it depends on contention patterns and invariant scope.
-- **Entity vs Value Object**: Some concepts (like `Address` or `Money`) may or may not need identity depending on the domain's complexity. Apply the identity test, but acknowledge when it's borderline.
-- **Domain Service vs Entity Method**: Logic that spans multiple entities could live in a domain service or be a method on the primary entity. The choice depends on which entity "owns" the invariant.
+- **Aggregate Boundary Size**: Small aggregate (more event, eventual consistency) vs large aggregate (simple transaction, immediate consistency). Neither inherent correct — depend contention pattern and invariant scope.
+- **Entity vs Value Object**: Some concept (like `Address` or `Money`) may or may not need identity depend domain complexity. Apply identity test, but acknowledge when borderline.
+- **Domain Service vs Entity Method**: Logic span multiple entity could live domain service or be method on primary entity. Choice depend which entity "own" invariant.
 
 ## Scope Statement
 
-This skill operates within a single repository, for a single bounded context (e.g., one API -- Order, User, Pricing). It covers tactical DDD patterns only -- not strategic DDD (no context mapping, no microservice topology, no bounded context integration).
+Skill operate within single repo, single bounded context (e.g., one API -- Order, User, Pricing). Cover tactical DDD pattern only -- not strategic DDD (no context map, no microservice topology, no bounded context integration).
 
-If the task appears to span multiple bounded contexts (e.g., an Order feature that calls into Shipping logic), flag this before proceeding: "This touches [Context A] and [Context B]. Cross-context integration is strategic DDD — outside this skill's scope. Would you like to scope to one context, or proceed knowing cross-context coordination is your responsibility?"
+If task appear span multiple bounded context (e.g., Order feature call Shipping logic), flag before proceed: "This touch [Context A] and [Context B]. Cross-context integration strategic DDD — outside skill scope. Want scope one context, or proceed knowing cross-context coordination your responsibility?"
 
-`framework:architecture` provides the structural envelope -- where code lives, which layers exist, which direction dependencies flow. This skill defines how to craft the domain *within* that envelope: rich models, invariants, aggregate boundaries, and ubiquitous language.
+`framework:architecture` provide structural envelope -- where code live, which layer exist, which direction dependency flow. This skill define how craft domain *within* envelope: rich model, invariant, aggregate boundary, ubiquitous language.
 
 ## Core Principle
 
-The domain model is the authoritative expression of business rules. Rich domain objects encapsulate behavior and enforce invariants. Code should speak the ubiquitous language of the business.
+Domain model authoritative expression business rule. Rich domain object encapsulate behavior and enforce invariant. Code speak ubiquitous language business.
 
-If a business rule exists, it should be expressible through the domain model -- not scattered across controllers, application services, or infrastructure. An entity that is only a data holder with external services doing all the work is an anemic model, and it is the primary anti-pattern this skill prevents.
+If business rule exist, should expressible through domain model -- not scatter across controller, application service, or infrastructure. Entity only data holder with external service do all work is anemic model, primary anti-pattern this skill prevent.
 
 ## The Aggregate Rule
 
-The single governing principle that makes DDD work -- equivalent to the Dependency Rule in Clean Architecture:
+Single governing principle make DDD work -- equivalent Dependency Rule Clean Architecture:
 
-**"Design around invariants, not relationships."**
+**"Design around invariant, not relationship."**
 
-An aggregate is a **consistency boundary** -- the set of objects that MUST be immediately consistent within a single transaction. It is not a convenience grouping of related things. The rules:
+Aggregate **consistency boundary** -- set object MUST immediately consistent within single transaction. Not convenience grouping related thing. Rules:
 
-1. **Only the aggregate root is accessible from outside.** External code never reaches past the root to manipulate internal entities.
-2. **Reference other aggregates by identity (ID), never by object reference.** Object references create hidden coupling and expand transaction scope.
-3. **One transaction per aggregate.** If a business operation needs two aggregates updated atomically, either the boundary is wrong or you need domain events for eventual consistency.
-4. **Start small.** Begin with root + value objects. Add internal entities only when a transactional invariant forces them inside. If you are debating whether something belongs, it does not.
+1. **Only aggregate root accessible from outside.** External code never reach past root manipulate internal entity.
+2. **Reference other aggregate by identity (ID), never by object reference.** Object reference create hidden coupling and expand transaction scope.
+3. **One transaction per aggregate.** If business operation need two aggregate update atomic, either boundary wrong or need domain event eventual consistency.
+4. **Start small.** Begin root + value object. Add internal entity only when transactional invariant force inside. If debate whether something belong, it not.
 
-See `./references/defaults.md` for the full aggregate design framework with code examples, decomposition heuristics, and before/after pseudocode.
+See `./references/defaults.md` full aggregate design framework with code example, decomposition heuristic, before/after pseudocode.
 
 ## Tactical Patterns
 
-Each pattern: what it is, why it matters, the key rule. See `./references/defaults.md` for deep guidance and code examples.
+Each pattern: what, why, key rule. See `./references/defaults.md` deep guidance and code example.
 
 ### Aggregate
 
-Consistency boundary. Root access only. Reference by ID. One transaction. Every internal entity must participate in at least one invariant enforced by the root -- if it does not, it belongs in its own aggregate.
+Consistency boundary. Root access only. Reference by ID. One transaction. Every internal entity must participate least one invariant enforce by root -- if not, belong own aggregate.
 
 ### Entity
 
-Has identity persisting through state changes. Equality by identity, not attributes. Must have behavior -- methods that enforce business rules, guard state transitions, and raise events. An entity with only getters and setters is an anemic model.
+Have identity persist through state change. Equality by identity, not attribute. Must have behavior -- method enforce business rule, guard state transition, raise event. Entity only getter/setter is anemic model.
 
 ### Value Object
 
-Defined by attributes, not identity. Immutable. Self-validating -- invalid states are unrepresentable. Use instead of primitives: Money not number, Email not string, OrderId not UUID. See `./references/defaults.md` for the common value object catalog.
+Define by attribute, not identity. Immutable. Self-validate -- invalid state unrepresentable. Use instead primitive: Money not number, Email not string, OrderId not UUID. See `./references/defaults.md` common value object catalog.
 
 ### Domain Service
 
-Stateless business logic that spans multiple entities or value objects with no natural home in any single one. Pure domain computation -- no I/O, no infrastructure calls. Not to be confused with application services, which orchestrate use cases and coordinate infrastructure.
+Stateless business logic span multiple entity or value object with no natural home any single one. Pure domain computation -- no I/O, no infrastructure call. Not confuse application service, which orchestrate use case and coordinate infrastructure.
 
 ### Domain Event
 
-Something that happened in the domain that domain experts care about. Named in past tense (OrderPlaced, PaymentReceived). Carries the data needed to describe what happened (aggregate ID, relevant values, timestamp). Used for cross-aggregate coordination and eventual consistency. Not event sourcing -- aggregates are persisted through repositories.
+Something happen domain that domain expert care. Name past tense (OrderPlaced, PaymentReceived). Carry data needed describe what happen (aggregate ID, relevant value, timestamp). Use cross-aggregate coordination and eventual consistency. Not event sourcing -- aggregate persist through repository.
 
 ### Repository
 
-One per aggregate root, not per entity. Interface defined in domain layer, implementation in infrastructure. Collection-like semantics (save, findById, remove). Returns fully-constituted aggregates, not partial objects or DTOs.
+One per aggregate root, not per entity. Interface define domain layer, implementation infrastructure. Collection-like semantic (save, findById, remove). Return fully-constitute aggregate, not partial object or DTO.
 
-**Repositories are for command (state-changing) operations only.** Read-only queries belong in Providers (see `framework:architecture` for the query flow pattern). Providers are concrete infrastructure classes with no domain-layer interface -- they return DAOs, not domain objects. Do not conflate Repository and Provider: Repository protects invariants through domain objects; Provider serves reads efficiently by bypassing domain construction.
+**Repository for command (state-change) operation only.** Read-only query belong Provider (see `framework:architecture` query flow pattern). Provider concrete infrastructure class no domain-layer interface -- return DAO, not domain object. Not conflate Repository and Provider: Repository protect invariant through domain object; Provider serve read efficient bypass domain construction.
 
 ### Factory
 
-Encapsulates complex aggregate creation. Two purposes: initial creation (enforcing creation invariants) and reconstitution from persistence. Simple cases use a factory method on the aggregate root (`Order.create(...)`). Complex cases involving multiple sources use a standalone factory class.
+Encapsulate complex aggregate creation. Two purpose: initial creation (enforce creation invariant) and reconstitution from persistence. Simple case use factory method aggregate root (`Order.create(...)`). Complex case involve multiple source use standalone factory class.
 
 ## Design Decision Framework
 
-When making domain modeling decisions, ask these questions:
+When make domain modeling decision, ask:
 
-1. **Aggregate boundary**: "What must be consistent within a single transaction?" -- not "what is related to what." If unsure → start separate, merge only if an invariant forces it.
-2. **Entity vs Value Object**: Does the business track individual instances over time? Yes → entity. No → value object.
-3. **Domain Service vs Entity Method**: Logic belongs to one entity? → put it there. Spans multiple entities? → domain service. Involves I/O? → application service.
-4. **Domain Events**: Would other aggregates, external systems, or audit trails react? Yes → raise event. No → skip.
+1. **Aggregate boundary**: "What must consistent within single transaction?" -- not "what related what." If unsure → start separate, merge only if invariant force.
+2. **Entity vs Value Object**: Business track individual instance over time? Yes → entity. No → value object.
+3. **Domain Service vs Entity Method**: Logic belong one entity? → put there. Span multiple entity? → domain service. Involve I/O? → application service.
+4. **Domain Events**: Other aggregate, external system, or audit trail react? Yes → raise event. No → skip.
 
 ## Decomposition Signals
 
-Recognize when an aggregate has grown too large:
+Recognize when aggregate grow too large:
 
-- **More than ~3-5 internal entities** → not all share an invariant with the root
-- **Multiple unrelated invariants** → likely two aggregates merged
-- **Root methods that only touch a subset** of internals → that subset may be its own aggregate
-- **"I need to load everything to validate one thing"** → boundary is too coarse
-- **High contention** → unrelated concerns are lumped together
+- **More than ~3-5 internal entity** → not all share invariant with root
+- **Multiple unrelated invariant** → likely two aggregate merge
+- **Root method only touch subset** internal → subset may own aggregate
+- **"Need load everything validate one thing"** → boundary too coarse
+- **High contention** → unrelated concern lump together
 
-See `./references/defaults.md` for the full decomposition guide with before/after examples.
-
+See `./references/defaults.md` full decomposition guide before/after example.

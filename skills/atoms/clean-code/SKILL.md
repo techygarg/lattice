@@ -2,81 +2,75 @@
 name: clean-code
 description: "Apply clean code principles when generating or modifying implementation code. Enforces function focus, naming clarity, complexity management, error handling, and self-documenting style. Use during code generation, refactoring, or when the user mentions 'clean code', 'code quality', 'refactor this', 'simplify this', 'improve this', 'make this cleaner', 'clean this up', 'tidy this', 'coding guidelines', or 'implementation quality'. This skill governs the craft of writing individual code units -- not architecture (see architecture), not security posture (see secure-coding), and not test structure (see test-quality)."
 ---
-
 # Clean Code
 
 ## Config Resolution
 
-This skill supports project-specific customizations. Resolution order:
+Skill support project custom. Order:
 
-1. Look for `.lattice/config.yaml` in the repository root
-2. If found, check `paths.clean_code` for a custom document path
-3. If the custom path exists, read that document and check its YAML frontmatter for `mode`:
-   - **`mode: override`** (or no mode specified): The custom document takes full precedence.
-     Use it instead of the embedded defaults. It must be comprehensive -- it is the sole reference.
-   - **`mode: overlay`**: Read the embedded `./references/defaults.md` first, then apply the
-     custom document's sections on top. Sections in the custom document replace matching
-     sections in defaults (matched by heading). New sections are appended after defaults.
-4. If no config, no path, or path not found, read `./references/defaults.md`
+1. Look `.lattice/config.yaml` in repo root
+2. If found, check `paths.clean_code` for custom doc path
+3. If custom path exist, read doc and check YAML frontmatter for `mode`:
+   - **`mode: override`** (or no mode): Custom doc full precedence. Use instead embedded default. Must be comprehensive -- sole reference.
+   - **`mode: overlay`**: Read embedded `./references/defaults.md` first, then apply custom doc sections on top. Custom sections replace matching sections in default (matched by heading). New sections appended after default.
+4. If no config/path/file, read `./references/defaults.md`
 
-The defaults ship with this skill and represent opinionated best practices.
-They work out of the box for any project. Override only when your team has
-specific standards that differ from the defaults.
+Default ship with skill. Opinionated best practice. Work out of box. Override only when team have different standard.
 
 ## Self-Validation Checklist
 
-STOP after generating each component. Verify ALL of the following before proceeding. If any check clearly fails, fix the code before presenting it. If a check is a judgment call with multiple valid approaches (see Ambiguity Signals), flag it — present your options and reasoning rather than silently choosing.
+STOP after generate each component. Verify ALL before proceed. If check clearly fail, fix before present. If judgment call with multiple valid approach (see Ambiguity Signals), flag it — present options and reasoning.
 
-1. **SINGLE RESPONSIBILITY**: Can you describe each function's purpose without the word "and"? If not → extract into separate functions.
-2. **SIZE**: Is each function under ~20 lines? If not → extract sub-operations into named functions.
-3. **COMPLEXITY**: Is cyclomatic complexity under ~10 per function? If not → flatten with guard clauses, extract branches.
-4. **ABSTRACTION LEVEL**: Does each function operate at one level of abstraction? If high-level orchestration is mixed with low-level detail → extract the detail.
-5. **NAMING**: Do function and variable names reveal intent without requiring surrounding context? If not → rename to be self-documenting.
-6. **PARAMETERS**: Does each function have four or fewer parameters? If not → group related parameters into an object.
-7. **PRIMITIVE OBSESSION**: Are there string, number, or boolean parameters that would be clearer as named types or objects? If so → introduce parameter objects or typed wrappers.
-8. **ERROR HANDLING**: Does every operation that can fail have explicit handling with actionable messages? Are errors handled at the right level?
+1. **SINGLE RESPONSIBILITY**: Describe each function without "and"? If not → extract separate function.
+2. **SIZE**: Each function under ~20 lines? If not → extract sub-operation into named function.
+3. **COMPLEXITY**: Cyclomatic complexity under ~10 per function? If not → flatten with guard clause, extract branch.
+4. **ABSTRACTION LEVEL**: Each function operate at one level? If high-level mixed with low-level → extract detail.
+5. **NAMING**: Function/variable name reveal intent without context? If not → rename self-documenting.
+6. **PARAMETERS**: Four or fewer parameter? If not → group into object.
+7. **PRIMITIVE OBSESSION**: String/number/boolean clearer as named type? If so → introduce parameter object or typed wrapper.
+8. **ERROR HANDLING**: Every fail-able operation have explicit handling with actionable message? Handled at right level?
 
 ## Active Anti-Pattern Scan
 
-After verifying the checklist above, scan your output for these specific anti-patterns. If you find any, fix them before presenting the code.
+After checklist, scan for these. If find, fix before present.
 
-- [ ] **God Function**: Any function exceeding ~30 lines that does multiple things; description requires "and" → extract into focused functions
-- [ ] **Deep Nesting**: Three or more levels of indentation → flatten with early returns and guard clauses
-- [ ] **Cryptic Naming**: Variables like `d`, `tmp2`, `processData` → rename to reveal intent
-- [ ] **Long Parameter Lists**: Functions with five or more parameters → group into objects or split functions
-- [ ] **Premature Abstraction**: Utility extracted from only two similar blocks → inline until Rule of Three with same reason to change
-- [ ] **Swallowed Errors**: Empty catch blocks, generic "something went wrong," silently returning null → handle explicitly
-- [ ] **Comments as Deodorant**: Comments explaining convoluted code → refactor the code to be self-documenting
-- [ ] **Hidden Side Effects**: Function named `getX` that also writes to cache or sends notification → rename or separate
-- [ ] **Dead Code**: Commented-out blocks, unused imports, unreachable branches → delete (version control preserves history)
-- [ ] **Comment Deodorant**: Comments explaining convoluted code instead of refactoring it → rename the code to be self-documenting; keep only "why" comments, remove "what" comments
-- [ ] **Untestable Logic**: Side effects tangled with business logic; unit tests require mocking I/O → push side effects to boundaries, extract pure functions, inject dependencies
+- [ ] **God Function**: Function exceed ~30 lines doing multiple thing; description need "and" → extract focused function
+- [ ] **Deep Nesting**: Three+ level indentation → flatten with early return/guard clause
+- [ ] **Cryptic Naming**: Variable like `d`, `tmp2`, `processData` → rename reveal intent
+- [ ] **Long Parameter Lists**: Five+ parameter → group into object or split function
+- [ ] **Premature Abstraction**: Utility extracted from only two similar block → inline until Rule of Three with same reason to change
+- [ ] **Swallowed Errors**: Empty catch, generic "something went wrong," silently return null → handle explicitly
+- [ ] **Comments as Deodorant**: Comment explain convoluted code → refactor self-documenting
+- [ ] **Hidden Side Effects**: Function named `getX` also write cache/send notification → rename or separate
+- [ ] **Dead Code**: Commented-out block, unused import, unreachable branch → delete (version control preserve)
+- [ ] **Comment Deodorant**: Comment explain convoluted code instead refactor → rename self-documenting; keep only "why" comment, remove "what"
+- [ ] **Untestable Logic**: Side effect tangled with business logic; unit test need mock I/O → push side effect to boundary, extract pure function, inject dependency
 
 ## Ambiguity Signals
 
-These checks often have multiple valid outcomes. When you encounter one, present options rather than silently choosing. The Guardrails section below provides the resolution rule for each; flag the tension, then apply the rule.
+Multiple valid outcome. Present option rather than silently choose. Guardrails section provide resolution rule; flag tension, apply rule.
 
-- **Single Responsibility**: Two tightly-coupled sequential operations may be one responsibility (a pipeline), not two. The "and" test catches true violations and false positives alike.
-- **Function Size**: Near-threshold (20-30 lines) with one clear purpose -- extracting may create five unclear smaller functions. Present the tradeoff.
-- **DRY vs Premature Abstraction**: Two identical blocks may serve different purposes and diverge. Until the third instance with the same reason to change, this is genuinely ambiguous.
-- **Error Handling Strategy**: Exceptions vs Result types vs error codes depends on language idioms and team convention, not a universal rule.
+- **Single Responsibility**: Two tightly-coupled sequential operation may be one responsibility (pipeline), not two. "And" test catch true violation AND false positive.
+- **Function Size**: Near-threshold (20-30 lines) with one clear purpose -- extract may create five unclear smaller function. Present tradeoff.
+- **DRY vs Premature Abstraction**: Two identical block may serve different purpose and diverge. Until third instance with same reason to change, genuinely ambiguous.
+- **Error Handling Strategy**: Exception vs Result type vs error code depend on language idiom and team convention, not universal.
 
 ## Core Principle
 
-Clean code is about the **craft of writing individual units of code** -- functions, classes, modules. It is distinct from architecture (which governs where code lives) and domain modeling (which governs business rules). Apply these principles during code generation, not as a post-generation review pass.
+Clean code about **craft writing individual unit** -- function, class, module. Distinct from architecture (govern where code live) and domain modeling (govern business rule). Apply during code generation, not post-generation review.
 
 ## Guardrails and Nuances
 
-The checklist and anti-patterns above are the primary enforcement mechanism. These nuances resolve the Ambiguity Signals above. See `./references/defaults.md` for full explanations, thresholds, and code examples.
+Checklist and anti-pattern above are primary enforcement. These nuance resolve Ambiguity Signals. See `./references/defaults.md` for full explanation, threshold, code example.
 
-- **SRP pipeline guardrail**: The "and" test catches functions with *independent* responsibilities, not tightly coupled steps of one responsibility. `validateAndNormalizeEmail` does two things that must always happen together in sequence — separating them creates an invalid-state window. When steps have no valid independent use, they are one responsibility expressed as a pipeline.
+- **SRP pipeline guardrail**: "And" test catch function with *independent* responsibility, not tightly coupled step of one responsibility. `validateAndNormalizeEmail` do two thing always together in sequence — separate create invalid-state window. When step have no valid independent use, one responsibility expressed as pipeline.
 
-- **Size vs clarity**: A 25-line function with one clear purpose is better than five 5-line functions with unclear relationships. Near-threshold cases are signals, not hard rules.
+- **Size vs clarity**: 25-line function with one clear purpose better than five 5-line function with unclear relationship. Near-threshold case signal, not hard rule.
 
-- **Magic number extraction**: Extract a literal to a named constant when its meaning is not self-evident or appears in multiple places. Do NOT extract self-documenting values: `return []`, `startIndex = 0`, `percentage / 100`, or HTTP status codes in framework response calls.
+- **Magic number extraction**: Extract literal to named constant when meaning not self-evident or appear multiple place. Do NOT extract self-documenting: `return []`, `startIndex = 0`, `percentage / 100`, HTTP status code in framework response.
 
-- **Boolean parameter opacity**: `createUser(data, true)` is opaque at the call site. Prefer named options (`{ sendWelcomeEmail: true }`) or split into descriptively named functions.
+- **Boolean parameter opacity**: `createUser(data, true)` opaque at call site. Prefer named option (`{ sendWelcomeEmail: true }`) or split into descriptively named function.
 
-- **DRY vs wrong abstraction**: The wrong abstraction is more costly than no abstraction -- it fights every future change that doesn't fit its mold. Extract when you see the same pattern **three times** with the **same reason to change**. Until then, tolerate duplication.
+- **DRY vs wrong abstraction**: Wrong abstraction more costly than no abstraction -- fight every future change not fit mold. Extract when see pattern **three times** with **same reason to change**. Until then, tolerate duplication.
 
-- **Actionable vs safe error messages**: Error messages at trust boundaries must not reveal internal details (see `framework:secure-coding`) but should still be actionable. "Invalid email format" is safe and actionable; "Something went wrong" is safe but useless; "SQL syntax error at line 42" leaks internals. Pattern: log full details server-side with a correlation ID, return a generic but actionable message with the same ID.
+- **Actionable vs safe error messages**: Error at trust boundary must not reveal internal (see `framework:secure-coding`) but still actionable. "Invalid email format" safe and actionable; "Something went wrong" safe but useless; "SQL syntax error at line 42" leak internal. Pattern: log full detail server-side with correlation ID, return generic but actionable message with same ID.

@@ -7,17 +7,17 @@ description: "Guided setup experience for new Lattice projects -- scans the repo
 
 ## Required Skills
 
-Read and apply these skills in order:
+Read apply skills order:
 
-1. `framework:knowledge-priming` -- Load project context to understand what the project is and what already exists
+1. `framework:knowledge-priming` -- Load project context understand what project is what already exists
 
 ## Workflow
 
 ### Step 1: Scan the Project
 
-Detect signals about the project to understand its shape and existing Lattice state.
+Detect signals about project understand shape existing Lattice state.
 
-**Language/framework detection** -- check for these files at the repository root:
+**Language/framework detection** -- check files repo root:
 - `package.json` → Node.js / TypeScript
 - `go.mod` → Go
 - `pom.xml` or `build.gradle` → Java
@@ -26,9 +26,9 @@ Detect signals about the project to understand its shape and existing Lattice st
 - `Gemfile` → Ruby
 - `*.csproj` or `*.sln` → C# / .NET
 
-If multiple language markers are found at the repository root, note all of them and ask the user which primary stack to use for refiner suggestions before continuing.
+If multiple language markers found repo root, note all ask user which primary stack use refiner suggestions before continuing.
 
-**Directory structure** -- list top-level directories. Identify common patterns:
+**Directory structure** -- list top-level dirs. Identify common patterns:
 - `src/`, `lib/`, `app/` → source code
 - `test/`, `tests/`, `spec/` → test suites
 - `docs/` → documentation
@@ -48,7 +48,7 @@ If multiple language markers are found at the repository root, note all of them 
 
 ### Step 2: Present Findings
 
-Report what was found -- concise, structured. Present to the user:
+Report what found -- concise, structured. Present user:
 
 ```
 ## Project Scan Results
@@ -68,31 +68,31 @@ Report what was found -- concise, structured. Present to the user:
 - Review log: [found / none]
 ```
 
-**If everything is already set up** (config exists and all core standards documents exist): acknowledge "Lattice is fully configured for this project" and skip directly to Step 4.
+**If everything already set up** (config exists all core standards docs exist): acknowledge "Lattice fully configured for this project" skip directly Step 4.
 
 ### Step 3: Guided Setup
 
-Based on gaps found in Step 2, suggest refiners in priority order. Walk the user through each missing piece one at a time.
+Based gaps found Step 2, suggest refiners priority order. Walk user through each missing piece one time.
 
 **Priority order**:
 
-1. **Knowledge-priming-refiner** (if `.lattice/standards/knowledge-base.md` is missing) -- "Captures your project's identity -- tech stack, architecture, directory layout, and conventions. Every other skill uses this context to make better decisions."
-2. **Architecture-refiner** (if `.lattice/standards/architecture.md` is missing AND the project has a source code directory) -- "Defines your project's architecture standards — layer structure, dependency rules, and validation checklist. Supports multiple styles: clean architecture (default), hexagonal / ports & adapters, modular monolith, or custom."
-3. **DDD-refiner** (if `.lattice/standards/ddd-principles.md` is missing AND the project has a domain folder or domain-like structure) -- "Captures your aggregate design rules, entity patterns, and domain event conventions so the DDD atom enforces your domain modeling style."
-4. **Clean-code-refiner** (if `.lattice/standards/clean-code.md` is missing) -- "Tailors coding standards -- function size limits, complexity thresholds, naming conventions. The defaults work well for most projects, so this is optional."
-5. **Review-refiner** (if `.lattice/standards/review-standards.md` is missing) -- "Customizes how the review molecule works -- atom loading rules, severity levels, report format, scope rules. The defaults work well for most projects, so this is optional."
+1. **Knowledge-priming-refiner** (if `.lattice/standards/knowledge-base.md` missing) -- "Captures project identity -- tech stack, architecture, directory layout, conventions. Every other skill uses this context make better decisions."
+2. **Architecture-refiner** (if `.lattice/standards/architecture.md` missing AND project has source code dir) -- "Defines project architecture standards — layer structure, dependency rules, validation checklist. Supports multiple styles: clean architecture (default), hexagonal / ports & adapters, modular monolith, or custom."
+3. **DDD-refiner** (if `.lattice/standards/ddd-principles.md` missing AND project has domain folder or domain-like structure) -- "Captures aggregate design rules, entity patterns, domain event conventions so DDD atom enforces domain modeling style."
+4. **Clean-code-refiner** (if `.lattice/standards/clean-code.md` missing) -- "Tailors coding standards -- function size limits, complexity thresholds, naming conventions. Defaults work well most projects, so optional."
+5. **Review-refiner** (if `.lattice/standards/review-standards.md` missing) -- "Customizes how review molecule works -- atom loading rules, severity levels, report format, scope rules. Defaults work well most projects, so optional."
 
-**For each gap**, present to the user:
-- What the refiner does (one sentence, from the descriptions above)
-- Three choices: **Run it now**, **Skip for later**, or **Skip all remaining**
+**For each gap**, present user:
+- What refiner does (one sentence, from descriptions above)
+- Three choices: **Run now**, **Skip for later**, or **Skip all remaining**
 
-**If user says "run it"** → Tell the user to invoke the refiner: "Run `/[refiner-name]` now to start the guided interview." If a refiner exits before completing, the user can re-run it — existing partial output in `.lattice/standards/` will not block the interview from restarting.
+**If user says "run"** → Tell user invoke refiner: "Run `/[refiner-name]` now start guided interview." If refiner exits before completing, user can re-run -- existing partial output `.lattice/standards/` will not block interview from restarting.
 
-**If user says "skip"** → Move to the next refiner in priority order.
+**If user says "skip"** → Move next refiner priority order.
 
-**If user says "skip all"** → Jump to Step 4.
+**If user says "skip all"** → Jump Step 4.
 
-**Config creation**: If `.lattice/config.yaml` does not exist and the user did not run any refiners (skipped all), create a minimal config file:
+**Config creation**: If `.lattice/config.yaml` not exist and user not run any refiners (skipped all), create minimal config file:
 
 ```yaml
 # .lattice/config.yaml -- Lattice Framework Configuration
@@ -103,11 +103,11 @@ version: 1
 paths: {}
 ```
 
-If the user runs at least one refiner, the refiner itself will create or update the config file -- no need to create it here.
+If user runs at least one refiner, refiner itself create or update config file -- no need create here.
 
 ### Step 4: Next Steps
 
-Present the workflow so the user knows what to do next.
+Present workflow so user knows what do next.
 
 ```
 ## You're Ready
@@ -124,7 +124,7 @@ Atoms (architecture, clean-code, DDD, secure-coding, etc.) activate automaticall
 You can also use atoms standalone -- they apply checks based on what you're working on.
 ```
 
-If any refiners were skipped in Step 3, add a reminder:
+If any refiners skipped Step 3, add reminder:
 
 ```
 ### Skipped refiners

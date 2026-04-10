@@ -1,8 +1,8 @@
 # Clean Architecture: Default Principles
 
-These are the embedded opinionated defaults for clean architecture. They synthesize Robert Martin's Clean Architecture, Alistair Cockburn's Hexagonal Architecture (Ports & Adapters), and Jeffrey Palermo's Onion Architecture into one actionable set of rules.
+These embedded opinionated defaults for clean architecture. Synthesize Robert Martin's Clean Architecture, Alistair Cockburn's Hexagonal Architecture (Ports & Adapters), Jeffrey Palermo's Onion Architecture into one actionable rule set.
 
-These are the embedded defaults. See the SKILL.md Config Resolution section for how project-specific overrides work.
+Embedded defaults. See SKILL.md Config Resolution section for project-specific overrides.
 
 ## Table of Contents
 
@@ -18,11 +18,11 @@ These are the embedded defaults. See the SKILL.md Config Resolution section for 
 
 | Layer | Responsibility | Depends On | Depended On By |
 |-------|---------------|------------|----------------|
-| **Controllers / Handlers** | Translate external input (HTTP, gRPC, CLI, events) into application calls and format responses | Application Services | Nothing (entry point) |
+| **Controllers / Handlers** | Translate external input (HTTP, gRPC, CLI, events) into app calls, format responses | Application Services | Nothing (entry point) |
 | **Application Services** | Orchestrate use cases: validate, call domain, coordinate infrastructure via interfaces | Domain, Infrastructure interfaces | Controllers |
 | **Domain** | Business rules, entities, value objects, domain services, domain events | Nothing (innermost) | Application Services, Infrastructure (via interfaces) |
-| **Infrastructure: Repositories** | Persist and retrieve domain objects for state-changing operations. Implements domain-defined interfaces | Domain (for interfaces) | Application Services (injected) |
-| **Infrastructure: Providers** | Fetch data for read-only operations. Return DAOs directly. No domain interface | Nothing (concrete class or app-layer interface) | Application Services (injected) |
+| **Infrastructure: Repositories** | Persist/retrieve domain objects for state-changing ops. Implements domain-defined interfaces | Domain (for interfaces) | Application Services (injected) |
+| **Infrastructure: Providers** | Fetch data for read-only ops. Return DAOs directly. No domain interface | Nothing (concrete class or app-layer interface) | Application Services (injected) |
 | **Infrastructure: Other** | External APIs, file I/O, messaging, caching, notifications | Domain (for interfaces, when applicable) | Application Services (injected) |
 
 ### Typical Directory Mapping
@@ -62,7 +62,7 @@ src/
         └── KafkaEventPublisher
 ```
 
-Note the two sibling folders under `infrastructure/`: `repositories/` (for command flows, implementing domain interfaces) and `providers/` (for query flows, no domain interface).
+Note two sibling folders under `infrastructure/`: `repositories/` (command flows, implementing domain interfaces) and `providers/` (query flows, no domain interface).
 
 ---
 
@@ -87,9 +87,9 @@ Infrastructure depends on Domain (it implements domain interfaces).
 Domain depends on NOTHING outside itself.
 ```
 
-Infrastructure sits at the outer ring even though it implements interfaces defined in the inner ring. The source code dependency points inward (infrastructure imports the domain interface), while the runtime call goes outward. This is Dependency Inversion -- the mechanism used whenever an inner layer needs to trigger something in an outer layer.
+Infrastructure sits outer ring though implements interfaces defined inner ring. Source code dependency points inward (infrastructure imports domain interface), runtime call goes outward. Dependency Inversion -- mechanism used when inner layer needs trigger outer layer.
 
-**Data crossing boundaries** should be simple structures -- DTOs, plain objects, primitives. Map from external formats to application-layer types inward, and from domain objects to response DTOs outward. This isolation means the API contract and the database schema evolve independently.
+**Data crossing boundaries** simple structures -- DTOs, plain objects, primitives. Map external formats to app-layer types inward, domain objects to response DTOs outward. Isolation means API contract and DB schema evolve independently.
 
 ---
 
@@ -97,104 +97,104 @@ Infrastructure sits at the outer ring even though it implements interfaces defin
 
 ### 3.1 Controllers / Handlers
 
-**What belongs here:**
-- HTTP route definitions and request parsing
+**Belongs here:**
+- HTTP route definitions, request parsing
 - Input validation (format, presence -- not business rules)
-- Response formatting and status code mapping
-- Authentication middleware integration
+- Response formatting, status code mapping
+- Auth middleware integration
 - Request/response DTOs
 
-**What does not belong here:**
+**Not belongs here:**
 - Business rule evaluation ("if order total > 100, apply discount")
-- Direct database calls
-- Domain object construction from raw input (use a mapper or factory)
+- Direct DB calls
+- Domain object construction from raw input (use mapper/factory)
 
 **Common violations:**
-- Controller reads from DB, applies logic, writes back -- all in one method
+- Controller reads DB, applies logic, writes back -- all one method
 - Business rule conditionals in controller actions
 - Returning domain entities directly as JSON
 
 ### 3.2 Application Services
 
-One service per domain concept (e.g., `OrderService`, `UserService`). Each service contains both command methods and query methods, using different infrastructure paths for each.
+One service per domain concept (e.g., `OrderService`, `UserService`). Each service both command methods and query methods, using different infrastructure paths.
 
 **Command methods (state-changing -- create, update, delete):**
 - Orchestration: validate → create/hydrate domain → persist via Repository → publish event
 - Transaction boundary management
 - Authorization checks
-- Calling infrastructure through repository interfaces defined in domain
+- Calling infrastructure through repository interfaces defined domain
 
 **Query methods (reads -- get, list, search):**
-- Call Provider to fetch data as DAOs
+- Call Provider fetch data as DAOs
 - Map DAOs to response DTOs
 - No domain object construction
 
 **Service constructor pattern:**
-- Inject both Repository (for commands) and Provider (for queries) into the same service
-- The service decides which infrastructure path based on the operation
+- Inject both Repository (commands) and Provider (queries) into same service
+- Service decides which infrastructure path based on operation
 
-**Application services vs domain services:** Application services orchestrate workflows and coordinate infrastructure boundaries. Domain services execute pure business logic spanning entities/value objects, with no I/O.
+**App services vs domain services:** App services orchestrate workflows, coordinate infrastructure boundaries. Domain services execute pure business logic spanning entities/value objects, no I/O.
 
 **Common violations:**
-- Service contains all business logic while entities are data holders (anemic domain model)
-- Importing concrete repository classes instead of interfaces
-- Constructing domain objects for read operations when Provider would suffice
+- Service contains all business logic while entities data holders (anemic domain model)
+- Importing concrete repository classes instead interfaces
+- Constructing domain objects for read ops when Provider sufficient
 
 ### 3.3 Domain
 
-**What belongs here:**
+**Belongs here:**
 - Entities with behavior (not just data)
 - Value objects (Money, Email, OrderId -- immutable, equality by attributes)
-- Domain services (business logic that doesn't naturally fit in a single entity)
+- Domain services (business logic not naturally fit single entity)
 - Domain events (OrderPlaced, PaymentReceived)
-- Repository interfaces (contracts that infrastructure implements)
+- Repository interfaces (contracts infrastructure implements)
 - Factory methods for complex object creation
 
-**What does not belong here:**
-- Imports from any outer layer
+**Not belongs here:**
+- Imports from outer layer
 - Framework annotations (@Entity, @Column, @RestController)
-- Database-specific types (ResultSet, Document, Row)
+- DB-specific types (ResultSet, Document, Row)
 - HTTP-specific types (Request, Response, Headers)
 
 **Common violations:**
 - Entities annotated with ORM decorators
-- Domain services calling repositories directly instead of receiving data through application services
+- Domain services calling repositories directly instead receiving data through app services
 
 ### 3.4 Infrastructure
 
 Two distinct data access patterns, plus other technical mechanisms:
 
 **Repositories (`infrastructure/repositories/`):**
-- Implement interfaces defined in `domain/repositories/`
-- Accept and return **domain objects**
+- Implement interfaces defined `domain/repositories/`
+- Accept/return **domain objects**
 - Internally map between domain objects and DAOs
-- Used exclusively for state-changing operations
+- Used exclusively state-changing ops
 
 **Providers (`infrastructure/providers/`):**
-- No interface in domain -- contract lives in application layer or as concrete class
+- No interface in domain -- contract lives app layer or concrete class
 - Return **DAOs** directly
-- Used exclusively for read operations
-- Optimized for query performance without domain construction overhead
+- Used exclusively read ops
+- Optimized query performance without domain construction overhead
 
 **Other infrastructure:** External API clients, file I/O, message queues, caches, notifications.
 
 **Common violations:**
 - Repository methods containing business logic
-- Concrete infrastructure types exposed to application services
+- Concrete infrastructure types exposed to app services
 - Using Repository for read-only queries (unnecessary mapping overhead)
-- Provider returning domain entities instead of DAOs
+- Provider returning domain entities instead DAOs
 
 ---
 
 ## 4. Command and Query Flows
 
-Every endpoint falls into one of these two flows. Choosing the right flow is the first structural decision when generating code.
+Every endpoint falls one these flows. Choosing right flow first structural decision when generating code.
 
-A single service handles both flows. `OrderService` has command methods (`createOrder`, `updateOrder`) that use Repository through domain, and query methods (`getOrder`, `listOrders`) that use Provider directly. The command/query separation is a *flow* distinction within the service, not a class-level split.
+Single service handles both flows. `OrderService` has command methods (`createOrder`, `updateOrder`) use Repository through domain, query methods (`getOrder`, `listOrders`) use Provider directly. Command/query separation *flow* distinction within service, not class-level split.
 
 ### 4.1 Command Flow (Create, Update, Delete)
 
-State-changing operations engage the full stack. The domain layer enforces invariants and business rules before any state change is persisted.
+State-changing ops engage full stack. Domain layer enforces invariants, business rules before state change persisted.
 
 ```
 Controller (Request DTO)
@@ -203,7 +203,7 @@ Controller (Request DTO)
       → Repository (accepts Domain, converts to DAO, persists)
 ```
 
-The following example demonstrates Dependency Inversion at the domain/infrastructure boundary -- the interface is defined in domain, implemented in infrastructure:
+Example demonstrates Dependency Inversion at domain/infrastructure boundary -- interface defined domain, implemented infrastructure:
 
 ```
 // domain/repositories/ -- interface in domain
@@ -234,9 +234,9 @@ class OrderService
 
 ### 4.2 Query Flow (Get, List, Search)
 
-Read operations bypass domain entirely. No invariants to protect, so domain construction is unnecessary overhead.
+Read ops bypass domain entirely. No invariants protect, so domain construction unnecessary overhead.
 
-**DAO (Data Access Object)**: A simple record that mirrors the database query result. It is not a domain entity. The service maps DAOs to response DTOs, selecting only the fields the API consumer needs.
+**DAO (Data Access Object)**: Simple record mirrors DB query result. Not domain entity. Service maps DAOs to response DTOs, selecting only fields API consumer needs.
 
 ```
 Controller (Request params)
@@ -246,7 +246,7 @@ Controller (Request params)
 ← Controller returns Response DTO
 ```
 
-The following example shows both flows in a single service with explicit DTO mapping:
+Example shows both flows single service with explicit DTO mapping:
 
 ```
 // Application Service -- both Repository (commands) and Provider (queries)
@@ -300,17 +300,17 @@ class UserResponse
 
 | Aspect | Repository | Provider |
 |--------|-----------|----------|
-| **Purpose** | Persist and retrieve domain objects for state-changing operations | Fetch data for read-only operations |
-| **Interface defined in** | `domain/repositories/` | Application layer or concrete class in infrastructure |
+| **Purpose** | Persist/retrieve domain objects for state-changing ops | Fetch data for read-only ops |
+| **Interface defined in** | `domain/repositories/` | App layer or concrete class in infrastructure |
 | **Accepts** | Domain objects (entities, aggregates) | Primitive query parameters |
 | **Returns** | Domain objects | DAOs (data access objects) |
 | **Called by** | Command methods (create, update, delete) | Query methods (get, list, search) |
 | **Domain involvement** | Full -- invariants enforced | None -- data flows DB → response DTO |
 | **Mapping** | Domain ↔ DAO (bidirectional) | DAO → Response DTO (one-directional, done in service) |
 
-### 4.4 When a Read Needs Domain
+### 4.4 When Read Needs Domain
 
-Rarely, a read requires domain logic -- e.g., access control depending on domain state. In these cases, use the command flow structure even though no state changes. The domain involvement is justified by the business rule.
+Rarely, read requires domain logic -- e.g., access control depending domain state. These cases use command flow structure even though no state changes. Domain involvement justified by business rule.
 
 ---
 
@@ -405,4 +405,4 @@ class OrderService
 
 ---
 
-*These defaults synthesize principles from Robert Martin's Clean Architecture (2012), Alistair Cockburn's Hexagonal Architecture (2005), Jeffrey Palermo's Onion Architecture (2008), and Rahul Garg's analysis of their convergence (ThoughtWorks, 2022).*
+*Defaults synthesize principles from Robert Martin's Clean Architecture (2012), Alistair Cockburn's Hexagonal Architecture (2005), Jeffrey Palermo's Onion Architecture (2008), Rahul Garg's analysis of convergence (ThoughtWorks, 2022).*

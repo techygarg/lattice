@@ -7,116 +7,116 @@ description: "Generate implementation code from an approved design blueprint or 
 
 ## Required Skills
 
-Read and apply these skills:
+Read, apply:
 
-1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) so implementation matches the real project (always)
-2. `framework:context-anchoring` -- Load or discover an existing context anchor document; enrich it as implementation decisions are made (always)
-3. `framework:collaborative-judgment` -- Surface genuine judgment calls with structured options instead of silently assuming (always)
-4. `framework:architecture` -- Layer placement, dependency direction, structural validation (always)
-5. `framework:clean-code` -- Code craft guardrails: SRP, naming, complexity, error handling (always)
-6. `framework:domain-driven-design` -- Aggregates, entities, value objects, domain services (conditional: only when touching domain folder)
+1. `framework:knowledge-priming` -- Load proj context (stack, arch, conventions) so impl matches real proj (always)
+2. `framework:context-anchoring` -- Load/find context anchor doc; enrich as impl decisions made (always)
+3. `framework:collaborative-judgment` -- Surface real judgment calls w/ structured opts vs silent assume (always)
+4. `framework:architecture` -- Layer place, dep direction, struct valid (always)
+5. `framework:clean-code` -- Craft rails: SRP, naming, complexity, err handle (always)
+6. `framework:domain-driven-design` -- Aggregates, entities, VOs, domain svcs (conditional: only when touch domain folder)
    → Skip if `disable.domain_driven_design: true` in `.lattice/config.yaml`
-7. `framework:secure-coding` -- Trust boundaries, injection prevention, secrets management (conditional: only for boundary-crossing code)
-8. `framework:test-quality` -- AAA structure, isolation, assertion quality, naming (always when writing tests)
+7. `framework:secure-coding` -- Trust bounds, injection prevent, secrets mgmt (conditional: only boundary-cross code)
+8. `framework:test-quality` -- AAA struct, isolation, assert quality, naming (always when write tests)
 
 ## Workflow
 
 ### Disable Check
 
-Read `.lattice/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` for the entire workflow. No replacement atom.
+Read `.lattice/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` entire workflow. No replace atom.
 
 ### Step 1: Establish Implementation Context
 
-**Load learnings**: If `.lattice/learnings/review-insights.md` exists, read it. Use recent insights to inform generation — e.g., if learnings say "anemic domain models keep appearing," actively push behavior into entities. If learnings flag "missing input validation on value objects," validate in constructors from the start. These are patterns from past reviews — use them to avoid repeating the same mistakes.
+**Load learnings**: If `.lattice/learnings/review-insights.md` exists, read. Use recent insights inform gen — e.g., learnings say "anemic domain models keep appear," push behavior→entities. Learnings flag "missing input valid on VOs," valid in constructors from start. Patterns from past reviews — use avoid repeat mistakes.
 
-Use `framework:context-anchoring` Document Discovery to check for an existing context anchor document for the feature being implemented.
+Use `framework:context-anchoring` Doc Discovery check existing context anchor doc for feature impl.
 
-- **If found** → Load it (context-anchoring Load behavior). Present the structured acknowledgment -- feature name, decision count, open questions, constraints. Honor all logged decisions and constraints as active commitments.
-- **If not found** → Nudge the user: "Do you have a design document or blueprint for this feature? Or should I work from what we've discussed?" Accept either answer gracefully.
-  - If the user provides a document → load and follow it.
-  - If proceeding without → all atom guardrails still apply; there is simply no structured blueprint to reference. Work from the verbal requirements in the conversation.
+- **If found** → Load (context-anchor Load behavior). Present struct ack -- feature name, decision count, open Qs, constraints. Honor all logged decisions/constraints as active commits.
+- **If not found** → Nudge user: "Have design doc/blueprint for feature? Or work from discussed?" Accept either graceful.
+  - User provides doc → load, follow.
+  - Proceed without → all atom rails still apply; just no struct blueprint ref. Work from verbal reqs in convo.
 
 ### Step 2: Plan Implementation Order
 
-**With blueprint**: Extract the component list and layer assignments from the context anchor document. Use Level 2 (Components) decisions for layer placement and Level 3 (Interactions) for dependency flow.
+**With blueprint**: Extract component list, layer assigns from context anchor doc. Use L2 (Components) decisions for layer place, L3 (Interactions) for dep flow.
 
-**Without blueprint**: Classify the required components into architectural layers using the layer definitions from `framework:architecture`. For each component, determine:
+**Without blueprint**: Classify req components→arch layers using layer defs from `framework:architecture`. Each component, determine:
 
-- What is its primary responsibility? (business rules, data access, coordination, external I/O)
-- Which layer in the loaded architecture document matches that responsibility?
-- What are the dependency constraints for that layer?
+- Primary responsibility? (biz rules, data access, coord, external I/O)
+- Which layer in loaded arch doc matches responsibility?
+- Dep constraints for that layer?
 
-If `framework:architecture` has no loaded layer definitions (neither defaults nor a custom document were resolved), warn the user: "No architecture rules are available. Run `/architecture-refiner` to define your architecture standards. Proceeding without architectural guidance." Continue with only the remaining atom guardrails.
+If `framework:architecture` no loaded layer defs (neither defaults nor custom doc resolved), warn: "No arch rules avail. Run `/architecture-refiner` define arch standards. Proceed w/o arch guidance." Continue w/ only remaining atom rails.
 
-Present the proposed layer assignments to the user for approval before proceeding.
+Present proposed layer assigns→user for approval before proceed.
 
-In both cases, plan an **inside-out implementation order** following the dependency direction from the loaded architecture document — start from the innermost layer (the one with no outward dependencies) and work outward. Each layer's dependencies should already exist when it is built.
+Both cases, plan **inside-out impl order** following dep direction from loaded arch doc — start innermost layer (no outward deps), work outward. Each layer's deps should exist when built.
 
-Classify each operation according to the flow patterns defined in the loaded architecture document (e.g., command vs query flows, or the equivalent distinction in your architecture style).
+Classify each op per flow patterns in loaded arch doc (e.g., cmd vs query flows, or equiv distinction your arch style).
 
-Present the implementation plan -- ordered component list, layer assignments, flow classifications -- and confirm with the user before writing any code.
+Present impl plan -- ordered component list, layer assigns, flow classifs -- confirm w/ user before write code.
 
-After the plan is approved, ask the user to choose a **review mode**:
+After plan approved, ask user choose **review mode**:
 
-> "How would you like to review the implementation?"
-> 1. **Layer-by-layer** (recommended) -- I'll implement each layer fully, then pause for your review before starting the next. One review point per layer.
-> 2. **Full autonomy** -- I'll implement everything end-to-end and present the complete result. One review point at the end. (If a blueprint exists, still pause on any deviation from the approved design.)
-> 3. **Component-by-component** -- I'll pause after each individual component for your feedback. Maximum review points.
+> "How review impl?"
+> 1. **Layer-by-layer** (rec) -- Impl each layer fully, pause for review before next. One review pt/layer.
+> 2. **Full autonomy** -- Impl everything end-to-end, present complete result. One review pt at end. (If blueprint exists, still pause any deviation from approved design.)
+> 3. **Component-by-component** -- Pause after each individual component for feedback. Max review pts.
 
-Default to **layer-by-layer** if the user does not express a preference.
+Default **layer-by-layer** if user no preference.
 
 ### Step 3: Implement Per Component
 
-For each component in the planned order, generate **code and tests together** -- tests are not an afterthought.
+Each component in planned order, gen **code+tests together** -- tests not afterthought.
 
-For every component:
+Every component:
 
-- **Place in the correct architectural layer** per `framework:architecture`. Validate dependency direction follows the loaded architecture rules.
-- **Apply `framework:clean-code` self-validation** during generation. Run the inline checks: SRP compliance, meaningful naming, low cyclomatic complexity, proper error handling, no magic values, clean function signatures, no dead code, appropriate abstraction level, clear control flow, minimal comments (code should be self-documenting).
-- **Write tests** using `framework:test-quality` self-validation.
+- **Place correct arch layer** per `framework:architecture`. Valid dep direction follows loaded arch rules.
+- **Apply `framework:clean-code` self-valid** during gen. Run inline checks: SRP comply, meaningful naming, low cyclomatic complexity, proper err handle, no magic vals, clean func sigs, no dead code, appropriate abstract level, clear control flow, minimal comments (code self-doc).
+- **Write tests** using `framework:test-quality` self-valid.
 
-Conditional checks applied per component:
+Conditional checks per component:
 
-- **If domain layer** → Apply `framework:domain-driven-design` self-validation.
-- **If trust boundary** (HTTP handler, external API call, user input processing, file I/O) → Apply `framework:secure-coding` self-validation.
-- **If blueprint exists** → Verify the component fulfills its Level 4 (Contracts) specification. Flag any deviation from the agreed contract.
+- **If domain layer** → Apply `framework:domain-driven-design` self-valid.
+- **If trust boundary** (HTTP handler, external API call, user input process, file I/O) → Apply `framework:secure-coding` self-valid.
+- **If blueprint exists** → Verify component fulfills L4 (Contracts) spec. Flag any deviation from agreed contract.
 
-**Post-Generation Verification** (applies to every component, in all review modes):
+**Post-Gen Verification** (applies every component, all review modes):
 
-After generating each component and before presenting it to the user:
+After gen each component, before present→user:
 
-1. Run the **Self-Validation Checklist** from each applicable atom against every function/class in this component. The atoms use imperative STOP-and-verify language -- follow it literally.
-2. Run the **Active Anti-Pattern Scan** from each applicable atom. Check every box in the scan list.
-3. If violations are found → fix them before presenting. Do not present code you know violates an atom checklist.
-4. If judgment calls are flagged (see each atom's Ambiguity Signals) → collect them. Present using `framework:collaborative-judgment` protocol before showing the code. Do not silently resolve.
-5. If all checks pass with no flagged judgment calls → present with a brief compliance note (e.g., "All clean-code and DDD checks pass"). Keep it to one line when clean -- only be verbose when reporting violations and fixes.
+1. Run **Self-Valid Checklist** from each applicable atom against every func/class this component. Atoms use imperative STOP-verify lang -- follow literally.
+2. Run **Active Anti-Pattern Scan** from each applicable atom. Check every box scan list.
+3. Violations found → fix before present. Don't present code you know violates atom checklist.
+4. Judgment calls flagged (see each atom's Ambiguity Signals) → collect. Present using `framework:collaborative-judgment` protocol before show code. Don't silent resolve.
+5. All checks pass, no flagged judgment calls → present w/ brief comply note (e.g., "All clean-code, DDD checks pass"). Keep one line when clean -- only verbose when report violations, fixes.
 
-**Pacing -- follow the user's chosen review mode**:
+**Pacing -- follow user's chosen review mode**:
 
-- **Layer-by-layer**: Implement all components within a layer, then present the full layer (code + tests) for review before moving to the next layer.
-- **Full autonomy**: Implement all layers continuously. Present the complete implementation (all code + all tests) at the end. Skip to Step 4 (Cross-Component Verification) after all components are done.
-- **Component-by-component**: Present each component with its tests individually. Wait for approval before moving to the next.
-- **Exception (all modes)**: If a component requires a significant deviation from the plan (new dependency, changed contract, unexpected complexity), pause immediately and discuss before continuing -- regardless of the chosen review mode.
+- **Layer-by-layer**: Impl all components within layer, present full layer (code+tests) for review before next layer.
+- **Full autonomy**: Impl all layers continuous. Present complete impl (all code+tests) at end. Skip→Step 4 (Cross-Component Verif) after all components done.
+- **Component-by-component**: Present each component w/ tests individually. Wait approval before next.
+- **Exception (all modes)**: Component needs significant deviation from plan (new dep, changed contract, unexpected complexity), pause immediately, discuss before continue -- regardless chosen review mode.
 
 ### Step 4: Cross-Component Verification
 
-This step checks **architectural coherence** -- not code quality (that was verified per-component in Step 3). After all components are implemented:
+Step checks **arch coherence** -- not code quality (verified per-component Step 3). After all components impl:
 
-- **With blueprint**: Verify that interaction flows match the Level 3 (Interactions) design. Every designed interaction should be traceable in the code.
-- **Dependency direction**: Apply `framework:architecture` verification across all components — verify that inter-component dependency direction follows the loaded architecture rules. No layer should import from a layer it is not permitted to depend on.
-- **Zero Implementation Rule**: Check that no new components, interactions, or contracts were introduced beyond what was planned in Step 2. If something was added, flag it -- it may be necessary, but it should be a conscious decision, not scope creep.
-- **Final security scan**: Apply `framework:secure-coding` across component boundaries. Check that data flowing between components crosses trust boundaries safely.
-- **Learnings check**: If `.lattice/learnings/review-insights.md` was loaded in Step 1, verify that previously-flagged patterns do not recur in this implementation. If a past insight said "anemic domain models keep appearing" -- check that entities in this implementation have behavior.
+- **With blueprint**: Verify interaction flows match L3 (Interactions) design. Every designed interaction traceable in code.
+- **Dep direction**: Apply `framework:architecture` verif across all components — verify inter-component dep direction follows loaded arch rules. No layer import from layer not permitted depend.
+- **Zero Impl Rule**: Check no new components, interactions, contracts intro beyond planned Step 2. Something added, flag -- may be necessary, but should be conscious decision, not scope creep.
+- **Final security scan**: Apply `framework:secure-coding` across component boundaries. Check data flowing between components crosses trust bounds safely.
+- **Learnings check**: If `.lattice/learnings/review-insights.md` loaded Step 1, verify previously-flagged patterns not recur this impl. Past insight said "anemic domain models keep appear" -- check entities this impl have behavior.
 
 ### Step 5: Enrich Context
 
-Throughout Steps 3 and 4, use `framework:context-anchoring` Enrich behavior to keep the living document current:
+Throughout Steps 3-4, use `framework:context-anchoring` Enrich behavior keep living doc current:
 
-- **Add key files** as they are created -- path, purpose, layer assignment.
-- **Capture implementation decisions** -- library choices, pattern selections, deviations from blueprint, trade-offs made.
-- **Resolve open questions** -- if questions from the design phase are answered during implementation, log the resolution.
-- **If no context document exists** and significant implementation decisions were made → suggest creating one. The decisions are worth preserving for future sessions.
+- **Add key files** as created -- path, purpose, layer assign.
+- **Capture impl decisions** -- lib choices, pattern selects, deviations from blueprint, tradeoffs made.
+- **Resolve open Qs** -- Qs from design phase answered during impl, log resolution.
+- **If no context doc exists**, significant impl decisions made → suggest create. Decisions worth preserve future sessions.
 
-After enriching the context document, recommend a review:
+After enrich context doc, recommend review:
 
-> "The implementation is complete. I recommend running `/review` on the generated code before considering this feature done -- it provides an independent quality assessment against the same atom standards, catches issues the generator may be blind to, and captures learnings for future sessions."
+> "Impl complete. Recommend run `/review` on gen code before consider feature done -- provides independent quality assess against same atom standards, catches issues generator may blind to, captures learnings future sessions."
