@@ -7,112 +7,112 @@ description: "Apply security-conscious thinking when generating or modifying cod
 
 ## Config Resolution
 
-This skill supports project-specific customizations. Resolution order:
+Skill support project-custom. Order:
 
-1. Look for `.lattice/config.yaml` in the repository root
-2. If found, check `paths.secure_coding` for a custom document path
-3. If the custom path exists, read that document and check its YAML frontmatter for `mode`:
-   - **`mode: override`** (or no mode specified): The custom document takes full precedence.
-     Use it instead of the embedded defaults. It must be comprehensive -- it is the sole reference.
-   - **`mode: overlay`**: Read the embedded `./references/defaults.md` first, then apply the
-     custom document's sections on top. Sections in the custom document replace matching
-     sections in defaults (matched by heading). New sections are appended after defaults.
+1. Look `.lattice/config.yaml` in repo root
+2. If found, check `paths.secure_coding` for custom doc path
+3. If custom path exist, read doc, check YAML frontmatter for `mode`:
+   - **`mode: override`** (or no mode): Custom doc take full precedence.
+     Use instead embed default. Must be comprehensive -- sole reference.
+   - **`mode: overlay`**: Read embed `./references/defaults.md` first, then apply
+     custom doc sections on top. Custom sections replace matching
+     sections in default (match by heading). New sections append after default.
 4. If no config, no path, or path not found, read `./references/defaults.md`
 
-The defaults ship with this skill and represent opinionated best practices.
-They work out of the box for any project. Override only when your team has
-specific standards that differ from the defaults.
+Default ship with skill, represent opinionated best practice.
+Work out box any project. Override only when team have
+specific standard differ from default.
 
 ## Self-Validation Checklist
 
-STOP after generating each component. Verify ALL of the following before proceeding. If any check clearly fails, fix the code before presenting it. If a check is a judgment call with multiple valid approaches (see Ambiguity Signals), flag it — present your options and reasoning rather than silently choosing.
+STOP after gen each component. Verify ALL before proceed. If check clearly fail, fix code before present. If check judgment call with multiple valid approach (see Ambiguity Signals), flag — present options and reasoning rather than silent choose.
 
-1. **TRUST BOUNDARIES**: Where does trusted code meet untrusted data? Are all boundaries explicitly identified?
-2. **INPUT VALIDATION**: Is every external input validated at the boundary with allowlists before reaching business logic?
-3. **QUERY SAFETY**: Are all database queries parameterized? Is there any string concatenation in query building?
-4. **COMMAND SAFETY**: Is there any shell/command execution? If so, is input strictly allowlisted?
-5. **SECRETS**: Are there any API keys, passwords, tokens, or connection strings in the code? If so → move to environment variables or secret manager.
-6. **OUTPUT ENCODING**: Is output encoded appropriately for its rendering context (HTML, JSON, URL)?
-7. **AUTHORIZATION**: Is authorization verified at the service layer, not just at the controller? Does each endpoint enforce least privilege?
-8. **ERROR MESSAGES**: Do error messages exposed to users avoid revealing internal details (stack traces, SQL queries, file paths)?
-9. **DEPENDENCIES**: Are newly introduced third-party packages necessary? Are versions pinned or constrained? Are any known-vulnerable packages being added?
+1. **TRUST BOUNDARIES**: Where trusted code meet untrusted data? All boundaries explicit identified?
+2. **INPUT VALIDATION**: Every external input validated at boundary with allowlist before reach business logic?
+3. **QUERY SAFETY**: All database query parameterized? Any string concat in query build?
+4. **COMMAND SAFETY**: Any shell/command execution? If so, input strict allowlisted?
+5. **SECRETS**: Any API key, password, token, connection string in code? If so → move to env var or secret manager.
+6. **OUTPUT ENCODING**: Output encoded appropriate for render context (HTML, JSON, URL)?
+7. **AUTHORIZATION**: Authorization verified at service layer, not just controller? Each endpoint enforce least privilege?
+8. **ERROR MESSAGES**: Error message exposed to user avoid reveal internal detail (stack trace, SQL query, file path)?
+9. **DEPENDENCIES**: New third-party package necessary? Version pinned or constrained? Any known-vulnerable package added?
 
 ## Active Anti-Pattern Scan
 
-After verifying the checklist above, scan your output for these specific anti-patterns. If you find any, fix them before presenting the code.
+After verify checklist above, scan output for specific anti-pattern. If find any, fix before present code.
 
-- [ ] **Trust All Input**: No validation on request parameters; data flows directly to business logic → validate at boundary with allowlists
-- [ ] **SQL String Concatenation**: User input interpolated into SQL queries → use parameterized queries or ORM query builders
-- [ ] **Hardcoded Secrets**: API keys, passwords, or tokens in source code → use environment variables or secret managers
+- [ ] **Trust All Input**: No validation on request param; data flow direct to business logic → validate at boundary with allowlist
+- [ ] **SQL String Concatenation**: User input interpolated into SQL query → use parameterized query or ORM query builder
+- [ ] **Hardcoded Secrets**: API key, password, token in source code → use env var or secret manager
 - [ ] **Missing Authorization**: Auth checked at login but not re-verified at service or resource level → check at every layer
-- [ ] **Overly Broad Permissions**: Admin access granted where read-only would suffice → apply least privilege
-- [ ] **Unvalidated Redirects**: User-controlled URLs used in redirects → allowlist permitted destinations
-- [ ] **Verbose Error Messages**: Stack traces or SQL in API responses → return generic messages, log details server-side
-- [ ] **Logging Sensitive Data**: Passwords, tokens, or PII in log files → log events, not values; mask sensitive fields
+- [ ] **Overly Broad Permissions**: Admin access granted where read-only suffice → apply least privilege
+- [ ] **Unvalidated Redirects**: User-controlled URL used in redirect → allowlist permitted destination
+- [ ] **Verbose Error Messages**: Stack trace or SQL in API response → return generic message, log detail server-side
+- [ ] **Logging Sensitive Data**: Password, token, PII in log file → log event, not value; mask sensitive field
 
 ## Ambiguity Signals
 
-These checks often have multiple valid outcomes. When you encounter one, present options rather than silently choosing.
+Check often have multiple valid outcome. When encounter, present option rather than silent choose.
 
-- **Trust Boundary Scope**: An internal API behind a trusted gateway may or may not need full boundary validation. The answer depends on the deployment topology and threat model.
-- **Error Message Detail**: How much information is "actionable but safe" depends on whether the consumer is a human user, a frontend client, or an internal service.
-- **Validation Depth**: Whether to re-validate data at inner layers (defense-in-depth) or trust the boundary validation depends on the risk profile and performance requirements.
-- **Auth vs Authz Failure Response**: Whether to return 401 (not authenticated) or 403 (not authorized) depends on whether the identity is known. Conflating them leaks information (a 403 confirms the resource exists). When the consumer is a human user, distinguish clearly; when the consumer is an internal service, the separation may differ.
+- **Trust Boundary Scope**: Internal API behind trusted gateway may or may not need full boundary validation. Answer depend on deployment topology and threat model.
+- **Error Message Detail**: How much info "actionable but safe" depend on whether consumer human user, frontend client, or internal service.
+- **Validation Depth**: Whether re-validate data at inner layer (defense-in-depth) or trust boundary validation depend on risk profile and performance requirement.
+- **Auth vs Authz Failure Response**: Whether return 401 (not authenticated) or 403 (not authorized) depend on whether identity known. Conflating leak info (403 confirm resource exist). When consumer human user, distinguish clear; when consumer internal service, separation may differ.
 
 ## Core Principle
 
-Security is about **thinking in trust boundaries**. Every data flow crosses a boundary somewhere -- between the user and the server, between the application and the database, between your code and a third-party API. The question is not "could this be exploited?" but "where does trusted meet untrusted, and what happens at that boundary?"
+Security about **thinking in trust boundary**. Every data flow cross boundary somewhere -- between user and server, between app and database, between code and third-party API. Question not "could this be exploited?" but "where trusted meet untrusted, and what happen at boundary?"
 
-This atom teaches adversarial thinking during code generation, not as an afterthought. When writing code, identify trust boundaries as you go -- the same way a skilled developer considers edge cases. The cost of building security in during generation is near zero; the cost of retrofitting it after a breach is catastrophic.
+Atom teach adversarial thinking during code gen, not afterthought. When write code, identify trust boundary as go -- same way skilled dev consider edge case. Cost build security in during gen near zero; cost retrofit after breach catastrophic.
 
-The boundary with clean-code: clean-code says "handle errors explicitly with actionable messages." Secure-coding says "error messages shown to users must not reveal internal details." Both apply; this skill governs the security dimension.
+Boundary with clean-code: clean-code say "handle error explicit with actionable message." Secure-coding say "error message shown to user must not reveal internal detail." Both apply; this skill govern security dimension.
 
-The boundary with the architecture atom: "check authorization at every layer" (this skill) maps directly to the loaded architecture's layer structure. The architecture atom defines *where* each check lives (e.g., service layer, not controller); secure-coding defines *what* to check (identity confirmed, permission granted, resource owned).
+Boundary with architecture atom: "check authorization at every layer" (this skill) map direct to loaded architecture layer structure. Architecture atom define *where* each check live (e.g., service layer, not controller); secure-coding define *what* to check (identity confirmed, permission granted, resource owned).
 
 ## Trust Boundaries
 
-**All external data is hostile until proven otherwise.** Common boundaries: HTTP requests (query params, headers, body, cookies), file uploads (names, types, contents), database reads (may be poisoned), third-party API responses, user-controlled configuration, and deserialization from external sources.
+**All external data hostile until proven otherwise.** Common boundary: HTTP request (query param, header, body, cookie), file upload (name, type, content), database read (may be poisoned), third-party API response, user-controlled config, deserialization from external source.
 
-When generating code that crosses a boundary, explicitly identify which side is trusted and which is not. If you cannot determine the trust level, treat it as untrusted. See `./references/defaults.md` for trust boundary identification patterns.
+When gen code that cross boundary, explicit identify which side trusted, which not. If cannot determine trust level, treat as untrusted. See `./references/defaults.md` for trust boundary identification pattern.
 
 ## Input Validation and Sanitization
 
-Validate at the boundary, not deep in business logic. The rules:
+Validate at boundary, not deep in business logic. Rules:
 
-- **Allowlist over denylist.** Denylist approaches miss novel attack vectors.
-- **Type-check, range-check, format-check.** A "quantity" should be a positive integer within a reasonable range, not an arbitrary string.
-- **Sanitize for the output context.** HTML encoding for HTML, parameterization for SQL, shell escaping for commands.
+- **Allowlist over denylist.** Denylist approach miss novel attack vector.
+- **Type-check, range-check, format-check.** "Quantity" should be positive integer within reasonable range, not arbitrary string.
+- **Sanitize for output context.** HTML encoding for HTML, parameterization for SQL, shell escaping for command.
 - **Never trust client-side validation alone.** All validation must be enforced server-side.
 
-See `./references/defaults.md` for input validation patterns by type.
+See `./references/defaults.md` for input validation pattern by type.
 
 ## Authentication vs Authorization
 
-Separate concerns, implemented separately. The rules:
+Separate concern, implement separate. Rules:
 
-- **Check authorization at every layer** -- not just at the controller. Hiding a button does not prevent a direct API call.
-- **Least privilege.** Grant the minimum permissions needed for each operation.
-- **Separate auth failures from authz failures.** "Invalid credentials" vs "you do not have permission" -- conflating them leaks information.
+- **Check authorization at every layer** -- not just at controller. Hide button not prevent direct API call.
+- **Least privilege.** Grant minimum permission needed for each operation.
+- **Separate auth failure from authz failure.** "Invalid credential" vs "you not have permission" -- conflate leak info.
 
-See `./references/defaults.md` for authorization check patterns.
+See `./references/defaults.md` for authorization check pattern.
 
 ## Secrets Management
 
-- **No secrets in code** -- not in source files, not in committed config, not in comments, not in log output.
-- **Use environment variables or secret managers.**
-- **Rotate credentials.** Design systems to support rotation without downtime.
-- **Log the fact, not the value.** Log that authentication occurred, not the credentials used.
+- **No secret in code** -- not in source file, not in committed config, not in comment, not in log output.
+- **Use env var or secret manager.**
+- **Rotate credential.** Design system support rotation without downtime.
+- **Log fact, not value.** Log that authentication occurred, not credential used.
 
-See `./references/defaults.md` for secrets management patterns.
+See `./references/defaults.md` for secrets management pattern.
 
 ## Injection Prevention
 
-Root cause: treating user input as trusted structure. Separate data from instructions.
+Root cause: treat user input as trusted structure. Separate data from instruction.
 
-- **SQL injection** -- Parameterized queries only. Never concatenate user input into SQL strings.
-- **Command injection** -- Avoid shell execution. If unavoidable, allowlist commands and arguments.
-- **XSS** -- Context-aware output encoding (HTML, JavaScript, URL contexts).
-- **Path traversal** -- Canonicalize and validate against an allowlist. Reject `..` and unexpected absolute paths.
-- **SSRF** -- Allowlist permitted domains and schemes. Block internal/private IP ranges.
+- **SQL injection** -- Parameterized query only. Never concat user input into SQL string.
+- **Command injection** -- Avoid shell execution. If unavoidable, allowlist command and argument.
+- **XSS** -- Context-aware output encoding (HTML, JavaScript, URL context).
+- **Path traversal** -- Canonicalize and validate against allowlist. Reject `..` and unexpected absolute path.
+- **SSRF** -- Allowlist permitted domain and scheme. Block internal/private IP range.
 
-See `./references/defaults.md` for injection prevention patterns.
+See `./references/defaults.md` for injection prevention pattern.

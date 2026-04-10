@@ -7,41 +7,41 @@ description: "Enforce architectural rules when generating or modifying code. Def
 
 ## Config Resolution
 
-This skill supports two architecture modes: **clean architecture** (default) and **custom architecture** (team-defined). The mode determines which enforcement rules are loaded.
+Skill support two mode: **clean architecture** (default) and **custom architecture** (team-define). Mode determine which rule load.
 
-**Step 1 — Determine the mode:**
+**Step 1 — Determine mode:**
 
-1. Read `.lattice/config.yaml` in the repository root
-2. Check the `architecture_mode` key
+1. Read `.lattice/config.yaml` in repo root
+2. Check `architecture_mode` key
    - If `architecture_mode: custom` → **custom mode**
-   - If absent, or any other value → **clean architecture mode** (default)
+   - If absent, or other value → **clean architecture mode** (default)
 
-**Step 2 — Load enforcement rules:**
+**Step 2 — Load enforce rule:**
 
-- **Clean architecture mode** → Read `./references/clean-architecture.md` for enforcement instructions (Self-Validation Checklist, Anti-Pattern Scan, Ambiguity Signals, structural principles)
-- **Custom mode** → Read `./references/custom-architecture.md` for enforcement instructions
+- **Clean architecture mode** → Read `./references/clean-architecture.md` for enforce instruction (Self-Validation Checklist, Anti-Pattern Scan, Ambiguity Signals, structural principles)
+- **Custom mode** → Read `./references/custom-architecture.md` for enforce instruction
 
 **Step 3 — Load architecture content:**
 
 - **Clean architecture mode:**
-  1. Check `paths.architecture` in `.lattice/config.yaml` for a custom document
-  2. If found, read the document and check its YAML frontmatter for `mode`:
-     - **`mode: overlay`**: Read `./references/clean-architecture-defaults.md` first, then apply the custom document's sections on top. Sections are matched by heading — custom sections replace matching defaults, new sections are appended.
-     - **`mode: override`**: The custom document takes full precedence. It must be comprehensive.
-  3. If no custom document → read `./references/clean-architecture-defaults.md`
+  1. Check `paths.architecture` in `.lattice/config.yaml` for custom doc
+  2. If found, read doc and check YAML frontmatter for `mode`:
+     - **`mode: overlay`**: Read `./references/clean-architecture-defaults.md` first, then apply custom doc section on top. Section match by heading — custom section replace matching default, new section append.
+     - **`mode: override`**: Custom doc take full precedence. Must be comprehensive.
+  3. If no custom doc → read `./references/clean-architecture-defaults.md`
 
 - **Custom mode:**
-  1. Check `paths.architecture` in `.lattice/config.yaml` for the team's architecture document
-  2. If found → read it. It is the sole reference — there are no defaults.
+  1. Check `paths.architecture` in `.lattice/config.yaml` for team architecture doc
+  2. If found → read it. Sole reference — no default.
   3. If not found → surface: "No architecture document found. Run `/architecture-refiner` and select your architecture style to define your team's standards."
 
 ## Universal Structural Checks
 
-STOP after generating each component. Regardless of architecture mode, verify these universal structural principles before proceeding:
+STOP after generate each component. Regardless mode, verify universal principle before proceed:
 
-1. **LAYER PLACEMENT**: Is each class or module in the correct layer as defined by the loaded architecture document?
-2. **DEPENDENCY DIRECTION**: Do all source code dependencies follow the direction rules in the loaded architecture document?
-3. **BOUNDARY DATA**: Does data crossing layer boundaries use the patterns described in the loaded architecture document?
-4. **SINGLE LAYER**: Does each class belong to exactly one architectural layer? No class should span multiple concerns across layers.
+1. **LAYER PLACEMENT**: Each class/module in correct layer per loaded doc?
+2. **DEPENDENCY DIRECTION**: All source dependency follow direction rule in loaded doc?
+3. **BOUNDARY DATA**: Data cross layer use pattern describe in loaded doc?
+4. **SINGLE LAYER**: Each class belong exactly one layer? No span multiple concern across layer.
 
-Then read the **style-specific Self-Validation Checklist** and **Anti-Pattern Scan** from the loaded enforcement rules (clean-architecture.md or custom-architecture.md) and apply them.
+Then read **style-specific Self-Validation Checklist** and **Anti-Pattern Scan** from loaded enforce rule (clean-architecture.md or custom-architecture.md) and apply.

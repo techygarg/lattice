@@ -10,19 +10,19 @@ created: <YYYY-MM-DD>
 
 ## Decisions Log
 
-<!-- Append new entries at the bottom. Never remove existing entries. -->
+<!-- Add new at bottom. Never remove. -->
 
 | Date | Decision | Reasoning | Alternatives Considered |
 |------|----------|-----------|------------------------|
 
 ## Open Questions
 
-<!-- When resolved, capture the answer as a new decision in the log above and remove the question from this list. -->
+<!-- When resolved, capture as decision above and remove from here. -->
 
 ## Constraints
 
-<!-- Non-negotiable once recorded. Only add constraints here when they are confirmed and accepted. -->
+<!-- Non-negotiable once recorded. Add only when confirmed. -->
 
 ## Key Files
 
-<!-- Populated as development progresses. List relevant file paths with a brief note on each file's role. -->
+<!-- Add as dev progresses. List paths with brief role note. -->

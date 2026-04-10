@@ -7,81 +7,81 @@ description: "Run a complete design workflow -- from establishing context throug
 
 ## Required Skills
 
-Read and apply these skills in order:
+Read apply skills order:
 
-1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) to ground all design decisions in the real project
-2. `framework:context-anchoring` -- Create or load the feature's context anchor document
-3. `framework:collaborative-judgment` -- Surface genuine design judgment calls with structured options instead of silently assuming (always)
+1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) ground decisions real project
+2. `framework:context-anchoring` -- Create or load feature context anchor doc
+3. `framework:collaborative-judgment` -- Surface real design judgment calls structured options instead silent assuming (always)
 4. `framework:design-first` -- Walk through 5 progressive design levels
-5. `framework:architecture` -- Apply structural rules at Component and Interaction levels
-6. `framework:domain-driven-design` -- Apply domain modeling at Component, Interaction, and Contract levels
+5. `framework:architecture` -- Apply structural rules Component and Interaction levels
+6. `framework:domain-driven-design` -- Apply domain modeling Component, Interaction, Contract levels
    → Skip if `disable.domain_driven_design: true` in `.lattice/config.yaml`
 
 ## Workflow
 
 ### Disable Check
 
-Read `.lattice/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` for the entire workflow. No replacement atom. The design levels themselves still proceed; only the DDD checks within each level are removed.
+Read `.lattice/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` entire workflow. No replacement atom. Design levels still proceed; only DDD checks within each level removed.
 
 ### Step 1: Establish Context
 
-Use `framework:context-anchoring` to set up the feature's living document.
+Use `framework:context-anchoring` set up feature living doc.
 
-- **Document Discovery**: Check for an existing context anchor document for the feature (scan the context base directory, match by feature name or frontmatter).
-- **If exists** → Load (context-anchoring Load behavior). Present the structured acknowledgment -- feature name, decision count, open questions, constraints. Resume at the last design checkpoint recorded in the document.
-- **If not** → Create (context-anchoring Create behavior). New feature document from template. Confirm the feature name, summary, and requirement doc link with the user before creating.
+- **Document Discovery**: Check existing context anchor doc feature (scan context base directory, match by feature name or frontmatter).
+- **If exists** → Load (context-anchoring Load behavior). Present structured acknowledgment -- feature name, decision count, open questions, constraints. Resume last design checkpoint recorded doc.
+- **If not** → Create (context-anchoring Create behavior). New feature doc from template. Confirm feature name, summary, requirement doc link with user before creating.
 
 ### Step 2: Walk the Design Levels
 
-If key use cases or success criteria are unclear at this point, use `framework:collaborative-judgment` to surface what needs to be answered before starting Level 1.
+If key use cases or success criteria unclear now, use `framework:collaborative-judgment` surface what needs answering before starting Level 1.
 
-Drive through `framework:design-first`'s 5 levels sequentially. At each level, present the design output, get user approval, then **persist the approved output into the context anchor document before advancing**. The context document is the blueprint -- if it is not written down, it does not exist.
+Drive through `framework:design-first` 5 levels sequentially. Each level, present design output, get user approval, then **persist approved output into context anchor doc before advancing**. Context doc is blueprint -- if not written down, not exist.
 
-**The enrichment rule**: After the user approves each level, use `framework:context-anchoring` Enrich behavior to write the following into the context document:
+**Enrichment rule**: After user approves each level, use `framework:context-anchoring` Enrich behavior write following into context doc:
 
-1. The **approved level output** itself (capabilities list, component diagram, interaction flows, or contracts) -- captured as a **clean, structured summary** under a dedicated section for that level. Use the same format as the level's presentation: numbered list for Level 1, component table + diagram for Level 2, sequence/flow for Level 3, typed interfaces for Level 4.
-2. Any **decisions made** during the level discussion -- choices, reasoning, alternatives rejected.
-3. Any **constraints identified** -- non-negotiable boundaries that emerged.
-4. Any **open questions** that surfaced but remain unresolved.
+1. **Approved level output** itself (capabilities list, component diagram, interaction flows, or contracts) -- captured as **clean, structured summary** under dedicated section that level. Use same format as level presentation: numbered list Level 1, component table + diagram Level 2, sequence/flow Level 3, typed interfaces Level 4.
+2. **Decisions made** during level discussion -- choices, reasoning, alternatives rejected.
+3. **Constraints identified** -- non-negotiable boundaries emerged.
+4. **Open questions** surfaced but remain unresolved.
 
-Do NOT advance to the next level until the current level's output is persisted. The context document must be the single source of truth at every stage.
+NOT advance next level until current level output persisted. Context doc must be single source truth every stage.
 
-When applying architectural atoms at each level, use `framework:collaborative-judgment` to surface genuine design judgment calls immediately — do not batch during design, as each level constrains the next.
+When applying architectural atoms each level, use `framework:collaborative-judgment` surface real design judgment calls immediately — not batch during design, each level constrains next.
 
-Apply architectural atoms at the levels where they add value:
+Apply architectural atoms levels where add value:
 
 **Level 1 (Capabilities)**:
-- Present the capabilities list per `framework:design-first`.
-- On approval → Enrich context document with the approved capabilities under a `## Design: Level 1 -- Capabilities` section.
+- Present capabilities list per `framework:design-first`.
+- On approval → Enrich context doc with approved capabilities under `## Design: Level 1 -- Capabilities` section.
 
 **Level 2 (Components)**:
-- Apply `framework:architecture` -- validate that each component maps to a defined architectural layer, dependencies follow the loaded architecture rules, and component boundaries are clear.
-- Apply `framework:domain-driven-design` -- identify aggregates, entities, value objects. Determine which components live in the domain layer and which are infrastructure.
-- On approval → Enrich context document with the approved component list, layer assignments, and diagram under a `## Design: Level 2 -- Components` section. Log architectural decisions (layer choices, DDD classifications) in the Decisions Log.
+- Apply `framework:architecture` -- validate each component maps defined architectural layer, dependencies follow loaded architecture rules, component boundaries clear.
+- Apply `framework:domain-driven-design` -- identify aggregates, entities, value objects. Determine which components live domain layer which infrastructure.
+- On approval → Enrich context doc with approved component list, layer assignments, diagram under `## Design: Level 2 -- Components` section. Log architectural decisions (layer choices, DDD classifications) Decisions Log.
 
 **Level 3 (Interactions)**:
-- Apply `framework:architecture` -- validate that data flows follow the patterns defined in the loaded architecture document and boundary crossing rules are respected.
-- Apply `framework:domain-driven-design` -- define aggregate interactions, domain events. Cross-aggregate communication should use domain events for eventual consistency.
-- On approval → Enrich context document with the approved interaction flows (sequence diagrams, data flow descriptions) under a `## Design: Level 3 -- Interactions` section. Log flow decisions in the Decisions Log.
+- Apply `framework:architecture` -- validate data flows follow patterns defined loaded architecture doc and boundary crossing rules respected.
+- Apply `framework:domain-driven-design` -- define aggregate interactions, domain events. Cross-aggregate communication should use domain events eventual consistency.
+- On approval → Enrich context doc with approved interaction flows (sequence diagrams, data flow descriptions) under `## Design: Level 3 -- Interactions` section. Log flow decisions Decisions Log.
 
 **Level 4 (Contracts)**:
-- Apply `framework:domain-driven-design` -- define repository interfaces, value object types, aggregate root boundaries. Contracts should reflect the tactical patterns agreed at earlier levels.
-- Apply `framework:architecture` -- validate that contracts respect boundary-data rules and interface ownership per the loaded architecture document.
-- On approval → Enrich context document with the approved interfaces and type definitions under a `## Design: Level 4 -- Contracts` section. Log contract decisions in the Decisions Log.
+- Apply `framework:domain-driven-design` -- define repository interfaces, value object types, aggregate root boundaries. Contracts should reflect tactical patterns agreed earlier levels.
+- Apply `framework:architecture` -- validate contracts respect boundary-data rules and interface ownership per loaded architecture doc.
+- On approval → Enrich context doc with approved interfaces and type definitions under `## Design: Level 4 -- Contracts` section. Log contract decisions Decisions Log.
 
 ### Step 3: Finalize Blueprint
 
-After Level 4 (Contracts) is approved and persisted:
+After Level 4 (Contracts) approved and persisted:
 
-- **Verify completeness**: The context document must now contain all four design level sections (Capabilities, Components, Interactions, Contracts) plus every decision made during the design process. If any level output is missing from the document, enrich it now before proceeding.
-- **Write the design summary**: Use `framework:context-anchoring` Enrich to add a `## Design Summary` section to the context document containing:
-  - Components and their layer assignments
+- **Verify completeness**: Context doc must now contain all four design level sections (Capabilities, Components, Interactions, Contracts) plus every decision made during design process. If any level output missing from doc, enrich now before proceeding.
+- **Write design summary**: Use `framework:context-anchoring` Enrich add `## Design Summary` section to context doc containing:
+  - Components and layer assignments
   - Key contracts and interfaces
   - Architectural constraints
   - Domain model decisions (if applicable)
   - Open questions resolved during design
   - Design status: **Approved -- ready for implementation**
-- **Log the completion decision**: Add a decision entry to the Decisions Log: "Design approved at Level 4. Blueprint is complete and ready for implementation."
-- Present the summary to the user as confirmation.
-- The design is complete. Do NOT proceed to Level 5 (Implementation) -- that is a separate concern handled by the `framework:code-forge` molecule or an equivalent implementation skill.
-- Suggest the user invoke `/code-forge` when ready to begin coding against the approved blueprint.
+- **Log completion decision**: Add decision entry Decisions Log: "Design approved at Level 4. Blueprint complete ready for implementation."
+- Present summary user as confirmation.
+- Design complete. NOT proceed Level 5 (Implementation) -- that separate concern handled by `framework:code-forge` molecule or equivalent implementation skill.
+- Suggest user invoke `/code-forge` when ready begin coding against approved blueprint.

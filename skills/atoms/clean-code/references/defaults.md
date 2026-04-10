@@ -1,8 +1,8 @@
 # Clean Code: Default Principles
 
-These are the embedded opinionated defaults for clean code. They synthesize principles from Robert Martin's Clean Code, Martin Fowler's Refactoring, and Kent Beck's Smalltalk Best Practice Patterns into one actionable set of guidelines for writing individual units of code.
+Embedded defaults for clean code. Merge Robert Martin Clean Code, Martin Fowler Refactoring, Kent Beck Smalltalk Best Practice Patterns into actionable guidelines.
 
-These are the embedded defaults. See the SKILL.md Config Resolution section for how project-specific overrides work.
+Embedded defaults. See SKILL.md Config Resolution section for project-specific overrides.
 
 ## Table of Contents
 
@@ -20,9 +20,9 @@ These are the embedded defaults. See the SKILL.md Config Resolution section for 
 
 ## 1. Single Responsibility
 
-A function should do one thing. A class should have one axis of cohesion -- one reason to change.
+Function do one thing. Class have one axis cohesion -- one reason change.
 
-**The "and" test**: describe the function's purpose in one sentence. If you need the word "and," the function does more than one thing.
+**"and" test**: describe function purpose one sentence. Need word "and"? Function do more than one thing.
 
 ```
 // POOR: This function validates, transforms, AND persists
@@ -53,7 +53,7 @@ function createOrder(input):
   return { items, total }
 ```
 
-**Cohesion in classes**: a class is cohesive when most methods use most instance variables. When a subset of methods only touches a subset of fields, that subset likely belongs in its own class.
+**Class cohesion**: class cohesive when most methods use most instance variables. Subset methods only touch subset fields? That subset likely belong own class.
 
 ---
 
@@ -63,15 +63,15 @@ function createOrder(input):
 
 | Metric | Guideline | Rationale |
 |--------|-----------|-----------|
-| **Lines per function** | Under ~20 | A function visible in one screen without scrolling is easier to reason about |
-| **Levels of abstraction** | One per function | Mixing high-level orchestration with low-level detail forces the reader to context-switch |
-| **Indentation depth** | Max 2 levels | Each nesting level adds a condition the reader must mentally track |
+| **Lines per function** | Under ~20 | Function visible one screen no scroll easier reason about |
+| **Levels of abstraction** | One per function | Mix high-level orchestration with low-level detail force reader context-switch |
+| **Indentation depth** | Max 2 levels | Each nest level add condition reader must mental track |
 
-These are signals, not hard rules. A 25-line function with one clear purpose is better than five 5-line functions that obscure the flow. The goal is readability, not line counting.
+Signals, not hard rules. 25-line function one clear purpose better than five 5-line functions obscure flow. Goal: readability, not line counting.
 
 ### Extraction Pattern
 
-When a function does multiple things, extract by naming the intent:
+Function do multiple things? Extract by naming intent:
 
 ```
 // BEFORE: One function mixing levels of abstraction
@@ -91,7 +91,7 @@ function renderUserProfile(userId):
   return template.render("profile", profile)
 ```
 
-The extracted function names replace the comments you would have written. `buildProfileViewModel` documents that we are constructing a view model -- the function name is the comment.
+Extracted function names replace comments you would write. `buildProfileViewModel` document we construct view model -- function name IS comment.
 
 ---
 
@@ -101,10 +101,10 @@ The extracted function names replace the comments you would have written. `build
 
 | Complexity | Assessment | Action |
 |-----------|------------|--------|
-| **1-5** | Simple, easy to test | No action needed |
-| **6-10** | Moderate, still manageable | Consider extraction if readability suffers |
-| **11-20** | High, difficult to test thoroughly | Extract sub-decisions into named functions |
-| **21+** | Very high, likely doing multiple things | Decompose aggressively; this function has multiple responsibilities |
+| **1-5** | Simple, easy test | No action |
+| **6-10** | Moderate, manageable | Consider extract if readability suffer |
+| **11-20** | High, difficult test thoroughly | Extract sub-decisions into named functions |
+| **21+** | Very high, likely do multiple things | Decompose aggressive; function have multiple responsibilities |
 
 ### Flattening Techniques
 
@@ -136,7 +136,7 @@ function getDiscount(customer, order):
   return 0.10
 ```
 
-**Extract conditional branches** when the condition itself is complex:
+**Extract conditional branches** when condition complex:
 
 ```
 // POOR: Complex inline condition
@@ -149,7 +149,7 @@ if canApproveOrder:
   // ... allow
 ```
 
-**Replace loops with pipeline operations** when the language supports it:
+**Replace loops with pipeline** when language support:
 
 ```
 // POOR: Loop with accumulation and filtering interleaved
@@ -185,24 +185,24 @@ result = items
 
 ### Names to Avoid
 
-- **Single letters** beyond loop counters (`i`, `j`, `k` in loops are fine; `d`, `x`, `t` in business logic are not)
-- **Abbreviations** that require project knowledge (`usr`, `txn`, `mgr`, `ctx` -- unless the abbreviation is industry-standard like `HTTP`, `URL`, `ID`)
-- **Generic names** that carry no information (`data`, `info`, `temp`, `result`, `value`, `item` -- unless scope is two or three lines)
-- **Type-encoded names** (`strName`, `intCount`, `arrItems` -- the type system handles this)
-- **Negated booleans** (`isNotActive`, `hasNoPermission` -- use the positive form and negate at the call site)
+- **Single letters** beyond loop counters (`i`, `j`, `k` in loops fine; `d`, `x`, `t` in business logic NOT)
+- **Abbreviations** need project knowledge (`usr`, `txn`, `mgr`, `ctx` -- unless industry-standard like `HTTP`, `URL`, `ID`)
+- **Generic names** carry no info (`data`, `info`, `temp`, `result`, `value`, `item` -- unless scope 2-3 lines)
+- **Type-encoded names** (`strName`, `intCount`, `arrItems` -- type system handle this)
+- **Negated booleans** (`isNotActive`, `hasNoPermission` -- use positive form, negate at call site)
 
 ### Scope-Length Rule
 
-Name length should be proportional to scope. A loop variable with a two-line body can be `i`. A module-level constant used across functions should be `MAX_LOGIN_ATTEMPTS_BEFORE_LOCKOUT`. The wider the scope, the more context the name must carry on its own.
+Name length proportional to scope. Loop variable 2-line body can be `i`. Module-level constant used across functions should be `MAX_LOGIN_ATTEMPTS_BEFORE_LOCKOUT`. Wider scope, more context name must carry alone.
 
 ### Magic Numbers and Strings
 
-The extraction test: **would a reader pause and ask "why this specific value?"** If yes, extract to a named constant. If the value is self-evident from context, leave it inline — a constant adds indirection without adding clarity.
+Extraction test: **reader pause ask "why this specific value?"** If yes, extract named constant. Value self-evident from context? Leave inline — constant add indirection without clarity.
 
 | Scenario | Action | Example |
 |----------|--------|---------|
-| Meaning not self-evident | Extract to named constant | `MAX_RETRIES = 3`, `SESSION_TIMEOUT_MS = 30_000`, `DEFAULT_PAGE_SIZE = 25` |
-| Appears in multiple places | Extract to named constant | A threshold used in three different validation functions |
+| Meaning not self-evident | Extract named constant | `MAX_RETRIES = 3`, `SESSION_TIMEOUT_MS = 30_000`, `DEFAULT_PAGE_SIZE = 25` |
+| Appears multiple places | Extract named constant | Threshold used three different validation functions |
 | Empty collection literal | Leave inline | `return []`, `users = []`, `new Map()` |
 | Zero as start index | Leave inline | `startIndex = 0`, `offset = 0` |
 | Mathematical identity | Leave inline | `percentage / 100`, `radians * (180 / Math.PI)` |
@@ -217,10 +217,10 @@ The extraction test: **would a reader pause and ask "why this specific value?"**
 
 | Parameter Count | Assessment | Action |
 |----------------|------------|--------|
-| **0-2** | Ideal | No grouping needed |
-| **3** | Acceptable | Consider grouping if parameters are related |
-| **4** | Boundary | Group related parameters into an object |
-| **5+** | Excessive | Always group; the function may also be doing too much |
+| **0-2** | Ideal | No grouping need |
+| **3** | Acceptable | Consider group if parameters related |
+| **4** | Boundary | Group related parameters into object |
+| **5+** | Excessive | Always group; function may also do too much |
 
 ### Grouping Patterns
 
@@ -243,7 +243,7 @@ class SearchOptions:
 
 ### Boolean Parameter Smell
 
-A boolean parameter often means the function does two things -- one when true, one when false. Consider splitting into two functions with descriptive names:
+Boolean parameter often mean function do two things -- one when true, one when false. Consider split into two functions with descriptive names:
 
 ```
 // POOR: What does `true` mean at the call site?
@@ -254,7 +254,7 @@ renderUserCompact(user)
 renderUserDetailed(user)
 ```
 
-When the boolean genuinely represents an option (not a behavioral fork), an options object makes the call site self-documenting:
+Boolean genuinely represent option (not behavioral fork)? Options object make call site self-documenting:
 
 ```
 // Acceptable: boolean as a named option
@@ -267,13 +267,13 @@ renderUser(user, { compact: true })
 
 ### The Rule of Three
 
-1. **First occurrence**: Write the code inline. No abstraction.
-2. **Second occurrence**: Note the duplication. Tolerate it. The two instances may serve different purposes and diverge later.
-3. **Third occurrence with same reason to change**: Now extract. You have enough evidence that this is a genuine pattern, not coincidence.
+1. **First occurrence**: Write code inline. No abstraction.
+2. **Second occurrence**: Note duplication. Tolerate. Two instances may serve different purposes, diverge later.
+3. **Third occurrence with same reason change**: Now extract. Have enough evidence this genuine pattern, not coincidence.
 
 ### Same Reason to Change
 
-Two blocks of code that look identical but serve different business purposes are **not** true duplication. They will diverge when their respective requirements change.
+Two blocks code look identical but serve different business purposes NOT true duplication. Will diverge when respective requirements change.
 
 ```
 // These look identical but should NOT be unified:
@@ -291,7 +291,7 @@ adjustment = lineTotal > 1000 ? lineTotal * 0.1 : 0
 
 ### Naming the Abstraction
 
-When you do extract, name the abstraction for **what it does**, not for the fact that it removes duplication:
+When extract, name abstraction for **what it does**, not for fact it remove duplication:
 
 ```
 // POOR: Named for the extraction motivation
@@ -309,12 +309,12 @@ function applyVolumeDiscount(amount, threshold, rate): ...
 
 | Situation | Action |
 |-----------|--------|
-| Code is unclear and a comment would help explain **what** it does | Refactor the code to be self-documenting (rename, extract, simplify) |
-| Non-obvious **why** -- business rule, legal requirement, workaround | Write a comment explaining why |
-| Performance optimization that makes code less readable | Comment explaining the trade-off and what the "obvious" approach would be |
-| TODO or known limitation | Comment with `TODO:` prefix and brief context |
+| Code unclear, comment help explain **what** it does | Refactor code be self-documenting (rename, extract, simplify) |
+| Non-obvious **why** -- business rule, legal requirement, workaround | Write comment explain why |
+| Performance optimization make code less readable | Comment explain trade-off, what "obvious" approach would be |
+| TODO or known limitation | Comment with `TODO:` prefix, brief context |
 | API documentation for public interfaces | Use doc comments / docstrings with parameter descriptions |
-| Regex or complex algorithm | Comment explaining intent; regex especially benefits from a plain-English description |
+| Regex or complex algorithm | Comment explain intent; regex especially benefit plain-English description |
 
 ### Examples
 
@@ -351,11 +351,11 @@ datePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})?$/
 
 | Principle | Rationale |
 |-----------|-----------|
-| **Fail fast** | Validate at the boundary; reject bad data before it propagates through layers |
-| **Be explicit** | Every operation that can fail should have visible error handling |
-| **Be actionable** | Error messages should tell the caller what went wrong and what to do about it |
-| **Handle at the right level** | Not too early (losing context), not too late (losing ability to recover) |
-| **No exceptions for control flow** | Exceptions obscure the normal execution path; use them for truly exceptional situations |
+| **Fail fast** | Validate at boundary; reject bad data before propagate through layers |
+| **Be explicit** | Every operation can fail should have visible error handling |
+| **Be actionable** | Error messages tell caller what went wrong, what do about it |
+| **Handle at right level** | Not too early (lose context), not too late (lose ability recover) |
+| **No exceptions for control flow** | Exceptions obscure normal execution path; use for truly exceptional situations |
 
 ### Patterns
 
@@ -384,9 +384,9 @@ throw Error("User with email 'a@b.com' already exists. Use updateUser() to modif
 throw Error("Connection to payments API timed out after 5s. Retry or check service status at status.payments.io")
 ```
 
-> **Trust boundary note**: These actionable messages are appropriate for application-level errors (service-to-service, logged server-side). At trust boundaries (HTTP responses, user-facing UI), strip internal details (emails, method names) and return a generic but actionable message with a correlation ID. See `framework:secure-coding`.
+> **Trust boundary note**: These actionable messages appropriate for application-level errors (service-to-service, logged server-side). At trust boundaries (HTTP responses, user-facing UI), strip internal details (emails, method names), return generic but actionable message with correlation ID. See `framework:secure-coding`.
 
-**Handle at the right level:**
+**Handle at right level:**
 
 ```
 // POOR: Error caught too early -- context lost
@@ -431,7 +431,7 @@ catch error:
 
 ### Principles
 
-Code that is hard to test is usually hard to maintain. The same properties that enable testing -- explicit dependencies, no hidden state, pure functions at the core -- make code easier to understand and modify.
+Code hard test usually hard maintain. Same properties enable testing -- explicit dependencies, no hidden state, pure functions at core -- make code easier understand, modify.
 
 ### Patterns
 
@@ -520,4 +520,4 @@ function applyDiscount(orderId, discountCode):
 
 ---
 
-*These defaults synthesize principles from Robert Martin's Clean Code (2008), Martin Fowler's Refactoring (1999, 2018), Kent Beck's Smalltalk Best Practice Patterns (1996), and the collective wisdom of software craftsmanship practice.*
+*Defaults synthesize principles from Robert Martin Clean Code (2008), Martin Fowler Refactoring (1999, 2018), Kent Beck Smalltalk Best Practice Patterns (1996), collective wisdom software craftsmanship practice.*

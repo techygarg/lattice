@@ -1,6 +1,6 @@
 # Design-First Methodology Detail
 
-Expanded reference for the 5-level progressive design methodology. Use this for notation guidance, interface patterns, and to understand what good vs poor output looks like at each level.
+Expanded ref for 5-level progressive design methodology. Use for notation guide, interface patterns, understand good vs poor output each level.
 
 ## Good vs Poor Output by Level
 
@@ -17,7 +17,7 @@ Expanded reference for the 5-level progressive design methodology. Use this for 
 3. Users can configure notification preferences (SMS, email, push)
 4. Analytics dashboard tracks delivery rates
 
-The poor version names technologies (Level 2+), describes internal mechanisms (Level 3+), and adds features not requested (scope creep).
+Poor version names tech (Level 2+), describes internal mechanisms (Level 3+), adds features not requested (scope creep).
 
 ### Level 2: Components
 
@@ -29,7 +29,7 @@ The poor version names technologies (Level 2+), describes internal mechanisms (L
 **Poor** -- includes interaction patterns or implementation:
 - **NotificationHandler**: Receives requests, validates payload, *calls EmailDeliveryWorker.send()*, *stores result in DeliveryTracker database*
 
-The poor version describes how components talk (Level 3) and how they store data (Level 5).
+Poor version describes how components talk (Level 3) and how store data (Level 5).
 
 ### Level 3: Interactions
 
@@ -43,7 +43,7 @@ The poor version describes how components talk (Level 3) and how they store data
 1. Controller calls `handler.processNotification(req: NotificationRequest): Promise<void>`
 2. Handler calls `queue.add('email', job, { attempts: 3, backoff: { type: 'exponential' } })`
 
-The poor version defines function signatures (Level 4) and configuration detail (Level 5).
+Poor version defines function signatures (Level 4) and config detail (Level 5).
 
 ### Level 4: Contracts
 
@@ -81,19 +81,19 @@ class SendGridProvider implements EmailProvider {
 }
 ```
 
-The poor version includes a class body -- that belongs at Level 5.
+Poor version includes class body -- belongs Level 5.
 
 ## Collapsed vs Progressive: Same Feature, Two Approaches
 
-**Collapsed** (single prompt → implementation): The AI receives "build a notification service" and produces 400 lines of code. It chose to wrap BullMQ in a custom RetryQueue abstraction. It added a webhook notification channel. It defined interfaces inline within the implementation. The developer must evaluate scope, architecture, integration, contracts, and code quality -- all at once.
+**Collapsed** (single prompt → implementation): AI receives "build notification service", produces 400 lines code. Chose wrap BullMQ in custom RetryQueue abstraction. Added webhook notification channel. Defined interfaces inline within implementation. Dev must evaluate scope, architecture, integration, contracts, code quality -- all at once.
 
-**Progressive** (5 levels → implementation): At Level 2, the developer catches the unnecessary RetryQueue wrapper -- BullMQ already handles retries natively. At Level 1, the webhook channel is flagged as out of scope. At Level 4, interfaces are agreed upon before any code. By Level 5, the implementation is smaller, better integrated, and already reviewed at every design dimension.
+**Progressive** (5 levels → implementation): Level 2, dev catches unnecessary RetryQueue wrapper -- BullMQ already handles retries natively. Level 1, webhook channel flagged out of scope. Level 4, interfaces agreed before any code. Level 5, implementation smaller, better integrated, already reviewed every design dimension.
 
-The progressive approach does not take longer overall. The two-minute conversation at Level 2 that removes an unnecessary abstraction saves the thirty minutes of reviewing, testing, and maintaining code that wraps functionality the framework already provides.
+Progressive approach not take longer overall. Two-min conversation Level 2 that removes unnecessary abstraction saves thirty min reviewing, testing, maintaining code that wraps functionality framework already provides.
 
 ## Sequence Diagram Notation
 
-For Level 3 interactions, use either ASCII or Mermaid. Both are acceptable; choose whichever is clearer for the specific design.
+For Level 3 interactions, use ASCII or Mermaid. Both acceptable; choose whichever clearer for specific design.
 
 **ASCII notation**:
 ```
@@ -114,13 +114,13 @@ sequenceDiagram
     Worker->>Tracker: DeliveryResult
 ```
 
-Label each arrow with the data that passes -- not the method name, not the implementation detail. The focus is *what* moves between components.
+Label each arrow with data that passes -- not method name, not implementation detail. Focus *what* moves between components.
 
 ## Interface Definition Patterns
 
-At Level 4, contracts should be:
+Level 4, contracts should be:
 
-- **Minimal**: Only the interfaces needed to formalize the agreed interactions. No utility types, no helper interfaces.
-- **Self-documenting**: Type names and method names should make the purpose obvious without comments.
-- **Aligned with Level 3**: Every interaction from Level 3 should have a corresponding interface or type. No new interactions should appear at Level 4.
-- **Language-appropriate**: Use the project's language conventions. TypeScript interfaces for TS projects, Python protocols/ABCs for Python, Go interfaces for Go.
+- **Minimal**: Only interfaces needed formalize agreed interactions. No utility types, no helper interfaces.
+- **Self-documenting**: Type names and method names make purpose obvious without comments.
+- **Aligned with Level 3**: Every interaction from Level 3 has corresponding interface or type. No new interactions appear Level 4.
+- **Language-appropriate**: Use project's language conventions. TypeScript interfaces for TS projects, Python protocols/ABCs for Python, Go interfaces for Go.
