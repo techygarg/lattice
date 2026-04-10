@@ -58,7 +58,7 @@ These check often have multiple valid outcome. When encounter, present option ra
 
 Skill operate within single repo, single bounded context (e.g., one API -- Order, User, Pricing). Cover tactical DDD pattern only -- not strategic DDD (no context map, no microservice topology, no bounded context integration).
 
-If task appear span multiple bounded context (e.g., Order feature call Shipping logic), flag before proceed: "This touch [Context A] and [Context B]. Cross-context integration strategic DDD — outside skill scope. Want scope one context, or proceed knowing cross-context coordination your responsibility?"
+If task appear span multiple bounded context (e.g., Order feature call Shipping logic), flag before proceed: "This task touches [Context A] and [Context B]. Cross-context integration is strategic DDD — outside this skill's scope. Would you like to scope to one context, or proceed knowing cross-context coordination is your responsibility?"
 
 `framework:architecture` provide structural envelope -- where code live, which layer exist, which direction dependency flow. This skill define how craft domain *within* envelope: rich model, invariant, aggregate boundary, ubiquitous language.
 

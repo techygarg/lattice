@@ -40,10 +40,9 @@ After checklist, scan for these. If find, fix before present.
 - [ ] **Long Parameter Lists**: Five+ parameter → group into object or split function
 - [ ] **Premature Abstraction**: Utility extracted from only two similar block → inline until Rule of Three with same reason to change
 - [ ] **Swallowed Errors**: Empty catch, generic "something went wrong," silently return null → handle explicitly
-- [ ] **Comments as Deodorant**: Comment explain convoluted code → refactor self-documenting
+- [ ] **Comments as Deodorant**: Comment explain convoluted code instead refactor → rename self-documenting; keep only "why" comment, remove "what"
 - [ ] **Hidden Side Effects**: Function named `getX` also write cache/send notification → rename or separate
 - [ ] **Dead Code**: Commented-out block, unused import, unreachable branch → delete (version control preserve)
-- [ ] **Comment Deodorant**: Comment explain convoluted code instead refactor → rename self-documenting; keep only "why" comment, remove "what"
 - [ ] **Untestable Logic**: Side effect tangled with business logic; unit test need mock I/O → push side effect to boundary, extract pure function, inject dependency
 
 ## Ambiguity Signals
