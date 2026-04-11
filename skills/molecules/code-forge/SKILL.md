@@ -15,15 +15,10 @@ Read, apply:
 4. `framework:architecture` -- Layer place, dep direction, struct valid (always)
 5. `framework:clean-code` -- Craft rails: SRP, naming, complexity, err handle (always)
 6. `framework:domain-driven-design` -- Aggregates, entities, VOs, domain svcs (conditional: only when touch domain folder)
-   → Skip if `disable.domain_driven_design: true` in `.lattice/config.yaml`
 7. `framework:secure-coding` -- Trust bounds, injection prevent, secrets mgmt (conditional: only boundary-cross code)
 8. `framework:test-quality` -- AAA struct, isolation, assert quality, naming (always when write tests)
 
 ## Workflow
-
-### Disable Check
-
-Read `.lattice/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` entire workflow. No replace atom.
 
 ### Step 1: Establish Implementation Context
 

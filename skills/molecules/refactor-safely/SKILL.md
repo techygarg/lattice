@@ -16,14 +16,9 @@ Load these skills based on refactor scope (see Steps 3, 5, 6 for conditional use
 6. `framework:design-first` -- Use progressive design selectively for significant structural changes so target structure agreed before editing code (conditional)
 7. `framework:architecture` -- Validate layer placement, dependency direction, correct structural boundaries (conditional)
 8. `framework:domain-driven-design` -- Validate domain behavior, aggregate boundaries, movement of business rules into correct domain objects (conditional)
-   → Skip if `disable.domain_driven_design: true` in `.lattice/config.yaml`
 9. `framework:secure-coding` -- Preserve validation, authorization, trust-boundary protections, safe data handling when refactor touches security-sensitive code (conditional)
 
 ## Workflow
-
-### Disable Check
-
-Read `.lattice/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` for entire workflow. No replacement atom.
 
 ### Step 1: Establish Refactor Context
 

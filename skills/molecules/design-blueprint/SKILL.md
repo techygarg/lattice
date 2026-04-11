@@ -15,13 +15,8 @@ Read apply skills order:
 4. `framework:design-first` -- Walk through 5 progressive design levels
 5. `framework:architecture` -- Apply structural rules Component and Interaction levels
 6. `framework:domain-driven-design` -- Apply domain modeling Component, Interaction, Contract levels
-   → Skip if `disable.domain_driven_design: true` in `.lattice/config.yaml`
 
 ## Workflow
-
-### Disable Check
-
-Read `.lattice/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` entire workflow. No replacement atom. Design levels still proceed; only DDD checks within each level removed.
 
 ### Step 1: Establish Context
 

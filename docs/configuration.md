@@ -17,9 +17,6 @@ paths:
   context_base: .lattice/context/
 
 architecture_mode: clean
-
-disable:
-  domain_driven_design: false
 ```
 
 ## Top-level Fields
@@ -29,7 +26,6 @@ disable:
 | `version` | integer | Schema version. Currently `1`. |
 | `paths` | map | Logical key → file path mappings. All keys are optional. |
 | `architecture_mode` | string | Architecture enforcement mode. `clean` (default) or `custom`. See below. |
-| `disable` | map | Behavioral flags to skip specific atoms in all molecules. All keys default to `false`. |
 
 ## `paths` Keys
 
@@ -60,16 +56,6 @@ Controls which enforcement rules the `architecture` atom loads internally. This 
 - **Team uses hexagonal, modular monolith, or custom style:** Run `/architecture-refiner`, choose the appropriate style. Produces a document with `mode: override`. Config: `paths.architecture` set, `architecture_mode: custom`.
 
 The `architecture-refiner` sets `architecture_mode` automatically based on the user's style choice.
-
-## `disable` Keys
-
-The `disable` key controls whether specific atoms are loaded by molecules. Omitting a key is equivalent to `false` — existing projects are unaffected.
-
-| Key | Type | Default | Purpose | Consumed by |
-|-----|------|---------|---------|-------------|
-| `domain_driven_design` | boolean | `false` | When `true`, all molecules skip `framework:domain-driven-design` entirely. No defaults loaded, no partial application, no replacement atom. | `code-forge`, `review`, `refactor-safely`, `design-blueprint`, `bug-fix` |
-
-Atom SKILL.md files are unchanged — atoms do not need to know they can be disabled. Config resolution inside atoms is also unchanged. The disable mechanism lives entirely in the molecule layer.
 
 ## Custom Document Frontmatter
 

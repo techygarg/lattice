@@ -13,7 +13,6 @@ Load/apply skills based on scope (see Step 2 for conditional loading):
 3. `framework:clean-code` -- Code craft: SRP, naming, complexity, error handling (always loaded)
 4. `framework:architecture` -- Structural: layer rules, dependency direction, architectural flows (conditional)
 5. `framework:domain-driven-design` -- Domain modeling: aggregates, entities, value objects (conditional)
-   → Skip if `disable.domain_driven_design: true` in `.lattice/config.yaml`
 6. `framework:secure-coding` -- Security: trust boundaries, injection, secrets, input handling (conditional)
 7. `framework:test-quality` -- Test: AAA structure, isolation, assertions, naming (conditional)
 
@@ -45,10 +44,6 @@ Review-standards doc has 7 sections map to workflow steps:
 Each step notes where config applies with "**Config override**" callouts. When no review-standards doc exists, ignore callouts & use defaults.
 
 ## Workflow
-
-### Disable Check
-
-Read `.lattice/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` for entire workflow. No replacement. Don't load Step 2, don't run checks Step 3, don't include report Step 4.
 
 ### Step 1: Identify the Delta
 

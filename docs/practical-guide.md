@@ -119,14 +119,6 @@ Inside-out means code-forge implements from the innermost layer outward: domain/
 
 ## Domain-Driven Design
 
-### My project doesn't use DDD. How do I disable it?
-
-Add `disable.domain_driven_design: true` to `.lattice/config.yaml`. The DDD atom will be skipped in all molecules. When disabled, it is purely off — no DDD rules, checks, or anti-pattern scans run anywhere in the pipeline. No replacement is needed; your architecture document and other atoms carry the load.
-
-### I disabled DDD but my project has a domain folder. Will Lattice ignore it?
-
-Yes. Disabling DDD only turns off the DDD atom's enforcement — Lattice has no opinion about your folder structure. Your `domain/` folder exists in your codebase and other atoms (architecture, clean code) will still interact with it according to their own rules. DDD-specific checks like aggregate boundaries and value object enforcement simply won't run.
-
 ### Can I customize what DDD patterns Lattice enforces?
 
 Yes. Run `/ddd-refiner` — it interviews you about your DDD usage and writes `.lattice/standards/ddd-principles.md`. You can limit enforcement to only the patterns your team uses (e.g., aggregates and value objects but not bounded contexts) and add project-specific rules on top of the defaults. For example: "all domain objects must be constructed via the builder pattern", "aggregates must never expose mutable collections", "value objects must be immutable and self-validating". The DDD atom enforces whatever you define alongside the embedded defaults.

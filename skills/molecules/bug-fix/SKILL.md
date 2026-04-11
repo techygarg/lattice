@@ -16,14 +16,9 @@ Load these skills based on bug scope (see Steps 2 and 5 for when):
 5. `framework:test-quality` -- Create + validate failing regression test that proves bug exists + fix works (always)
 6. `framework:architecture` -- Validate layer placement, dependency direction, correct repair location (conditional)
 7. `framework:domain-driven-design` -- Validate invariants, aggregate boundaries, domain behavior when bug involves domain logic (conditional)
-   → Skip if `disable.domain_driven_design: true` in `.lattice/config.yaml`
 8. `framework:secure-coding` -- Validate trust boundaries, input handling, authorization, injection safety when bug touches security-sensitive code (conditional)
 
 ## Workflow
-
-### Disable Check
-
-Read `.lattice/config.yaml`. If `disable.domain_driven_design: true` → skip `framework:domain-driven-design` for entire workflow. No replacement.
 
 ### Step 1: Establish Bug Context
 
