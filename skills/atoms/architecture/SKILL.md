@@ -35,6 +35,10 @@ Skill support two mode: **clean architecture** (default) and **custom architectu
   2. If found → read it. Sole reference — no default.
   3. If not found → surface: "No architecture document found. Run `/architecture-refiner` and select your architecture style to define your team's standards."
 
+**Step 4 — Language adaptation:**
+
+If `paths.language_idioms` exist in config, read **"Dependency Management"** section and adapt dependency direction enforcement to language idioms (e.g., Go interface-at-consumer, Java DI containers, Rust trait bounds). Language idioms take precedence over pseudocode defaults.
+
 ## Universal Structural Checks
 
 STOP after generate each component. Regardless mode, verify universal principle before proceed:

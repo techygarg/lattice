@@ -25,6 +25,7 @@ Knowledge priming captures **project identity and technical context**. It delibe
 
 | Concern | Where It Belongs | Not In Knowledge Priming |
 |---------|-----------------|--------------------------|
+| Language idioms (error handling, type system, naming, testing patterns, DI) | `language-idioms` document | No language-level patterns or idioms |
 | Coding style, naming principles, function design | `clean-code` atom | No code examples, no naming rules |
 | Architectural layers, dependency direction | `architecture` atom | No structural rules |
 | Domain modeling, aggregate design | `domain-driven-design` atom | No DDD patterns |

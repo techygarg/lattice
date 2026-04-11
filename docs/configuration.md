@@ -6,7 +6,9 @@
 
 ```yaml
 version: 1
+language: go
 paths:
+  language_idioms: .lattice/standards/language-idioms.md
   knowledge_base: .lattice/standards/knowledge-base.md
   clean_code: .lattice/standards/clean-code.md
   architecture: .lattice/standards/architecture.md
@@ -24,6 +26,7 @@ architecture_mode: clean
 | Field | Type | Description |
 |-------|------|-------------|
 | `version` | integer | Schema version. Currently `1`. |
+| `language` | string | Project's primary language identifier (e.g., `go`, `rust`, `python`, `java`, `typescript`, `csharp`). Set by `lattice-init` or `language-idioms-refiner`. Used as fallback by atoms when `paths.language_idioms` document is not present. |
 | `paths` | map | Logical key → file path mappings. All keys are optional. |
 | `architecture_mode` | string | Architecture enforcement mode. `clean` (default) or `custom`. See below. |
 
@@ -31,6 +34,7 @@ architecture_mode: clean
 
 | Key | Purpose | Produced by | Default path | Consumed by | Mode |
 |-----|---------|-------------|--------------|-------------|------|
+| `language_idioms` | Language-specific patterns — error handling philosophy, type system, naming conventions, testing idioms, parameter design, dependency management. Cross-cutting: consumed by multiple atoms. | `language-idioms-refiner` | `.lattice/standards/language-idioms.md` | `clean-code`, `test-quality`, `secure-coding`, `domain-driven-design`, `architecture` atoms | standalone (no overlay/override — always complete) |
 | `knowledge_base` | Project identity — tech stack, architecture, conventions, trusted sources. No embedded default; every project is unique. | `knowledge-priming-refiner` | `.lattice/standards/knowledge-base.md` | `knowledge-priming` atom | `override` (standard) |
 | `clean_code` | Code craftsmanship rules — function size, naming, complexity, error handling. | `clean-code-refiner` | `.lattice/standards/clean-code.md` | `clean-code` atom | `overlay` (recommended) |
 | `architecture` | Architecture standards — layer structure, dependency rules, structural validation. Used by both clean architecture mode and custom architecture mode. | `architecture-refiner` | `.lattice/standards/architecture.md` | `architecture` atom | `overlay` (clean mode) or `override` (custom mode) |
@@ -72,7 +76,7 @@ mode: overlay
 | `overlay` (default) | Custom document's sections are applied on top of the atom's embedded defaults. Sections are matched by heading — a custom section replaces the matching default section; new sections are appended. |
 | `override` | Custom document fully replaces the atom's embedded defaults. Use when your standards are fundamentally different and you want complete control. |
 
-`knowledge_base` is always `override` — project identity is unique and replaces generic defaults entirely. Custom architecture documents (`architecture_mode: custom`) are also always `override` — there are no defaults to overlay onto.
+`knowledge_base` is always `override` — project identity is unique and replaces generic defaults entirely. Custom architecture documents (`architecture_mode: custom`) are also always `override` — there are no defaults to overlay onto. `language_idioms` is always standalone — there are no embedded language defaults in atoms; the document provides the complete language context that atoms reference by section heading.
 
 ## Creating and Updating Config
 

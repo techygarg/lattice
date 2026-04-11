@@ -14,6 +14,7 @@ Skill support project custom. Order:
    - **`mode: override`** (or no mode): Custom doc take full control. Use instead default. Must be complete -- is only reference.
    - **`mode: overlay`**: Read `./references/defaults.md` first, then apply custom doc on top. Custom sections replace match sections (by heading). New sections add after.
 4. If no config/path/file, read `./references/defaults.md`
+5. **Language adaptation**: If `paths.language_idioms` exist in config, read **"Testing Patterns"** section and adapt §5 (Test Naming), §4 (Test Isolation), §6 (Test Data Builders) to language test framework idioms. Language idioms take precedence over pseudocode defaults.
 
 Defaults ship w/ skill. Work out-of-box. Override only when team have different standards.
 

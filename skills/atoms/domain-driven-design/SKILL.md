@@ -17,6 +17,7 @@ Skill support project-custom. Resolution:
      custom doc section on top. Section custom replace match
      section default (match by heading). New section append after default.
 4. If no config, no path, or path not found, read `./references/defaults.md`
+5. **Language adaptation**: If `paths.language_idioms` exist in config, read **"Type System & Object Model"** section and adapt entity, value object, and aggregate implementation patterns to language constructs (e.g., struct vs class, trait vs interface, data class vs record). Language idioms take precedence over pseudocode defaults.
 
 Default ship with skill, represent opinionated best practice.
 Work out box any project. Override only when team have
