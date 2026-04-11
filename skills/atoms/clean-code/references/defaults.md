@@ -1,57 +1,12 @@
 # Clean Code: Default Principles
 
-Embedded defaults for clean code. Merge Robert Martin Clean Code, Martin Fowler Refactoring, Kent Beck Smalltalk Best Practice Patterns into actionable guidelines.
-
-Embedded defaults. See SKILL.md Config Resolution section for project-specific overrides.
-
-## Table of Contents
-
-1. [Single Responsibility](#1-single-responsibility)
-2. [Small Focused Functions](#2-small-focused-functions)
-3. [Cyclomatic Complexity](#3-cyclomatic-complexity)
-4. [Meaningful Naming](#4-meaningful-naming)
-5. [Parameter Design](#5-parameter-design)
-6. [DRY Without Premature Abstraction](#6-dry-without-premature-abstraction)
-7. [Comments and Self-Documentation](#7-comments-and-self-documentation)
-8. [Error Handling](#8-error-handling)
-9. [Test-Friendly Code](#9-test-friendly-code)
-
----
+Embedded defaults clean code. Opinionated guardrails — override via SKILL.md Config Resolution.
 
 ## 1. Single Responsibility
 
 Function do one thing. Class have one axis cohesion -- one reason change.
 
-**"and" test**: describe function purpose one sentence. Need word "and"? Function do more than one thing.
-
-```
-// POOR: This function validates, transforms, AND persists
-function processOrder(rawInput):
-  if rawInput.items is empty: throw Error("No items")
-  if rawInput.total < 0: throw Error("Invalid total")
-  items = rawInput.items.map(item => normalizeItem(item))
-  total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  discount = total > 1000 ? total * 0.1 : 0
-  finalTotal = total - discount
-  db.insert("orders", { items, total: finalTotal })
-  emailService.send(rawInput.email, "Order confirmed")
-
-// GOOD: Each function does one thing
-function validateOrderInput(input):
-  if input.items is empty: throw Error("No items")
-  if input.total < 0: throw Error("Invalid total")
-
-function calculateOrderTotal(items):
-  subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  discount = subtotal > 1000 ? subtotal * 0.1 : 0
-  return subtotal - discount
-
-function createOrder(input):
-  validateOrderInput(input)
-  items = input.items.map(normalizeItem)
-  total = calculateOrderTotal(items)
-  return { items, total }
-```
+**"and" test**: describe function purpose one sentence. Need word "and"? Function do more than one thing. Extract each responsibility into named function — function name IS the documentation.
 
 **Class cohesion**: class cohesive when most methods use most instance variables. Subset methods only touch subset fields? That subset likely belong own class.
 
@@ -108,63 +63,9 @@ Extracted function names replace comments you would write. `buildProfileViewMode
 
 ### Flattening Techniques
 
-**Guard clauses** replace nested conditions with early exits:
-
-```
-// POOR: Deep nesting
-function getDiscount(customer, order):
-  if customer is not null:
-    if customer.isActive:
-      if order.total > 100:
-        if customer.loyaltyYears > 2:
-          return 0.15
-        else:
-          return 0.10
-      else:
-        return 0.05
-    else:
-      return 0
-  else:
-    return 0
-
-// GOOD: Guard clauses flatten the logic
-function getDiscount(customer, order):
-  if customer is null: return 0
-  if not customer.isActive: return 0
-  if order.total <= 100: return 0.05
-  if customer.loyaltyYears > 2: return 0.15
-  return 0.10
-```
-
-**Extract conditional branches** when condition complex:
-
-```
-// POOR: Complex inline condition
-if user.role == "admin" or (user.role == "manager" and user.department == order.department):
-  // ... allow
-
-// GOOD: Named condition
-canApproveOrder = isAdmin(user) or isManagerOfDepartment(user, order.department)
-if canApproveOrder:
-  // ... allow
-```
-
-**Replace loops with pipeline** when language support:
-
-```
-// POOR: Loop with accumulation and filtering interleaved
-result = []
-for item in items:
-  if item.isActive:
-    if item.price > threshold:
-      result.push({ name: item.name, discountedPrice: item.price * 0.9 })
-
-// GOOD: Pipeline makes each step explicit
-result = items
-  .filter(item => item.isActive)
-  .filter(item => item.price > threshold)
-  .map(item => ({ name: item.name, discountedPrice: item.price * 0.9 }))
-```
+1. **Guard clauses**: replace nested conditions with early returns — flatten nesting, reduce indentation depth
+2. **Extract named conditions**: complex boolean expressions → named variable or function (`canApproveOrder = isAdmin(user) or isManagerOfDepartment(user, order.department)`)
+3. **Pipeline over loops**: when language supports, replace loop-with-accumulation with filter/map chain — each step explicit
 
 ---
 
@@ -319,14 +220,6 @@ function applyVolumeDiscount(amount, threshold, rate): ...
 ### Examples
 
 ```
-// POOR: Comment restates the code
-// Increment the counter by one
-counter = counter + 1
-
-// POOR: Comment explains what, not why
-// Check if user is active
-if user.isActive:
-
 // GOOD: Comment explains a non-obvious business rule
 // FTC regulations require cooling-off period for purchases over $25.
 // During this window, the order can be cancelled without penalty.
@@ -334,8 +227,7 @@ if order.isWithinCoolingOffPeriod():
 
 // GOOD: Comment explains a workaround
 // PostgreSQL 14 has a query planner regression with CTEs on partitioned tables.
-// Using a subquery instead of a CTE until we upgrade to 15+.
-// See: https://postgresql.org/bugs/12345
+// Using subquery instead of CTE until upgrade to 15+.  See: postgresql.org/bugs/12345
 result = db.query("SELECT * FROM (SELECT ...)")
 
 // GOOD: Comment explains regex intent
@@ -386,38 +278,11 @@ throw Error("Connection to payments API timed out after 5s. Retry or check servi
 
 > **Trust boundary note**: These actionable messages appropriate for application-level errors (service-to-service, logged server-side). At trust boundaries (HTTP responses, user-facing UI), strip internal details (emails, method names), return generic but actionable message with correlation ID. See `framework:secure-coding`.
 
-**Handle at right level:**
+**Handle at right level** — not too early (lose context, caller can't decide), not too late (lose ability to recover). Let errors propagate to the layer with enough context to make a meaningful decision. Catch-and-return-null hides whether failure was "not found", "connection error", or "permission denied."
+
+**No swallowed errors** — empty catch blocks make bugs invisible. Always log, re-throw, or explicitly document why ignoring is safe:
 
 ```
-// POOR: Error caught too early -- context lost
-function getUser(id):
-  try:
-    return db.findById("users", id)
-  catch error:
-    return null   // caller doesn't know WHY it failed -- was it not found? connection error? permission denied?
-
-// GOOD: Let it propagate to a level that can make a decision
-function getUser(id):
-  return db.findById("users", id)   // throws if connection fails
-  // caller or middleware decides: retry? return 500? log and alert?
-
-// GOOD: Catch when you have context to handle meaningfully
-function getUserProfile(id):
-  user = userProvider.findById(id)
-  if user is null: throw NotFoundError("No user with ID: " + id)
-  return buildProfile(user)
-```
-
-**No swallowed errors:**
-
-```
-// POOR: Silent failure -- bugs become invisible
-try:
-  sendNotification(user)
-catch error:
-  // silently ignored
-
-// GOOD: Explicit decision about the error
 try:
   sendNotification(user)
 catch error:
@@ -429,94 +294,14 @@ catch error:
 
 ## 9. Test-Friendly Code
 
-### Principles
+Code hard to test is usually hard to maintain. Design for testability by default:
 
-Code hard test usually hard maintain. Same properties enable testing -- explicit dependencies, no hidden state, pure functions at core -- make code easier understand, modify.
+1. **Prefer pure functions** — all inputs explicit as parameters (no `Date.now()`, no globals). Deterministic output. Easiest to test.
+2. **Inject dependencies** — constructor/parameter injection over `new` inside methods. Enables mocking, swapping implementations.
+3. **Avoid hidden state** — no module-level mutable variables. Encapsulate state in explicit objects with reset capability.
+4. **Push side effects to boundaries** — separate pure business logic (calculation, validation) from I/O (database, network, filesystem). Pure core + thin orchestration shell.
 
-### Patterns
-
-**Prefer pure functions:**
-
-```
-// POOR: Depends on global state -- test must manipulate Date.now()
-function isExpired(token):
-  return Date.now() > token.expiresAt
-
-// GOOD: Pure -- all inputs explicit, deterministic output
-function isExpired(token, currentTime):
-  return currentTime > token.expiresAt
-```
-
-**Inject dependencies:**
-
-```
-// POOR: Hardcoded dependency -- cannot test without a real email service
-class OrderService:
-  emailClient = new SmtpEmailClient()
-
-  confirmOrder(order):
-    emailClient.send(order.customerEmail, "Order confirmed")
-
-// GOOD: Injected -- test with a mock, swap implementations freely
-class OrderService:
-  constructor(emailClient: EmailClient):
-    this.emailClient = emailClient
-
-  confirmOrder(order):
-    this.emailClient.send(order.customerEmail, "Order confirmed")
-```
-
-**Avoid hidden state:**
-
-```
-// POOR: Global mutable state -- tests are order-dependent
-requestCount = 0
-
-function handleRequest(req):
-  requestCount = requestCount + 1
-  if requestCount > RATE_LIMIT: throw Error("Rate limited")
-
-// GOOD: State is explicit and injectable
-class RateLimiter:
-  constructor(limit):
-    this.limit = limit
-    this.count = 0
-
-  check():
-    this.count = this.count + 1
-    if this.count > this.limit: throw Error("Rate limited")
-
-  reset():
-    this.count = 0
-```
-
-**Push side effects to boundaries:**
-
-```
-// POOR: Business logic mixed with I/O
-function applyDiscount(orderId, discountCode):
-  order = db.findById("orders", orderId)
-  discount = db.findOne("discounts", { code: discountCode })
-  if discount.isExpired(): throw Error("Expired")
-  newTotal = order.total * (1 - discount.rate)
-  db.update("orders", orderId, { total: newTotal })
-  emailService.send(order.email, "Discount applied")
-  return newTotal
-
-// GOOD: Pure calculation separated from I/O
-function calculateDiscountedTotal(orderTotal, discountRate):
-  return orderTotal * (1 - discountRate)
-
-// Orchestration layer handles I/O
-function applyDiscount(orderId, discountCode):
-  order = orderProvider.findById(orderId)
-  discount = discountProvider.findByCode(discountCode)
-  if discount.isExpired(): throw Error("Expired")
-  newTotal = calculateDiscountedTotal(order.total, discount.rate)
-  orderRepo.updateTotal(orderId, newTotal)
-  notificationService.discountApplied(order.email)
-  return newTotal
-```
+**Anti-pattern — God Function with embedded I/O**: function that reads from DB, applies business logic, writes to DB, and sends notifications in one body. Extract pure calculation, let orchestration layer handle I/O.
 
 ---
 

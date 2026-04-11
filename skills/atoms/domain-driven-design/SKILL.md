@@ -53,6 +53,7 @@ These check often have multiple valid outcome. When encounter, present option ra
 - **Aggregate Boundary Size**: Small aggregate (more event, eventual consistency) vs large aggregate (simple transaction, immediate consistency). Neither inherent correct — depend contention pattern and invariant scope.
 - **Entity vs Value Object**: Some concept (like `Address` or `Money`) may or may not need identity depend domain complexity. Apply identity test, but acknowledge when borderline.
 - **Domain Service vs Entity Method**: Logic span multiple entity could live domain service or be method on primary entity. Choice depend which entity "own" invariant.
+- **Object Creation Pattern**: Factory method on aggregate root, standalone factory class, builder pattern, or plain constructor — depend assembly complexity and team convention. Don't prescribe pattern; ask which approach team prefer.
 
 ## Scope Statement
 
@@ -68,4 +69,4 @@ Domain model authoritative expression business rule. Rich domain object encapsul
 
 If business rule exist, should expressible through domain model -- not scatter across controller, application service, or infrastructure. Entity only data holder with external service do all work is anemic model, primary anti-pattern this skill prevent.
 
-See `./references/defaults.md` for aggregate design rules, entity/value object/domain service/domain event/repository/factory patterns with code examples, anti-pattern catalog, and decomposition guide.
+See `./references/defaults.md` for aggregate design rules, entity/value object/domain service/domain event/repository/creation patterns with code examples, inline anti-pattern warnings, and decomposition guide.

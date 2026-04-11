@@ -55,10 +55,9 @@ Include the preamble matching the chosen mode. Only one preamble appears in the 
 4. [Domain Service Rules](#4-domain-service-rules)
 5. [Domain Event Patterns](#5-domain-event-patterns)
 6. [Repository Patterns](#6-repository-patterns)
-7. [Factory Patterns](#7-factory-patterns)
-8. [Anti-Pattern Catalog](#8-anti-pattern-catalog)
-9. [Decomposition Guide](#9-decomposition-guide)
-10. [Validation Checklist — Detailed](#10-validation-checklist--detailed)
+7. [Object Creation Patterns](#7-object-creation-patterns)
+8. [Decomposition Guide](#8-decomposition-guide)
+9. [Validation Checklist — Detailed](#9-validation-checklist--detailed)
 
 ---
 
@@ -78,7 +77,7 @@ Probing questions:
 Customizable: Sizing thresholds, reference-by-ID exceptions, transaction boundary approach, code examples.
 Fixed: The consistency boundary principle is non-negotiable. Aggregates must enforce invariants through the root.
 
-Cross-section impact: Aggregate boundaries defined here affect §6 (one repository per aggregate root), §5 (cross-aggregate events), §8 (god aggregate anti-pattern), and §9 (decomposition triggers).
+Cross-section impact: Aggregate boundaries defined here affect §6 (one repository per aggregate root), §5 (cross-aggregate events), and §8 (decomposition triggers).
 -->
 
 Aggregate boundaries are the single hardest design decision in DDD. Everything else follows from getting them right.
@@ -94,6 +93,8 @@ Ask: *"If this entity changes, what else MUST be valid in the same instant?"* On
 Start with the **smallest possible aggregate**: a root entity plus its value objects. Add internal entities only when a transactional invariant forces them inside. If you are debating whether something belongs inside, it almost certainly does not.
 
 Small aggregates load fast, conflict rarely, and scale well. Large aggregates are slow, contended, and fragile.
+
+**Anti-pattern — God Aggregate**: Many internal entities, slow load, high contention → decompose. Keep only what shares transactional invariant.
 
 ### Reference by Identity
 
@@ -112,6 +113,8 @@ class Order
 ### One Transaction Rule
 
 Each aggregate defines one transaction boundary. A single business operation should modify at most one aggregate per transaction. If you need two aggregates updated atomically, either the boundary is wrong (merge them) or you should accept eventual consistency via domain events.
+
+**Anti-pattern — Cross-Aggregate Transaction**: Updating two aggregates in one transaction → use domain event + eventual consistency.
 
 ### Invariant Ownership
 
@@ -241,6 +244,8 @@ class Entity
 
 Entities encapsulate business rules as methods. If an entity has only getters and setters, the logic that should live inside it has leaked elsewhere (typically into application services).
 
+**Anti-pattern — Anemic Domain Model**: Entity data holder only getter/setter; all logic in services → move business rules into entity.
+
 ```
 // WRONG: Anemic entity — data holder only
 class Account
@@ -309,7 +314,7 @@ Probing questions:
 Customizable: Value object catalog (add/remove items), validation strictness, specific value object implementations.
 Fixed: Value objects must be immutable and self-validating. Equality must be attribute-based.
 
-Cross-section impact: Value objects chosen here are used throughout §1 (aggregate examples), §2 (typed IDs), §8 (primitive obsession anti-pattern).
+Cross-section impact: Value objects chosen here are used throughout §1 (aggregate examples), §2 (typed IDs).
 -->
 
 ### Attributes Define It
@@ -411,6 +416,10 @@ class OrderId
 
 Typed identifiers prevent a class of bugs where a CustomerId is accidentally passed where an OrderId is expected. The type system catches this at compile time.
 
+**Anti-pattern — Primitive Obsession**: Raw string email, number money, UUID ID → wrap value object.
+
+**Anti-pattern — Misidentified Entity/Value Object**: Apply identity test — *"Business track individual instances over time?"* Same attributes = same thing? Value object. Different lifecycle per instance? Entity.
+
 ### Code Example: Status as Value Object with Behavior
 
 ```
@@ -474,6 +483,8 @@ Domain services are stateless. They receive everything they need as parameters a
 ### Pure Domain — No I/O
 
 A domain service performs pure business computation. It does not call databases, APIs, or file systems. If the logic requires external data, the application service fetches that data and passes it to the domain service.
+
+**Anti-pattern — Leaking Domain Logic**: Business rule in controller or application service → extract to domain object or domain service.
 
 ### The Distinction: Domain Service vs Application Service
 
@@ -546,7 +557,7 @@ Probing questions:
 Customizable: Naming conventions, payload structure, event publishing strategy, specific domain events.
 Fixed: Events must be past-tense facts (not commands). Events must be defined in the domain layer.
 
-Cross-section impact: Domain events defined here are used in §1 (cross-aggregate coordination), §8.4 (cross-aggregate transaction anti-pattern).
+Cross-section impact: Domain events defined here are used in §1 (cross-aggregate coordination).
 -->
 
 ### Naming Convention
@@ -733,30 +744,26 @@ class OrderProvider                            // concrete class in infrastructu
 
 ---
 
-## 7. Factory Patterns
+## 7. Object Creation Patterns
 
 <!-- INTERVIEW GUIDANCE:
-Ask: "How do you handle aggregate creation? The default: factory methods on the aggregate root for simple cases, standalone factories for complex assembly. Does this match?"
+Ask: "How does your team handle aggregate creation? There are several valid approaches — factory methods on the aggregate root, standalone factory classes, builder pattern, or plain constructors. Which does your team prefer, or would you like guidance?"
+
+This is an ambiguity signal in the DDD atom — no single pattern is prescribed. The interview should surface the team's preference.
 
 Probing questions:
-- Are your aggregate creation scenarios simple (constructor/factory method) or complex (multiple data sources)?
-- Do you need reconstitution factories for rebuilding aggregates from persistence?
+- Are your aggregate creation scenarios simple (constructor/factory method) or complex (multiple data sources, multi-step assembly)?
+- Does your team already use a specific creation pattern (factory, builder)?
+- Do you need reconstitution for rebuilding aggregates from persistence?
 - Do you have creation workflows that involve external validation or data lookup?
 
-Customizable: Factory patterns, creation conventions, specific factory implementations.
-Fixed: Factories must enforce creation-time invariants. Reconstitution must be separate from creation.
+Customizable: Creation pattern choice (factory method, standalone factory, builder, plain constructor), creation conventions, specific implementations.
+Fixed: Creation must enforce creation-time invariants. Reconstitution must be separate from initial creation.
 -->
 
-### When to Use
+Complex aggregate creation should encapsulate validation and assembly. Multiple valid approaches exist — creation pattern choice (factory method, standalone factory, builder) depends on assembly complexity and team conventions. See SKILL.md Ambiguity Signals.
 
-Use a factory when aggregate creation involves validation, multiple steps, or complex assembly that goes beyond a simple constructor. If creation is straightforward, a factory method on the aggregate root is sufficient.
-
-### Two Purposes
-
-1. **Initial creation**: Building a new aggregate for the first time, enforcing creation-time invariants
-2. **Reconstitution**: Rebuilding an aggregate from persisted data (used by repository implementations)
-
-### Factory Method on Aggregate Root
+### Static Factory Method (Most Common)
 
 For most cases, a static factory method on the root is the simplest and best approach. It enforces creation invariants and returns a fully valid aggregate.
 
@@ -806,7 +813,7 @@ class LoanApplicationFactory
 
 Note: The `creditScoreService` here is a domain service (pure computation from applicant data), not an infrastructure call. If external I/O is needed to get the credit score, the application service should fetch it first and pass it in.
 
-### Reconstitution Factory
+### Reconstitution
 
 Repository implementations use reconstitution to rebuild aggregates from stored data. This bypasses creation-time validation (the data was already valid when first persisted) but reconstructs all internal structure.
 
@@ -819,230 +826,9 @@ class Order
 
 ---
 
-## 8. Anti-Pattern Catalog
-
-<!-- INTERVIEW GUIDANCE:
-Show the six anti-patterns below. Ask:
-"Are there any project-specific anti-patterns you'd like to add? Common examples:
-- Framework-specific DDD violations (e.g., ORM entities leaking into domain)
-- Team-specific patterns that have caused issues
-- Patterns from past incidents or code reviews"
-
-Customizable: Can add new anti-pattern entries. Can modify existing examples to use project terminology.
-Fixed: The six core anti-patterns should remain unless the user has a strong reason to remove one.
--->
-
-Each anti-pattern with a "wrong" and "right" example in pseudocode.
-
-### 8.1 Anemic Domain Model
-
-**Symptom**: Entities are data holders with getters and setters. All business logic lives in services.
-
-```
-// WRONG: Entity is just data
-class Order
-  id: OrderId
-  status: String
-  total: Decimal
-  // no behavior — just fields
-
-class OrderService
-  confirmOrder(orderId):
-    order = repo.findById(orderId)
-    if order.status != "DRAFT":
-      throw InvalidStatusError
-    if order.total <= 0:
-      throw InvalidTotalError
-    order.status = "CONFIRMED"
-    repo.save(order)
-
-// RIGHT: Entity owns its rules
-class Order
-  id: OrderId
-  status: OrderStatus
-  lineItems: List<LineItem>
-
-  confirm():
-    guard status is DRAFT else throw InvalidStatusTransitionError
-    guard lineItems is not empty else throw EmptyOrderError
-    status = OrderStatus.CONFIRMED
-    raise OrderConfirmed(id, total(), now())
-
-  total(): Money
-    return lineItems.sum(item => item.subtotal())
-```
-
-### 8.2 Primitive Obsession
-
-**Symptom**: Domain concepts represented as raw strings, numbers, or UUIDs. Validation scattered everywhere.
-
-```
-// WRONG: Primitives everywhere
-class Customer
-  id: String
-  email: String
-  phone: String
-
-  // Validation duplicated in every service that touches email
-  // Nothing prevents passing phone where email is expected
-
-// RIGHT: Value objects
-class Customer
-  id: CustomerId
-  email: Email
-  phone: PhoneNumber
-
-class Email
-  address: String
-
-  constructor(raw):
-    guard raw matches email pattern
-    address = lowercase(trim(raw))
-
-class CustomerId
-  value: UUID
-
-  constructor(raw):
-    guard raw is valid UUID
-    value = raw
-```
-
-### 8.3 God Aggregate
-
-**Symptom**: One aggregate with many internal entities, slow to load, high contention, frequently modified for unrelated reasons.
-
-```
-// WRONG: Everything crammed into Order
-class Order
-  lineItems: List<LineItem>
-  payments: List<Payment>
-  shipment: Shipment
-  invoice: Invoice
-  reviews: List<Review>
-  returnRequests: List<ReturnRequest>
-
-  // Methods for 6 different concerns, invariants are tangled
-
-// RIGHT: Separate aggregates by invariant boundary
-class Order                    // Order aggregate: lineItems + order-level invariants
-  lineItems: List<LineItem>
-  status: OrderStatus
-
-class Payment                  // Payment aggregate
-  id: PaymentId
-  orderId: OrderId             // reference by ID
-  amount: Money
-  status: PaymentStatus
-
-class Shipment                 // Shipment aggregate
-  id: ShipmentId
-  orderId: OrderId             // reference by ID
-  trackingNumber: TrackingNumber
-
-class Review                   // Review aggregate
-  id: ReviewId
-  orderId: OrderId             // reference by ID
-  rating: Rating
-  comment: ReviewText
-```
-
-### 8.4 Cross-Aggregate Transaction
-
-**Symptom**: A single operation updates multiple aggregates in one database transaction.
-
-```
-// WRONG: Two aggregates in one transaction
-class OrderService
-  placeOrder(command):
-    order = Order.create(command)
-    inventory.reserve(order.lineItems)   // modifies Inventory aggregate
-    orderRepo.save(order)
-    inventoryRepo.save(inventory)        // two aggregates, one transaction
-    // If either save fails, both roll back — tight coupling
-
-// RIGHT: One aggregate per transaction, domain event for coordination
-class OrderService
-  placeOrder(command):
-    order = Order.create(command)
-    orderRepo.save(order)
-    // Order.create raised OrderPlaced event
-
-class InventoryEventHandler
-  on(event: OrderPlaced):
-    inventory = inventoryRepo.findForProducts(event.productIds)
-    inventory.reserve(event.lineItems)
-    inventoryRepo.save(inventory)
-    // Separate transaction — eventual consistency
-    // If reservation fails, raise ReservationFailed for compensation
-```
-
-### 8.5 Leaking Domain Logic
-
-**Symptom**: Business rules live in controllers, application services, or infrastructure instead of domain objects.
-
-```
-// WRONG: Business rule in controller
-class OrderController
-  cancelOrder(request):
-    order = orderService.findById(request.orderId)
-    if order.status == "SHIPPED":
-      return Error("Cannot cancel shipped order")  // business rule in controller
-    if daysBetween(order.createdAt, now()) > 30:
-      return Error("Cancellation window expired")  // business rule in controller
-    orderService.cancel(order)
-
-// RIGHT: Business rule in domain
-class Order
-  cancel():
-    guard status is not SHIPPED else throw CannotCancelShippedOrderError
-    guard withinCancellationWindow() else throw CancellationWindowExpiredError
-    status = OrderStatus.CANCELLED
-    raise OrderCancelled(id, now())
-
-  withinCancellationWindow(): Boolean
-    return daysBetween(createdAt, now()) <= 30
-```
-
-### 8.6 Misidentified Entity vs Value Object
-
-**Symptom**: Something treated as an entity (with repository, identity tracking) when it has no lifecycle, or a value object treated as an entity when it should be immutable and defined by attributes.
-
-```
-// WRONG: Address treated as entity with its own repository
-class Address
-  id: AddressId               // unnecessary identity
-  street: String
-  city: String
-  zip: String
-
-class AddressRepository       // unnecessary repository
-  save(address)
-  findById(id)
-
-// RIGHT: Address is a value object — defined by its attributes, no identity
-class Address
-  street: String
-  city: String
-  zip: String
-  country: Country
-
-  constructor(street, city, zip, country):
-    guard street is not blank
-    guard zip matches country.zipPattern
-    // all fields set, immutable after construction
-
-  equals(other):
-    return this.street == other.street
-       and this.city == other.city
-       and this.zip == other.zip
-       and this.country == other.country
-```
-
-The identity test: *Does the business track individual instances of this concept over time?* If you have two addresses with identical street/city/zip, are they "the same address" or "two different addresses"? If the same — it is a value object.
-
 ---
 
-## 9. Decomposition Guide
+## 8. Decomposition Guide
 
 <!-- INTERVIEW GUIDANCE:
 Ask: "Have you had to break apart aggregates that grew too large? The default guide provides warning signals and a step-by-step decomposition process. Does this match your experience?"
@@ -1054,6 +840,8 @@ Probing questions:
 
 Customizable: Warning signal thresholds, decomposition steps, specific examples.
 Fixed: The decomposition principle (separate by invariant boundary, not by convenience) is non-negotiable.
+
+Note: Anti-patterns related to aggregate sizing (god aggregate, cross-aggregate transaction) are now inline in §1 Aggregate Design Rules.
 -->
 
 ### Warning Signals
@@ -1127,7 +915,7 @@ Each aggregate loads independently. Enrollment contention does not block grading
 
 ---
 
-## 10. Validation Checklist — Detailed
+## 9. Validation Checklist — Detailed
 
 <!-- INTERVIEW GUIDANCE:
 Show the six groups below. Ask:
@@ -1202,7 +990,7 @@ Common additions:
 - Domain-specific invariants catalog (project-specific business rules)
 - Testing patterns for domain objects (how to test aggregates, value objects)"
 
-If the user wants to add sections, number them starting from 11.
+If the user wants to add sections, number them starting from 10.
 New sections work in both overlay and override mode.
 -->
 

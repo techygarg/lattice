@@ -96,10 +96,10 @@ This is thorough. Every section gets attention and appears in the output.
 
 - **"I agree with everything"** → No custom document needed. Tell the user: "The embedded defaults are already active and match your preferences. No custom document is needed -- the domain-driven-design atom will use the defaults automatically."
 - **"I agree except one section"** → Overlay mode, interview that one section only.
-- **"We have anemic entities and want to fix that"** → Overlay §2 (entity patterns) + §8.1 (anemic domain anti-pattern) + §10 (entity checks).
-- **"We don't use domain events yet"** → Overlay §5 (domain events) with simplified approach or removal note. Also check §1 (cross-aggregate coordination) and §8.4 (cross-aggregate transaction).
-- **"Our aggregates are too big"** → Overlay §1 (aggregate design) + §9 (decomposition guide) + §8.3 (god aggregate).
-- **"We want to add a ubiquitous language glossary"** → Overlay with new §11 only.
+- **"We have anemic entities and want to fix that"** → Overlay §2 (entity patterns, anemic anti-pattern is inline) + §9 (entity checks).
+- **"We don't use domain events yet"** → Overlay §5 (domain events) with simplified approach or removal note. Also check §1 (cross-aggregate coordination, anti-pattern is inline).
+- **"Our aggregates are too big"** → Overlay §1 (aggregate design, god aggregate anti-pattern is inline) + §8 (decomposition guide).
+- **"We want to add a ubiquitous language glossary"** → Overlay with new §10 only.
 
 ## Section-by-Section Interview Guide
 
@@ -111,34 +111,34 @@ Decisions in early sections affect later sections. When a user changes an early 
 
 | Decision in | Affects | How |
 |-------------|---------|-----|
-| §1 — Aggregate boundaries | §6 (repositories), §5 (events), §8 (anti-patterns), §9 (decomposition) | One repo per aggregate root; events for cross-aggregate coordination |
-| §1 — Sizing thresholds | §9 (decomposition triggers) | Custom thresholds change decomposition warning signals |
+| §1 — Aggregate boundaries | §6 (repositories), §5 (events), §8 (decomposition) | One repo per aggregate root; events for cross-aggregate coordination |
+| §1 — Sizing thresholds | §8 (decomposition triggers) | Custom thresholds change decomposition warning signals |
 | §2 — Entity identity strategy | §3 (typed ID value objects), §6 (repository signatures) | Typed IDs must be value objects; repository findById uses typed IDs |
-| §3 — Value object catalog | §2 (entity fields), §8.2 (primitive obsession) | New value objects appear in entity definitions and anti-pattern examples |
-| §5 — Event patterns | §1 (cross-aggregate coordination), §8.4 (cross-aggregate transaction) | Events are the mechanism for cross-aggregate consistency |
+| §3 — Value object catalog | §2 (entity fields) | New value objects appear in entity definitions |
+| §5 — Event patterns | §1 (cross-aggregate coordination) | Events are the mechanism for cross-aggregate consistency |
 | §6 — Repository patterns | §1 (aggregate root identification) | Only roots get repositories |
 
 When a dependency is triggered, inform the user: "Since you changed [X], we should also review [Y] -- it's affected by that decision."
 
 ### Overlay-specific section flow
 
-For each of the 10 default sections:
+For each of the 9 sections:
 
 1. Summarize the section's key points in 2-3 sentences.
 2. Ask: "Does this match your project?"
 3. **Yes** → Move to the next section. This section will not appear in the output.
 4. **No** → Dive into the section details using the template guidance. Produce the user's version.
-5. After all 10 sections, ask about new sections.
+5. After all 9 sections, ask about new sections.
 
 ### Override-specific section flow
 
-For each of the 10 default sections:
+For each of the 9 sections:
 
 1. Present the section's full content.
 2. Ask: "Does this work as-is, or would you like to modify it?"
 3. **As-is** → Include the default content in the output unchanged.
 4. **Modify** → Discuss changes, produce the modified version.
-5. After all 10 sections, ask about new sections.
+5. After all 9 sections, ask about new sections.
 6. All sections go in the output.
 
 ## Output Assembly
@@ -151,7 +151,7 @@ For each of the 10 default sections:
 4. Only the sections the user changed or added
 5. Each section must be self-contained -- it is a complete replacement of that section in defaults. Do not write diffs or partial sections.
 6. Section headings must match `defaults.md` exactly (the atom matches sections by heading)
-7. New sections (§11+) are included after the default sections
+7. New sections (§10+) are included after the default sections
 8. Footer with project name, date, mode
 
 ### For override mode
@@ -200,11 +200,11 @@ Before writing the final document, verify:
 
 ### Override mode checks
 
-- [ ] Every section from the template is present (§1 through §10, plus any new sections)
+- [ ] Every section from the template is present (§1 through §9, plus any new sections)
 - [ ] Terminology is consistent throughout all sections
 - [ ] Code examples use pseudocode (language-agnostic, same style as defaults.md)
-- [ ] Validation checklist (§10) is consistent with the rules defined in §1 through §7
-- [ ] Anti-pattern catalog (§8) aligns with the patterns defined in earlier sections
+- [ ] Validation checklist (§9) is consistent with the rules defined in §1 through §7
+- [ ] Inline anti-pattern warnings align with the patterns defined in their respective sections
 - [ ] No `<!-- INTERVIEW GUIDANCE: -->` comments remain
 - [ ] Frontmatter has `mode: override`
 - [ ] Document is readable as a standalone specification

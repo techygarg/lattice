@@ -1,19 +1,5 @@
 # Clean Architecture: Default Principles
 
-These embedded opinionated defaults for clean architecture. Synthesize Robert Martin's Clean Architecture, Alistair Cockburn's Hexagonal Architecture (Ports & Adapters), Jeffrey Palermo's Onion Architecture into one actionable rule set.
-
-Embedded defaults. See SKILL.md Config Resolution section for project-specific overrides.
-
-## Table of Contents
-
-1. [Layer Responsibilities](#1-layer-responsibilities)
-2. [Dependency Direction](#2-dependency-direction)
-3. [Per-Layer Rules](#3-per-layer-rules)
-4. [Command and Query Flows](#4-command-and-query-flows)
-5. [Example Violations and Fixes](#5-example-violations-and-fixes)
-
----
-
 ## 1. Layer Responsibilities
 
 | Layer | Responsibility | Depends On | Depended On By |
@@ -97,14 +83,14 @@ Infrastructure sits outer ring though implements interfaces defined inner ring. 
 
 ### 3.1 Controllers / Handlers
 
-**Belongs here:**
+**What belongs here:**
 - HTTP route definitions, request parsing
 - Input validation (format, presence -- not business rules)
 - Response formatting, status code mapping
 - Auth middleware integration
 - Request/response DTOs
 
-**Not belongs here:**
+**What does not belong here:**
 - Business rule evaluation ("if order total > 100, apply discount")
 - Direct DB calls
 - Domain object construction from raw input (use mapper/factory)
@@ -142,7 +128,7 @@ One service per domain concept (e.g., `OrderService`, `UserService`). Each servi
 
 ### 3.3 Domain
 
-**Belongs here:**
+**What belongs here:**
 - Entities with behavior (not just data)
 - Value objects (Money, Email, OrderId -- immutable, equality by attributes)
 - Domain services (business logic not naturally fit single entity)
@@ -150,7 +136,7 @@ One service per domain concept (e.g., `OrderService`, `UserService`). Each servi
 - Repository interfaces (contracts infrastructure implements)
 - Factory methods for complex object creation
 
-**Not belongs here:**
+**What does not belong here:**
 - Imports from outer layer
 - Framework annotations (@Entity, @Column, @RestController)
 - DB-specific types (ResultSet, Document, Row)
@@ -403,6 +389,3 @@ class OrderService
 // services/OrderService              -- orchestration only
 ```
 
----
-
-*Defaults synthesize principles from Robert Martin's Clean Architecture (2012), Alistair Cockburn's Hexagonal Architecture (2005), Jeffrey Palermo's Onion Architecture (2008), Rahul Garg's analysis of convergence (ThoughtWorks, 2022).*
