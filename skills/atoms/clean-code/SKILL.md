@@ -47,7 +47,7 @@ After checklist, scan for these. If find, fix before present.
 
 ## Ambiguity Signals
 
-Multiple valid outcome. Present option rather than silently choose. Guardrails section provide resolution rule; flag tension, apply rule.
+Multiple valid outcome. Present option rather than silently choose. See `./references/defaults.md` for resolution guidance on each signal below.
 
 - **Single Responsibility**: Two tightly-coupled sequential operation may be one responsibility (pipeline), not two. "And" test catch true violation AND false positive.
 - **Function Size**: Near-threshold (20-30 lines) with one clear purpose -- extract may create five unclear smaller function. Present tradeoff.
@@ -58,18 +58,4 @@ Multiple valid outcome. Present option rather than silently choose. Guardrails s
 
 Clean code about **craft writing individual unit** -- function, class, module. Distinct from architecture (govern where code live) and domain modeling (govern business rule). Apply during code generation, not post-generation review.
 
-## Guardrails and Nuances
-
-Checklist and anti-pattern above are primary enforcement. These nuance resolve Ambiguity Signals. See `./references/defaults.md` for full explanation, threshold, code example.
-
-- **SRP pipeline guardrail**: "And" test catch function with *independent* responsibility, not tightly coupled step of one responsibility. `validateAndNormalizeEmail` do two thing always together in sequence — separate create invalid-state window. When step have no valid independent use, one responsibility expressed as pipeline.
-
-- **Size vs clarity**: 25-line function with one clear purpose better than five 5-line function with unclear relationship. Near-threshold case signal, not hard rule.
-
-- **Magic number extraction**: Extract literal to named constant when meaning not self-evident or appear multiple place. Do NOT extract self-documenting: `return []`, `startIndex = 0`, `percentage / 100`, HTTP status code in framework response.
-
-- **Boolean parameter opacity**: `createUser(data, true)` opaque at call site. Prefer named option (`{ sendWelcomeEmail: true }`) or split into descriptively named function.
-
-- **DRY vs wrong abstraction**: Wrong abstraction more costly than no abstraction -- fight every future change not fit mold. Extract when see pattern **three times** with **same reason to change**. Until then, tolerate duplication.
-
-- **Actionable vs safe error messages**: Error at trust boundary must not reveal internal (see `framework:secure-coding`) but still actionable. "Invalid email format" safe and actionable; "Something went wrong" safe but useless; "SQL syntax error at line 42" leak internal. Pattern: log full detail server-side with correlation ID, return generic but actionable message with same ID.
+See `./references/defaults.md` for SRP pipeline nuance, size vs clarity thresholds, magic number extraction rules, boolean parameter patterns, DRY vs wrong abstraction heuristics, and error message guidelines.

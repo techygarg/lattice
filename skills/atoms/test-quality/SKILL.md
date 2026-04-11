@@ -58,43 +58,4 @@ Bad test cost negative. Flaky train team ignore. Brittle slow dev. Pass when beh
 
 Skill govern HOW write tests -- structure, isolation, asserts, naming. WHAT test driven by code implement & domain rules.
 
-## Test Structure (Arrange-Act-Assert)
-
-Three phases, separate w/ blank lines. No logic in arrange/assert -- no if/loop/try. Complex arrange → factory/builder. Complex assert → custom helper.
-
-See `./references/defaults.md` for AAA examples.
-
-## One Behavior Per Test
-
-One test, one behavior. Multi asserts ok when verify facets **same behavior** (e.g., name, email, role of created user). Verify creation AND duplicate = two behaviors = two tests.
-
-## Assertion Quality
-
-- **Assert observable behavior**, not implementation. Prefer `assertEqual(result.total, 42.50)` over `verify(calculator.multiply was called)`.
-- **Specific over generic.** `assertEqual(result.total, 42.50)` over `assertNotNull(result)`.
-- **Custom helpers** when pattern recurs.
-- **Assert negative space** when matter -- something NOT happen.
-
-See `./references/defaults.md` for assert patterns.
-
-## Test Isolation
-
-**Any test pass alone & any order.** No shared mutable state. No order depend. Techniques: transaction rollback (DB), temp dirs (fs), stubs/fakes (network), inject clock (time). Shared fixtures ok only for immutable reference data.
-
-See `./references/defaults.md` for isolation techniques.
-
-## Test Naming
-
-Pattern: `should_[expected behavior]_when_[condition]` or `[method]_[scenario]_[expected result]`. Describe behavior, not implementation. Avoid `test1`, `testHappyPath`, names mirror method w/o context.
-
-## Test Data Management
-
-Use builders/factories -- only specify values relevant, default rest. `anOrder().withTotal(ABOVE_DISCOUNT_THRESHOLD)` over `new Order(null, null, 1500, null)`. Inline edge-case values in test, not fixture files.
-
-See `./references/defaults.md` for builder/factory patterns.
-
-## Test Pyramid Thinking
-
-Most tests = unit tests. When higher-level fail, **write unit test reproduce failure** before fix. Push coverage down. Avoid ice cream cone (many E2E, few unit).
-
-See `./references/defaults.md` for pyramid distribution.
+See `./references/defaults.md` for AAA structure examples, assertion patterns, isolation techniques, naming conventions, test data builder patterns, and pyramid distribution guidance.

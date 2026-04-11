@@ -121,12 +121,3 @@ Common violations collapse progressive structure:
 | **Silent Advancement** | Moving to the next level without explicit approval | Always ask the gating question and wait |
 | **Feature Injection** | Adding rate limiting, analytics, or hooks nobody asked for | Remove unrequested features; design what was requested |
 
-## Output Formats
-
-Each level has distinct format reinforce focus:
-
-- **Level 1 (Capabilities)**: Numbered list. Each item user-facing outcome plain language. No technical terms.
-- **Level 2 (Components)**: ASCII or Mermaid diagram + component descriptions. Each component has name, single responsibility, note on how integrate with existing infrastructure.
-- **Level 3 (Interactions)**: Sequence diagram (ASCII or Mermaid) or numbered flow. Each step name source, target, what data passes. See `./references/methodology-detail.md` for notation guidance.
-- **Level 4 (Contracts)**: Typed interfaces and signatures in project language. Clean, minimal, no function bodies. See `./references/methodology-detail.md` for interface definition patterns.
-- **Level 5 (Implementation)**: Working code organized by component, implementing agreed contracts.

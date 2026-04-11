@@ -41,11 +41,7 @@ Three behaviors govern context anchor doc lifecycle. Each triggered reactively (
 
 ## Create Behavior
 
-**When**: Start new feature work, no existing context doc for feature.
-
-**Reactive**: User explicitly ask create context doc or start new feature.
-
-**Proactive**: When feature work begin -- new requirement discussed, design started, implementation kicked off -- and no context doc exist for feature, suggest creating one. Always confirm before creating.
+Always confirm before creating.
 
 **Steps**:
 
@@ -76,11 +72,7 @@ Three behaviors govern context anchor doc lifecycle. Each triggered reactively (
 
 ## Load Behavior
 
-**When**: Start new session on existing feature, resume work, or continue where previous conversation left off.
-
-**Reactive**: User ask load context, resume feature, or continue previous work.
-
-**Proactive**: When conversation suggest work on feature that have existing context doc -- e.g., user mention feature name that match doc, or reference previous decisions -- suggest loading it. Always confirm before loading.
+Always confirm before loading.
 
 **Steps**:
 
@@ -98,11 +90,7 @@ Three behaviors govern context anchor doc lifecycle. Each triggered reactively (
 
 ## Enrich Behavior
 
-**When**: Decision made during conversation, constraint identified, open question resolved, or key file added.
-
-**Reactive**: User explicitly ask capture decision, log constraint, or update context doc.
-
-**Proactive**: When decision emerge from conversation -- approach chosen, alternative rejected, constraint agreed upon, question resolved -- suggest enriching context doc. Always confirm before writing.
+Always confirm before writing.
 
 **What capture in Decisions Log**:
 
