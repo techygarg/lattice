@@ -66,6 +66,9 @@ Every code-quality atom supports project-specific customization through the same
    - **`mode: overlay`** (default, recommended): Read the atom's embedded defaults first, then apply the custom document's sections on top. Sections are matched by heading -- custom sections replace matching defaults, new sections are appended. You can also add entirely new sections (e.g., language-specific idioms, team-specific rules) that do not exist in the defaults.
    - **`mode: override`**: The custom document fully replaces the atom's defaults. Use this when your standards are fundamentally different and you want complete control.
 4. If no config exists, use the atom's embedded `./references/defaults.md`
+5. **Language adaptation**: If `paths.language_idioms` exists, the atom reads the specific section(s) it needs from the language idioms document and adapts its pseudocode defaults to the project's language. Each atom declares which sections it references (e.g., clean-code reads "Error Handling", "Naming Conventions", etc.). Language idioms take precedence over pseudocode patterns where they conflict. See [docs/configuration.md](configuration.md) for the `language_idioms` key.
+
+The full resolution order is: **defaults → language idioms (if present) → custom overlay (if present)**.
 
 Atoms work out of the box with opinionated defaults. Customization is opt-in, not required. Most teams use overlay -- the defaults are good starting points, and typically only a few sections need adjustment.
 

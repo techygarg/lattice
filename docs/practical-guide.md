@@ -8,6 +8,7 @@ Scenario-driven answers to common questions practitioners have when adopting and
 
 - [Getting Started](#getting-started)
 - [Architecture](#architecture)
+- [Language](#language)
 - [Customization](#customization)
 - [Workflow](#workflow)
 - [Domain-Driven Design](#domain-driven-design)
@@ -21,7 +22,7 @@ Scenario-driven answers to common questions practitioners have when adopting and
 
 ### I just installed Lattice. What do I do first?
 
-Run `/lattice-init`. It scans your project, creates `.lattice/config.yaml`, and tells you which refiners to run based on what it finds. After that, run the suggested refiners (starting with `/knowledge-priming-refiner`) to give Lattice context about your project. Once done, you're ready to use any molecule.
+Run `/lattice-init`. It scans your project, creates `.lattice/config.yaml`, and tells you which refiners to run based on what it finds. After that, run the suggested refiners (starting with `/knowledge-priming-refiner`, then `/language-idioms-refiner`) to give Lattice context about your project and language. Once done, you're ready to use any molecule.
 
 ### My project already has 50k+ lines of code. Is Lattice only for new projects?
 
@@ -29,7 +30,7 @@ No. Lattice works for brownfield codebases too. Run `/lattice-init` to scan the 
 
 ### What happens if I skip all refiners and just start using molecules?
 
-Molecules work, but results will be generic. Without `/knowledge-priming-refiner`, Lattice has no awareness of your project — it can't tailor generated code to your stack or conventions. The embedded defaults for architecture, clean code, DDD, and review are solid, so skipping the other refiners is fine. But `/knowledge-priming-refiner` is a must.
+Molecules work, but results will be generic. Without `/knowledge-priming-refiner`, Lattice has no awareness of your project — it can't tailor generated code to your stack or conventions. Without `/language-idioms-refiner`, atoms use pseudocode defaults which assume OOP + exceptions — problematic for Go, Rust, or functional languages. The other refiners (architecture, clean code, DDD, review) have solid embedded defaults, so skipping those is fine initially. But `/knowledge-priming-refiner` and `/language-idioms-refiner` are strongly recommended.
 
 ### What is the `.lattice/` folder and should I commit it to version control?
 
@@ -66,6 +67,34 @@ Yes. Run `/architecture-refiner` and describe your layers, their responsibilitie
 ### I switched from clean architecture to hexagonal. How do I update my Lattice config?
 
 Re-run `/architecture-refiner` and select hexagonal when prompted. It updates `architecture_mode: custom` in `.lattice/config.yaml` and rewrites `.lattice/standards/architecture.md` with your new structure. Your old clean architecture document is replaced.
+
+---
+
+## Language
+
+### My team uses Go (or Rust, or Python). Do I need to do anything special?
+
+Run `/language-idioms-refiner`. It detects your language, proposes idiomatic patterns (error handling, type system, naming, testing, DI), and asks you to confirm or adjust. The output goes to `.lattice/standards/language-idioms.md` and is consumed by multiple atoms — clean-code, test-quality, secure-coding, DDD, and architecture all reference specific sections to adapt their pseudocode defaults to your language. `/lattice-init` auto-suggests this as priority #2 after knowledge-priming.
+
+### We use Java/TypeScript. The defaults already seem fine. Do we still need the language-idioms document?
+
+Recommended but not critical. The embedded defaults have an OOP + exception-based style that aligns well with Java, Kotlin, TypeScript, and C#. The language-idioms document still adds value — it captures your specific conventions (test framework, DI approach, naming patterns) — but the gap is smaller than for Go or Rust where the defaults actively conflict.
+
+### What's the difference between the language-idioms document and knowledge-priming?
+
+Knowledge-priming answers "what is this project?" — tech stack, directory layout, trusted docs, conventions. Language idioms answers "how does this language express patterns?" — error handling philosophy, type system, naming rules, testing idioms, DI approach. Knowledge-priming says "we use Go 1.22 with Chi router." Language idioms says "Go uses error returns not exceptions, interfaces at consumer not provider, table-driven tests."
+
+### What's the difference between the language-idioms document and a clean-code overlay?
+
+Language idioms describes *how the language works* — language-level facts. A clean-code overlay describes *how your team works within the language* — team-level preferences. Language idioms: "Go uses error returns." Clean-code overlay: "We use `fmt.Errorf('context: %w', err)` for wrapping and custom error types for domain errors." They're complementary, not overlapping.
+
+### My project uses multiple languages (e.g., Go backend + TypeScript frontend). What do I do?
+
+One language-idioms document per project, covering the primary language. `/lattice-init` detects multiple languages and asks which is primary. If both languages are equally important, create the document for whichever language you use Lattice with most (typically the backend). The other language still gets reasonable behavior from the pseudocode defaults.
+
+### The atoms are generating exception-based error handling, but we use Go.
+
+You're missing the language-idioms document. Run `/language-idioms-refiner` — it proposes Go-idiomatic patterns including error returns, `if err != nil`, and error wrapping. The clean-code atom reads the "Error Handling" section and adapts §8 accordingly. Without it, atoms fall back to pseudocode defaults which assume exceptions.
 
 ---
 
@@ -173,7 +202,7 @@ Run the corresponding refiner to produce a standards document for that atom — 
 
 ### Code-forge is generating code in a style that doesn't match my project. What should I check?
 
-Check two things: first, that `.lattice/standards/knowledge-base.md` exists and describes your project's tech stack, conventions, and coding style — run `/knowledge-priming-refiner` if it doesn't. Second, check `.lattice/standards/clean-code.md` — if it's missing or generic, run `/clean-code-refiner` to capture your project-specific style. Code-forge generates to the standards it loads; if those are missing, it falls back to generic defaults.
+Check three things: first, that `.lattice/standards/knowledge-base.md` exists and describes your project's tech stack, conventions, and coding style — run `/knowledge-priming-refiner` if it doesn't. Second, check `.lattice/standards/language-idioms.md` — if it's missing and you use Go, Rust, Python, or another non-OOP language, atoms will use pseudocode defaults that assume exceptions and classes. Run `/language-idioms-refiner` to fix this. Third, check `.lattice/standards/clean-code.md` — if it's missing or generic, run `/clean-code-refiner` to capture your project-specific style.
 
 ### The architecture atom isn't loading my custom document. What could be wrong?
 

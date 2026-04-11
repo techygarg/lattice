@@ -36,7 +36,8 @@ If multiple language markers found repo root, note all ask user which primary st
 - `domain/`, `infrastructure/`, `application/` → layered architecture
 
 **Existing `.lattice/` state** -- check what Lattice artifacts already exist:
-- `.lattice/config.yaml` → central config
+- `.lattice/config.yaml` → central config (check for `language` key)
+- `.lattice/standards/language-idioms.md` → language idioms refiner output
 - `.lattice/standards/knowledge-base.md` → knowledge priming output
 - `.lattice/standards/architecture.md` → architecture refiner output (clean architecture, hexagonal, modular monolith, or custom style)
 - `.lattice/standards/clean-code.md` → clean code refiner output
@@ -58,6 +59,8 @@ Report what found -- concise, structured. Present user:
 
 ### Lattice Setup Status
 - `.lattice/config.yaml`: [exists / not found]
+- Language: [detected language / language key from config / not detected]
+- Language idioms: [found at .lattice/standards/language-idioms.md / not found]
 - Knowledge base: [found at .lattice/standards/knowledge-base.md / not found]
 - Architecture standards: [found at .lattice/standards/architecture.md / not found]
 - Clean code standards: [found / not found]
@@ -77,10 +80,11 @@ Based gaps found Step 2, suggest refiners priority order. Walk user through each
 **Priority order**:
 
 1. **Knowledge-priming-refiner** (if `.lattice/standards/knowledge-base.md` missing) -- "Captures project identity -- tech stack, architecture, directory layout, conventions. Every other skill uses this context make better decisions."
-2. **Architecture-refiner** (if `.lattice/standards/architecture.md` missing AND project has source code dir) -- "Defines project architecture standards — layer structure, dependency rules, validation checklist. Supports multiple styles: clean architecture (default), hexagonal / ports & adapters, modular monolith, or custom."
-3. **DDD-refiner** (if `.lattice/standards/ddd-principles.md` missing AND project has domain folder or domain-like structure) -- "Captures aggregate design rules, entity patterns, domain event conventions so DDD atom enforces domain modeling style."
-4. **Clean-code-refiner** (if `.lattice/standards/clean-code.md` missing) -- "Tailors coding standards -- function size limits, complexity thresholds, naming conventions. Defaults work well most projects, so optional."
-5. **Review-refiner** (if `.lattice/standards/review-standards.md` missing) -- "Customizes how review molecule works -- atom loading rules, severity levels, report format, scope rules. Defaults work well most projects, so optional."
+2. **Language-idioms-refiner** (if `.lattice/standards/language-idioms.md` missing) -- "Defines how your language expresses engineering patterns -- error handling, type system, naming, testing, DI. Multiple atoms use this to adapt pseudocode defaults to your language. Fast interview: proposes language-idiomatic defaults, you confirm or adjust."
+3. **Architecture-refiner** (if `.lattice/standards/architecture.md` missing AND project has source code dir) -- "Defines project architecture standards — layer structure, dependency rules, validation checklist. Supports multiple styles: clean architecture (default), hexagonal / ports & adapters, modular monolith, or custom."
+4. **DDD-refiner** (if `.lattice/standards/ddd-principles.md` missing AND project has domain folder or domain-like structure) -- "Captures aggregate design rules, entity patterns, domain event conventions so DDD atom enforces domain modeling style."
+5. **Clean-code-refiner** (if `.lattice/standards/clean-code.md` missing) -- "Tailors coding standards -- function size limits, complexity thresholds, naming conventions. Defaults work well most projects, so optional."
+6. **Review-refiner** (if `.lattice/standards/review-standards.md` missing) -- "Customizes how review molecule works -- atom loading rules, severity levels, report format, scope rules. Defaults work well most projects, so optional."
 
 **For each gap**, present user:
 - What refiner does (one sentence, from descriptions above)
@@ -97,13 +101,14 @@ Based gaps found Step 2, suggest refiners priority order. Walk user through each
 ```yaml
 # .lattice/config.yaml -- Lattice Framework Configuration
 # All paths are relative to the repository root.
-# Run refiners to populate: /knowledge-priming-refiner, /architecture-refiner, /ddd-refiner, /clean-code-refiner, /review-refiner
+# Run refiners to populate: /knowledge-priming-refiner, /language-idioms-refiner, /architecture-refiner, /ddd-refiner, /clean-code-refiner, /review-refiner
 
 version: 1
+language: {detected-language}
 paths: {}
 ```
 
-If user runs at least one refiner, refiner itself create or update config file -- no need create here.
+If user runs at least one refiner, refiner itself create or update config file -- no need create here. Set `language` key from detected language even if no refiners run -- atoms use it as fallback when language-idioms document not present.
 
 ### Step 4: Next Steps
 

@@ -18,6 +18,7 @@ Skill support project-custom. Order:
      custom doc sections on top. Custom sections replace matching
      sections in default (match by heading). New sections append after default.
 4. If no config, no path, or path not found, read `./references/defaults.md`
+5. **Language adaptation**: If `paths.language_idioms` exist in config, read **"Error Handling"** section and adapt §1 (Trust Boundary Identification) error message patterns to language idioms. Language idioms take precedence over pseudocode defaults.
 
 Default ship with skill, represent opinionated best practice.
 Work out box any project. Override only when team have

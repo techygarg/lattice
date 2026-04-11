@@ -77,6 +77,8 @@ Purpose: Tell AI exactly which technologies and versions are in use. Version num
 
 Include "not X" clarifications -- these steer AI away from common defaults that do not apply. For example, "Fastify 4.x (not Express)" prevents AI from defaulting to Express patterns.
 
+This section captures tool IDENTITY (which framework, which version). Language-level IDIOMS (how to write error handling, how to structure tests, how DI works) belong in the language-idioms document produced by the `language-idioms-refiner`.
+
 Ask: "What technologies does your project use? Include version numbers where possible. Are there common alternatives that you explicitly do NOT use?"
 
 Probing questions:
@@ -84,7 +86,7 @@ Probing questions:
 - Framework and version? (Fastify 4.x, Django 5.x, Spring Boot 3.x)
 - Database and ORM? (PostgreSQL 15 with Prisma 5.x)
 - Auth approach? (JWT with httpOnly cookies, OAuth2 with Clerk)
-- Testing framework? (Vitest, pytest, Go testing)
+- Testing framework and runner? (Vitest, pytest, Go testing) -- just the tool name and "not X" if applicable; testing idioms and patterns are covered by the language-idioms document
 - Validation library? (Zod, Pydantic, Joi)
 - Any "not X" clarifications? (Fastify not Express, Vitest not Jest)
 
@@ -190,6 +192,7 @@ Examples of what does NOT belong here (covered by other skills):
 - SRP, complexity, error handling patterns (clean-code)
 - Layer responsibilities, dependency direction (architecture)
 - Aggregate design, value objects (domain-driven-design)
+- Language-level idioms: naming case conventions, error handling philosophy, testing patterns, DI approach (language-idioms document)
 
 This section is optional. If the project has no conventions beyond what the tech stack implies, skip it.
 -->

@@ -14,6 +14,12 @@ Skill support project custom. Order:
    - **`mode: override`** (or no mode): Custom doc full precedence. Use instead embedded default. Must be comprehensive -- sole reference.
    - **`mode: overlay`**: Read embedded `./references/defaults.md` first, then apply custom doc sections on top. Custom sections replace matching sections in default (matched by heading). New sections appended after default.
 4. If no config/path/file, read `./references/defaults.md`
+5. **Language adaptation**: If `paths.language_idioms` exist in config, read that document and adapt defaults using these sections:
+   - **"Error Handling"** → adapt §8 (Error Handling) patterns to language idioms. Language idioms take precedence over pseudocode defaults.
+   - **"Type System & Object Model"** → adapt §1 (Single Responsibility) cohesion guidance to language constructs (e.g., struct vs class).
+   - **"Naming Conventions"** → adapt §4 (Meaningful Naming) patterns to language conventions.
+   - **"Parameter & Function Design"** → adapt §2 (Small, Focused Functions) and §5 (Parameter Design) to language capabilities.
+   - **"Dependency Management"** → adapt §9 (Test-Friendly Code) DI patterns to language idioms.
 
 Default ship with skill. Opinionated best practice. Work out of box. Override only when team have different standard.
 

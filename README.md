@@ -48,10 +48,11 @@ Lattice organizes skills into three tiers. See [how-it-works](docs/how-it-works.
 | **bug-fix** | Investigates, reproduces, and safely fixes a bug with regression protection. Requires a failing reproduction before applying the repair | knowledge-priming, context-anchoring, collaborative-judgment, clean-code, test-quality (always), architecture, domain-driven-design, secure-coding (conditional) |
 | **review** | Performs a structured, delta-scoped code review with severity-ordered findings. Supports optional process config via review-refiner | knowledge-priming (always), collaborative-judgment (always), clean-code (always), architecture, domain-driven-design, secure-coding, test-quality (conditional) |
 
-### Refiners (5)
+### Refiners (6)
 
 | Skill | What it produces |
 |-------|-----------------|
+| **language-idioms-refiner** | `.lattice/standards/language-idioms.md` -- language-specific patterns (error handling, type system, naming, testing, DI) consumed by multiple atoms to adapt pseudocode defaults |
 | **architecture-refiner** | `.lattice/standards/architecture.md` -- project-specific architecture principles. Supports clean architecture (default), hexagonal, modular monolith, or custom styles |
 | **ddd-refiner** | `.lattice/standards/ddd-principles.md` -- project-specific DDD guardrails for the domain-driven-design atom |
 | **clean-code-refiner** | `.lattice/standards/clean-code.md` -- project-specific coding standards for the clean-code atom |
@@ -75,13 +76,14 @@ Skills form a delivery lifecycle: **lattice-init** → **design-blueprint** → 
    - **Cursor**: `/path/to/project/.cursor/skills/`
    - **Any other tool**: the absolute path to that tool's skills folder
 
-   All 20 skills are copied flat into that directory so your tool can discover them.
+   All 21 skills are copied flat into that directory so your tool can discover them.
 
 2. **Run `/lattice-init`** (recommended): Guided setup experience -- scans your project, suggests which refiners to run, and creates the `.lattice/config.yaml`. This is the fastest path from install to first value.
 
 3. **Or customize manually** (optional): Atoms ship with opinionated defaults that work immediately. If you prefer to set up manually instead of using `/lattice-init`, you have two paths:
    - **Run a refiner** -- a guided interview that produces the config file for you:
      ```
+     /language-idioms-refiner    # Adapt atom defaults to your language (Go, Rust, Python, etc.)
      /architecture-refiner       # Tailor layer structure and dependency rules
      /ddd-refiner                # Tailor domain modeling guardrails
      /clean-code-refiner         # Tailor coding standards and thresholds
@@ -108,9 +110,10 @@ The `.lattice/` folder is Lattice's living context layer -- the second half of t
 
 ```
 .lattice/
-├── config.yaml      # Central config (only file at root)
+├── config.yaml      # Central config (only file at root; includes language key)
 ├── standards/       # Refiner-produced customization docs
-│   └── review-standards.md  # (optional) Review process config
+│   ├── language-idioms.md    # (recommended) Language-specific patterns
+│   └── review-standards.md   # (optional) Review process config
 ├── context/         # Per-feature living documents
 ├── learnings/       # Accumulated review insights (fed back into code-forge, refactor-safely, and bug-fix)
 └── reviews/         # Review log for project health visibility
