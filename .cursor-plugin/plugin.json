@@ -1,5 +1,6 @@
 {
   "name": "lattice",
+  "displayName": "Lattice",
   "version": "1.0.0",
   "description": "Composable AI skills framework covering the full software delivery lifecycle — design, architecture, implementation, testing, and review.",
   "author": {
