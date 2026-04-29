@@ -86,6 +86,8 @@ Skills form a delivery lifecycle: **lattice-init** → **design-blueprint** → 
 
    All skills are copied flat into that directory so your tool can discover them.
 
+   > **Want to try it immediately?** The repo includes a sample project at `sample/` — a realistic .NET 8 User Service spec with requirements, domain concepts, and constraints already written. Copy the `sample/` folder contents (.lattice folder) into any empty directory, then follow steps 2–8 below to walk through the full Lattice workflow on a real example. Swap in your own requirements whenever you're ready.
+
 2. **Run `/lattice-init`** (recommended): Guided setup experience -- scans your project, suggests which refiners to run, and creates the `.lattice/config.yaml`. This is the fastest path from install to first value.
 
 3. **Or customize manually** (optional): Atoms ship with opinionated defaults that work immediately. If you prefer to set up manually instead of using `/lattice-init`, you have two paths:
