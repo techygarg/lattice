@@ -69,7 +69,9 @@ Skills form a delivery lifecycle: **lattice-init** → **design-blueprint** → 
 
    **Option A — Claude Code plugin (recommended)**
    ```
-   /plugin install github.com/techygarg/lattice
+   /plugins marketplace add techygarg/lattice
+   /plugins install lattice
+   /reload-plugins
    ```
    Installs Lattice as a Claude Code plugin. All skills are auto-discovered — no further steps needed.
 
