@@ -134,7 +134,7 @@ Creative task (generation) and analytical task (validation) in separate passes. 
 
 ## 6. The `.lattice/` Folder as Institutional Memory
 
-The `.lattice/` folder is where the living context layer takes physical form -- standards, context documents, learnings, and health logs, each with a distinct lifecycle. See [how-it-works: The .lattice/ Folder](how-it-works.md#the-ai-folder) for the folder structure and lifecycle details.
+The `.lattice/` folder is where the living context layer takes physical form -- standards, context documents, learnings, and health logs, each with a distinct lifecycle. See [how-it-works: The .lattice/ Folder](how-it-works.md#the-lattice-folder) for the folder structure and lifecycle details.
 
 ---
 

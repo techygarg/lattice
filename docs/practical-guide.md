@@ -34,7 +34,7 @@ Molecules work, but results will be generic. Without `/knowledge-priming-refiner
 
 ### What is the `.lattice/` folder and should I commit it to version control?
 
-The `.lattice/` folder is Lattice's living context layer. It holds `config.yaml` (your settings), `standards/` (refiner outputs like architecture and coding rules), `blueprints/` (design decisions), `reviews/` (review log), and `learnings/` (review insights). Commit it — it's the shared source of truth for your team's standards and accumulates value over time.
+The `.lattice/` folder is Lattice's living context layer. It holds `config.yaml` (your settings), `standards/` (refiner outputs like architecture and coding rules), `context/` (per-feature living documents capturing decisions and blueprints), `reviews/` (review log), and `learnings/` (review insights). Commit it — it's the shared source of truth for your team's standards and accumulates value over time.
 
 ---
 

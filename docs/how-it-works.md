@@ -22,6 +22,48 @@ The two layers interact through a read/write loop. The base framework *reads* fr
 
 The payoff compounds over time. After a few feature cycles, atoms aren't applying generic rules -- they're applying *your* rules, informed by *your* review history. Code-forge doesn't repeat mistakes that review already caught. Standards grow more precise as refiners are re-run. Health logs reveal trends across features, not just snapshots. The base framework never changes, but the context layer makes it smarter with every use.
 
+## Skill Inventory
+
+All skills and their invocation commands. Invoke any skill in your AI tool's chat by typing the command.
+
+### Atoms — invoke directly or composed by molecules
+
+| Skill | Command | What it enforces |
+|-------|---------|-----------------|
+| clean-code | `/clean-code` | Function focus, naming clarity, complexity management, error handling, self-documenting style |
+| architecture | `/architecture` | Layer responsibilities, dependency direction, structural rules. Defaults to clean architecture; supports any style via architecture-refiner |
+| domain-driven-design | `/domain-driven-design` | Aggregate design, value objects over primitives, entity identity rules, bounded context boundaries |
+| secure-coding | `/secure-coding` | Trust boundary awareness, input validation, injection prevention, secrets management |
+| test-quality | `/test-quality` | AAA structure, one behavior per test, assertion quality, test isolation, meaningful naming |
+| knowledge-priming | `/knowledge-priming` | Loads project-specific context (tech stack, architecture, conventions) so all skills operate with project awareness |
+| design-first | `/design-first` | Structured design through 5 progressive levels before any code is written |
+| context-anchoring | `/context-anchoring` | Per-feature living documents that capture decisions and reasoning across sessions |
+| collaborative-judgment | `/collaborative-judgment` | Surfaces genuine judgment calls with structured options instead of silently assuming |
+
+### Molecules — invoke to run a full workflow
+
+| Skill | Command | What it does |
+|-------|---------|-------------|
+| lattice-init | `/lattice-init` | Guided setup — scans project, detects config, suggests refiners, creates `.lattice/config.yaml` |
+| design-blueprint | `/design-blueprint` | Complete design workflow through 5 levels, produces an approved blueprint before any code is written |
+| code-forge | `/code-forge` | Implements from an approved blueprint or verbal requirements using inside-out layer ordering |
+| refactor-safely | `/refactor-safely` | Restructures existing code without changing observable behavior; uses characterization tests as safety net |
+| bug-fix | `/bug-fix` | Investigates, reproduces with a failing test, then applies minimal safe repair |
+| review | `/review` | Structured delta-scoped code review with severity-ordered findings; captures learnings for future sessions |
+
+### Refiners — invoke to produce project-specific standards
+
+| Skill | Command | Produces |
+|-------|---------|---------|
+| knowledge-priming-refiner | `/knowledge-priming-refiner` | `.lattice/standards/knowledge-base.md` |
+| language-idioms-refiner | `/language-idioms-refiner` | `.lattice/standards/language-idioms.md` |
+| architecture-refiner | `/architecture-refiner` | `.lattice/standards/architecture.md` |
+| ddd-refiner | `/ddd-refiner` | `.lattice/standards/ddd-principles.md` |
+| clean-code-refiner | `/clean-code-refiner` | `.lattice/standards/clean-code.md` |
+| review-refiner | `/review-refiner` | `.lattice/standards/review-standards.md` |
+
+---
+
 ## Atoms in Depth
 
 ### What they are
@@ -166,7 +208,26 @@ A structured, delta-scoped code review that loads atoms conditionally based on w
 4. **Produce report**: Findings are severity-ordered (critical → warning → suggestion) with specific file locations and concrete fixes. Summary mode by default; full mode on request. Every review ends with a "what's done well" observation.
 5. **Capture insights and log**: Appends recurring patterns to `.lattice/learnings/review-insights.md` (fed back into code-forge's next session) and logs a structured summary to `.lattice/reviews/review-log.md` (project health visibility).
 
-See the [refiner inventory](../README.md#refiners-5) for what each refiner produces and which atom or molecule each one targets.
+See [Refiners in Depth](#refiners-in-depth) below for what each refiner produces and which atom or molecule it targets.
+
+## Refiners in Depth
+
+Refiners are optional. Atoms work with opinionated embedded defaults out of the box. Run a refiner when you want to tailor those defaults to your project. Each refiner runs a guided interview and writes a standards document to `.lattice/standards/` — the atom reads that document on every subsequent invocation via config resolution.
+
+| Refiner | Produces | Consumed by |
+|---------|----------|-------------|
+| **knowledge-priming-refiner** | `.lattice/standards/knowledge-base.md` — project identity, tech stack, directory layout, trusted sources, conventions | All atoms and molecules (via knowledge-priming atom) |
+| **language-idioms-refiner** | `.lattice/standards/language-idioms.md` — language-specific error handling, type system, naming, testing, DI patterns | clean-code, architecture, domain-driven-design, test-quality, secure-coding |
+| **architecture-refiner** | `.lattice/standards/architecture.md` — layer structure and dependency rules. Supports clean architecture (default), hexagonal, modular monolith, or any custom style | architecture atom |
+| **ddd-refiner** | `.lattice/standards/ddd-principles.md` — aggregate design, value object rules, bounded context constraints tailored to your domain | domain-driven-design atom |
+| **clean-code-refiner** | `.lattice/standards/clean-code.md` — team-specific coding standards, thresholds, and conventions | clean-code atom |
+| **review-refiner** | `.lattice/standards/review-standards.md` — atom loading rules, severity classification, report format, scope rules for the review molecule | review molecule |
+
+> **No refiner for test-quality and secure-coding** — these atoms have strong embedded defaults that work well for most teams. To customize them, write `.lattice/standards/test-quality.md` or `.lattice/standards/secure-coding.md` by hand and point to them via `paths.test_quality` / `paths.secure_coding` in `.lattice/config.yaml`.
+
+**Two paths to a standards document**: Run the refiner (guided interview → file created for you) or write the file directly in `.lattice/standards/`. Both produce the same result — the atom only cares about the document, not how it was created. Re-run a refiner or edit the file whenever your standards evolve.
+
+See [docs/configuration.md](configuration.md) for the complete list of `.lattice/config.yaml` keys that wire these documents to their atoms.
 
 ## The Design-to-Code Pipeline
 
