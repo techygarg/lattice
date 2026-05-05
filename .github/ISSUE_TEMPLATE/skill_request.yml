@@ -1,0 +1,81 @@
+name: Skill Request
+description: Suggest a new atom, molecule, or refiner
+labels: ["skill-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before suggesting a new skill, check whether an existing one can be improved or extended to cover your need. See the [skill inventory](https://github.com/techygarg/lattice/blob/main/docs/how-it-works.md#skill-inventory) for what already exists.
+
+        New atoms are straightforward — one principle, clear violations. Molecules require clear orchestration value across multiple atoms. Open a discussion first for molecules and refiners.
+
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Which tier fits best?
+      options:
+        - Not sure — help me decide
+        - Atom — a single engineering principle with verifiable violations
+        - Molecule — a multi-step workflow that composes several atoms
+        - Refiner — a guided interview that produces project-specific standards
+    validations:
+      required: true
+
+  - type: input
+    id: name
+    attributes:
+      label: Proposed skill name
+      description: Lowercase kebab-case. Tentative — maintainers may suggest adjustments.
+      placeholder: api-design
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What does the AI currently do wrong without this skill?
+      description: Concrete behavior, not a general concern. What does the AI generate or miss that this skill would prevent?
+      placeholder: |
+        When generating REST API handlers, the AI produces inconsistent error response shapes — sometimes {error: string}, sometimes {message: string, code: int}. It doesn't flag this as a violation and doesn't enforce a consistent contract.
+    validations:
+      required: true
+
+  - type: textarea
+    id: principle
+    attributes:
+      label: What principle or workflow does it encode?
+      description: |
+        Atoms: the specific, verifiable rule.
+        Molecules: the ordered workflow steps and which atoms they compose.
+        Refiners: what the interview extracts and what document it produces.
+      placeholder: |
+        API Design atom: enforces consistent error response shape, status code correctness, input validation at the handler boundary, and no business logic in handlers.
+    validations:
+      required: true
+
+  - type: textarea
+    id: antpatterns
+    attributes:
+      label: What specific anti-patterns should it catch?
+      description: These become the Active Anti-Pattern Scan checklist. Be concrete — if you can't name three specific violations, the atom scope may need narrowing.
+      placeholder: |
+        - Inconsistent error response shape across endpoints (some {error}, some {message})
+        - Missing 400/422 for validation failures — returning 500 instead
+        - Business logic inside HTTP handlers instead of delegating to application layer
+        - Exposing internal error messages or stack traces in responses
+    validations:
+      required: true
+
+  - type: textarea
+    id: existing
+    attributes:
+      label: How does this relate to existing skills?
+      description: Which existing atoms would this interact with, duplicate, or extend? Knowing this prevents overlap and helps design the right scope.
+      placeholder: |
+        Partially overlaps with secure-coding (input validation) but focuses on API contract consistency rather than security posture. Would be composed by a future api-workflow molecule alongside design-first.
+
+  - type: textarea
+    id: willing
+    attributes:
+      label: Are you willing to contribute this skill?
+      description: No obligation — requesting is valid on its own. If you want to write it, say so and we will guide you through the conventions.
