@@ -1,3 +1,26 @@
-knowledge-base
-.DS_Store
+# Private AI assistant memory and project state
 CLAUDE.md
+.claude/
+
+# Private strategic knowledge base (internal use only)
+knowledge-base/
+
+# Lattice living context (project-specific, not part of the framework)
+.lattice/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (if any tooling is added)
+node_modules/
+
+# Local environment
+*.local
+.env

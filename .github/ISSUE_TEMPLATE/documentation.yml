@@ -1,0 +1,66 @@
+name: Documentation Issue
+description: Something in the docs is wrong, missing, or confusing
+labels: ["documentation"]
+body:
+  - type: dropdown
+    id: doc
+    attributes:
+      label: Which document?
+      options:
+        - README.md
+        - docs/how-it-works.md
+        - docs/practical-guide.md
+        - docs/configuration.md
+        - docs/framework-intelligence.md
+        - docs/collaborative-judgment.md
+        - docs/origin.md
+        - CONTRIBUTING.md
+        - A skill's SKILL.md file
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: skill_name
+    attributes:
+      label: If a SKILL.md — which skill?
+      description: Leave blank if the document above is not a skill file
+      placeholder: clean-code, code-forge, architecture-refiner, etc.
+
+  - type: input
+    id: section
+    attributes:
+      label: Which section?
+      description: Heading name or line number — helps us find it fast
+      placeholder: "## Config Resolution, or line 42, or the atoms table"
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type of issue
+      options:
+        - Incorrect information — something is factually wrong
+        - Missing information — a gap that leaves a reader without an answer
+        - Confusing or unclear — accurate but hard to follow
+        - Broken link
+        - Outdated content — was correct but no longer is
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What is wrong or missing?
+      description: Quote the specific text if it is incorrect. Describe the gap if it is missing.
+      placeholder: |
+        The configuration.md table says test-quality is produced by test-quality-refiner, but that refiner does not exist. There is no way to customize test-quality via a guided interview — only by hand.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: What should it say instead?
+      description: Even a rough suggestion helps — you do not need to write the exact fix
+      placeholder: |
+        Change "Produced by: test-quality-refiner" to "No refiner — write .lattice/standards/test-quality.md by hand"

@@ -1,0 +1,107 @@
+name: Bug Report
+description: A skill behaves unexpectedly or produces incorrect output
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please be as specific as possible — skill bugs are often subtle and model-dependent. The more detail you give, the faster we can reproduce and fix.
+
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Which skill?
+      description: The skill that behaved unexpectedly. If multiple atoms are involved via a molecule, pick the molecule.
+      options:
+        - Other / unsure
+        - clean-code (atom)
+        - architecture (atom)
+        - domain-driven-design (atom)
+        - secure-coding (atom)
+        - test-quality (atom)
+        - knowledge-priming (atom)
+        - design-first (atom)
+        - context-anchoring (atom)
+        - collaborative-judgment (atom)
+        - lattice-init (molecule)
+        - design-blueprint (molecule)
+        - code-forge (molecule)
+        - refactor-safely (molecule)
+        - bug-fix (molecule)
+        - review (molecule)
+        - knowledge-priming-refiner (refiner)
+        - language-idioms-refiner (refiner)
+        - architecture-refiner (refiner)
+        - ddd-refiner (refiner)
+        - clean-code-refiner (refiner)
+        - review-refiner (refiner)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tool
+    attributes:
+      label: AI tool
+      options:
+        - Claude Code
+        - Cursor
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: model
+    attributes:
+      label: AI model
+      description: Skill behavior can vary across models — this helps us reproduce
+      options:
+        - Claude Sonnet 4.6
+        - Claude Opus 4.7
+        - Claude Haiku 4.5
+        - Other / unsure
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did the skill do that it should not have done, or fail to do that it should have?
+      placeholder: "The clean-code atom did not flag a 60-line function with 5 distinct responsibilities. It generated the code and moved on without running the SRP check."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+      placeholder: "It should have STOPPED after generating the component, run the Self-Validation Checklist, flagged the SRP violation, and either fixed it or surfaced it as a judgment call."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: |
+        Include the prompt you used AND the AI's response (or a summary). The pair matters — the same skill can behave differently with different prompts.
+      placeholder: |
+        **Prompt:** "Using /code-forge, implement a UserService class that handles registration, authentication, and profile updates"
+
+        **AI response summary:** Generated a single 80-line UserService class. No SRP check ran. No checklist output shown.
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: .lattice/config.yaml
+      description: Paste your config if you have one — omit sensitive values. Leave blank if you have no config file.
+      render: yaml
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Language, framework, project type — anything that might affect skill behavior
+      placeholder: "Language: Go 1.22, Framework: Chi, Architecture: clean architecture with custom layer names"

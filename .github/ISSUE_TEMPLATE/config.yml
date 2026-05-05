@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or Discussion
+    url: https://github.com/techygarg/lattice/discussions
+    about: Ask questions, share how you use Lattice, or propose ideas before filing an issue
