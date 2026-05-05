@@ -6,6 +6,12 @@
 
 Composable AI skills that teach assistants structured thinking — design-first, context-aware, and architecture-guided.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-blue.svg)](https://claude.ai/marketplace)
+[![Cursor](https://img.shields.io/badge/Cursor-compatible-blue.svg)](https://cursor.com)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/techygarg/lattice/blob/main/CONTRIBUTING.md)
+[![martinfowler.com](https://img.shields.io/badge/martinfowler.com-article_series-red.svg)](https://martinfowler.com/articles/reduce-friction-ai/)
+
 ## What is Lattice?
 
 AI coding assistants jump straight to code, silently make design decisions, forget constraints mid-conversation, and produce output nobody reviewed against real standards. Lattice fixes this with composable skills in three tiers — atoms, molecules, refiners — that embed battle-tested engineering disciplines plus a living context layer that accumulates your project's standards, decisions, and review insights across every feature cycle.
