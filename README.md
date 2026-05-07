@@ -36,7 +36,7 @@ See [How It Works](docs/how-it-works.md) for the full skill inventory and mechan
 
 ## The Pipeline
 
-Skills form a delivery lifecycle: `lattice-init` → `design-blueprint` → `code-forge` → `review`, with `refactor-safely` and `bug-fix` covering structural and defect-driven work. Each stage consumes and produces artifacts in `.lattice/`, growing the living context layer.
+Skills form a delivery lifecycle: `lattice-init` → `design-blueprint` → `code-forge` → `review`, with `refactor-safely` and `bug-fix` covering structural and defect-driven work. For teams with existing codebases, `plan-transformation` sits before the pipeline — it analyses architectural drift, agrees a target architecture, and produces a slice backlog that feeds into `refactor-safely` and `code-forge` for execution. Each stage consumes and produces artifacts in `.lattice/`, growing the living context layer.
 
 ![Feature Lifecycle Pipeline](docs/image/image5.png)
 
@@ -73,7 +73,8 @@ Skills form a delivery lifecycle: `lattice-init` → `design-blueprint` → `cod
 
 - [Origin Story](docs/origin.md) — why Lattice exists, how five collaboration patterns became an installable framework, and the design philosophy behind it
 - [How It Works](docs/how-it-works.md) — full skill inventory, composability mechanics, atoms/molecules/refiners in depth, the pipeline
-- [Practical Guide](docs/practical-guide.md) — scenario-driven Q&A: getting started, customization, workflow, team usage, troubleshooting
+- [Practical Guide](docs/practical-guide.md) — scenario-driven Q&A: getting started, customization, workflow, transformation, team usage, troubleshooting
+- [Plan Transformation](docs/plan-transformation.md) — the transformation hypothesis: why it exists, what to expect, and how the planning session works
 - [Configuration Reference](docs/configuration.md) — every `.lattice/config.yaml` key documented
 - [Framework Intelligence](docs/framework-intelligence.md) — verification passes, feedback loops, AI compliance techniques
 - [Collaborative Judgment](docs/collaborative-judgment.md) — why AI should ask on genuine judgment calls and how it works at runtime
