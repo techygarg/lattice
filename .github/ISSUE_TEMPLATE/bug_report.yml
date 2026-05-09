@@ -23,6 +23,7 @@ body:
         - design-first (atom)
         - context-anchoring (atom)
         - collaborative-judgment (atom)
+        - requirement-quality (atom)
         - lattice-init (molecule)
         - design-blueprint (molecule)
         - code-forge (molecule)
@@ -30,12 +31,14 @@ body:
         - bug-fix (molecule)
         - review (molecule)
         - plan-transformation (molecule)
+        - requirement-forge (molecule)
         - knowledge-priming-refiner (refiner)
         - language-idioms-refiner (refiner)
         - architecture-refiner (refiner)
         - ddd-refiner (refiner)
         - clean-code-refiner (refiner)
         - review-refiner (refiner)
+        - requirement-forge-refiner (refiner)
     validations:
       required: true
 

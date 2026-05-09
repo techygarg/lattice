@@ -36,7 +36,7 @@ See [How It Works](docs/how-it-works.md) for the full skill inventory and mechan
 
 ## The Pipeline
 
-Skills form a delivery lifecycle: `lattice-init` → `design-blueprint` → `code-forge` → `review`, with `refactor-safely` and `bug-fix` covering structural and defect-driven work. For teams with existing codebases, `plan-transformation` sits before the pipeline — it analyses architectural drift, agrees a target architecture, and produces a slice backlog that feeds into `refactor-safely` and `code-forge` for execution. Each stage consumes and produces artifacts in `.lattice/`, growing the living context layer.
+Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` → `code-forge` → `review`, with `refactor-safely` and `bug-fix` covering structural and defect-driven work. `requirement-forge` starts the pipeline — it acts as a senior PM + BA pair to produce structured feature specs in `.lattice/requirements/` that feed directly into `design-blueprint`. For teams with existing codebases, `plan-transformation` sits before the pipeline — it analyses architectural drift, agrees a target architecture, and produces a slice backlog that feeds into `refactor-safely` and `code-forge` for execution. Each stage consumes and produces artifacts in `.lattice/`, growing the living context layer.
 
 ![Feature Lifecycle Pipeline](docs/image/image5.png)
 
@@ -63,11 +63,13 @@ Skills form a delivery lifecycle: `lattice-init` → `design-blueprint` → `cod
 
 2. **Run `/lattice-init`** in your AI tool's chat — scans the project, suggests refiners in priority order, creates `.lattice/config.yaml`. All skill commands (`/lattice-init`, `/design-blueprint`, etc.) are typed in the AI chat, not the terminal.
 
-3. **Design** — `/design-blueprint` walks through five progressive design levels before any code is written.
+3. **Spec** *(optional but recommended)* — `/requirement-forge` acts as a senior PM + BA pair to define epics and feature specs before any design begins. Accepts existing PRDs, feature lists, or a verbal description. Produces `.lattice/requirements/` as direct input to design-blueprint.
 
-4. **Implement** — `/code-forge` generates implementation from the approved blueprint, applying all quality atoms.
+4. **Design** — `/design-blueprint` walks through five progressive design levels before any code is written.
 
-5. **Review** — `/review` audits the change and persists insights into `.lattice/` for the next cycle.
+5. **Implement** — `/code-forge` generates implementation from the approved blueprint, applying all quality atoms.
+
+6. **Review** — `/review` audits the change and persists insights into `.lattice/` for the next cycle.
 
 ## Learn More
 

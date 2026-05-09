@@ -39,17 +39,20 @@ All skills and their invocation commands. Invoke any skill in your AI tool's cha
 | design-first | `/design-first` | Structured design through 5 progressive levels before any code is written |
 | context-anchoring | `/context-anchoring` | Per-feature living documents that capture decisions and reasoning across sessions |
 | collaborative-judgment | `/collaborative-judgment` | Surfaces genuine judgment calls with structured options instead of silently assuming |
+| requirement-quality | `/requirement-quality` | Feature specification quality — completeness, scenario structure, AC verifiability, independence, and implementation slice quality |
 
 ### Molecules — invoke to run a full workflow
 
 | Skill | Command | What it does |
 |-------|---------|-------------|
 | lattice-init | `/lattice-init` | Guided setup — scans project, detects config, suggests refiners, creates `.lattice/config.yaml` |
+| requirement-forge | `/requirement-forge` | Collaborative feature specification as a senior PM + BA pair — produces epic/feature hierarchy in `.lattice/requirements/` as direct input to design-blueprint |
 | design-blueprint | `/design-blueprint` | Complete design workflow through 5 levels, produces an approved blueprint before any code is written |
 | code-forge | `/code-forge` | Implements from an approved blueprint or verbal requirements using inside-out layer ordering |
 | refactor-safely | `/refactor-safely` | Restructures existing code without changing observable behavior; uses characterization tests as safety net |
 | bug-fix | `/bug-fix` | Investigates, reproduces with a failing test, then applies minimal safe repair |
 | review | `/review` | Structured delta-scoped code review with severity-ordered findings; captures learnings for future sessions |
+| plan-transformation | `/plan-transformation` | Whole-codebase architectural transformation planning — agrees current and target architecture, produces ordered slice backlog |
 
 ### Refiners — invoke to produce project-specific standards
 
@@ -61,6 +64,7 @@ All skills and their invocation commands. Invoke any skill in your AI tool's cha
 | ddd-refiner | `/ddd-refiner` | `.lattice/standards/ddd-principles.md` |
 | clean-code-refiner | `/clean-code-refiner` | `.lattice/standards/clean-code.md` |
 | review-refiner | `/review-refiner` | `.lattice/standards/review-standards.md` |
+| requirement-forge-refiner | `/requirement-forge-refiner` | `.lattice/standards/requirement-standards.md` |
 
 ---
 
@@ -88,6 +92,7 @@ Not every atom applies to every piece of code. The distinction matters for both 
 - **domain-driven-design** -- Only when touching domain layer code. A controller or infrastructure adapter does not need aggregate boundary checks.
 - **secure-coding** -- Only when code crosses trust boundaries: HTTP handlers, database queries, external API calls, file I/O, user input processing.
 - **test-quality** -- Only when writing test code. AAA structure and test isolation do not apply to production code.
+- **requirement-quality** -- Only when writing or validating feature specifications. Composed by `requirement-forge`; can also be invoked standalone to validate a hand-written spec.
 
 ### The special ones
 
@@ -137,6 +142,25 @@ Guided setup experience that bridges the gap between installing Lattice and gett
 4. **Next steps**: Presents the design-to-review workflow so the user knows what to do next.
 
 Run once per project. If Lattice is already fully configured, acknowledges it and shows the workflow.
+
+### requirement-forge
+
+Collaboratively forges feature specifications as a senior PM + BA pair. This is the upstream molecule in the pipeline — it produces the feature specs that `design-blueprint` consumes.
+
+**Composes**: requirement-quality (always), knowledge-priming (conditional: when a codebase exists), collaborative-judgment (always), context-anchoring (always)
+
+**Two modes**: collaborative (default) — confirmation gate at each phase; autonomous — drafts everything silently, then presents the complete output for review.
+
+**How it works**:
+1. **Standards check**: Triggers `requirement-quality` atom, which loads `paths.requirement_standards` via config resolution (overlay/override/defaults). If no standards doc exists, states active defaults explicitly so the user knows what will govern the session, and recommends running `requirement-forge-refiner` as a one-time setup.
+2. **Session resume**: Scans `.lattice/requirements/` for existing documents. Classifies feature files as structurally incomplete (missing sections), quality-suspect (present but firing an atom anti-pattern), or complete. Surfaces each issue per file — user decides to fix, skip, or continue. Provides explicit re-entry points: add features to existing epic → Step 4; create new epic → Step 3; update a spec → Step 5.
+3. **Intake**: Opens with a single question asking whether existing material (PRDs, feature files, Jira exports, Confluence pages) exists before assuming blank-slate. If material is provided (file paths, pasted text, links), reads silently, checks for wrong granularity (ACs masquerading as features, epics masquerading as features) and contradictions (surfaces each conflict for user resolution before including in the hypothesis). In listening mode, prompts for a verbal description. Does not advance until the synthesis is confirmed. Single-feature fast path: if synthesis reveals only 1–3 features, offers to spec them directly without forcing a full epic pipeline.
+4. **Epic definition**: Proposes an epic list with descriptions and scope boundaries. Challenges epics that are too narrow or too broad. For large products (4+ epics or 15+ features), proposes a session focus to keep work tractable. Confirmation gate before feature breakdown begins.
+5. **Feature discovery (per epic)**: Proposes the feature breakdown per epic. Actively challenges misclassified items at this step — technical tasks, micro-behaviors (single ACs), and cross-epic features are flagged before the atom checklist runs. Confirmation gate per epic.
+6. **Feature spec (per feature)**: Two-level spec — frame (dependencies, problem statement, scope, boundary conditions) confirmed before scenarios. Scenarios specced one at a time in implementation order; failure paths explicitly probed after the first success scenario. Implementation slices proposed after all scenarios confirmed. `requirement-quality` Self-Validation Checklist and Anti-Pattern Scan run before writing each file — violations fixed, ambiguity signals surfaced via `collaborative-judgment`.
+7. **Write apex index**: Writes `.lattice/requirements/index.md` with epic/feature glossary, status, priority, and dependency table.
+
+The output is a `.lattice/requirements/` folder that `design-blueprint` can consume directly — the "requirement doc link" in each feature's context anchor document points here.
 
 ### design-blueprint
 
@@ -222,6 +246,7 @@ Refiners are optional. Atoms work with opinionated embedded defaults out of the 
 | **ddd-refiner** | `.lattice/standards/ddd-principles.md` — aggregate design, value object rules, bounded context constraints tailored to your domain | domain-driven-design atom |
 | **clean-code-refiner** | `.lattice/standards/clean-code.md` — team-specific coding standards, thresholds, and conventions | clean-code atom |
 | **review-refiner** | `.lattice/standards/review-standards.md` — atom loading rules, severity classification, report format, scope rules for the review molecule | review molecule |
+| **requirement-forge-refiner** | `.lattice/standards/requirement-standards.md` — epic/feature definitions, scenario structure, AC format, priority notation, status workflow, naming conventions tailored to the team's product process | `requirement-quality` atom (via config resolution); atom is composed by `requirement-forge` molecule |
 
 > **No refiner for test-quality and secure-coding** — these atoms have strong embedded defaults that work well for most teams. To customize them, write `.lattice/standards/test-quality.md` or `.lattice/standards/secure-coding.md` by hand and point to them via `paths.test_quality` / `paths.secure_coding` in `.lattice/config.yaml`.
 
@@ -234,7 +259,10 @@ See [docs/configuration.md](configuration.md) for the complete list of `.lattice
 There are two common entry paths:
 
 ```
-Planned feature work:
+Planned feature work (full pipeline):
+  lattice-init → requirement-forge → design-blueprint → code-forge → review
+
+Planned feature work (design already clear):
   lattice-init → design-blueprint → code-forge → review
 
 Refactor-driven work:
@@ -242,9 +270,12 @@ Refactor-driven work:
 
 Defect-driven work:
   bug-fix → review
+
+Codebase transformation:
+  plan-transformation → refactor-safely / code-forge (per slice)
 ```
 
-Feature work starts from requirements and produces an approved blueprint before implementation. Refactor work starts from structural pain and produces an approved target structure plus characterization tests before code reshaping begins. Bug work starts from a failing behavior and produces a failing reproduction before the repair. All paths converge on review for an independent quality pass.
+Feature work starts from requirements and produces an approved blueprint before implementation. `requirement-forge` is optional but recommended when the feature scope or problem is not yet fully clear — it produces structured feature specs that `design-blueprint` consumes directly. Refactor work starts from structural pain and produces an approved target structure plus characterization tests before code reshaping begins. Bug work starts from a failing behavior and produces a failing reproduction before the repair. All paths converge on review for an independent quality pass.
 
 Each stage both consumes and produces artifacts in `.lattice/` -- the pipeline is the engine that grows the living context layer. Context anchoring ties the stages together: the context document created during design carries the approved blueprint into implementation, captures approved refactor plans and bug root causes, informs review, and restores full context in any future session.
 
@@ -258,19 +289,26 @@ The `.lattice/` folder is the living context layer described earlier -- the proj
 
 ```
 .lattice/
-├── config.yaml          # Central config (only file at root)
-├── standards/           # Refiner-produced customization documents
+├── config.yaml              # Central config (only file at root)
+├── standards/               # Refiner-produced customization documents
 │   ├── knowledge-base.md
 │   ├── clean-code.md
 │   ├── architecture.md
 │   ├── ddd-principles.md
-│   └── review-standards.md
-├── context/             # Per-feature living documents
+│   ├── review-standards.md
+│   └── requirement-standards.md
+├── requirements/            # Feature specs produced by requirement-forge
+│   ├── index.md             # Epic/feature apex index
+│   └── features/
+│       └── <feature>.md
+├── context/                 # Per-feature living documents
 │   └── <feature>.md
-├── learnings/           # Accumulated review insights
+├── learnings/               # Accumulated review insights
 │   └── review-insights.md
-└── reviews/             # Review log for project health
-    └── review-log.md
+├── reviews/                 # Review log for project health
+│   └── review-log.md
+└── transform/               # Transformation plan and progress log
+    └── plan.md
 ```
 
 ### Subfolder Lifecycles
@@ -278,9 +316,11 @@ The `.lattice/` folder is the living context layer described earlier -- the proj
 | Subfolder | Purpose | Lifecycle |
 |-----------|---------|-----------|
 | `standards/` | Refiner-produced customization docs consumed by atoms via config resolution | Stable — set once during project setup, rarely changed |
+| `requirements/` | Epic/feature specs produced by requirement-forge. `index.md` is the apex; `features/` holds per-feature files | Per cycle — created when features are specced, updated when specs evolve. Feeds design-blueprint. |
 | `context/` | Per-feature living documents managed by context-anchoring | Per feature — created when feature starts, enriched during design and implementation |
 | `learnings/` | Accumulated review insights loaded by code-forge, refactor-safely, and bug-fix at session start | Append-only with pruning — capped at ~50 entries |
 | `reviews/` | Review log entries for project health visibility | Rolling window — capped at ~20 entries, older entries summarized |
+| `transform/` | Transformation plan and progress log produced by plan-transformation | One per project — updated as transformation slices complete |
 
 ### Convention
 

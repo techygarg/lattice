@@ -7,6 +7,7 @@ Scenario-driven answers to common questions practitioners have when adopting and
 ## Contents
 
 - [Getting Started](#getting-started)
+- [Requirements](#requirements)
 - [Architecture](#architecture)
 - [Language](#language)
 - [Customization](#customization)
@@ -35,7 +36,63 @@ Molecules work, but results will be generic. Without `/knowledge-priming-refiner
 
 ### What is the `.lattice/` folder and should I commit it to version control?
 
-The `.lattice/` folder is Lattice's living context layer. It holds `config.yaml` (your settings), `standards/` (refiner outputs like architecture and coding rules), `context/` (per-feature living documents capturing decisions and blueprints), `reviews/` (review log), and `learnings/` (review insights). Commit it — it's the shared source of truth for your team's standards and accumulates value over time.
+The `.lattice/` folder is Lattice's living context layer. It holds `config.yaml` (your settings), `standards/` (refiner outputs like architecture and coding rules), `requirements/` (epic and feature specs produced by requirement-forge), `context/` (per-feature living documents capturing decisions and blueprints), `reviews/` (review log), and `learnings/` (review insights). Commit it — it's the shared source of truth for your team's standards and accumulates value over time.
+
+---
+
+## Requirements
+
+### When should I use `/requirement-forge` vs. jumping straight to `/design-blueprint`?
+
+Use `/requirement-forge` when the feature scope, problem statement, or acceptance criteria are not yet clearly defined — it acts as a senior PM + BA pair that challenges assumptions, structures epics and features, and produces specs complete enough for `design-blueprint` to consume without further interviews. Go straight to `/design-blueprint` when the feature is already well-understood and you only need to make technical design decisions. When in doubt, run requirement-forge first — a well-specced feature produces a sharper blueprint.
+
+### What is the structure requirement-forge produces?
+
+Two artifacts in `.lattice/requirements/`: an `index.md` apex file (epic glossary with links to all features, their status, priority, and dependencies) and per-feature files in `features/`. Each feature file contains a problem statement, user/personas, scope (in-scope and out-of-scope), boundary conditions, assumptions, ordered scenarios (each with acceptance criteria), implementation notes, and open questions. If source documents were provided during intake, `index.md` also includes a Source Materials table (tracing which documents produced which features) and a Deferred Items section (content intentionally excluded from the current feature set). The feature file is the direct input to `design-blueprint`.
+
+### What is a scenario in requirement-forge?
+
+A scenario is a bounded situation the feature must handle — not a user story, not an acceptance criterion. A feature is broken into 2–5 scenarios; each scenario has 3–6 Given/When/Then acceptance criteria. Scenarios are ordered chronologically — the natural implementation sequence. This two-level structure prevents both scenario sprawl (too many ACs on a flat feature) and story fragmentation (too many fine-grained stories disconnected from the feature).
+
+### Do I need to run `/requirement-forge-refiner` before using requirement-forge?
+
+No — requirement-forge works with built-in defaults out of the box. When no standards document is found, the molecule tells you the active defaults (Given/When/Then ACs, P0/P1/P2 priority, max 5 scenarios per feature, max 6 ACs per scenario, standard status workflow) so you know what will govern the session. Run `/requirement-forge-refiner` when you want to tailor these to your team — custom AC format, alternative nomenclature (e.g., "use case" instead of "scenario"), different priority notation, or an extended status workflow. It is a one-time setup.
+
+### I have existing PRDs, feature lists, or Confluence pages. How does requirement-forge handle them?
+
+The molecule opens by asking whether you have existing material before assuming a blank slate. Provide file paths, paste text, or describe where documents live. It reads everything silently and runs a structured triage: classifies each document by type (product requirements, technical design, stakeholder wishlist, marketing — only product requirements and wishlists feed the pipeline), identifies overlaps between documents (same capability described differently), surfaces contradictions for your resolution, checks granularity (ACs mistaken for features, or broad epics mistaken for features), identifies gaps (implied behaviors never explicitly stated), and flags orphaned content (material that doesn't map to any feature — collected for the Deferred Items section of `index.md`). It then presents a structured hypothesis with proposed epics and features. You confirm or correct before anything is written.
+
+### My requirement-forge session ended before all features were specced. What happens next time?
+
+The molecule's first action is always to scan `.lattice/requirements/` for existing work. It classifies each feature file as complete, structurally incomplete (missing sections), or quality-suspect (present but with a spec quality issue flagged by the `requirement-quality` atom). It surfaces each issue one by one and asks whether to finish it, move on, or skip — no blanket restart. When you're done resolving incomplete features, it offers explicit re-entry points: add features to an existing epic, create a new epic, or update a specific spec.
+
+### I only want to spec one feature, not design a whole product. Does requirement-forge force me through a full epic structure?
+
+No. If your description or documents reveal only 1–3 features, the molecule offers a single-feature fast path: spec the feature directly, then write a minimal placeholder epic to `index.md` so the structure is in place for later expansion. You are not forced to define a complete epic before speccing a single feature.
+
+### How does requirement-forge connect to design-blueprint?
+
+Each feature file has a `Links: Design` field that gets updated when `design-blueprint` creates a context anchor doc for that feature. The `design-blueprint` molecule's context-anchoring step accepts a "requirement doc link" pointing to the feature file — it loads the problem statement and scope as starting context for the design session. The two molecules complement each other: requirement-forge defines WHAT and WHY; design-blueprint defines HOW.
+
+### What is the difference between collaborative and autonomous mode in requirement-forge?
+
+Collaborative mode (default) pauses for confirmation at every phase — epic list, feature list per epic, feature frame, and each scenario. The molecule proposes and you approve or correct before advancing. Autonomous mode runs all phases silently, drafts everything, then presents the complete output for review. Use collaborative when you want to shape the spec interactively; use autonomous when you want a draft quickly and prefer to review and edit in one pass. Autonomous mode pauses only for genuine blockers — contradictions with no reasonable resolution, missing domain knowledge, or scope so ambiguous that two valid structures exist.
+
+### Why does the feature file ask for personas? My PRD already says "for users."
+
+"Users" is too vague for good specs. Different user types produce different acceptance criteria — what an admin sees on login is not what a buyer sees. The molecule pushes for specific roles (buyer, seller, admin, guest) so each scenario's ACs are verifiable for a concrete user type. If a feature genuinely serves all user types identically, state that explicitly — the persona section still forces you to confirm it rather than silently assume.
+
+### My feature has assumptions that might be wrong. How does requirement-forge handle them?
+
+Feature files include an explicit Assumptions section — statements the team proceeds with as true without full validation. The `requirement-quality` atom checks for hidden assumptions (preconditions buried in ACs without being documented) and treats them as an anti-pattern. When an assumption reads like it could be a requirement ("users will have verified emails" — is that an assumption or a feature to build?), the atom flags it as an ambiguity signal for you to decide.
+
+### What happens to content from my source documents that doesn't map to any feature?
+
+It goes into the Deferred Items section of `index.md` — intentionally excluded content with reasons for deferral. Nothing disappears silently. Marketing copy, competitive positioning, out-of-scope ideas, and deferred feature suggestions are all tracked so stakeholders can verify that everything from the source material was either mapped to a feature or consciously set aside.
+
+### Can I use the `requirement-quality` atom on its own to validate specs I already wrote?
+
+Yes. The atom works standalone — it does not require the molecule. Point it at any feature spec file and it runs the 11-item self-validation checklist (problem statement, scope, personas, assumptions, scenarios, ACs, independence, etc.) and the 15-item anti-pattern scan. It will flag issues like vague problem statements, missing failure scenarios, persona-less specs, hidden assumptions, and wrong granularity. Use it as a quality gate before handing any spec to `design-blueprint`.
 
 ---
 
@@ -127,7 +184,7 @@ Add them to `.lattice/standards/knowledge-base.md`. The knowledge-priming atom l
 
 ### When should I use `/design-blueprint` vs. just starting with `/code-forge`?
 
-Use `/design-blueprint` when the feature involves real design decisions — new components, cross-layer interactions, API contracts, or anything where getting the structure wrong is costly to fix. Go straight to `/code-forge` for small, well-understood changes where the design is already clear. When in doubt, blueprint first — it takes minutes and prevents larger refactors later.
+Use `/design-blueprint` when the feature involves real design decisions — new components, cross-layer interactions, API contracts, or anything where getting the structure wrong is costly to fix. Go straight to `/code-forge` for small, well-understood changes where the design is already clear. When in doubt, blueprint first — it takes minutes and prevents larger refactors later. If the feature itself is not yet well-defined, start with `/requirement-forge` before `/design-blueprint`.
 
 ### What is the difference between `/refactor-safely` and just refactoring directly?
 
