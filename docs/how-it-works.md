@@ -52,7 +52,7 @@ All skills and their invocation commands. Invoke any skill in your AI tool's cha
 | refactor-safely | `/refactor-safely` | Restructures existing code without changing observable behavior; uses characterization tests as safety net |
 | bug-fix | `/bug-fix` | Investigates, reproduces with a failing test, then applies minimal safe repair |
 | review | `/review` | Structured delta-scoped code review with severity-ordered findings; captures learnings for future sessions |
-| plan-transformation | `/plan-transformation` | Whole-codebase architectural transformation planning — agrees current and target architecture, produces ordered slice backlog |
+| architecture-compass | `/architecture-compass` | Architectural thinking partner for existing repositories — scans codebase, runs structured interview, agrees current state and recommended direction, produces insights document |
 
 ### Refiners — invoke to produce project-specific standards
 
@@ -147,7 +147,7 @@ Run once per project. If Lattice is already fully configured, acknowledges it an
 
 Collaboratively forges feature specifications as a senior PM + BA pair. This is the upstream molecule in the pipeline — it produces the feature specs that `design-blueprint` consumes.
 
-**Composes**: requirement-quality (always), knowledge-priming (conditional: when a codebase exists), collaborative-judgment (always), context-anchoring (always)
+**Composes**: requirement-quality (always), knowledge-priming (conditional: when a codebase exists), collaborative-judgment (always)
 
 **Two modes**: collaborative (default) — confirmation gate at each phase; autonomous — drafts everything silently, then presents the complete output for review.
 
@@ -217,6 +217,23 @@ Restructures existing code without changing externally observable behavior. This
 4. **Refactor in approved slices**: Applies the structural changes in small, reviewable steps, keeping the characterization tests green and loading architecture/DDD/security atoms only when the refactor touches those concerns.
 5. **Verify and capture**: Confirms both behavior preservation and structural improvement, then records the approved target structure, migration choices, and deferred debt in the living context. Recommends `/review` for broad or risky refactors.
 
+### architecture-compass
+
+An architectural thinking partner for existing repositories. Orients a team by agreeing on the current architectural state and a recommended direction — before any code changes begin.
+
+**Composes**: knowledge-priming (always), architecture (always), domain-driven-design (conditional: strategic only, when domain complexity warrants), collaborative-judgment (always)
+
+**Scoped to one repository, module, or folder.** Does not execute transformation — it orients.
+
+**How it works**:
+1. **Load or resume**: Checks for an existing `.lattice/insights/architecture.md`. If found, reads the Session Status table and resumes from the earliest incomplete phase. If not, starts fresh.
+2. **Silent scan**: Reads the codebase strategically (15–25 targeted reads). Performs an archaeology pass (dead code, duplicates, hidden coupling) and identifies seams and their viability. Forms a hypothesis: is the problem architectural drift (eroded intent) or architectural mismatch (wrong pattern for the domain)?
+3. **Four-act interview**: Runs a short, adaptive interview informed by the scan. Acts: Burning Platform (why now), History (how you got here, what failed), Vision (what you want to be able to do), Guardrails (what cannot change). Vision answers are architectural inputs — they directly shape the recommended direction.
+4. **Current architecture agreement**: Presents the scan findings as a structured map with a Mermaid diagram. Asks the team to correct or confirm. Does not advance until explicitly agreed.
+5. **Recommended direction**: Proposes a target architectural direction tailored to this codebase — not a generic template. Includes a target diagram, annotated folder tree, and (when applicable) a bounded context map. Minimum viable direction principle: proposes the simplest structure that resolves the stated pain. Does not advance until explicitly agreed. Valid stopping point — session can end here.
+6. **Gap assessment and first moves**: Derives the structural delta (must change / should change / defer / leave alone) and identifies 2–3 first moves with molecule guidance and success criteria.
+7. **Write insights document**: Produces `.lattice/insights/architecture.md` — a progressive document that builds as the session advances. Complete enough that a future session or new team member can resume without re-briefing.
+
 ### review
 
 A structured, delta-scoped code review that loads atoms conditionally based on what changed. Supports optional process configuration via the review-refiner.
@@ -271,8 +288,8 @@ Refactor-driven work:
 Defect-driven work:
   bug-fix → review
 
-Codebase transformation:
-  plan-transformation → refactor-safely / code-forge (per slice)
+Architectural orientation (existing codebase):
+  architecture-compass → refactor-safely / design-blueprint / code-forge (per first move)
 ```
 
 Feature work starts from requirements and produces an approved blueprint before implementation. `requirement-forge` is optional but recommended when the feature scope or problem is not yet fully clear — it produces structured feature specs that `design-blueprint` consumes directly. Refactor work starts from structural pain and produces an approved target structure plus characterization tests before code reshaping begins. Bug work starts from a failing behavior and produces a failing reproduction before the repair. All paths converge on review for an independent quality pass.
@@ -307,8 +324,8 @@ The `.lattice/` folder is the living context layer described earlier -- the proj
 │   └── review-insights.md
 ├── reviews/                 # Review log for project health
 │   └── review-log.md
-└── transform/               # Transformation plan and progress log
-    └── plan.md
+└── insights/                # Architectural insights produced by architecture-compass
+    └── architecture.md
 ```
 
 ### Subfolder Lifecycles
@@ -320,7 +337,7 @@ The `.lattice/` folder is the living context layer described earlier -- the proj
 | `context/` | Per-feature living documents managed by context-anchoring | Per feature — created when feature starts, enriched during design and implementation |
 | `learnings/` | Accumulated review insights loaded by code-forge, refactor-safely, and bug-fix at session start | Append-only with pruning — capped at ~50 entries |
 | `reviews/` | Review log entries for project health visibility | Rolling window — capped at ~20 entries, older entries summarized |
-| `transform/` | Transformation plan and progress log produced by plan-transformation | One per project — updated as transformation slices complete |
+| `insights/` | Architectural insights document produced by architecture-compass | One per project — updated as direction evolves |
 
 ### Convention
 

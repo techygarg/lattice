@@ -13,7 +13,7 @@ body:
         - docs/configuration.md
         - docs/framework-intelligence.md
         - docs/collaborative-judgment.md
-        - docs/plan-transformation.md
+        - docs/architecture-compass.md
         - docs/origin.md
         - CONTRIBUTING.md
         - A skill's SKILL.md file
