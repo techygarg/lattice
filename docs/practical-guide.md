@@ -208,39 +208,39 @@ Inside-out means code-forge implements from the innermost layer outward: domain/
 
 ### My codebase has significant architectural debt. Where do I start?
 
-Run `/plan-transformation`. It scans the codebase, conducts a short targeted interview, then leads a collaborative session to agree on the current architecture and a target architecture. The output is `.lattice/transform/plan.md` — a living document with an agreed current state, agreed target state, and an ordered slice backlog. Once the plan exists, each slice is executed using `/refactor-safely` (for moving existing code) and `/code-forge` (for writing new code in the new structure).
+Run `/architecture-compass`. It scans the repository, conducts a short targeted interview, then leads a collaborative session to agree on the current architectural state and a recommended direction. The output is `.lattice/insights/architecture.md` — an insights document capturing what was found, what was agreed, and what to do first. The first moves in the document guide which existing molecules to use next: `/refactor-safely` for moving existing code, `/design-blueprint` + `/code-forge` for introducing new structures.
 
-### What does `/plan-transformation` actually produce?
+### What does `/architecture-compass` actually produce?
 
-A single document at `.lattice/transform/plan.md` with eight sections: codebase identity, archaeology findings (dead code, duplicates, hidden coupling), domain map, current architecture with dependency diagram, target architecture with diagram and annotated folder tree, gap analysis, transformation strategy, and an ordered slice backlog. Each slice specifies scope, structural change, pre-conditions, what the system can still do after the slice, risk level, and success criteria.
+A single document at `.lattice/insights/architecture.md` with: repository identity, why the team is doing this (from the interview), archaeology findings (dead code, duplicates, hidden coupling), domain map, current architecture with Mermaid diagram, recommended direction with diagram and annotated folder tree, gap assessment, and first moves (2–3 structural decisions with molecule guidance). Not a full execution plan — an orientation document.
 
-### How long does a planning session take?
+### How long does a session take?
 
-Plan for at least one focused session. The scan and interview are fast. The two agreement rounds — current state and target architecture — take longer than most teams expect. The current state agreement in particular surfaces things the team assumed were intentional but are actually drift, and vice versa. That reconciliation is the real work of the session. The slice backlog can be built in a follow-up session if needed — reaching current + target architecture agreement is itself a complete and valuable output.
+Plan for one focused session of 2–3 hours. The scan and interview are fast. The two agreement rounds — current architecture and recommended direction — take longer than most teams expect. The current state agreement in particular surfaces things the team assumed were intentional but are actually drift, and vice versa. The gap assessment and first moves can be built in a follow-up session — reaching current + direction agreement is itself a complete and valuable output.
 
-### The AI proposed a target architecture that feels too simple. Should I push for more?
+### The AI proposed a direction that feels too simple. Should I push for more?
 
-Only if you have a specific reason. The molecule is designed to propose the minimum viable target — the simplest structure that resolves the stated pain. Teams consistently over-correct when looking at messy code, designing a target that looks impressive but requires six months before anything improves. The test: does each transformation slice leave the system measurably better than before? If a more ambitious target only pays off at the very end, it is the wrong target. Push for more complexity only when you have a concrete reason, not because simplicity feels unsatisfying.
+Only if you have a specific reason. The molecule is designed to propose the minimum viable direction — the simplest structure that resolves the stated pain. The test: can the team take the first move this week? A direction that only pays off after six months of work is wrong. Push for more complexity only when you have a concrete reason tied to the actual pain, not because simplicity feels unsatisfying.
 
-### I tried transforming this codebase before and it stalled. Will this be different?
+### I tried improving this codebase before and it stalled. Will this be different?
 
-The planning interview explicitly asks about previous failed attempts. That question is the most important one in the session — previous failures reveal specific blockers (technical, organisational, or political) that will stop this attempt too unless the plan accounts for them. Whatever stopped the last attempt needs to be named in the plan document and addressed in the transformation strategy before the first slice runs.
+The interview explicitly asks about previous failed attempts. That is the most important question in the session — previous failures reveal specific blockers (technical, organisational, or political) that will stall this attempt too unless the insights document accounts for them. Whatever stopped the last attempt needs to be named and addressed in the recommended direction before any work begins.
 
-### What is the difference between `/plan-transformation` and `/refactor-safely`?
+### What is the difference between `/architecture-compass` and `/refactor-safely`?
 
-`/refactor-safely` operates at a bounded, specific scope — one module, one component, one known structural problem. It assumes you already know what needs to change and why. `/plan-transformation` operates at the whole-codebase level — it discovers what needs to change, agrees on a target state, and produces a prioritised execution plan. Use `/plan-transformation` when you need a shared direction across the codebase. Use `/refactor-safely` when you have a specific, bounded improvement to make — including executing individual slices from a transformation plan.
+`/refactor-safely` operates at a bounded, specific scope — one module, one known structural problem. It assumes you already know what needs to change and why. `/architecture-compass` operates at the repository level — it helps the team agree on where the architecture is and what direction it should move. Use `/architecture-compass` when the team needs shared orientation. Use `/refactor-safely` when you have a specific, bounded improvement to make — including the first moves from an architecture-compass session.
 
-### Can I run `/plan-transformation` on a codebase that already has `.lattice/` config?
+### Can I run `/architecture-compass` on a codebase that already has `.lattice/` config?
 
-Yes — and it will be better for it. If `.lattice/standards/architecture.md` exists (from running `/architecture-refiner`), the molecule uses it as the lens for the architectural audit and as input to the target architecture proposal. If `.lattice/standards/knowledge-base.md` exists, the molecule loads it to ground the codebase identity. If neither exists, the molecule infers defaults from the scan and offers to run `/lattice-init` first.
+Yes — and it will produce sharper output. If `.lattice/standards/architecture.md` exists (from `/architecture-refiner`), the molecule uses it as the audit lens and as input to the recommended direction. If `.lattice/standards/knowledge-base.md` exists, it loads it for codebase identity. If neither exists, it infers defaults from the scan and offers to run `/lattice-init` first.
 
-### The plan document says the target architecture is a hypothesis. Does that mean it will change?
+### The insights document says the recommended direction is the best current understanding. Does that mean it will change?
 
-Yes, and that is expected. No transformation plan survives contact with the codebase fully intact. Early slices surface hidden coupling, contested domain assumptions, and structural surprises that change the understanding of later ones. A plan that presents itself as authoritative gets abandoned the first time reality diverges. A plan framed as a hypothesis gets updated. Update the plan document when execution reveals new information — that is what the Progress Log section is for.
+Yes, and that is expected. The direction is a hypothesis based on what is known at the time of the session. As first moves complete, the team learns things that refine the direction. Update the document when that happens — the session status table tracks what is agreed and when. A document framed as a living hypothesis gets updated and trusted. One framed as authoritative gets abandoned when reality diverges.
 
-### We have a large codebase. Will `/plan-transformation` try to read everything?
+### We have a large codebase. Will `/architecture-compass` try to read everything?
 
-No. The molecule uses a strategic scanning protocol: directory tree, dependency manifests, architecture documents, import patterns via grep, entry points, interface files, and one representative file per top-level module — roughly 15–25 targeted reads total. It reads for architectural signal, not for completeness. Full method implementations, test files, generated code, and vendor directories are skipped entirely. The scan is enough to form a reliable architectural hypothesis on any codebase size.
+No. The molecule uses a strategic scanning protocol: directory tree, dependency manifests, architecture documents, import patterns via grep, entry points, interface files, and one representative file per top-level module — roughly 15–25 targeted reads total. Full method implementations, test files, generated code, and vendor directories are skipped. The scan extracts architectural signal, not completeness.
 
 ---
 

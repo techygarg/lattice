@@ -10,7 +10,7 @@
     {
       "name": "lattice",
       "description": "Composable AI skills covering the full software delivery lifecycle — for backend engineers, frontend engineers, QA, BAs, and more. Install once, invoke the skills you need.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "source": "./",
       "category": "development",
       "homepage": "https://github.com/techygarg/lattice"

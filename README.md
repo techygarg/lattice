@@ -36,7 +36,7 @@ See [How It Works](docs/how-it-works.md) for the full skill inventory and mechan
 
 ## The Pipeline
 
-Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` → `code-forge` → `review`, with `refactor-safely` and `bug-fix` covering structural and defect-driven work. `requirement-forge` starts the pipeline — it acts as a senior PM + BA pair to produce structured feature specs in `.lattice/requirements/` that feed directly into `design-blueprint`. For teams with existing codebases, `plan-transformation` sits before the pipeline — it analyses architectural drift, agrees a target architecture, and produces a slice backlog that feeds into `refactor-safely` and `code-forge` for execution. Each stage consumes and produces artifacts in `.lattice/`, growing the living context layer.
+Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` → `code-forge` → `review`, with `refactor-safely` and `bug-fix` covering structural and defect-driven work. `requirement-forge` starts the pipeline — it acts as a senior PM + BA pair to produce structured feature specs in `.lattice/requirements/` that feed directly into `design-blueprint`. For teams with existing codebases, `architecture-compass` sits before the pipeline — it scans the repository, runs a structured interview, and produces an agreed architectural direction that orients the team before any code changes begin. Each stage consumes and produces artifacts in `.lattice/`, growing the living context layer.
 
 ![Feature Lifecycle Pipeline](docs/image/image5.png)
 
@@ -61,7 +61,7 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
 
    > **Try it immediately.** The repo includes `sample/` — a realistic .NET 8 User Service spec with requirements, domain concepts, and constraints already written. Copy the `sample/` folder contents into any empty directory and follow the steps below.
 
-2. **Run `/lattice-init`** in your AI tool's chat — scans the project, suggests refiners in priority order, creates `.lattice/config.yaml`. All skill commands (`/lattice-init`, `/design-blueprint`, etc.) are typed in the AI chat, not the terminal.
+2. **Run `/lattice-init`** in your AI tool's chat — scans the project, suggests refiners in priority order, creates `.lattice/config.yaml`. All skill commands (`/lattice-init`,`/requirement-forge`, `/design-blueprint`, `/code-forge`, etc.) are typed in the AI chat, not the terminal.
 
 3. **Spec** *(optional but recommended)* — `/requirement-forge` acts as a senior PM + BA pair to define epics and feature specs before any design begins. Accepts existing PRDs, feature lists, or a verbal description. Produces `.lattice/requirements/` as direct input to design-blueprint.
 
@@ -76,7 +76,7 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
 - [Origin Story](docs/origin.md) — why Lattice exists, how five collaboration patterns became an installable framework, and the design philosophy behind it
 - [How It Works](docs/how-it-works.md) — full skill inventory, composability mechanics, atoms/molecules/refiners in depth, the pipeline
 - [Practical Guide](docs/practical-guide.md) — scenario-driven Q&A: getting started, customization, workflow, transformation, team usage, troubleshooting
-- [Plan Transformation](docs/plan-transformation.md) — the transformation hypothesis: why it exists, what to expect, and how the planning session works
+- [Architecture Compass](docs/architecture-compass.md) — the architectural thinking partner: why it exists, what to expect, and how a session works
 - [Configuration Reference](docs/configuration.md) — every `.lattice/config.yaml` key documented
 - [Framework Intelligence](docs/framework-intelligence.md) — verification passes, feedback loops, AI compliance techniques
 - [Collaborative Judgment](docs/collaborative-judgment.md) — why AI should ask on genuine judgment calls and how it works at runtime

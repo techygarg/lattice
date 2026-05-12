@@ -1,6 +1,7 @@
 # Private AI assistant memory and project state
 CLAUDE.md
 .claude/
+.github/skills/
 
 # Private strategic knowledge base (internal use only)
 knowledge-base/

@@ -30,7 +30,7 @@ body:
         - refactor-safely (molecule)
         - bug-fix (molecule)
         - review (molecule)
-        - plan-transformation (molecule)
+        - architecture-compass (molecule)
         - requirement-forge (molecule)
         - knowledge-priming-refiner (refiner)
         - language-idioms-refiner (refiner)
