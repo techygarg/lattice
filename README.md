@@ -82,6 +82,10 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
 - [Collaborative Judgment](docs/collaborative-judgment.md) — why AI should ask on genuine judgment calls and how it works at runtime
 - [The Article Series](https://martinfowler.com/articles/reduce-friction-ai/) — the five collaboration patterns Lattice operationalizes (martinfowler.com)
 
+## Dev Skills
+
+Helper skills for creating and maintaining Lattice itself — see [`dev-skills/`](dev-skills/).
+
 ## License
 
 MIT
