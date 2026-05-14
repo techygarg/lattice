@@ -28,13 +28,15 @@ Default ship with skill. Opinionated best practice. Work out of box. Override on
 STOP after generate each component. Verify ALL before proceed. If check clearly fail, fix before present. If judgment call with multiple valid approach (see Ambiguity Signals), flag it — present options and reasoning.
 
 1. **SINGLE RESPONSIBILITY**: Describe each function without "and"? If not → extract separate function.
-2. **SIZE**: Each function under ~20 lines? If not → extract sub-operation into named function.
-3. **COMPLEXITY**: Cyclomatic complexity under ~10 per function? If not → flatten with guard clause, extract branch.
+2. **SIZE**: Each function under size threshold per loaded doc (~20 lines default)? If not → extract sub-operation into named function.
+3. **COMPLEXITY**: Cyclomatic complexity under threshold per loaded doc (~10 default)? If not → flatten with guard clause, extract branch.
 4. **ABSTRACTION LEVEL**: Each function operate at one level? If high-level mixed with low-level → extract detail.
 5. **NAMING**: Function/variable name reveal intent without context? If not → rename self-documenting.
-6. **PARAMETERS**: Four or fewer parameter? If not → group into object.
+6. **PARAMETERS**: Parameter count under threshold per loaded doc (4 default)? If not → group into object.
 7. **PRIMITIVE OBSESSION**: String/number/boolean clearer as named type? If so → introduce parameter object or typed wrapper.
 8. **ERROR HANDLING**: Every fail-able operation have explicit handling with actionable message? Handled at right level?
+
+**Project-specific checks:** If loaded doc (from Config Resolution) contains a Validation Checklist section (§10), apply those checks as additional project-specific validation after the checklist above.
 
 ## Active Anti-Pattern Scan
 
