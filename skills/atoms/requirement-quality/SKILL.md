@@ -24,17 +24,26 @@ Custom standards produced by `requirement-forge-refiner` → consumed by this at
 
 STOP before writing any feature file. Verify ALL checks. If check clearly fails → fix before writing. If judgment call (see Ambiguity Signals) → flag and surface options.
 
+**If validating an existing spec** (not generating), same checks apply — "fix before writing" means "fix before marking approved." Present findings as a quality report with severity.
+
+**Draft vs approved enforcement**: For `status: draft` — items 1, 2, 10 are required (core framing must be right from the start). Items 3–9, 11, 12 are advisories: flag findings but do not block write. For `status: approved` — all items required, no exceptions.
+
 1. **PROBLEM STATEMENT**: Names a specific user need or pain — not a solution in disguise, not a vague improvement? Identifies WHO has the problem (specific user type or role, not "users")? "We need a dashboard" is a solution. "Users cannot track their order status after checkout" is a need — but which users? Buyers? Admins?
 2. **SCOPE**: Has explicit out-of-scope items — not just in-scope? An incomplete scope boundary is no boundary at all.
 3. **BOUNDARY CONDITIONS**: Feature-wide edge cases, system limits, and constraints documented?
 4. **ASSUMPTIONS**: Statements the team proceeds with as true are explicit — not buried in ACs or unstated? If an assumption proves wrong, affected scenarios are identifiable?
 5. **SCENARIO NAMES**: Each scenario has a verb-phrase name (sentence case) that describes the situation — not a feature name, not an AC?
-6. **AC FORMAT**: Each AC follows the agreed format (default: Given/When/Then)? Each has a clear pass/fail condition?
+6. **AC FORMAT**: Each AC follows the agreed format (default: Given/When/Then)? Each has a clear pass/fail condition? Pass/fail is clear when a tester can write an automated check without asking a clarifying question. Outcomes requiring interpretation ("responds", "handles", "works correctly") must be rewritten with specific, observable outcomes.
 7. **FAILURE COVERAGE**: At least one scenario covers a failure, error, or edge case — not all success paths?
 8. **SCENARIO COUNT**: Feature has no more than the agreed max (default: 5) scenarios? If at or over → challenge whether this is one feature or two.
 9. **AC COUNT**: Each scenario has no more than the agreed max (default: 6) ACs? If at or over → challenge whether this scenario is too broad.
-10. **INDEPENDENCE**: Feature is self-contained — no unresolved external unknowns required before design-blueprint can begin?
+10. **INDEPENDENCE**: Feature is self-contained — no unresolved external unknowns required before design-blueprint can begin? Check Open Questions section — any unresolved question affecting scope, behavior, or ACs is a blocker. Feature cannot pass this check with non-empty Open Questions unless each is marked non-blocking with a stated reason.
 11. **IMPLEMENTATION NOTES**: Slices ordered chronologically, at the "what" level — no technical implementation specifics?
+12. **COHERENCE**: Do all scenarios address the same user need stated in the Problem Statement? If a scenario serves a different need, it belongs in a separate feature.
+
+Project-specific checks: if loaded doc contains a validation checklist section, apply those after base checklist.
+
+When all checks pass: output "Spec passes requirement-quality — ready for write." (pre-write mode) or "Spec passes requirement-quality — status: approved." (validation mode).
 
 ## Active Anti-Pattern Scan
 
@@ -55,10 +64,12 @@ After checklist, scan for these. If found → fix or challenge before writing.
 - [ ] **Technical task as feature**: feature name or problem statement describes infrastructure, tooling, or engineering work ("Set up database schema", "Configure CI/CD", "Write unit tests") → not a product feature; redirect to implementation layer, challenge what user need it serves
 - [ ] **Wrong granularity — too fine**: feature is actually a single acceptance criterion or a micro-behavior ("Show error on wrong password") → merge into a larger feature that represents the complete user-facing behavior
 - [ ] **Wrong granularity — too coarse**: feature encompasses an entire product area with 10+ implicit behaviors ("User management") → challenge and decompose into discrete independently-implementable features
+- [ ] **Generic slices**: Implementation notes use placeholder labels that apply to any feature ("Core functionality", "Error handling", "Edge cases") → each slice must name the specific behavior being built for THIS feature
+- [ ] **Undefined domain terms**: Scenarios use specialized/domain terms not defined anywhere in the spec → add inline definitions or a Glossary section for terms not obvious to a new team member
 
 ## Ambiguity Signals
 
-Multiple valid outcomes. Present options, not silent choice. Use `framework:collaborative-judgment` to surface these.
+Multiple valid outcomes. Flag it — present the options and reasoning. If `framework:collaborative-judgment` is loaded, use it to structure the presentation.
 
 - **Feature boundary**: two related behaviors — one feature or two? Depends on whether each can be independently designed. If Behavior A requires knowing Behavior B's design to spec its own ACs, they are one feature.
 - **Scenario granularity**: two related situations — one scenario with more ACs, or two separate scenarios? If both situations share the same precondition and trigger, group. If they differ in either → separate scenarios.
