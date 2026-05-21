@@ -1,6 +1,6 @@
 {
   "name": "lattice",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Composable AI skills framework covering the full software delivery lifecycle — design, architecture, implementation, testing, and review.",
   "author": {
     "name": "Rahul Garg"

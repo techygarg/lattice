@@ -49,9 +49,9 @@ Five levels, abstract→concrete. Each level surface decision category that othe
 
 **Purpose**: Define interfaces, method signatures, type definitions that formalize interactions. Handoff artifact -- spec that implementation built against.
 
-**Output format**: Typed interfaces, method signatures, type definitions. Language-appropriate format (TypeScript interfaces, Java interfaces, Python protocols, etc.). No function bodies -- signatures and types only. See `./references/methodology-detail.md` for interface definition patterns.
+**Output format**: Typed interfaces, method signatures, type definitions. Language-appropriate format (TypeScript interfaces, Java interfaces, Python protocols, etc.). Use the project's primary language; if ambiguous, ask before writing contracts. No function bodies -- signatures and types only. Include error/failure types where interactions can fail. See `./references/methodology-detail.md` for interface definition patterns.
 
-**Boundary**: No implementation logic. If function body appear -- belong Level 5. Contracts reflect design agreed Levels 1-3, nothing more. Utility functions, helper methods, convenience wrappers not in design not belong here.
+**Boundary**: No implementation logic. If function body appear -- belong Level 5. Contracts reflect design agreed Levels 1-3, nothing more. Utility functions, helper methods, convenience wrappers not in design not belong here. Every Level 3 interaction must map to at least one interface or type; no new interactions may appear here that weren't agreed at Level 3.
 
 **Checkpoint**: "Does this Level 4 (Contracts) look correct? Should I proceed to Level 5 (Implementation)?"
 
@@ -86,22 +86,35 @@ Not every task need all five levels. Framework scale to complexity work -- tool 
 
 When start later level, earlier levels implicitly agreed -- scope and components obvious enough not need explicit alignment.
 
+## Entry Assessment
+
+Before producing first level output, state the entry level and rationale:
+
+"Based on [complexity signal], I'll start at Level [N] ([name]). Earlier levels are implicitly agreed — [brief statement of what's assumed]. Want to start here or go broader?"
+
+Wait for confirmation before producing first level output. If user disagrees, adjust entry point.
+
 ## Level Completion Protocol
 
 At end each level:
 
 1. Present level output in format specified that level (numbered list, diagram, sequence flow, or interfaces).
-2. Ask gating question: "Does this Level [N] look correct? Should I proceed to Level [N+1]?"
-3. Wait explicit approval before advance. Not proceed on silence or ambiguity.
-4. If user redirect, correct, or raise concerns -- revise current level. Not advance until revision approved.
+2. Self-check: is this simpler than it could be? If a simpler alternative exists, present it alongside: "I have a simpler option — [alternative]. Which do you prefer?"
+3. Ask gating question: "Does this Level [N] look correct? Should I proceed to Level [N+1]?"
+4. Wait explicit approval before advance. Not proceed on silence or ambiguity.
+5. If user redirect, correct, or raise concerns -- revise current level. Not advance until revision approved.
 
 Each level constrain decision space for next. Skip level or advance without approval mean constraints not established, later levels drift.
+
+**Out-of-level input**: If user provides detail belonging to a later level (e.g., interaction detail during Level 2), acknowledge it — "Good thinking, I'll capture that at Level [N] ([name])" — and continue the current level. Do not ignore or reject.
+
+**Backtracking**: If a later level reveals a gap in an earlier level (e.g., missing component discovered during Level 3 interactions), name the gap, propose revision to the earlier level, get approval for the revision, then resume the current level.
+
+**Scope expansion at Level 5**: If user requests new scope during implementation, assess impact. If it affects components or interactions, propose a mini-loop back to the affected level for agreement. If purely implementation detail (logging, config), incorporate directly.
 
 **Mid-level exit**: If user say "skip to code" or "just implement it" before design complete, acknowledge tradeoff before proceed: "Skipping Level [N] means [what hasn't been aligned] -- I'll flag any design gaps I notice as I implement. Proceeding now." Then implement. Not refuse or block; note risk and move forward.
 
 ## Simplicity Check (Every Level)
-
-At end each level output, before ask gating question, ask: **"Is this simpler than it could be?"**
 
 Active push back on unnecessary complexity: capabilities beyond scope, components that could merge, interaction steps add no value, contracts with utility functions nobody requested. Present simpler alternative first. Let user choose add complexity rather than have remove it.
 

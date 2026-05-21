@@ -1,8 +1,12 @@
 ---
 name: context-anchoring
-description: "Manage per-feature living documents that capture decisions, constraints, and reasoning across AI sessions. Handles creating new context documents, loading existing ones, and enriching them with new decisions. Use when starting a new feature, resuming work, making technical decisions, resolving questions, or when context needs to persist across sessions. Use this skill whenever the user mentions 'load context', 'update context', 'context doc', 'decisions', 'continue where we left off', 'what did we decide', or 'capture this decision'."
+description: "Manage per-feature living documents that capture decisions, constraints, and reasoning across AI sessions during active development. Scoped to feature-level work — design, implementation, bugfix, refactor — not for codebase-wide assessments or product-wide specifications (those define their own document lifecycles). Handles creating new context documents, loading existing ones, and enriching them with new decisions. Use when starting a new feature, resuming work, making technical decisions, resolving questions, or when context needs to persist across sessions. Use this skill whenever the user mentions 'load context', 'update context', 'context doc', 'decisions', 'continue where we left off', 'what did we decide', or 'capture this decision'."
 ---
 # Context Anchoring
+
+## Scope
+
+> Feature-level only — anchors decisions as a feature flows from design → implementation → bugfix → refactor.
 
 ## Config Resolution
 

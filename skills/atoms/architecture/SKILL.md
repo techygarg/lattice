@@ -39,13 +39,8 @@ Skill support two mode: **clean architecture** (default) and **custom architectu
 
 If `paths.language_idioms` exist in config, read **"Dependency Management"** section and adapt dependency direction enforcement to language idioms (e.g., Go interface-at-consumer, Java DI containers, Rust trait bounds). Language idioms take precedence over pseudocode defaults.
 
-## Universal Structural Checks
+## Enforcement
 
-STOP after generate each component. Regardless mode, verify universal principle before proceed:
+STOP after generate each component. Read **Self-Validation Checklist** and **Anti-Pattern Scan** from loaded enforce rule (clean-architecture.md or custom-architecture.md) and apply.
 
-1. **LAYER PLACEMENT**: Each class/module in correct layer per loaded doc?
-2. **DEPENDENCY DIRECTION**: All source dependency follow direction rule in loaded doc?
-3. **BOUNDARY DATA**: Data cross layer use pattern describe in loaded doc?
-4. **SINGLE LAYER**: Each class belong exactly one layer? No span multiple concern across layer.
-
-Then read **style-specific Self-Validation Checklist** and **Anti-Pattern Scan** from loaded enforce rule (clean-architecture.md or custom-architecture.md) and apply.
+**Project-specific checks:** If architecture content doc (loaded in Step 3) contains a **Validation Checklist** section (§6), apply those checks as additional project-specific validation after the enforce rule checklist. These are team-customized checks produced by the architecture-refiner.

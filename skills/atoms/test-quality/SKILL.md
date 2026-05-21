@@ -23,12 +23,15 @@ Defaults ship w/ skill. Work out-of-box. Override only when team have different 
 STOP after gen each test. Check ALL before continue. If fail, fix. If ambiguous (see Ambiguity Signals), flag -- show options & reasoning.
 
 1. **AAA STRUCTURE**: arrange, act, assert separate w/ blank lines? Any logic (if/loop/try) in arrange or assert?
-2. **SINGLE BEHAVIOR**: Test verify one behavior? Name need "and"?
+2. **SINGLE BEHAVIOR**: Test verify one behavior per loaded doc (default: one behavior per test, name need "and" = split)?
 3. **ASSERTION QUALITY**: Assert observable behavior, not implementation? Specific enough catch regression?
 4. **ISOLATION**: Test depend other test output/effects? All mutable state per-test?
-5. **TEST NAME**: Name describe behavior, not method? Failure message clear?
-6. **TEST DATA**: Use builders/factories? Magic values → named constants?
-7. **MOCK BOUNDARIES**: Mock only at arch boundaries (I/O, external), not internal collab?
+5. **TEST NAME**: Name follow team convention per loaded doc (default: describe behavior, not method)? Failure message clear?
+6. **TEST DATA**: Complex arrange uses builders/factories? Magic values → named constants? (Inline literals fine for trivial tests.)
+7. **MOCK BOUNDARIES**: Mock per loaded doc (default: only at arch boundaries — I/O, external — not internal collab)?
+8. **TEST CODE AS FIRST-CLASS**: Structured like production code? Shared constants at top, helpers extracted, no dead code, clear file organization?
+
+Project-specific checks: if loaded doc contains a validation checklist section, apply those after base checklist.
 
 ## Active Anti-Pattern Scan
 
@@ -50,6 +53,27 @@ Multiple valid outcomes. Present options, not choose silent.
 - **Unit vs Integration**: Service coordinate components -- test isolate (mock) or real collab? Depend coupling & what verify.
 - **Mock Depth**: Mock direct depend or let call through? Over-mock test implementation; under-mock create slow/flaky.
 - **Test Granularity**: One test multi asserts vs multi tests one assert? When asserts verify facets same behavior, group ok.
+
+## Test Code as First-Class Code
+
+Test classes deserve same structural care as production code. They are living documentation -- readers spend as much time here as in source.
+
+**Treat test files like production classes:**
+- Shared constants and boundary values at top of file (named, not magic)
+- Shared builders/factories extracted to helpers -- not copy-pasted per test
+- Setup methods or fixtures for repeated arrange patterns
+- Logical grouping: related behaviors together (by feature, by scenario type)
+- Dead tests removed, not commented out
+- Refactoring applies: extract method when arrange is long, rename when intent unclear, move shared setup when duplicated
+
+**Refactoring opportunities to surface proactively:**
+- Multiple tests repeat same arrange → extract to builder or shared fixture
+- Same assertion pattern across tests → extract custom assertion helper
+- Test file grows beyond ~300 lines → split by behavior group
+- Constants scattered inline → collect at top with descriptive names
+- Deeply nested test structures → flatten with clear naming
+
+Write tests you would be proud to review. If test code is messy, team stops reading it. Unread tests become unmaintained. Unmaintained tests become liabilities.
 
 ## Core Principle
 

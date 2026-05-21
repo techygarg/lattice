@@ -25,9 +25,14 @@ STOP after gen each component. Read **Validation Checklist** section (§6) from 
 
 If loaded doc have no Validation Checklist section, surface warning:
 
-> "Your architecture document is missing a Validation Checklist section. Without it, the architecture atom cannot run style-specific post-generation verification. The 4 universal structural checks (layer placement, dependency direction, boundary data, single layer) still apply. Consider re-running `/architecture-refiner` to add a Validation Checklist."
+> "Your architecture document is missing a Validation Checklist section. Without it, the architecture atom cannot run style-specific post-generation verification. Consider re-running `/architecture-refiner` to add a Validation Checklist."
 
-Continue with universal checks from SKILL.md — partial enforcement better than no enforcement.
+Then apply these baseline structural checks as fallback — partial enforcement better than no enforcement:
+
+1. **LAYER PLACEMENT**: Each class/module in correct layer per loaded doc?
+2. **DEPENDENCY DIRECTION**: All source dependency follow direction rule in loaded doc?
+3. **BOUNDARY DATA**: Data cross layer use pattern describe in loaded doc?
+4. **SINGLE LAYER**: Each class belong exactly one layer? No span multiple concern across layer.
 
 ## Active Anti-Pattern Scan
 
