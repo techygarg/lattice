@@ -46,6 +46,26 @@ After checklist, scan these. If find, fix before present.
 - [ ] **Conditional Test Logic**: Test have if/loop/try -- test need own tests → Remove logic; use parameterized; let asserts fail natural
 - [ ] **Copy-Paste Tests**: Near-identical w/ small changes → Extract shared setup to builders; use parameterized
 
+## Class-Level Review
+
+Fire when: (1) completing all tests for a class — new or existing. (2) adding or editing any test in an existing class.
+
+STOP before present. Per-test checks verify individual quality. This review verifies the test suite covers the class contract.
+
+### Full review (new class or significant additions)
+
+1. **Behavior inventory** — list every public method/behavior in class under test. If class not available, ask user to enumerate.
+2. **Coverage matrix** — map each test → behavior it covers. Behaviors with zero tests → **blocking**. Do not present until user addresses gap or explicitly accepts it.
+3. **Error path check** — scan class under test for: explicit throws, conditional error branches, edge guards. For each found: does a test exercise this path? If not → flag by name. Zero-coverage error paths are blocking unless user explicitly accepts.
+4. **Behavioral duplication** — compare "then" clauses across all tests. Same observable outcome regardless of structural differences → flag as likely duplication. Name both tests.
+5. **Balance signal** — any behavior with tests but none covering a failure or edge case → surface as question, not hard failure: "`deleteUser` has 1 test (happy path only) — does it have error cases?"
+
+### Edit-scoped review (adding or changing one test in existing class)
+
+Run steps 3–5 only, scoped to the changed test:
+- Does this test duplicate the observable outcome of any existing test?
+- Does it cover a behavior or error path not previously covered?
+
 ## Ambiguity Signals
 
 Multiple valid outcomes. Present options, not choose silent.
