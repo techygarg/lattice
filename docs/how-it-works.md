@@ -38,7 +38,7 @@ All skills and their invocation commands. Invoke any skill in your AI tool's cha
 | knowledge-priming | `/knowledge-priming` | Loads project-specific context (tech stack, architecture, conventions) so all skills operate with project awareness |
 | design-first | `/design-first` | Structured design through 5 progressive levels before any code is written |
 | context-anchoring | `/context-anchoring` | Per-feature living documents that capture decisions and reasoning across sessions |
-| collaborative-judgment | `/collaborative-judgment` | Surfaces genuine judgment calls with structured options instead of silently assuming |
+| collaborative-judgment | `/collaborative-judgment` | Surfaces genuine judgment calls or missing/conflicting knowledge instead of silently assuming |
 | requirement-quality | `/requirement-quality` | Feature specification quality — completeness, scenario structure, AC verifiability, independence, and implementation slice quality |
 
 ### Molecules — invoke to run a full workflow
@@ -86,7 +86,7 @@ Not every atom applies to every piece of code. The distinction matters for both 
 - **clean-code** -- Every piece of code benefits from SRP, clear naming, managed complexity, and proper error handling.
 - **architecture** -- Defaults to clean architecture (layers, dependency direction) but supports any architectural style you document. Structural rules apply universally.
 - **knowledge-priming** -- Project context (tech stack, architecture, conventions) is always relevant. Without it, the AI defaults to generic assumptions.
-- **collaborative-judgment** -- Genuine judgment calls should be surfaced with options, not silently resolved. Composed by molecules alongside other atoms.
+- **collaborative-judgment** -- Genuine judgment calls and under-grounded uncertainty should be surfaced, not silently resolved. Composed by molecules alongside other atoms.
 
 **Conditionally apply:**
 - **domain-driven-design** -- Only when touching domain layer code. A controller or infrastructure adapter does not need aggregate boundary checks.
@@ -101,7 +101,7 @@ Four atoms serve different purposes than the code-quality atoms:
 - **knowledge-priming** is a context atom. It loads the project's identity -- tech stack, architecture overview, directory layout, trusted sources, and conventions -- so that all other skills operate with awareness of what the project actually is. Without it, the AI defaults to "the average of the internet." Unlike quality atoms, it has no embedded defaults -- every project's identity is unique. The knowledge base document is created by the `knowledge-priming-refiner` or written by hand.
 - **design-first** is a methodology atom, not a code quality atom. It guides structured thinking through 5 progressive levels (Capabilities → Components → Interactions → Contracts → Implementation) before any code is written. It prevents the AI from jumping straight to implementation.
 - **context-anchoring** is a persistence mechanism. It manages per-feature living documents that capture decisions, constraints, and reasoning across sessions. It solves the problem of AI context decay -- by message 30+, early decisions get contradicted unless they are written down.
-- **collaborative-judgment** is an ambiguity protocol. It ensures the AI surfaces genuine judgment calls with structured options instead of silently assuming. Each code-quality atom defines its own Ambiguity Signals (domain-specific gray areas); this atom defines how to present, batch, and resolve them. It becomes less active as the project's standards grow more specific. See [docs/collaborative-judgment.md](collaborative-judgment.md) for the full design rationale.
+- **collaborative-judgment** is an ambiguity protocol. It ensures the AI surfaces genuine judgment calls with structured options and stops on missing/conflicting grounding instead of silently assuming. Each code-quality atom defines its own Ambiguity Signals (domain-specific gray areas); this atom defines how to present, batch, clarify, and resolve them. It becomes less active as the project's standards grow more specific. See [docs/collaborative-judgment.md](collaborative-judgment.md) for the full design rationale.
 
 ### Config resolution
 

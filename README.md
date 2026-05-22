@@ -79,7 +79,7 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
 - [Architecture Compass](docs/architecture-compass.md) — the architectural thinking partner: why it exists, what to expect, and how a session works
 - [Configuration Reference](docs/configuration.md) — every `.lattice/config.yaml` key documented
 - [Framework Intelligence](docs/framework-intelligence.md) — verification passes, feedback loops, AI compliance techniques
-- [Collaborative Judgment](docs/collaborative-judgment.md) — why AI should ask on genuine judgment calls and how it works at runtime
+- [Collaborative Judgment](docs/collaborative-judgment.md) — why AI should ask on genuine judgment calls or missing/conflicting facts and how it works at runtime
 - [The Article Series](https://martinfowler.com/articles/reduce-friction-ai/) — the five collaboration patterns Lattice operationalizes (martinfowler.com)
 
 ## Dev Skills

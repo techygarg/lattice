@@ -8,7 +8,7 @@ AI coding assistants face genuine ambiguity constantly — a borderline SRP call
 
 The damage is subtle but cumulative. Five silent micro-assumptions produce code that feels "off" but the user can't articulate why. Undoing a woven-in assumption costs far more than making an informed choice upfront.
 
-This is the gap collaborative-judgment fills: **give the AI the intelligence to recognize when it's genuinely uncertain and surface that uncertainty to the user instead of guessing.**
+This is the gap collaborative-judgment fills: **give the AI the intelligence to recognize when it's genuinely uncertain or under-grounded and surface that uncertainty to the user instead of guessing.**
 
 ## What Intelligence This Atom Adds
 
@@ -20,6 +20,8 @@ Surface a decision only when all three are true: multiple valid approaches exist
 
 The confidence test: "I considered two or more approaches and neither is clearly better given this project's documented context." If true → surface. If false → decide and move on. An AI that asks about everything is as useless as one that asks about nothing.
 
+But not all uncertainty is a judgment call. Sometimes the issue is a **knowledge gap**: the AI cannot cite the source for a project-specific claim, is about to fill a local gap with generic prior, sees active sources that conflict, or knows one missing fact would collapse the decision. In those cases the right move is not to invent Option A / Option B. The right move is to inspect available evidence first, then ask a targeted clarification if the gap remains.
+
 ### Batching
 
 When the AI does need to ask, it should not interrupt for every single question:
@@ -27,6 +29,7 @@ When the AI does need to ask, it should not interrupt for every single question:
 - **During implementation**: batch per component — surface all judgment calls together before presenting the code.
 - **During design**: surface immediately — each design level constrains the next.
 - **During review**: note uncertainty inline with both interpretations.
+- **During missing/conflicting grounding**: surface immediately when the next step depends on the unresolved fact. Do not batch a blocker just to preserve flow.
 
 Escalation signal: if a single component produces more than 3 judgment calls, the project needs clearer standards, not more questions. Suggest running the relevant refiner instead.
 
@@ -63,17 +66,24 @@ Step 2: AI holds ALL instructions in one context window
 Step 3: Generate component (creative pass)
 
 Step 4: Run Self-Validation Checklists (verification pass)
-        ├─ Clearly fails    → fix silently
-        ├─ Clearly passes   → move on
-        └─ Judgment call    → recognized from Ambiguity Signals
-                            → checklist header says "flag it"
-                            → collected for batched presentation
+        ├─ Clearly fails         → fix silently
+        ├─ Clearly passes        → move on
+        ├─ Judgment call         → recognized from Ambiguity Signals
+        │                         → checklist header says "flag it"
+        │                         → collected for batched presentation
+        └─ Missing/conflicting
+           grounding             → inspect evidence first
+                                 → if still unresolved, ask targeted clarification
 
 Step 5: Present
-        ├─ Zero flagged  → code with compliance note
-        └─ 1+ flagged   → "Decision needed: [question]
-                            Option A: ... Option B: ...
-                            I lean toward [X] because [reason]."
+        ├─ Zero flagged      → code with compliance note
+        ├─ 1+ judgment calls → "Decision needed: [question]
+        │                      Checked: [sources]. Missing/conflicting: [fact]
+        │                      Option A: ... Option B: ...
+        │                      I lean toward [X] because [reason]."
+        └─ Knowledge gap     → "Clarification needed: [missing fact]
+                               Checked: [sources]
+                               Need from you: [targeted question]"
 
 Step 6: User resolves → AI applies → continues
 ```
