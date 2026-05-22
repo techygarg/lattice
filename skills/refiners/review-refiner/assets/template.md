@@ -417,9 +417,9 @@ Customizable:
 - Entry length limit
 
 Fixed:
-- Insights must be append-only (no overwriting existing entries)
-- Insights must include a date for recency tracking
-- File path is .lattice/learnings/review-insights.md (configurable via config.yaml)
+- Operational learnings are managed by the learning-harvest atom (user-confirmed, never auto-written)
+- File path is .lattice/learnings/operational-learnings.md (configurable via paths.operational_learnings in config.yaml)
+- This section configures additional guidance the review molecule passes to learning-harvest during harvest
 
 Cross-section impact:
 - Capture criteria may reference severity levels from §2
@@ -428,23 +428,23 @@ Cross-section impact:
 
 ### File Location
 
-Append to `.lattice/learnings/review-insights.md`. Create the file with a `# Review Insights` heading if it doesn't exist.
+Managed by the `learning-harvest` atom at `.lattice/learnings/operational-learnings.md`. The review molecule invokes learning-harvest's Harvest behavior at session end — this section provides additional capture guidance.
 
 ### Entry Format
 
 ```
-- YYYY-MM-DD [Feature]: Pattern observed — actionable takeaway
+- YYYY-MM-DD [context] Pattern — actionable takeaway
 ```
 
-Each insight is ONE bullet point, max 2 lines.
+Each entry is ONE bullet point, max 2 lines. Organized by category in the operational learnings document.
 
 ### Capture Criteria
 
-Only capture patterns that would help future code generation — not every finding. A one-off typo is not an insight; "domain services keep doing repository work" is. Look for:
+Only propose patterns that would help future sessions — not every finding. A one-off typo is not a learning; "domain services keep doing repository work" is. Additional criteria to pass to learning-harvest:
 
 - Recurring patterns across reviews
 - Systematic violations (not one-off mistakes)
-- Patterns that code-forge can act on in future sessions
+- Patterns that any molecule can act on in future sessions
 
 ### Pruning Threshold
 

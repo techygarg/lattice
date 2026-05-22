@@ -11,12 +11,13 @@ Load these skills based on bug scope (see Steps 2 and 5 for when):
 
 1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) so fix match real project (always)
 2. `framework:context-anchoring` -- Load existing feature context doc when available, capture root cause + repair decisions for future (always)
-3. `framework:collaborative-judgment` -- Surface meaningful repair trade-offs instead of silent patch choice (always)
-4. `framework:clean-code` -- Keep fix focused, readable, minimal scope (always)
-5. `framework:test-quality` -- Create + validate failing regression test that proves bug exists + fix works (always)
-6. `framework:architecture` -- Validate layer placement, dependency direction, correct repair location (conditional)
-7. `framework:domain-driven-design` -- Validate invariants, aggregate boundaries, domain behavior when bug involves domain logic (conditional)
-8. `framework:secure-coding` -- Validate trust boundaries, input handling, authorization, injection safety when bug touches security-sensitive code (conditional)
+3. `framework:learning-harvest` -- Load prior operational learnings inform diagnosis; harvest new patterns at session end (always)
+4. `framework:collaborative-judgment` -- Surface meaningful repair trade-offs instead of silent patch choice (always)
+5. `framework:clean-code` -- Keep fix focused, readable, minimal scope (always)
+6. `framework:test-quality` -- Create + validate failing regression test that proves bug exists + fix works (always)
+7. `framework:architecture` -- Validate layer placement, dependency direction, correct repair location (conditional)
+8. `framework:domain-driven-design` -- Validate invariants, aggregate boundaries, domain behavior when bug involves domain logic (conditional)
+9. `framework:secure-coding` -- Validate trust boundaries, input handling, authorization, injection safety when bug touches security-sensitive code (conditional)
 
 ## Workflow
 
@@ -25,7 +26,7 @@ Load these skills based on bug scope (see Steps 2 and 5 for when):
 Start from failure, not proposed fix.
 
 - Gather **observed behavior**, **expected behavior**, **reproduction path**, any evidence: failing test, error message, stack trace, log excerpt, request payload, recent change.
-- If `.lattice/learnings/review-insights.md` exists, read it. Recurring review patterns often point to likely defect classes.
+- Use `framework:learning-harvest` Load behavior. Focus hint: "bug investigation — focus: reliability, quality signals". Prior learnings about failure modes, fragile areas, and recurring defect classes inform diagnosis from the start.
 - Use `framework:context-anchoring` Document Discovery to check for existing context doc for affected feature/module.
   - **If found** → Load it (context-anchoring Load behavior). Honor logged decisions + constraints as active commitments while diagnosing.
   - **If not found** → Proceed from bug report + current code. Don't block diagnosis on missing context.
@@ -175,6 +176,8 @@ Use `framework:context-anchoring` Enrich behavior to preserve important parts of
 - Key files changed: path + purpose
 
 If no context doc exists + fix exposed non-trivial design/domain lesson, suggest creating one.
+
+Use `framework:learning-harvest` Harvest behavior. Session context: "bug investigation — root cause diagnosis and repair". Synthesize and propose cross-cutting patterns from this session — root cause categories, failure modes likely to recur elsewhere, boundary condition gaps. User confirms what enters the document.
 
 After fix complete, recommend `/review` when change:
 

@@ -51,7 +51,7 @@ Before starting the interview, check whether a custom document already exists:
 Look for signals that inform the conversation:
 
 - **Existing review history**: Check `.lattice/reviews/review-log.md` — what atoms have been loading? What severity patterns exist? Are there recurring findings?
-- **Existing learnings**: Check `.lattice/learnings/review-insights.md` — what patterns has the review captured? Is the file growing large (near pruning threshold)?
+- **Existing learnings**: Check `.lattice/learnings/operational-learnings.md` — what patterns have been captured? Is the file growing dense in any category?
 - **Project structure**: What does the codebase look like? Are there directories that should be excluded or always-scanned?
 - **Existing atom refiners**: Which atom refiners have been run? (Check `.lattice/config.yaml` for `paths.architecture`, `paths.clean_code`, `paths.ddd_principles`) This tells you which atoms the team cares about.
 

@@ -11,18 +11,19 @@ Read, apply:
 
 1. `framework:knowledge-priming` -- Load proj context (stack, arch, conventions) so impl matches real proj (always)
 2. `framework:context-anchoring` -- Load/find context anchor doc; enrich as impl decisions made (always)
-3. `framework:collaborative-judgment` -- Surface real judgment calls w/ structured opts vs silent assume (always)
-4. `framework:architecture` -- Layer place, dep direction, struct valid (always)
-5. `framework:clean-code` -- Craft rails: SRP, naming, complexity, err handle (always)
-6. `framework:domain-driven-design` -- Aggregates, entities, VOs, domain svcs (conditional: only when touch domain folder)
-7. `framework:secure-coding` -- Trust bounds, injection prevent, secrets mgmt (conditional: only boundary-cross code)
-8. `framework:test-quality` -- AAA struct, isolation, assert quality, naming (always when write tests)
+3. `framework:learning-harvest` -- Load prior operational learnings inform impl; harvest new patterns at session end (always)
+4. `framework:collaborative-judgment` -- Surface real judgment calls w/ structured opts vs silent assume (always)
+5. `framework:architecture` -- Layer place, dep direction, struct valid (always)
+6. `framework:clean-code` -- Craft rails: SRP, naming, complexity, err handle (always)
+7. `framework:domain-driven-design` -- Aggregates, entities, VOs, domain svcs (conditional: only when touch domain folder)
+8. `framework:secure-coding` -- Trust bounds, injection prevent, secrets mgmt (conditional: only boundary-cross code)
+9. `framework:test-quality` -- AAA struct, isolation, assert quality, naming (always when write tests)
 
 ## Workflow
 
 ### Step 1: Establish Implementation Context
 
-**Load learnings**: If `.lattice/learnings/review-insights.md` exists, read. Use recent insights inform gen — e.g., learnings say "anemic domain models keep appear," push behavior→entities. Learnings flag "missing input valid on VOs," valid in constructors from start. Patterns from past reviews — use avoid repeat mistakes.
+Use `framework:learning-harvest` Load behavior. Focus hint: "implementation session — focus: implementation craft, quality signals, reliability". Prior learnings about coding patterns, recurring quality issues, and failure modes inform implementation from the start — e.g., learnings say "anemic domain models keep appearing," push behavior into entities. Learnings flag "missing input validation on VOs," validate in constructors from start.
 
 Use `framework:context-anchoring` Doc Discovery check existing context anchor doc for feature impl.
 
@@ -101,7 +102,7 @@ Step checks **arch coherence** -- not code quality (verified per-component Step 
 - **Dep direction**: Apply `framework:architecture` verif across all components — verify inter-component dep direction follows loaded arch rules. No layer import from layer not permitted depend.
 - **Zero Impl Rule**: Check no new components, interactions, contracts intro beyond planned Step 2. Something added, flag -- may be necessary, but should be conscious decision, not scope creep.
 - **Final security scan**: Apply `framework:secure-coding` across component boundaries. Check data flowing between components crosses trust bounds safely.
-- **Learnings check**: If `.lattice/learnings/review-insights.md` loaded Step 1, verify previously-flagged patterns not recur this impl. Past insight said "anemic domain models keep appear" -- check entities this impl have behavior.
+- **Learnings check**: If operational learnings loaded Step 1, verify previously-flagged patterns not recur this impl. Past insight said "anemic domain models keep appearing" — check entities this impl have behavior.
 
 ### Step 5: Enrich Context
 
@@ -111,6 +112,8 @@ Throughout Steps 3-4, use `framework:context-anchoring` Enrich behavior keep liv
 - **Capture impl decisions** -- lib choices, pattern selects, deviations from blueprint, tradeoffs made.
 - **Resolve open Qs** -- Qs from design phase answered during impl, log resolution.
 - **If no context doc exists**, significant impl decisions made → suggest create. Decisions worth preserve future sessions.
+
+Use `framework:learning-harvest` Harvest behavior. Session context: "implementation session — code generation from design contracts". Synthesize and propose cross-cutting patterns from this session — implementation gotchas, design-to-reality gaps, library/framework lessons that could inform future implementations. User confirms what enters the document.
 
 After enrich context doc, recommend review:
 

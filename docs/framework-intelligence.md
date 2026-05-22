@@ -54,30 +54,33 @@ Why three levels: Same reason human teams have self-review, then peer review, th
 
 ## 3. The Learning Flywheel
 
-The flywheel is the central mechanism of the living context layer -- the engine that turns review findings into institutional memory and feeds them back into generation.
+The flywheel is the central mechanism of the living context layer -- the engine that turns session findings into institutional memory and feeds them back into all future sessions.
 
-**Problem**: Without feedback loops, the same mistakes repeat across features. Review finds "anemic domain models" in Payment, then again in User, then again in Order. Each review starts from zero.
+**Problem**: Without feedback loops, the same mistakes repeat across features. Review finds "anemic domain models" in Payment, then again in User, then again in Order. Each session starts from zero.
 
-**Solution**: Review findings persist as learnings. Code-forge loads learnings at session start. The framework gets smarter with use.
-
-```
-┌────────────────┐     ┌─────────────┐     ┌──────────────────┐
-│   code-forge   │────→│   review    │────→│ .lattice/learnings/   │
-│ loads learnings│     │ finds issues│     │ review-insights.md│
-└───────┬────────┘     └─────────────┘     └────────┬─────────┘
-        │                                           │
-        └────────────── feeds back ─────────────────┘
-```
-
-**Format discipline**: Each insight is one bullet point — date, feature, pattern, fix. Capped at ~50 entries. Concise enough for AI to scan in seconds, specific enough to act on.
+**Solution**: All molecules both consume and contribute to a shared operational learnings document via the `learning-harvest` atom. The AI proposes patterns; the user decides what's worth preserving. The framework gets smarter with use.
 
 ```
-- 2026-03-05 [Payment]: Domain services doing repository work — push data access behind repository interfaces
-- 2026-03-05 [Payment]: Missing validation in value object constructors — validate in constructor, not caller
-- 2026-03-10 [User]: Anemic entities with only getters — push behavior into entity methods
+┌────────────────┐     ┌─────────────┐     ┌───────────────────────────┐
+│ design-blueprint│     │  code-forge │     │ .lattice/learnings/       │
+│   bug-fix      │────→│   review    │────→│ operational-learnings.md  │
+│ refactor-safely│     │             │     │ (managed by learning-     │
+│ (all load +    │     │(all harvest)│     │  harvest atom)            │
+│  harvest)      │     │             │     └────────────┬──────────────┘
+└───────┬────────┘     └─────────────┘                  │
+        │                                               │
+        └──────────────── feeds back ───────────────────┘
 ```
 
-Why this matters: Institutional memory that survives across features and sessions. A team's coding standards aren't just what's written in a style guide — they're the accumulated lessons from past reviews. The flywheel captures that for AI-assisted development.
+**Format discipline**: Each entry is one bullet — date, session context, pattern, actionable takeaway. Organized by category (Design Patterns, Implementation Craft, Quality Signals, Reliability, Structural Health). Self-regulating: the atom proposes tightening when entries grow dense.
+
+```
+- 2026-03-05 [review] Domain services doing repository work — push data access behind repository interfaces
+- 2026-03-05 [implementation] Missing validation in value object constructors — validate in constructor, not caller
+- 2026-03-10 [review] Anemic entities with only getters — push behavior into entity methods
+```
+
+Why this matters: Institutional memory that survives across features and sessions. A team's coding standards aren't just what's written in a style guide — they're the accumulated lessons from past work. The flywheel captures that for AI-assisted development. Every entry is user-confirmed — the document's value comes from human judgment about what matters.
 
 ---
 

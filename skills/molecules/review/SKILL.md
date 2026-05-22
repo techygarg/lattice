@@ -9,12 +9,13 @@ description: "Perform a structured code review by composing validation checklist
 Load/apply skills based on scope (see Step 2 for conditional loading):
 
 1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) to evaluate against real standards (always loaded)
-2. `framework:collaborative-judgment` -- Surface borderline findings with both interpretations instead of silently classifying (always loaded)
-3. `framework:clean-code` -- Code craft: SRP, naming, complexity, error handling (always loaded)
-4. `framework:architecture` -- Structural: layer rules, dependency direction, architectural flows (conditional)
-5. `framework:domain-driven-design` -- Domain modeling: aggregates, entities, value objects (conditional)
-6. `framework:secure-coding` -- Security: trust boundaries, injection, secrets, input handling (conditional)
-7. `framework:test-quality` -- Test: AAA structure, isolation, assertions, naming (conditional)
+2. `framework:learning-harvest` -- Load prior operational learnings inform review; harvest new patterns at session end (always)
+3. `framework:collaborative-judgment` -- Surface borderline findings with both interpretations instead of silently classifying (always loaded)
+4. `framework:clean-code` -- Code craft: SRP, naming, complexity, error handling (always loaded)
+5. `framework:architecture` -- Structural: layer rules, dependency direction, architectural flows (conditional)
+6. `framework:domain-driven-design` -- Domain modeling: aggregates, entities, value objects (conditional)
+7. `framework:secure-coding` -- Security: trust boundaries, injection, secrets, input handling (conditional)
+8. `framework:test-quality` -- Test: AAA structure, isolation, assertions, naming (conditional)
 
 ## Config Resolution
 
@@ -37,8 +38,8 @@ Review-standards doc has 7 sections map to workflow steps:
 | §2 Severity Classification | Step 4 (Produce Report) |
 | §3 Report Preferences | Step 4 (Produce Report) |
 | §4 Scope Rules | Step 1 (Identify the Delta) |
-| §5 Insight Capture Preferences | Step 5 (Capture Insights and Log Review) |
-| §6 Health Log Preferences | Step 5 (Capture Insights and Log Review) |
+| §5 Insight Capture Preferences | Step 5 (Harvest Learnings and Log Review) |
+| §6 Health Log Preferences | Step 5 (Harvest Learnings and Log Review) |
 | §7 Custom Review Dimensions | Step 3 (Run Targeted Validation) |
 
 Each step notes where config applies with "**Config override**" callouts. When no review-standards doc exists, ignore callouts & use defaults.
@@ -46,6 +47,8 @@ Each step notes where config applies with "**Config override**" callouts. When n
 ## Workflow
 
 ### Step 1: Identify the Delta
+
+Use `framework:learning-harvest` Load behavior. Focus hint: "review session — focus: all categories". Prior learnings across all categories inform review — recurring patterns are more likely to be flagged, known fragile areas get extra attention.
 
 Determine what code reviewing & establish scope.
 
@@ -166,20 +169,15 @@ After all atom sections, add:
 - **Custom report sections**: Include any configured custom sections at specified position.
 - Custom dimension findings merge into report alongside atom findings, following same grouping & severity ordering.
 
-### Step 5: Capture Insights and Log Review
+### Step 5: Harvest Learnings and Log Review
 
-After presenting report, capture learnings & log review for project health visibility.
+After presenting report, harvest learnings & log review for project health visibility.
 
-**Capture Insights** — append to `.lattice/learnings/review-insights.md`:
+**Harvest Learnings** — use `framework:learning-harvest` Harvest behavior:
 
-If recurring patterns or notable findings emerged from review:
+Session context: "review session — code quality assessment against atom standards". Synthesize and propose cross-cutting patterns from this review — recurring quality anti-patterns, structural issues that keep appearing, reliability gaps. User confirms what enters the document.
 
-1. Create `.lattice/learnings/` dir if doesn't exist.
-2. Before appending, check for existing entry describing same pattern — update with recurrence note rather than adding new entry. Append new concise bullets to `.lattice/learnings/review-insights.md`. Create file with `# Review Insights` heading if doesn't exist.
-3. Format: `- YYYY-MM-DD [Feature]: Pattern observed — actionable takeaway`
-4. Each insight ONE bullet, max 2 lines. Keep concise — bullets help AI remember patterns, not verbose reports. Each entry scannable under 10 seconds.
-5. Only capture patterns that help future code gen — not every finding. One-off typo not insight; "domain services keep doing repository work" is.
-6. If file exceeds ~50 entries, suggest pruning oldest entries that haven't recurred in recent reviews.
+Review is often the highest-signal producer of operational learnings because it sees patterns across features. However, the same rigor applies: only propose patterns grounded in this session's findings, only write what the user confirms.
 
 **Log Review** — append to `.lattice/reviews/review-log.md`:
 
@@ -200,10 +198,7 @@ If recurring patterns or notable findings emerged from review:
 5. If log exceeds ~20 entries, move oldest entries to one-line `## History` summary section at top of file.
 
 **Config override (§5 Insight Capture Preferences):** If review-standards doc defines insight capture preferences:
-- **Pruning threshold**: Use configured threshold instead of ~50.
-- **Categorization tags**: If enabled, prefix each insight with configured category tag (e.g., `[security]`, `[domain]`).
-- **Capture criteria**: Apply custom criteria (e.g., "always capture security findings") in addition to default pattern-based capture.
-- **Format**: Use grouped format (organized under category headings) instead of flat chronological if configured.
+- **Capture criteria**: Apply custom criteria (e.g., "always capture security findings") as additional guidance to `framework:learning-harvest` when proposing candidates.
 
 **Config override (§6 Health Log Preferences):** If review-standards doc defines health log preferences:
 - **Custom fields**: Include additional fields in each log entry (e.g., "Confidence", "Estimated fix time").

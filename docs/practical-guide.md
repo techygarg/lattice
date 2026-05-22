@@ -276,19 +276,19 @@ They pull the repo — `.lattice/` is already there with all the team's standard
 
 ### What are review insights and how do they feed back into code generation?
 
-`/review` captures two things: a **review log** (`.lattice/reviews/review-log.md`) for health tracking and trends, and **review insights** (`.lattice/learnings/review-insights.md`) for recurring patterns worth remembering. Only insights feed back into code generation — when `/code-forge` runs next, it loads `.lattice/learnings/review-insights.md` and uses those patterns to avoid repeating past mistakes (e.g., if insights flag "anemic domain models keep appearing," it actively pushes behavior into entities from the start).
+`/review` captures two things: a **review log** (`.lattice/reviews/review-log.md`) for health tracking and trends, and **operational learnings** (`.lattice/learnings/operational-learnings.md`) for recurring cross-cutting patterns worth remembering. Operational learnings feed back into all molecules — when `/code-forge`, `/design-blueprint`, `/bug-fix`, or `/refactor-safely` runs next, it loads these patterns and uses them to avoid repeating past mistakes (e.g., if learnings flag "anemic domain models keep appearing," code-forge actively pushes behavior into entities from the start). All molecules both consume and contribute to operational learnings via the `learning-harvest` atom.
 
 ### How do I know if Lattice is actually improving my code quality over time?
 
-Check `.lattice/reviews/review-log.md` — it tracks findings per review (critical, warning, suggestion counts) and key patterns over time. If the same issues keep appearing, they'll surface in `.lattice/learnings/review-insights.md` as recurring patterns. Improvement shows up as fewer critical and warning findings per review cycle and fewer recurring entries in learnings.
+Check `.lattice/reviews/review-log.md` — it tracks findings per review (critical, warning, suggestion counts) and key patterns over time. If the same issues keep appearing, they'll surface in `.lattice/learnings/operational-learnings.md` as recurring patterns. Improvement shows up as fewer critical and warning findings per review cycle and fewer recurring entries in learnings.
 
 ### The review log is getting long. How do I manage it?
 
-`/review` handles this automatically — once the log exceeds ~20 entries, it moves the oldest entries into a one-line `## History` summary section at the top of `.lattice/reviews/review-log.md`. For `.lattice/learnings/review-insights.md`, once it exceeds ~50 entries, `/review` will suggest pruning oldest entries that haven't recurred in recent reviews. You can also prune either file manually.
+`/review` handles this automatically — once the log exceeds ~20 entries, it moves the oldest entries into a one-line `## History` summary section at the top of `.lattice/reviews/review-log.md`. For `.lattice/learnings/operational-learnings.md`, the `learning-harvest` atom self-assesses document health and proposes tightening when entries grow dense or overlap — consolidating duplicates, flagging noise, and suggesting promotion to standards. You can also edit the file manually.
 
 ### Can I manually add insights from production incidents?
 
-Yes. Edit `.lattice/learnings/review-insights.md` directly and add a bullet in the same format: `- YYYY-MM-DD [Feature]: Pattern observed — actionable takeaway`. Keep it concise and actionable — the goal is a signal that helps future code generation avoid the same mistake, not a detailed incident report.
+Yes. Edit `.lattice/learnings/operational-learnings.md` directly and add a bullet under the appropriate category in the same format: `- YYYY-MM-DD [context] Pattern — actionable takeaway`. Keep it concise and actionable — the goal is a signal that helps future sessions avoid the same mistake, not a detailed incident report.
 
 ---
 
