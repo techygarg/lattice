@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "lattice",
-  "version": "1.0.0",
+  "version": "1.4.0",
   "description": "A marketplace of composable AI skills covering the full software delivery lifecycle — from requirements and design through implementation, testing, and review. Each plugin targets a specific SDLC role: backend engineers, frontend engineers, QA, business analysts, and more.",
   "owner": {
     "name": "Rahul Garg"
