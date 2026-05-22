@@ -78,7 +78,7 @@ Each code-quality atom — `clean-code`, `architecture`, `domain-driven-design`,
 
 The final pattern: turn AI sessions into something a team can learn from rather than discard.
 
-The `review` molecule captures insights and persists them to `.lattice/learnings/review-insights.md`. The generation molecules — `code-forge`, `refactor-safely`, `bug-fix` — load these learnings at the start of every session. If a review found "anemic domain models" in the payment feature, the next `code-forge` session reads that insight and avoids the same pattern. The loop stops depending on retrospectives or memory.
+All molecules contribute to and consume from `.lattice/learnings/operational-learnings.md` via the `learning-harvest` atom. The atom proposes cross-cutting patterns; the user confirms what enters the document. If a review found "anemic domain models," the next `code-forge` session reads that pattern and avoids it. If a design session discovered that splitting entities with independent lifecycles prevents invariant conflicts, future design sessions benefit. The loop is bidirectional and user-curated.
 
 ![The Feedback Flywheel](image/image4.png)
 
@@ -112,11 +112,11 @@ A SaaS product adding notification preferences: invoices by email, product activ
 
 **Design.** `design-blueprint` loads project context and walks through five progressive design levels. The team decides where preference rules belong, whether notification settings live inside an existing user aggregate or deserve their own boundary, how channel-specific rules flow through contracts and validation. The approved blueprint is persisted as a living document. No code is written yet.
 
-**Implement.** `code-forge` loads the blueprint plus prior review learnings. It generates the domain model, application flow, persistence changes, and tests inside the project's architectural boundaries. Each component is verified against atom checklists after generation. The living document is enriched with implementation decisions.
+**Implement.** `code-forge` loads the blueprint plus prior operational learnings. It generates the domain model, application flow, persistence changes, and tests inside the project's architectural boundaries. Each component is verified against atom checklists after generation. The living document is enriched with implementation decisions.
 
-**Review.** `review` performs an independent assessment. Perhaps it notices that marketing preferences and mandatory notifications have been collapsed into the same model, or that an infrastructure concern is leaking into the domain layer. Findings are severity-ordered. Insights are captured in `.lattice/learnings/review-insights.md`.
+**Review.** `review` performs an independent assessment. Perhaps it notices that marketing preferences and mandatory notifications have been collapsed into the same model, or that an infrastructure concern is leaking into the domain layer. Findings are severity-ordered. Operational learnings are proposed to the user for confirmation via `learning-harvest`.
 
-**Next feature.** When the same product later adds quiet hours or channel-level escalation rules, `code-forge` loads the earlier insights and avoids the same mistakes. The system is smarter than it was one feature ago.
+**Next feature.** When the same product later adds quiet hours or channel-level escalation rules, `code-forge` loads the earlier operational learnings and avoids the same mistakes. The system is smarter than it was one feature ago.
 
 The whole series is running as a pipeline. Initialize = Knowledge Priming. Design = Design-First. The living document across stages = Context Anchoring. Atom checklists during generation and review = Encoding Team Standards. Insights feeding the next cycle = Feedback Flywheel.
 

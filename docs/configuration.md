@@ -18,6 +18,7 @@ paths:
   review_standards: .lattice/standards/review-standards.md
   requirement_standards: .lattice/standards/requirement-standards.md
   context_base: .lattice/context/
+  operational_learnings: .lattice/learnings/operational-learnings.md
 
 architecture_mode: clean
 ```
@@ -45,6 +46,7 @@ architecture_mode: clean
 | `review_standards` | Review process configuration — atom loading policy, severity classification, report format, insight capture. Molecule-level config, not atom-level. | `review-refiner` | `.lattice/standards/review-standards.md` | `review` molecule | `overlay` (recommended) |
 | `requirement_standards` | Requirement standards — epic/feature definitions, scenario structure, AC format, priority notation, status workflow, and naming conventions. Consumed by the `requirement-quality` atom via config resolution; the `requirement-forge` molecule composes that atom. | `requirement-forge-refiner` | `.lattice/standards/requirement-standards.md` | `requirement-quality` atom | `overlay` (recommended) |
 | `context_base` | **Directory** path for per-feature living documents. Unlike all other keys, this is a directory, not a file. | (none — managed by `context-anchoring` atom) | `.lattice/context/` | `context-anchoring` atom | N/A |
+| `operational_learnings` | Operational learnings file — accumulated patterns from practice (design, implementation, review, repair). Living document managed by `learning-harvest` atom, not a standards doc. | (none — managed by `learning-harvest` atom) | `.lattice/learnings/operational-learnings.md` | `learning-harvest` atom | N/A (append-only living document, no overlay/override) |
 
 ## `architecture_mode` Key
 

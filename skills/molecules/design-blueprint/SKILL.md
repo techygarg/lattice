@@ -11,14 +11,17 @@ Read apply skills order:
 
 1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) ground decisions real project
 2. `framework:context-anchoring` -- Create or load feature context anchor doc
-3. `framework:collaborative-judgment` -- Surface real design judgment calls structured options instead silent assuming (always)
-4. `framework:design-first` -- Walk through 5 progressive design levels
-5. `framework:architecture` -- Apply structural rules Component and Interaction levels
-6. `framework:domain-driven-design` -- Apply domain modeling Component, Interaction, Contract levels
+3. `framework:learning-harvest` -- Load prior operational learnings inform design; harvest new patterns at session end (always)
+4. `framework:collaborative-judgment` -- Surface real design judgment calls structured options instead silent assuming (always)
+5. `framework:design-first` -- Walk through 5 progressive design levels
+6. `framework:architecture` -- Apply structural rules Component and Interaction levels
+7. `framework:domain-driven-design` -- Apply domain modeling Component, Interaction, Contract levels
 
 ## Workflow
 
 ### Step 1: Establish Context
+
+Use `framework:learning-harvest` Load behavior. Focus hint: "design session — focus: design patterns, reliability, structural health". Prior learnings about decomposition choices, failure-prone patterns, and structural debt inform design decisions from the start.
 
 Use `framework:context-anchoring` set up feature living doc.
 
@@ -79,4 +82,5 @@ After Level 4 (Contracts) approved and persisted:
 - **Log completion decision**: Add decision entry Decisions Log: "Design approved at Level 4. Blueprint complete ready for implementation."
 - Present summary user as confirmation.
 - Design complete. NOT proceed Level 5 (Implementation) -- that separate concern handled by `framework:code-forge` molecule or equivalent implementation skill.
+- Use `framework:learning-harvest` Harvest behavior. Session context: "design session — architectural decomposition and contract definition". Synthesize and propose cross-cutting patterns from this session — decomposition approaches, architectural trade-offs, scope decisions that could inform future designs. User confirms what enters the document.
 - Suggest user invoke `/code-forge` when ready begin coding against approved blueprint.

@@ -10,13 +10,14 @@ Load these skills based on refactor scope (see Steps 3, 5, 6 for conditional use
 
 1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) so refactor fits real project not generic patterns (always)
 2. `framework:context-anchoring` -- Load existing feature context doc when available, capture approved refactor plan, preservation rules, structural decisions for future sessions (always)
-3. `framework:collaborative-judgment` -- Surface meaningful trade-offs in structure, seams, migration sequence instead of silently choosing path (always)
-4. `framework:clean-code` -- Improve readability, responsibility boundaries, local code craft while preventing scope creep and wrong abstractions (always)
-5. `framework:test-quality` -- Lock current behavior with characterization tests, keep safety net reliable throughout refactor (always)
-6. `framework:design-first` -- Use progressive design selectively for significant structural changes so target structure agreed before editing code (conditional)
-7. `framework:architecture` -- Validate layer placement, dependency direction, correct structural boundaries (conditional)
-8. `framework:domain-driven-design` -- Validate domain behavior, aggregate boundaries, movement of business rules into correct domain objects (conditional)
-9. `framework:secure-coding` -- Preserve validation, authorization, trust-boundary protections, safe data handling when refactor touches security-sensitive code (conditional)
+3. `framework:learning-harvest` -- Load prior operational learnings inform refactor; harvest new patterns at session end (always)
+4. `framework:collaborative-judgment` -- Surface meaningful trade-offs in structure, seams, migration sequence instead of silently choosing path (always)
+5. `framework:clean-code` -- Improve readability, responsibility boundaries, local code craft while preventing scope creep and wrong abstractions (always)
+6. `framework:test-quality` -- Lock current behavior with characterization tests, keep safety net reliable throughout refactor (always)
+7. `framework:design-first` -- Use progressive design selectively for significant structural changes so target structure agreed before editing code (conditional)
+8. `framework:architecture` -- Validate layer placement, dependency direction, correct structural boundaries (conditional)
+9. `framework:domain-driven-design` -- Validate domain behavior, aggregate boundaries, movement of business rules into correct domain objects (conditional)
+10. `framework:secure-coding` -- Preserve validation, authorization, trust-boundary protections, safe data handling when refactor touches security-sensitive code (conditional)
 
 ## Workflow
 
@@ -27,7 +28,7 @@ Start from **current pain**, not preferred abstraction.
 - Identify target area: module, service, aggregate, endpoint path, subsystem
 - Clarify **why** refactor needed: mixed responsibilities, duplication, wrong-layer logic, coupling, poor testability, unreadable control flow
 - Clarify what user expects to improve: simpler structure, correct layer placement, smaller units, clearer domain behavior, easier testing, safer extension points
-- If `.lattice/learnings/review-insights.md` exists, read it. Recurring review findings often identify exactly which structural mistakes should be corrected
+- Use `framework:learning-harvest` Load behavior. Focus hint: "refactoring session — focus: structural health, quality signals". Prior learnings about debt patterns, recurring structural issues, and coupling problems inform which structural mistakes to prioritize correcting.
 - Use `framework:context-anchoring` Document Discovery to check for existing context doc for affected feature/module
   - **If found** → Load it (context-anchoring Load behavior). Honor existing decisions and constraints as active commitments while planning refactor
   - **If not found** → Proceed from conversation and current code. Don't block planning on missing context
@@ -210,6 +211,8 @@ Use `framework:context-anchoring` Enrich behavior to preserve important parts of
 - Deferred debt: what remains and why intentionally left for later
 
 If no context doc exists and refactor involved non-trivial structural reasoning, suggest creating one so decisions not lost across sessions.
+
+Use `framework:learning-harvest` Harvest behavior. Session context: "refactoring session — structural restructuring and debt resolution". Synthesize and propose cross-cutting patterns from this session — structural debt that accumulated, migration strategies that worked, characterization test gaps discovered. User confirms what enters the document.
 
 After refactor complete, recommend `/review` when change:
 

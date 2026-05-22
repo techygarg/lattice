@@ -44,7 +44,7 @@ If multiple language markers found repo root, note all ask user which primary st
 - `.lattice/standards/ddd-principles.md` → DDD refiner output
 - `.lattice/standards/review-standards.md` → review refiner output
 - `.lattice/context/` → feature context documents (count them)
-- `.lattice/learnings/review-insights.md` → accumulated review insights
+- `.lattice/learnings/operational-learnings.md` → accumulated operational learnings (managed by learning-harvest atom)
 - `.lattice/reviews/review-log.md` → review log
 
 ### Step 2: Present Findings
