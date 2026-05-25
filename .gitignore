@@ -5,6 +5,8 @@ knowledge-base/
 
 # Lattice living context (project-specific, not part of the framework)
 .lattice/
+!sample/.lattice/
+!sample/.lattice/**
 
 # OS
 .DS_Store
