@@ -1,6 +1,3 @@
-# Private AI assistant memory and project state
-CLAUDE.md
-
 .claude/settings.local.json
 
 # Private strategic knowledge base (internal use only)
