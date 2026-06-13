@@ -1,0 +1,59 @@
+{
+  "name": "lattice",
+  "version": "1.4.0",
+  "description": "Composable AI skills framework covering the full software delivery lifecycle — design, architecture, implementation, testing, and review.",
+  "author": {
+    "name": "Rahul Garg"
+  },
+  "homepage": "https://github.com/techygarg/lattice",
+  "repository": "https://github.com/techygarg/lattice",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "sdlc",
+    "design-first",
+    "requirement-forge",
+    "design-blueprint",
+    "code-forge",
+    "code-review",
+    "bug-fix",
+    "refactoring",
+    "architecture",
+    "ddd",
+    "secure-coding",
+    "test-quality",
+    "clean-code",
+    "tdd",
+    "ai-workflow"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Lattice",
+    "shortDescription": "Composable SDLC skills for design, architecture, implementation, testing, and review.",
+    "longDescription": "Lattice gives Codex eight structured molecules that cover the full delivery lifecycle: Requirement Forge (collaborative product interview → structured specs), Design Blueprint (five-level design process from capabilities to contracts), Code Forge (inside-out implementation with architecture and security guardrails), Review (severity-ordered code review across quality, architecture, DDD, and security), Bug Fix (reproduce-first repair with regression protection), Refactor Safely (characterization-first restructuring without breaking behavior), Architecture Compass (codebase assessment with recommended direction), and Lattice Init (guided project setup). Each molecule composes atoms — architecture, clean code, DDD, secure coding, test quality — loaded selectively based on what your code touches.",
+    "developerName": "Rahul Garg",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Forge requirements for a new feature.",
+      "Create a design blueprint for this feature.",
+      "Implement from an approved design blueprint.",
+      "Review this code for quality, architecture, and security.",
+      "Fix this bug — investigate, reproduce, and patch it safely.",
+      "Refactor this code safely without breaking behavior.",
+      "Assess my codebase architecture and recommend direction.",
+      "Set up Lattice for this project."
+    ],
+    "websiteURL": "https://github.com/techygarg/lattice",
+    "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
+    "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
+    "brandColor": "#2A9D8F",
+    "composerIcon": "./.codex-plugin/assets/logo.svg",
+    "logo": "./.codex-plugin/assets/logo.png",
+    "screenshots": []
+  }
+}
