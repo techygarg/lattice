@@ -45,7 +45,7 @@ for tier in atoms molecules refiners; do
 
     if [ -d "$DEST/$skill_name" ]; then
       echo "  update: $skill_name"
-      rm -rf "$DEST/$skill_name"
+      rm -rf "${DEST:?}/$skill_name"
     else
       echo "  add:    $skill_name"
     fi

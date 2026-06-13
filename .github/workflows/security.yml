@@ -1,0 +1,99 @@
+name: Security
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Minimal permissions at workflow level; elevated per-job where required.
+permissions:
+  contents: read
+
+jobs:
+
+  # ── 1. Secret Scanning ────────────────────────────────────────────────────
+  # Catches API keys / tokens accidentally committed in skill files,
+  # templates, or knowledge-base examples.
+  secret-scan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── 2. Shell Script Safety ────────────────────────────────────────────────
+  # tools/install.sh runs on contributor machines — keep it injection-safe.
+  shell-safety:
+    name: Shell Script Safety
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: './tools'
+
+  # ── 3. Prompt Injection ───────────────────────────────────────────────────
+  # Skills are loaded verbatim into AI agents. A malicious SKILL.md that
+  # overrides agent instructions is a content supply chain attack.
+  # This grep catches the obvious; CODEOWNERS is the backstop for the rest.
+  prompt-injection:
+    name: Prompt Injection
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan skills for injection patterns
+        run: |
+          if grep -riE \
+            "ignore (previous|all) instructions|disregard (all|your) instructions|you are now a|forget your instructions|override your instructions|your (true|real) instructions|new (persona|identity)" \
+            skills/; then
+            echo "::error::Potential prompt injection pattern in skills/ — requires maintainer review"
+            exit 1
+          fi
+
+  # ── 4. Manifest Integrity ─────────────────────────────────────────────────
+  # plugin.json must only reference local paths. An external URL would let
+  # a tampered manifest redirect consumers to a malicious skill source.
+  manifest-integrity:
+    name: Manifest Integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify manifests contain only local paths
+        run: |
+          for f in .claude-plugin/plugin.json .cursor-plugin/plugin.json; do
+            [ -f "$f" ] || continue
+            if jq -r '.skills[]' "$f" 2>/dev/null | grep -qE '^https?://'; then
+              echo "::error::External URL in skills array of $f — skills paths must be local"
+              exit 1
+            fi
+          done
+
+  # ── 5. OSSF Scorecard (push to main only) ────────────────────────────────
+  # Grades supply chain hygiene: pinned deps, branch protection, CI health.
+  # Informational — does not block merge.
+  scorecard:
+    name: OSSF Scorecard
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    permissions:
+      security-events: write
+      id-token: write
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: ossf/scorecard-action@v2.4.0
+        with:
+          results_file: scorecard.sarif
+          results_format: sarif
+          publish_results: true
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: scorecard.sarif
