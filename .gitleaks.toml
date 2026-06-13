@@ -1,0 +1,5 @@
+[allowlist]
+description = "Secure-coding reference files contain anti-pattern examples by design"
+paths = [
+  '''secure-coding/references/defaults\.md'''
+]
