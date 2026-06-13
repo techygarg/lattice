@@ -1,0 +1,7 @@
+# Skills and manifests require maintainer review.
+# This is the backstop for prompt injection that grep cannot catch.
+
+skills/                @techygarg
+tools/install.sh       @techygarg
+.claude-plugin/        @techygarg
+.cursor-plugin/        @techygarg
