@@ -67,8 +67,8 @@ jobs:
         run: |
           for f in .claude-plugin/plugin.json .cursor-plugin/plugin.json; do
             [ -f "$f" ] || continue
-            if grep -qE '"https?://' "$f"; then
-              echo "::error::External URL in $f — skills paths must be local"
+            if jq -r '.skills[]' "$f" 2>/dev/null | grep -qE '^https?://'; then
+              echo "::error::External URL in skills array of $f — skills paths must be local"
               exit 1
             fi
           done
