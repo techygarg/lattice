@@ -130,4 +130,13 @@ After modifying any skill:
 
 Copies all 26 skills (flattened) into the provided skills directory. Pass the skills folder of whichever AI tool you are using (e.g. `.claude/skills/`, `.cursor/skills/`, `.codex/skills/`). Verify the skill loads correctly.
 
+For the Codex plugin package, also run:
+
+```bash
+./tools/build-codex-plugin.sh
+python3 /Users/grahul/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/lattice
+```
+
+This refreshes `plugins/lattice/skills/` from the source tiered skill tree and validates the packaged `.codex-plugin/plugin.json` that Codex ingests.
+
 When editing this file, update `CLAUDE.md` and `AGENTS.md` only if their pointer text needs to change — do not duplicate convention content into those files.

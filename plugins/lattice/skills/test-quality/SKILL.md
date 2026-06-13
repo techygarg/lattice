@@ -1,0 +1,106 @@
+---
+name: test-quality
+description: "Apply test quality principles when generating or reviewing test code. Enforces Arrange-Act-Assert structure, one behavior per test, assertion quality, test isolation, meaningful naming, and test data management. Use when writing tests, reviewing test code, or when the user mentions 'write tests', 'test this', 'test quality', 'test review', 'improve tests', or 'test structure'. This skill governs the craft of writing individual test cases -- not what to test (that is driven by the code being implemented) but how to write tests that are reliable, readable, and maintainable."
+---
+# Test Quality
+
+## Config Resolution
+
+Skill support project custom. Order:
+
+1. Look `.lattice/config.yaml` in repo root
+2. If find, check `paths.test_quality` for custom doc path
+3. If custom path exist, read doc & check YAML frontmatter for `mode`:
+   - **`mode: override`** (or no mode): Custom doc take full control. Use instead default. Must be complete -- is only reference.
+   - **`mode: overlay`**: Read `./references/defaults.md` first, then apply custom doc on top. Custom sections replace match sections (by heading). New sections add after.
+4. If no config/path/file, read `./references/defaults.md`
+5. **Language adaptation**: If `paths.language_idioms` exist in config, read **"Testing Patterns"** section and adapt §5 (Test Naming), §4 (Test Isolation), §6 (Test Data Builders) to language test framework idioms. Language idioms take precedence over pseudocode defaults.
+
+Defaults ship w/ skill. Work out-of-box. Override only when team have different standards.
+
+## Self-Validation Checklist
+
+STOP after gen each test. Check ALL before continue. If fail, fix. If ambiguous (see Ambiguity Signals), flag -- show options & reasoning.
+
+1. **AAA STRUCTURE**: arrange, act, assert separate w/ blank lines? Any logic (if/loop/try) in arrange or assert?
+2. **SINGLE BEHAVIOR**: Test verify one behavior per loaded doc (default: one behavior per test, name need "and" = split)?
+3. **ASSERTION QUALITY**: Assert observable behavior, not implementation? Specific enough catch regression?
+4. **ISOLATION**: Test depend other test output/effects? All mutable state per-test?
+5. **TEST NAME**: Name follow team convention per loaded doc (default: describe behavior, not method)? Failure message clear?
+6. **TEST DATA**: Complex arrange uses builders/factories? Magic values → named constants? (Inline literals fine for trivial tests.)
+7. **MOCK BOUNDARIES**: Mock per loaded doc (default: only at arch boundaries — I/O, external — not internal collab)?
+8. **TEST CODE AS FIRST-CLASS**: Structured like production code? Shared constants at top, helpers extracted, no dead code, clear file organization?
+
+Project-specific checks: if loaded doc contains a validation checklist section, apply those after base checklist.
+
+## Active Anti-Pattern Scan
+
+After checklist, scan these. If find, fix before present.
+
+- [ ] **Test-per-Method**: One test per method regardless behaviors → One test per scenario, named for behavior
+- [ ] **Assertion Roulette**: Multiple unrelated asserts; unclear which broke → Split to one behavior per test
+- [ ] **Shared Mutable State**: Pass alone, fail together → Isolate state; per-test setup; no static mutable
+- [ ] **Testing Implementation Details**: Break on refactor w/ same behavior; mock call counts → Assert observable behavior, not method calls
+- [ ] **Mystery Guest**: Depend external file/db/env var not visible → Inline data or use builders; all preconditions visible
+- [ ] **Slow Tests by Default**: Unit suite take minutes; hit db/network/fs → Mock/fake I/O; use in-memory
+- [ ] **Conditional Test Logic**: Test have if/loop/try -- test need own tests → Remove logic; use parameterized; let asserts fail natural
+- [ ] **Copy-Paste Tests**: Near-identical w/ small changes → Extract shared setup to builders; use parameterized
+
+## Class-Level Review
+
+Fire when: (1) completing all tests for a class — new or existing. (2) adding or editing any test in an existing class.
+
+STOP before present. Per-test checks verify individual quality. This review verifies the test suite covers the class contract.
+
+### Full review (new class or significant additions)
+
+1. **Behavior inventory** — list every public method/behavior in class under test. If class not available, ask user to enumerate.
+2. **Coverage matrix** — map each test → behavior it covers. Behaviors with zero tests → **blocking**. Do not present until user addresses gap or explicitly accepts it.
+3. **Error path check** — scan class under test for: explicit throws, conditional error branches, edge guards. For each found: does a test exercise this path? If not → flag by name. Zero-coverage error paths are blocking unless user explicitly accepts.
+4. **Behavioral duplication** — compare "then" clauses across all tests. Same observable outcome regardless of structural differences → flag as likely duplication. Name both tests.
+5. **Balance signal** — any behavior with tests but none covering a failure or edge case → surface as question, not hard failure: "`deleteUser` has 1 test (happy path only) — does it have error cases?"
+
+### Edit-scoped review (adding or changing one test in existing class)
+
+Run steps 3–5 only, scoped to the changed test:
+- Does this test duplicate the observable outcome of any existing test?
+- Does it cover a behavior or error path not previously covered?
+
+## Ambiguity Signals
+
+Multiple valid outcomes. Present options, not choose silent.
+
+- **Unit vs Integration**: Service coordinate components -- test isolate (mock) or real collab? Depend coupling & what verify.
+- **Mock Depth**: Mock direct depend or let call through? Over-mock test implementation; under-mock create slow/flaky.
+- **Test Granularity**: One test multi asserts vs multi tests one assert? When asserts verify facets same behavior, group ok.
+
+## Test Code as First-Class Code
+
+Test classes deserve same structural care as production code. They are living documentation -- readers spend as much time here as in source.
+
+**Treat test files like production classes:**
+- Shared constants and boundary values at top of file (named, not magic)
+- Shared builders/factories extracted to helpers -- not copy-pasted per test
+- Setup methods or fixtures for repeated arrange patterns
+- Logical grouping: related behaviors together (by feature, by scenario type)
+- Dead tests removed, not commented out
+- Refactoring applies: extract method when arrange is long, rename when intent unclear, move shared setup when duplicated
+
+**Refactoring opportunities to surface proactively:**
+- Multiple tests repeat same arrange → extract to builder or shared fixture
+- Same assertion pattern across tests → extract custom assertion helper
+- Test file grows beyond ~300 lines → split by behavior group
+- Constants scattered inline → collect at top with descriptive names
+- Deeply nested test structures → flatten with clear naming
+
+Write tests you would be proud to review. If test code is messy, team stops reading it. Unread tests become unmaintained. Unmaintained tests become liabilities.
+
+## Core Principle
+
+Test purpose: **describe behavior & fail when behavior break**. Every choice serve this. Hard read, brittle refactor, slow run = not fulfill contract.
+
+Bad test cost negative. Flaky train team ignore. Brittle slow dev. Pass when behavior broke = false confidence. Principles ensure tests assets, not liabilities.
+
+Skill govern HOW write tests -- structure, isolation, asserts, naming. WHAT test driven by code implement & domain rules.
+
+See `./references/defaults.md` for AAA structure examples, assertion patterns, isolation techniques, naming conventions, test data builder patterns, and pyramid distribution guidance.

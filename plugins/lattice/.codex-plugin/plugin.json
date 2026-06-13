@@ -1,0 +1,51 @@
+{
+  "name": "lattice",
+  "version": "1.4.0",
+  "description": "Composable AI skills framework covering the full software delivery lifecycle — design, architecture, implementation, testing, and review.",
+  "author": {
+    "name": "Rahul Garg"
+  },
+  "homepage": "https://github.com/techygarg/lattice",
+  "repository": "https://github.com/techygarg/lattice",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "design-first",
+    "requirement-analysis",
+    "context-anchoring",
+    "collaborative-judgment",
+    "knowledge-priming",
+    "architecture",
+    "ddd",
+    "secure-coding",
+    "test-quality",
+    "clean-code",
+    "sdlc",
+    "ai-workflow"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Lattice",
+    "shortDescription": "Composable SDLC skills for design, architecture, implementation, testing, and review.",
+    "longDescription": "Lattice is a composable AI skills framework for the full software delivery lifecycle. Install once to get structured workflows for requirement analysis, design-first thinking, architecture guidance, domain-driven design, clean code, secure coding, test quality, and code review. Skills compose: atoms combine into molecules for complete SDLC workflows.",
+    "developerName": "Rahul Garg",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Design a feature with Lattice.",
+      "Review this code with Lattice.",
+      "Help me implement from an approved blueprint."
+    ],
+    "websiteURL": "https://github.com/techygarg/lattice",
+    "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
+    "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
+    "brandColor": "#2A9D8F",
+    "composerIcon": "./.codex-plugin/assets/logo.svg",
+    "logo": "./.codex-plugin/assets/logo.png",
+    "screenshots": []
+  }
+}

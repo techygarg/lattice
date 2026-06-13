@@ -52,7 +52,17 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
    /reload-plugins
    ```
 
-   **Option B — Clone and install locally (any AI tool)**
+   **Option B — Codex-compatible plugin package**
+    ```
+    codex plugin marketplace add techygarg/lattice
+    codex plugin add lattice@lattice
+    codex plugin list | rg -i lattice
+    ```
+   The Codex plugin package lives in [`plugins/lattice/`](plugins/lattice/) and is registered by [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). It contains the same 26 skills flattened for Codex discovery.
+   
+   *This duplication currently to suport codex. In future, we may find a better approach as tools evolves.*
+
+   **Option C — Clone and install locally (any AI tool)**
    ```bash
    git clone https://github.com/techygarg/lattice.git
    cd lattice
