@@ -11,6 +11,7 @@ Composable AI skills that teach assistants structured thinking — design-first,
 [![Cursor](https://img.shields.io/badge/Cursor-compatible-blue.svg)](https://cursor.com)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/techygarg/lattice/blob/main/CONTRIBUTING.md)
 [![martinfowler.com](https://img.shields.io/badge/martinfowler.com-article_series-red.svg)](https://martinfowler.com/articles/reduce-friction-ai/)
+[![StarMapper](https://starmapper.bruniaux.com/api/badge/techygarg/lattice)](https://starmapper.bruniaux.com/techygarg/lattice?utm_source=badge&utm_medium=readme&utm_campaign=stargazer-map)
 
 ## What is Lattice?
 
@@ -85,6 +86,26 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
 ## Dev Skills
 
 Helper skills for creating and maintaining Lattice itself — see [`dev-skills/`](dev-skills/).
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=techygarg%2Flattice&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=techygarg/lattice&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=techygarg/lattice&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=techygarg/lattice&type=date&legend=top-left" />
+ </picture>
+</a>
+
+## StarMapper
+
+<a href="https://starmapper.bruniaux.com/techygarg/lattice">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://starmapper.bruniaux.com/api/map-image/techygarg/lattice?theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://starmapper.bruniaux.com/api/map-image/techygarg/lattice?theme=light" />
+    <img alt="StarMapper" src="https://starmapper.bruniaux.com/api/map-image/techygarg/lattice" />
+  </picture>
+</a>
 
 ## License
 
