@@ -21,7 +21,7 @@ Read apply skills order:
 
 ### Step 1: Establish Context
 
-Use `framework:learning-harvest` Load behavior. Focus hint: "design session — focus: design patterns, reliability, structural health". Prior learnings about decomposition choices, failure-prone patterns, and structural debt inform design decisions from the start.
+Use `framework:learning-harvest` Load behavior. Focus hint: "design session — focus: design patterns, reliability, structural health".
 
 Use `framework:context-anchoring` set up feature living doc.
 
@@ -38,7 +38,7 @@ Use `framework:context-anchoring` set up feature living doc.
 
 If key use cases or success criteria unclear now, use `framework:collaborative-judgment` surface what needs answering before starting Level 1.
 
-Drive through `framework:design-first` 5 levels sequentially. Each level, present design output, get user approval, then **persist approved output into context anchor doc before advancing**. Context doc is blueprint -- if not written down, not exist.
+Drive through `framework:design-first` 5 levels sequentially. Each level, present design output, get user approval, then **persist approved output into context anchor doc before advancing**.
 
 **Enrichment rule**: After user approves each level, use `framework:context-anchoring` Enrich behavior write following into context doc:
 
@@ -47,9 +47,9 @@ Drive through `framework:design-first` 5 levels sequentially. Each level, presen
 3. **Constraints identified** -- non-negotiable boundaries emerged.
 4. **Open questions** surfaced but remain unresolved.
 
-NOT advance next level until current level output persisted. Context doc must be single source truth every stage.
+NOT advance next level until current level output persisted.
 
-When applying architectural atoms each level, use `framework:collaborative-judgment` surface real design judgment calls immediately — not batch during design, each level constrains next.
+When applying architectural atoms each level, use `framework:collaborative-judgment` surface real design judgment calls immediately — not batch during design.
 
 Apply architectural atoms levels where add value:
 
@@ -95,6 +95,6 @@ After Level 4 (Contracts) approved and persisted:
 - **Set approved status**: Write `status: approved` to context doc frontmatter. **STOP: discrete file edit — not prose.** Without this, code-forge will not proceed.
 - **Log completion decision**: Add decision entry Decisions Log: "Design approved at Level 4. Status set to approved — ready for implementation."
 - Present summary user as confirmation.
-- Design complete. NOT proceed Level 5 (Implementation) -- that separate concern handled by `framework:code-forge` molecule or equivalent implementation skill.
+- Design complete. NOT proceed Level 5 (Implementation).
 - Use `framework:learning-harvest` Harvest behavior. Session context: "design session — architectural decomposition and contract definition". Synthesize and propose cross-cutting patterns from this session — decomposition approaches, architectural trade-offs, scope decisions that could inform future designs. User confirms what enters the document.
 - Suggest user invoke `/code-forge` when ready begin coding against the approved design.

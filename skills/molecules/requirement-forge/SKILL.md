@@ -21,7 +21,7 @@ Read and apply in order:
 
 ## PM/BA Persona
 
-Behave as an experienced senior PM and business analyst. This governs the HOW of the conversation — quality enforcement is `framework:requirement-quality`'s job.
+Behave as an experienced senior PM and business analyst.
 
 - **Ask WHY before accepting WHAT.** If the user states a solution without a problem, ask what user pain it solves.
 - **Challenge scope actively.** Name the concern specifically: "This sounds like two features" or "A user can't complete [task] without [missing piece]."
@@ -71,7 +71,7 @@ Present synthesis: *"Here's what I understand from [N] documents: [epic list wit
 
 **If no material** — *"Tell me what you're building — the problem, who has that problem, any constraints. Don't worry about structure yet."* Listen, synthesize, present the same hypothesis format.
 
-**Single-feature fast path**: if synthesis reveals only 1–3 features, don't force the full epic pipeline. Offer to spec those features directly — skip Step 3 (Epic Definition) and Step 4 (Feature Discovery), proceed directly to Step 5 with the confirmed features. Write a placeholder `index.md` with a single epic before starting Step 5 so the structure exists from the start.
+**Single-feature fast path**: if synthesis reveals only 1–3 features, don't force the full epic pipeline. Offer to spec those features directly — skip Step 3 (Epic Definition) and Step 4 (Feature Discovery), proceed directly to Step 5 with the confirmed features. Write a placeholder `index.md` with a single epic before starting Step 5.
 
 **Do NOT advance to Step 3 (or Step 5 if fast path) until the synthesis is confirmed.**
 
@@ -89,7 +89,7 @@ Ask: *"Does this epic structure reflect how you think about the product?"*
 
 **Do NOT advance to Step 4 until the epic list is confirmed.**
 
-**Immediately after confirmation, write `.lattice/requirements/index.md`** with the confirmed epics — names, descriptions, and empty feature tables. Create `.lattice/requirements/` if it does not exist. Read `references/output-templates.md` for the exact structure. Epics not selected for this session's focus are listed as `planned` with no feature rows. This establishes the skeleton before any feature work begins — if the session ends early, the epic structure is preserved.
+**Immediately after confirmation, write `.lattice/requirements/index.md`** with the confirmed epics — names, descriptions, and empty feature tables. Create `.lattice/requirements/` if it does not exist. Read `references/output-templates.md` for the exact structure. Epics not selected for this session's focus are listed as `planned` with no feature rows.
 
 ---
 
@@ -97,7 +97,7 @@ Ask: *"Does this epic structure reflect how you think about the product?"*
 
 For each confirmed epic, propose the feature breakdown: name, one-line description, epic assignment, dependencies.
 
-Apply `framework:requirement-quality` anti-pattern scan proactively here — surface misclassified items as PM/BA challenges before the user commits to a feature list. Do not wait for Step 5 to catch granularity problems and technical tasks masquerading as features.
+Apply `framework:requirement-quality` anti-pattern scan proactively here — surface misclassified items as PM/BA challenges before the user commits to a feature list.
 
 Ask: *"Does this feature breakdown feel right for [Epic Name]?"*
 
@@ -111,7 +111,7 @@ Ask: *"Does this feature breakdown feel right for [Epic Name]?"*
 
 Work through confirmed features one at a time.
 
-**Level 1 — Feature Frame**: Collect dependencies, problem statement, user personas (who has this problem — specific roles, not "users"), scope (with explicit out-of-scope items), boundary conditions, and assumptions (what the team proceeds with as true without full validation). Apply the PM/BA challenge lens to each field. After presenting: *"Does this frame capture the right problem, the right users, and the right scope? Let's lock this before scenarios."*
+**Level 1 — Feature Frame**: Collect dependencies, problem statement, user personas (who has this problem — specific roles, not "users"), scope (with explicit out-of-scope items), boundary conditions, and assumptions (what the team proceeds with as true without full validation). Challenge each field: wrong problem, wrong user, inflated scope. After presenting: *"Does this frame capture the right problem, the right users, and the right scope? Let's lock this before scenarios."*
 
 **Do NOT begin scenarios until the frame is confirmed.**
 
@@ -144,7 +144,7 @@ After all features for the current session scope are confirmed and written, do a
 - If standards include §10 Domain Terminology, include a `## Glossary` section populated from those terms
 - If source documents were provided during intake, include a `## Source Materials` table mapping each document to the features derived from it, and a `## Deferred Items` section listing content intentionally excluded from the current feature set with reasons
 
-Present a completion summary: epics created, features specced, open questions, dependency map, and suggested next step (`/design-blueprint` on the highest-priority feature). Note that when design-blueprint runs on a feature, it will create a context anchor doc linked back to the requirement file — the `Design:` link in the feature file should be updated at that point.
+Present a completion summary: epics created, features specced, open questions, dependency map, and suggested next step (`/design-blueprint` on the highest-priority feature). When design-blueprint runs on a feature, update the `Design:` link in that feature file.
 
 ---
 

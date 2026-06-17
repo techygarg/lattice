@@ -23,7 +23,7 @@ Read, apply:
 
 ### Step 1: Establish Implementation Context
 
-Use `framework:learning-harvest` Load behavior. Focus hint: "implementation session — focus: implementation craft, quality signals, reliability". Prior learnings about coding patterns, recurring quality issues, and failure modes inform implementation from the start — e.g., learnings say "anemic domain models keep appearing," push behavior into entities. Learnings flag "missing input validation on VOs," validate in constructors from start.
+Use `framework:learning-harvest` Load behavior. Focus hint: "implementation session — focus: implementation craft, quality signals, reliability".
 
 Use `framework:context-anchoring` Doc Discovery check existing context anchor doc for feature impl.
 
@@ -114,7 +114,7 @@ Step checks **arch coherence** -- not code quality (verified per-component Step 
 - **Dep direction**: Apply `framework:architecture` verif across all components — verify inter-component dep direction follows loaded arch rules. No layer import from layer not permitted depend.
 - **Zero Impl Rule**: Check no new components, interactions, contracts intro beyond planned Step 2. Something added, flag -- may be necessary, but should be conscious decision, not scope creep.
 - **Final security scan**: Apply `framework:secure-coding` across component boundaries. Check data flowing between components crosses trust bounds safely.
-- **Learnings check**: If operational learnings loaded Step 1, verify previously-flagged patterns not recur this impl. Past insight said "anemic domain models keep appearing" — check entities this impl have behavior.
+- **Learnings check**: If operational learnings loaded Step 1, verify previously-flagged patterns not recur this impl.
 
 ### Step 5: Enrich Context
 
@@ -125,12 +125,12 @@ Throughout Steps 3-4, use `framework:context-anchoring` Enrich behavior keep liv
 - **Resolve open Qs** -- Qs from design phase answered during impl, log resolution.
 - **If no context doc exists**, significant impl decisions made → suggest create. Decisions worth preserve future sessions.
 
-Use `framework:learning-harvest` Harvest behavior. Session context: "implementation session — code generation from design contracts". Synthesize and propose cross-cutting patterns from this session — implementation gotchas, design-to-reality gaps, library/framework lessons that could inform future implementations. User confirms what enters the document.
+Use `framework:learning-harvest` Harvest behavior. Session context: "implementation session — code generation from design contracts". Synthesize and propose cross-cutting patterns from this session — implementation gotchas, design-to-reality gaps, library/framework lessons. User confirms what enters the document.
 
 **Close feature lifecycle**: Two discrete file edits — do not skip either:
 1. Write `status: complete` to context doc frontmatter.
 2. If `requirement_doc` is set in context doc frontmatter, write `status: complete` to that file too.
-**STOP: Both required.** One doc complete, the other frozen is inconsistent state.
+**STOP: Both required.**
 
 After enrich context doc, recommend review:
 
