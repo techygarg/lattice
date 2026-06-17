@@ -45,7 +45,7 @@ Three behaviors govern context anchor doc lifecycle. Each triggered reactively (
 
 ## Status Lifecycle
 
-Every context doc carries a `status` frontmatter field — the pipeline's machine-readable signal. Never infer status from body prose.
+Every context doc carries a `status` frontmatter field. Never infer status from body prose.
 
 | Value | Set by |
 |---|---|
@@ -68,7 +68,6 @@ Always confirm before creating.
    - Frontmatter: `feature`, `requirement_doc`, `created` (today date), `status: draft`
    - H1 heading: feature name
    - Summary: one-line description (ask user or derive from context)
-   - Note: this is the starting skeleton. When `design-blueprint` composes this atom, it extends the doc with `## Design: Level 1–4` and `## Design Summary` sections.
    - If template file not found, generate doc using this minimal structure:
      ```
      ---
@@ -88,7 +87,7 @@ Always confirm before creating.
      None.
      ## Key Files
      ```
-5. **Confirm creation.** Show user proposed path and content summary. Create only after confirmation.
+5. **Confirm creation.** Show user proposed path and content summary.
 
 ## Load Behavior
 
@@ -100,7 +99,7 @@ Always confirm before loading.
 2. **Read linked requirement doc** if `requirement_doc` not null. Use to understand feature goals and scope, but not modify.
 3. **Present structured acknowledgment** (see Output Formats below):
    - Feature name and summary
-   - **Status** (from frontmatter `status` field — surface this explicitly so downstream skills know what they are working with)
+   - **Status** (from frontmatter `status` field — surface explicitly)
    - Requirement doc status (linked or not linked)
    - Decision count and latest decision
    - Open questions (if any)
@@ -129,8 +128,8 @@ Always confirm before writing.
 5. **Resolve open questions explicitly.** When open question answered, add answer as decision in log *and* remove question from Open Questions list.
 6. **Constraints non-negotiable.** Once constraint recorded, it binding. Changing constraint require new decision entry explaining why constraint being revised.
 7. **Constraint Override Protocol.** If user explicitly say override constraint (e.g., "forget that constraint, we've changed direction"), not silently delete. Instead: (a) ask user confirm override explicitly, (b) strike through constraint in Constraints section (prefix with `~~`), and (c) add decision entry in Decisions Log recording override and reasoning. Constraint history preserved; binding status revoked.
-8. **Key Files dedup.** When adding to the Key Files table, check if the path already exists in the table. If it does — skip. Never add the same path twice.
-9. **Cross-cutting check.** After enriching, apply the learning-harvest cross-cutting test: (1) does it name a pattern or approach, not a feature-specific fact? (2) could a developer on a different feature apply it without knowing this feature's context? If both pass — silently add to the learning-harvest queue. Do not prompt the user here. learning-harvest manages when to surface queued candidates.
+8. **Key Files dedup.** When adding to the Key Files table, check if the path already exists in the table. If it does — skip.
+9. **Cross-cutting check.** After enriching, apply the learning-harvest cross-cutting test: (1) does it name a pattern or approach, not a feature-specific fact? (2) could a developer on a different feature apply it without knowing this feature's context? If both pass — silently add to the learning-harvest queue. Do not prompt the user here.
 
 ## Document Discovery
 

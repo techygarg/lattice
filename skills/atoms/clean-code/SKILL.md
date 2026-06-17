@@ -21,11 +21,9 @@ Skill support project custom. Order:
    - **"Parameter & Function Design"** → adapt §2 (Small, Focused Functions) and §5 (Parameter Design) to language capabilities.
    - **"Dependency Management"** → adapt §9 (Test-Friendly Code) DI patterns to language idioms.
 
-Default ship with skill. Opinionated best practice. Work out of box. Override only when team have different standard.
-
 ## Self-Validation Checklist
 
-STOP after generate each component. Verify ALL before proceed. If check clearly fail, fix before present. If judgment call with multiple valid approach (see Ambiguity Signals), flag it — present options and reasoning.
+**STOP** after each component. Verify ALL. Fix any failed check before presenting. Judgment calls → flag with options (see Ambiguity Signals).
 
 1. **SINGLE RESPONSIBILITY**: Describe each function without "and"? If not → extract separate function.
 2. **SIZE**: Each function under size threshold per loaded doc (~20 lines default)? If not → extract sub-operation into named function.
@@ -62,8 +60,3 @@ Multiple valid outcome. Present option rather than silently choose. See `./refer
 - **DRY vs Premature Abstraction**: Two identical block may serve different purpose and diverge. Until third instance with same reason to change, genuinely ambiguous.
 - **Error Handling Strategy**: Exception vs Result type vs error code depend on language idiom and team convention, not universal.
 
-## Core Principle
-
-Clean code about **craft writing individual unit** -- function, class, module. Distinct from architecture (govern where code live) and domain modeling (govern business rule). Apply during code generation, not post-generation review.
-
-See `./references/defaults.md` for SRP pipeline nuance, size vs clarity thresholds, magic number extraction rules, boolean parameter patterns, DRY vs wrong abstraction heuristics, and error message guidelines.

@@ -16,8 +16,6 @@ Skill support project custom. Order:
 4. If no config/path/file, read `./references/defaults.md`
 5. **Language adaptation**: If `paths.language_idioms` exist in config, read **"Testing Patterns"** section and adapt §5 (Test Naming), §4 (Test Isolation), §6 (Test Data Builders) to language test framework idioms. Language idioms take precedence over pseudocode defaults.
 
-Defaults ship w/ skill. Work out-of-box. Override only when team have different standards.
-
 ## Self-Validation Checklist
 
 STOP after gen each test. Check ALL before continue. If fail, fix. If ambiguous (see Ambiguity Signals), flag -- show options & reasoning.
@@ -76,8 +74,6 @@ Multiple valid outcomes. Present options, not choose silent.
 
 ## Test Code as First-Class Code
 
-Test classes deserve same structural care as production code. They are living documentation -- readers spend as much time here as in source.
-
 **Treat test files like production classes:**
 - Shared constants and boundary values at top of file (named, not magic)
 - Shared builders/factories extracted to helpers -- not copy-pasted per test
@@ -92,15 +88,5 @@ Test classes deserve same structural care as production code. They are living do
 - Test file grows beyond ~300 lines → split by behavior group
 - Constants scattered inline → collect at top with descriptive names
 - Deeply nested test structures → flatten with clear naming
-
-Write tests you would be proud to review. If test code is messy, team stops reading it. Unread tests become unmaintained. Unmaintained tests become liabilities.
-
-## Core Principle
-
-Test purpose: **describe behavior & fail when behavior break**. Every choice serve this. Hard read, brittle refactor, slow run = not fulfill contract.
-
-Bad test cost negative. Flaky train team ignore. Brittle slow dev. Pass when behavior broke = false confidence. Principles ensure tests assets, not liabilities.
-
-Skill govern HOW write tests -- structure, isolation, asserts, naming. WHAT test driven by code implement & domain rules.
 
 See `./references/defaults.md` for AAA structure examples, assertion patterns, isolation techniques, naming conventions, test data builder patterns, and pyramid distribution guidance.

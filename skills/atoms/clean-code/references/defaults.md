@@ -16,11 +16,11 @@ Function do one thing. Class have one axis cohesion -- one reason change.
 
 ### Thresholds
 
-| Metric | Guideline | Rationale |
-|--------|-----------|-----------|
-| **Lines per function** | Under ~20 | Function visible one screen no scroll easier reason about |
-| **Levels of abstraction** | One per function | Mix high-level orchestration with low-level detail force reader context-switch |
-| **Indentation depth** | Max 2 levels | Each nest level add condition reader must mental track |
+| Metric | Guideline |
+|--------|-----------|
+| **Lines per function** | Under ~20 |
+| **Levels of abstraction** | One per function |
+| **Indentation depth** | Max 2 levels |
 
 Signals, not hard rules. 25-line function one clear purpose better than five 5-line functions obscure flow. Goal: readability, not line counting.
 
@@ -144,7 +144,7 @@ class SearchOptions:
 
 ### Boolean Parameter Smell
 
-Boolean parameter often mean function do two things -- one when true, one when false. Consider split into two functions with descriptive names:
+Boolean parameter often mean function do two things -- one when true, one when false. Split into two functions with descriptive names:
 
 ```
 // POOR: What does `true` mean at the call site?
@@ -241,13 +241,11 @@ datePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})?$/
 
 ### Core Principles
 
-| Principle | Rationale |
-|-----------|-----------|
-| **Fail fast** | Validate at boundary; reject bad data before propagate through layers |
-| **Be explicit** | Every operation can fail should have visible error handling |
-| **Be actionable** | Error messages tell caller what went wrong, what do about it |
-| **Handle at right level** | Not too early (lose context), not too late (lose ability recover) |
-| **No exceptions for control flow** | Exceptions obscure normal execution path; use for truly exceptional situations |
+- **Fail fast**: validate at boundary; reject bad data before propagate through layers
+- **Be explicit**: every fail-able operation has visible error handling
+- **Be actionable**: error messages tell caller what went wrong and what to do
+- **Handle at right level**: not too early (lose context), not too late (lose ability recover)
+- **No exceptions for control flow**: use exceptions for truly exceptional situations only
 
 ### Patterns
 
@@ -294,7 +292,7 @@ catch error:
 
 ## 9. Test-Friendly Code
 
-Code hard to test is usually hard to maintain. Design for testability by default:
+Design for testability by default:
 
 1. **Prefer pure functions** — all inputs explicit as parameters (no `Date.now()`, no globals). Deterministic output. Easiest to test.
 2. **Inject dependencies** — constructor/parameter injection over `new` inside methods. Enables mocking, swapping implementations.
@@ -305,4 +303,3 @@ Code hard to test is usually hard to maintain. Design for testability by default
 
 ---
 
-*Defaults synthesize principles from Robert Martin Clean Code (2008), Martin Fowler Refactoring (1999, 2018), Kent Beck Smalltalk Best Practice Patterns (1996), collective wisdom software craftsmanship practice.*
