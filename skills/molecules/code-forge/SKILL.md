@@ -27,16 +27,28 @@ Use `framework:learning-harvest` Load behavior. Focus hint: "implementation sess
 
 Use `framework:context-anchoring` Doc Discovery check existing context anchor doc for feature impl.
 
-- **If found** → Load (context-anchor Load behavior). Present struct ack -- feature name, decision count, open Qs, constraints. Honor all logged decisions/constraints as active commits.
+- **If found** → Load (context-anchor Load behavior). Present struct ack -- feature name, **status**, decision count, open Qs, constraints. Honor all logged decisions/constraints as active commits.
 - **If not found** → Nudge user: "Have design doc/blueprint for feature? Or work from discussed?" Accept either graceful.
   - User provides doc → load, follow.
-  - Proceed without → all atom rails still apply; just no struct blueprint ref. Work from verbal reqs in convo.
+  - Proceed without → all atom rails still apply; just no approved design doc to reference. Work from verbal reqs in convo.
+
+**Design completeness check** — STOP gates before Step 2:
+
+**Check 1 — status:** Read frontmatter `status`.
+- `approved` → pass.
+- Anything else → STOP: "Context doc not approved (`status: [value]`). Run design-blueprint first. Proceed anyway?" Confirm → log in Decisions Log, continue as "Without approved design."
+
+**Check 2 — levels present:** Scan body for `## Design: Level 3` and `## Design: Level 4`.
+- Both present → pass.
+- Either missing → STOP: "Missing [Level 3 / Level 4 / both]. Proceed anyway?" Confirm → log absent levels in Decisions Log, treat as gaps to fill during implementation.
+
+Both pass → proceed as **"With approved design"**.
 
 ### Step 2: Plan Implementation Order
 
-**With blueprint**: Extract component list, layer assigns from context anchor doc. Use L2 (Components) decisions for layer place, L3 (Interactions) for dep flow.
+**With approved design**: Extract component list, layer assigns from context anchor doc. Use L2 (Components) decisions for layer place, L3 (Interactions) for dep flow.
 
-**Without blueprint**: Classify req components→arch layers using layer defs from `framework:architecture`. Each component, determine:
+**Without approved design**: Classify req components→arch layers using layer defs from `framework:architecture`. Each component, determine:
 
 - Primary responsibility? (biz rules, data access, coord, external I/O)
 - Which layer in loaded arch doc matches responsibility?
@@ -75,7 +87,7 @@ Conditional checks per component:
 
 - **If domain layer** → Apply `framework:domain-driven-design` self-valid.
 - **If trust boundary** (HTTP handler, external API call, user input process, file I/O) → Apply `framework:secure-coding` self-valid.
-- **If blueprint exists** → Verify component fulfills L4 (Contracts) spec. Flag any deviation from agreed contract.
+- **If blueprint exists AND Level 4 was confirmed present in Step 1** → Verify component fulfills L4 (Contracts) spec. Flag any deviation from agreed contract. If user proceeded without L4 (Step 1 Check 2 failed), skip this check — there are no contracts to verify against.
 
 **Post-Gen Verification** (applies every component, all review modes):
 
@@ -114,6 +126,11 @@ Throughout Steps 3-4, use `framework:context-anchoring` Enrich behavior keep liv
 - **If no context doc exists**, significant impl decisions made → suggest create. Decisions worth preserve future sessions.
 
 Use `framework:learning-harvest` Harvest behavior. Session context: "implementation session — code generation from design contracts". Synthesize and propose cross-cutting patterns from this session — implementation gotchas, design-to-reality gaps, library/framework lessons that could inform future implementations. User confirms what enters the document.
+
+**Close feature lifecycle**: Two discrete file edits — do not skip either:
+1. Write `status: complete` to context doc frontmatter.
+2. If `requirement_doc` is set in context doc frontmatter, write `status: complete` to that file too.
+**STOP: Both required.** One doc complete, the other frozen is inconsistent state.
 
 After enrich context doc, recommend review:
 

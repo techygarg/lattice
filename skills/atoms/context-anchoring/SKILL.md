@@ -43,6 +43,18 @@ Three behaviors govern context anchor doc lifecycle. Each triggered reactively (
 | **Load** | Restore context from existing doc | User ask load/resume | AI detect existing docs and suggest loading |
 | **Enrich** | Add new decision, constraint, resolution | User ask capture something | AI detect decision made in conversation |
 
+## Status Lifecycle
+
+Every context doc carries a `status` frontmatter field — the pipeline's machine-readable signal. Never infer status from body prose.
+
+| Value | Set by |
+|---|---|
+| `draft` | `context-anchoring` Create — design not yet complete |
+| `approved` | `design-blueprint` Step 3 — L1–L4 complete, design reviewed |
+| `complete` | `code-forge` Step 5 — implementation done |
+
+**STOP: Check this field before acting on a context doc.** `draft` ≠ approved. `approved` ≠ complete. Deviation from approved design: update doc and re-approve — no new status values.
+
 ## Create Behavior
 
 Always confirm before creating.
@@ -53,15 +65,17 @@ Always confirm before creating.
 2. **Ask about requirement doc.** If user have requirement document, capture path for `requirement_doc` frontmatter field. If not, leave `null`.
 3. **Create dir** if `<context_base>/` not already exist.
 4. **Generate from template.** Read `./assets/feature-doc-template.md` and fill in:
-   - Frontmatter: `feature`, `requirement_doc`, `created` (today date)
+   - Frontmatter: `feature`, `requirement_doc`, `created` (today date), `status: draft`
    - H1 heading: feature name
    - Summary: one-line description (ask user or derive from context)
+   - Note: this is the starting skeleton. When `design-blueprint` composes this atom, it extends the doc with `## Design: Level 1–4` and `## Design Summary` sections.
    - If template file not found, generate doc using this minimal structure:
      ```
      ---
      feature: <feature-name>
      requirement_doc: <path or null>
      created: <today's date>
+     status: draft
      ---
      # <Feature Name>
      <one-line summary>
@@ -69,7 +83,9 @@ Always confirm before creating.
      | Date | Decision | Reasoning | Alternatives Considered |
      |------|----------|-----------|------------------------|
      ## Open Questions
+     None.
      ## Constraints
+     None.
      ## Key Files
      ```
 5. **Confirm creation.** Show user proposed path and content summary. Create only after confirmation.
@@ -84,6 +100,7 @@ Always confirm before loading.
 2. **Read linked requirement doc** if `requirement_doc` not null. Use to understand feature goals and scope, but not modify.
 3. **Present structured acknowledgment** (see Output Formats below):
    - Feature name and summary
+   - **Status** (from frontmatter `status` field — surface this explicitly so downstream skills know what they are working with)
    - Requirement doc status (linked or not linked)
    - Decision count and latest decision
    - Open questions (if any)
@@ -112,6 +129,8 @@ Always confirm before writing.
 5. **Resolve open questions explicitly.** When open question answered, add answer as decision in log *and* remove question from Open Questions list.
 6. **Constraints non-negotiable.** Once constraint recorded, it binding. Changing constraint require new decision entry explaining why constraint being revised.
 7. **Constraint Override Protocol.** If user explicitly say override constraint (e.g., "forget that constraint, we've changed direction"), not silently delete. Instead: (a) ask user confirm override explicitly, (b) strike through constraint in Constraints section (prefix with `~~`), and (c) add decision entry in Decisions Log recording override and reasoning. Constraint history preserved; binding status revoked.
+8. **Key Files dedup.** When adding to the Key Files table, check if the path already exists in the table. If it does — skip. Never add the same path twice.
+9. **Cross-cutting check.** After enriching, apply the learning-harvest cross-cutting test: (1) does it name a pattern or approach, not a feature-specific fact? (2) could a developer on a different feature apply it without knowing this feature's context? If both pass — silently add to the learning-harvest queue. Do not prompt the user here. learning-harvest manages when to surface queued candidates.
 
 ## Document Discovery
 
@@ -128,7 +147,7 @@ When user mention feature name in conversation, check if matching context doc ex
 
 ## Output Formats
 
-**Load**: Show feature name, requirement doc status, decision count, open questions, constraints, latest decision. Close with: "All logged decisions are active. Constraints are non-negotiable. I will flag open questions when work touches them."
+**Load**: Show feature name, **status** (from frontmatter), requirement doc status, decision count, open questions, constraints, latest decision. Close with: "All logged decisions are active. Constraints are non-negotiable. I will flag open questions when work touches them."
 
 **Enrich**: Show exactly what will be added (decision, reasoning, alternatives considered). Wait confirmation before writing.
 

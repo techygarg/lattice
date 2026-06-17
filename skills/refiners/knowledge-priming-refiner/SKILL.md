@@ -114,3 +114,4 @@ Before writing the final document, verify:
 - [ ] No coding guidelines (naming rules, code examples, anti-patterns) -- those belong in other skills
 - [ ] Document stays under ~50 lines of focused content (excluding headings and formatting)
 - [ ] Would a new developer find this useful for understanding *what this project is*?
+- [ ] **Not a redirect stub** — fewer than 3 of the 5 sections populated, or body primarily points to another file → STOP before writing. Say: "This knowledge base is mostly a pointer and won't prime sessions effectively. Should we inline the key content from [referenced file] instead?" Do not write a redirect-only document.
