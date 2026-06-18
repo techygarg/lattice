@@ -79,6 +79,7 @@ Each component in planned order, gen **code+tests together** -- tests not aftert
 
 Every component:
 
+- **Prefer the simpler path first.** Before writing custom code: does a stdlib function, platform built-in, or existing dependency already cover this? If yes — use it. Can it be expressed in shorter code? Use that. Write custom code only when simpler options genuinely fall short.
 - **Place correct arch layer** per `framework:architecture`. Valid dep direction follows loaded arch rules.
 - **Apply `framework:clean-code` self-valid** during gen. Run inline checks: SRP comply, meaningful naming, low cyclomatic complexity, proper err handle, no magic vals, clean func sigs, no dead code, appropriate abstract level, clear control flow, minimal comments (code self-doc).
 - **Write tests** using `framework:test-quality` self-valid.

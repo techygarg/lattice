@@ -154,7 +154,7 @@ Organize findings by atom. For each atom loaded:
 After all atom sections, add:
 
 - **What's done well**: List 2-3 positive observations.
-- **Improvement suggestions** (optional): If broader patterns beyond individual findings -- e.g., "consider extracting shared validation layer" -- note here. Keep to 1-2 suggestions max.
+- **Improvement suggestions** (optional): If broader patterns beyond individual findings -- e.g., "consider extracting shared validation layer", or whether the delta introduces complexity where a simpler path exists (stdlib, platform built-in, fewer abstractions) -- note here. Keep to 1-2 suggestions max.
 
 **Config override (§2 Severity Classification):** If review-standards doc defines custom severity levels or per-atom overrides:
 - Use custom severity level definitions instead of (override) or merged with (overlay) defaults above.

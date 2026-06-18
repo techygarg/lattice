@@ -58,6 +58,7 @@ Apply architectural atoms levels where add value:
 - On approval → Enrich context doc with approved capabilities under `## Design: Level 1 -- Capabilities` section.
 
 **Level 2 (Components)**:
+- **Challenge each component before approving: does it need to exist?** An abstraction with one known implementation, a layer with one caller, or a component solving a problem that isn't confirmed yet — inline or defer it. Add complexity only when the design explicitly justifies it.
 - Apply `framework:architecture` -- validate each component maps defined architectural layer, dependencies follow loaded architecture rules, component boundaries clear.
 - Apply `framework:domain-driven-design` -- identify aggregates, entities, value objects. Determine which components live domain layer which infrastructure.
 - On approval → Enrich context doc with approved component list, layer assignments, diagram under `## Design: Level 2 -- Components` section. Log architectural decisions (layer choices, DDD classifications) Decisions Log.
