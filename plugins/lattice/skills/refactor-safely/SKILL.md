@@ -8,16 +8,16 @@ description: "Restructure existing code safely without changing externally obser
 
 Load these skills based on refactor scope (see Steps 3, 5, 6 for conditional use):
 
-1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) so refactor fits real project not generic patterns (always)
-2. `framework:context-anchoring` -- Load existing feature context doc when available, capture approved refactor plan, preservation rules, structural decisions for future sessions (always)
-3. `framework:learning-harvest` -- Load prior operational learnings inform refactor; harvest new patterns at session end (always)
-4. `framework:collaborative-judgment` -- Surface meaningful trade-offs in structure, seams, migration sequence instead of silently choosing path (always)
-5. `framework:clean-code` -- Improve readability, responsibility boundaries, local code craft while preventing scope creep and wrong abstractions (always)
-6. `framework:test-quality` -- Lock current behavior with characterization tests, keep safety net reliable throughout refactor (always)
-7. `framework:design-first` -- Use progressive design selectively for significant structural changes so target structure agreed before editing code (conditional)
-8. `framework:architecture` -- Validate layer placement, dependency direction, correct structural boundaries (conditional)
-9. `framework:domain-driven-design` -- Validate domain behavior, aggregate boundaries, movement of business rules into correct domain objects (conditional)
-10. `framework:secure-coding` -- Preserve validation, authorization, trust-boundary protections, safe data handling when refactor touches security-sensitive code (conditional)
+1. `framework:knowledge-priming` -- Load project context (always)
+2. `framework:context-anchoring` -- Load/capture context doc (always)
+3. `framework:learning-harvest` -- Load prior learnings; harvest at session end (always)
+4. `framework:collaborative-judgment` -- Surface trade-offs in structure, seams, migration sequence (always)
+5. `framework:clean-code` -- Readability, responsibility boundaries, local craft (always)
+6. `framework:test-quality` -- Characterization tests and safety net (always)
+7. `framework:design-first` -- Significant structural changes (conditional)
+8. `framework:architecture` -- Layer placement and dependency direction (conditional)
+9. `framework:domain-driven-design` -- Aggregate boundaries and domain behavior (conditional)
+10. `framework:secure-coding` -- Security-sensitive code (conditional)
 
 ## Workflow
 
@@ -28,7 +28,7 @@ Start from **current pain**, not preferred abstraction.
 - Identify target area: module, service, aggregate, endpoint path, subsystem
 - Clarify **why** refactor needed: mixed responsibilities, duplication, wrong-layer logic, coupling, poor testability, unreadable control flow
 - Clarify what user expects to improve: simpler structure, correct layer placement, smaller units, clearer domain behavior, easier testing, safer extension points
-- Use `framework:learning-harvest` Load behavior. Focus hint: "refactoring session — focus: structural health, quality signals". Prior learnings about debt patterns, recurring structural issues, and coupling problems inform which structural mistakes to prioritize correcting.
+- Use `framework:learning-harvest` Load behavior. Focus hint: "refactoring session — focus: structural health, quality signals".
 - Use `framework:context-anchoring` Document Discovery to check for existing context doc for affected feature/module
   - **If found** → Load it (context-anchoring Load behavior). Honor existing decisions and constraints as active commitments while planning refactor
   - **If not found** → Proceed from conversation and current code. Don't block planning on missing context
@@ -37,7 +37,7 @@ End step, summarize intent one sentence:
 
 > "Refactor X to improve Y while preserving Z."
 
-If can't state improvement target and preservation target that clearly yet, continue clarifying before planning changes.
+**STOP:** If can't state improvement target and preservation target that clearly, continue clarifying before planning changes.
 
 **Optional persistence check**:
 
@@ -93,9 +93,9 @@ End step with explicit gate:
 
 > "Does this refactor plan look correct? Should I proceed to Step 4: characterization tests?"
 
-Don't write refactor code until user explicitly approves.
+**STOP:** Don't write refactor code until user explicitly approves.
 
-If persistence enabled, use `framework:context-anchoring` Enrich behavior to capture approved preservation boundaries, target structure, movement plan, out-of-scope items. Don't proceed to Step 4 until plan written.
+If persistence enabled, use `framework:context-anchoring` Enrich behavior to capture approved preservation boundaries, target structure, movement plan, out-of-scope items. **STOP:** Don't proceed to Step 4 until plan written.
 
 ### Step 4: Add Characterization Protection First
 
@@ -114,13 +114,11 @@ Before changing structure, lock current behavior with tests.
 - Don't start structural edits without believable safety net unless user explicitly accepts risk
 - Green characterization tests are baseline for refactor; if red before first structural change, resolve that first or re-scope task
 
-This step workflow's differentiator: refactor not considered safe until current behavior executable and guarded.
-
 End step with explicit gate:
 
 > "Characterization tests in place and passing. Ready to discuss refactor strategy and pacing?"
 
-Don't proceed to strategy selection until safety net verified green.
+**STOP:** Don't proceed to strategy selection until safety net verified green.
 
 ### Step 5: Choose Refactor Strategy and Pacing
 
@@ -221,5 +219,3 @@ After refactor complete, recommend `/review` when change:
 - changes security-sensitive code
 - leaves temporary migration scaffolding
 - large enough that independent quality pass would add confidence
-
-`/review` provides independent pass on refactor, can capture broader structural learnings for future work.

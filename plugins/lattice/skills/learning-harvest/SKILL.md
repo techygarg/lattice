@@ -32,7 +32,11 @@ Patterns that recur frequently may graduate to standards via a refiner. That pro
 2. If found, use that file path
 3. If not, use default `.lattice/learnings/operational-learnings.md`
 
-**Backward compatibility**: If default path not found but `.lattice/learnings/review-insights.md` exists, suggest migration to the new unified format. If user declines, read legacy file as flat input but do not write to it.
+**Backward compatibility**: If default path not found, check these legacy paths in order:
+- `.lattice/learnings.md` — flat file at root
+- `.lattice/learnings/review-insights.md` — prior naming convention
+
+If found, offer migration to canonical path and format. If user declines, read as flat input but do not write to it.
 
 ## Document Structure
 
@@ -70,36 +74,60 @@ Invoked at session start. Composing workflow passes a **focus hint** (relevant c
 2. If file not found — "No operational learnings yet." Continue. Non-blocking.
 3. If found — surface relevant entries (3-5 most recent from matching categories) as brief context. Treat as soft guidance, not hard constraints.
 
+**Active monitoring**: Once loaded, maintain a **silent harvest queue** throughout the session. When a decision or trade-off passes the cross-cutting test below, add it to the queue — do not prompt immediately.
+
+**Cross-cutting test** — a candidate must pass BOTH before queuing:
+1. It names a pattern or approach, not a feature-specific fact.
+2. A developer on a completely different feature could apply it without knowing this feature's context.
+
+If either fails — skip entirely, do not queue.
+
+Before queuing, check against entries loaded at session start. If the same pattern already exists — skip.
+
+**When to surface:** Surface the queue as a single batch when EITHER condition is true — not at every level or layer:
+- Queue reaches 3 candidates, OR
+- A major phase completes (all design levels done, a full implementation layer done)
+
+Do not surface at every individual level approval or component completion — that is over-prompting. Once surfaced, clear the queue. Anything remaining at session end goes to Harvest.
+
+> "I noted [N] potential harvest candidates — worth a quick review?"
+
+**Mid-session interrupt** (rare exception): surface a single pattern immediately, outside the queue, only when it would be impossible to reconstruct by session end — a live debate that resolved unexpectedly, a library gotcha caught mid-implementation. If in doubt, queue instead.
+
+Session-end Harvest is the primary mechanism. The queue exists to avoid losing patterns, not to generate prompts.
+
 ## Harvest Behavior
 
 Invoked at session end. Composing workflow passes a **session context** (what kind of work happened).
 
-**Governing principle:** The atom NEVER writes autonomously. It recommends. The user decides. Prefer omission over speculation. Most sessions will not produce learnings — empty harvest is normal and expected.
+**Governing principle:** The atom NEVER writes autonomously. Session-end Harvest is the primary capture event — mid-session prompting is the exception. Quality over frequency: one well-timed suggestion the user confirms is worth more than five prompts they dismiss.
 
 **Steps**:
 
-1. **Synthesize.** Review session decisions, trade-offs, outcomes. Identify candidates that would help a *different* future session on a *different* feature.
+1. **Drain the queue.** Collect all candidates from active monitoring queue plus any new ones surfaced by reviewing session decisions and outcomes. Each candidate must have passed the cross-cutting test (active monitoring) or pass it now.
 
-2. **Filter — hard evidence gate.** Each candidate must pass ALL five. If any fails, drop silently.
+2. **Propose as a batch.** Present queued candidates together — not one per message:
 
-   | Filter | Drop if... |
+   > Harvest candidates from this session:
+   > 1. [Category] — [pattern in one line]
+   > 2. [Category] — [pattern in one line]
+   >
+   > Accept, edit, add your own, or skip entirely.
+
+   Empty queue and nothing new found? Say so in one line and stop — do not force output.
+
+3. **Filter — apply before writing confirmed entries.** For each entry the user accepts:
+
+   | Filter | Fail if... |
    |--------|------------|
-   | **Evidence** | No concrete session event produced this — just prior knowledge |
-   | **Cross-cutting** | Only relevant to this feature's specific context |
+   | **Evidence** | No concrete session event — just prior knowledge |
+   | **Cross-cutting** | Specific to this feature's domain, won't recur |
    | **Actionable** | Requires this conversation's context to understand |
    | **Recurrence** | No structural reason it will happen again |
-   | **Confidence** | Below 80% — mere possibility, not grounded insight |
 
-   No candidates pass? Say so and stop. Do NOT force output. Do NOT lower the bar.
+   Filter fails on a confirmed entry? Tell the user which filter — offer to reword. Do not silently drop.
 
-3. **Propose to user.** Present filtered candidates with category and wording. Frame as conversation:
-
-   > I noticed these cross-cutting patterns that might help future sessions:
-   > 1. [Category] Pattern — takeaway
-   >
-   > Worth capturing? Accept, edit, add your own, or skip entirely.
-
-4. **User decides.** Accept, edit wording, reject some, add their own, or skip all. Do NOT argue for rejected entries. User judgment is final.
+4. **User decides.** Accept, edit, reject, add their own, or skip all. Do NOT argue for rejected entries.
 
 5. **Write confirmed entries only.** Dedup against existing entries (update with recurrence note if same pattern exists). Create file/dir if needed.
 
@@ -121,7 +149,7 @@ Before writing any entry, verify ALL. If any fails, do not write.
 2. **Evidence grounded** — STOP: Produced by a specific session event, not prior knowledge.
 3. **Experiential, not prescriptive** — STOP: Reads like "what we learned" not "what the rule should be." If it's a rule, it belongs in standards via a refiner.
 4. **Cross-cutting** — STOP: Applies beyond this feature. Feature-specific decisions belong in context anchor doc.
-5. **Confident and actionable** — STOP: 80%+ confident, future session can act on it without this conversation's context.
+5. **Actionable standalone** — STOP: a developer on a different feature can act on this without this conversation's context. Confidence level is not a gate — the user decides if it is worth capturing.
 6. **Not redundant** — STOP: Not already in standards, atom defaults, or existing learnings. At most, add recurrence note.
 7. **Concise** — STOP: Scannable in 10 seconds. Two lines max.
 

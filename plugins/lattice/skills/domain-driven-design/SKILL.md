@@ -19,13 +19,9 @@ Skill support project-custom. Resolution:
 4. If no config, no path, or path not found, read `./references/defaults.md`
 5. **Language adaptation**: If `paths.language_idioms` exist in config, read **"Type System & Object Model"** section and adapt entity, value object, and aggregate implementation patterns to language constructs (e.g., struct vs class, trait vs interface, data class vs record). Language idioms take precedence over pseudocode defaults.
 
-Default ship with skill, represent opinionated best practice.
-Work out box any project. Override only when team have
-specific standard differ from default.
-
 ## Self-Validation Checklist
 
-STOP after generate each component. Verify ALL follow before proceed. If check clearly fail, fix code before present. If check judgment call with multiple valid approach (see Ambiguity Signal), flag — present option and reasoning rather than silent choose.
+**STOP** after generating each component. Verify ALL before proceeding. **STOP:** If any check fails, fix before presenting. If check is a judgment call with multiple valid approaches (see Ambiguity Signals), flag — present options and reasoning rather than silently choosing.
 
 1. **ENTITY VS VALUE OBJECT**: Each domain object — business track individual instance over time? Yes → entity with identity. No → value object with immutable and self-validate.
 2. **AGGREGATE BOUNDARY**: Transactional invariant require this object inside aggregate? If not → separate aggregate reference by ID.
@@ -49,8 +45,6 @@ After verify checklist above, scan output these specific anti-pattern. If find a
 
 ## Ambiguity Signals
 
-These check often have multiple valid outcome. When encounter, present option rather than silent choose.
-
 - **Aggregate Boundary Size**: Small aggregate (more event, eventual consistency) vs large aggregate (simple transaction, immediate consistency). Neither inherent correct — depend contention pattern and invariant scope.
 - **Entity vs Value Object**: Some concept (like `Address` or `Money`) may or may not need identity depend domain complexity. Apply identity test, but acknowledge when borderline.
 - **Domain Service vs Entity Method**: Logic span multiple entity could live domain service or be method on primary entity. Choice depend which entity "own" invariant.
@@ -63,11 +57,5 @@ Skill operate within single repo, single bounded context (e.g., one API -- Order
 If task appear span multiple bounded context (e.g., Order feature call Shipping logic), flag before proceed: "This task touches [Context A] and [Context B]. Cross-context integration is strategic DDD — outside this skill's scope. Would you like to scope to one context, or proceed knowing cross-context coordination is your responsibility?"
 
 `framework:architecture` provide structural envelope -- where code live, which layer exist, which direction dependency flow. This skill define how craft domain *within* envelope: rich model, invariant, aggregate boundary, ubiquitous language.
-
-## Core Principle
-
-Domain model authoritative expression business rule. Rich domain object encapsulate behavior and enforce invariant. Code speak ubiquitous language business.
-
-If business rule exist, should expressible through domain model -- not scatter across controller, application service, or infrastructure. Entity only data holder with external service do all work is anemic model, primary anti-pattern this skill prevent.
 
 See `./references/defaults.md` for aggregate design rules, entity/value object/domain service/domain event/repository/creation patterns with code examples, inline anti-pattern warnings, and decomposition guide.

@@ -5,15 +5,7 @@ description: "Guide structured design thinking through 5 progressive levels befo
 
 # Design-First (Progressive Design Facilitation)
 
-## The Problem
-
-AI jump requirement→implementation, make all design decision silent. Result: you review code while evaluate scope, architecture, integration, contracts, quality -- all tangled. Catch scope mismatch in 2-min design talk way cheaper than find buried in 400 lines generated code.
-
-Solution: rebuild whiteboard talk human pairs do natural -- progressive design levels before code.
-
 ## The 5 Levels
-
-Five levels, abstract→concrete. Each level surface decision category that otherwise buried in generated code.
 
 ### Level 1: Capabilities (The "What")
 
@@ -61,21 +53,15 @@ Five levels, abstract→concrete. Each level surface decision category that othe
 
 **Output format**: Working code fulfill contracts defined Level 4. Each component implemented within agreed boundary. Implementation reviewable against design -- reviewer check each component against Level 2 description, each interaction against Level 3 flow, each interface against Level 4 contract.
 
-**Boundary**: Only after Level 4 explicitly approved. Implementation follow design; not introduce new components, new interactions, new contracts not agreed upon.
+**STOP:** Only after Level 4 explicitly approved. Implementation follow design; not introduce new components, new interactions, new contracts not agreed upon.
 
 ## The Zero Implementation Rule
 
-Most critical discipline: **no code until design agreed.**
+**No code until design agreed.**
 
-If catch self writing function bodies before Level 5 approved -- STOP. Return current design level, present only output appropriate that level.
-
-Rule exist because AI training optimize for produce tangible output quick, means AI constantly try collapse levels -- offer component diagrams with code already written, or propose contracts with implementations attached. Discipline staying current abstraction level protect working memory from premature detail, keep conversation focused on decision category being made.
-
-Simplest version entire methodology: no code until design agreed. Everything else follow from there.
+**STOP:** If catch self writing function bodies before Level 5 approved -- return to current design level, present only output appropriate that level.
 
 ## Complexity Calibration
-
-Not every task need all five levels. Framework scale to complexity work -- tool for manage complexity, not ritual apply uniform.
 
 | Task Complexity | Start At | Example |
 |---|---|---|
@@ -83,8 +69,6 @@ Not every task need all five levels. Framework scale to complexity work -- tool 
 | Single component | Level 2 (Components) | Validation service, API endpoint |
 | Multi-component feature | Level 1 (Capabilities) | Notification system, payment flow |
 | New system integration | Level 1 + deep Level 3 | Third-party API, event pipeline |
-
-When start later level, earlier levels implicitly agreed -- scope and components obvious enough not need explicit alignment.
 
 ## Entry Assessment
 
@@ -101,10 +85,10 @@ At end each level:
 1. Present level output in format specified that level (numbered list, diagram, sequence flow, or interfaces).
 2. Self-check: is this simpler than it could be? If a simpler alternative exists, present it alongside: "I have a simpler option — [alternative]. Which do you prefer?"
 3. Ask gating question: "Does this Level [N] look correct? Should I proceed to Level [N+1]?"
-4. Wait explicit approval before advance. Not proceed on silence or ambiguity.
+4. **STOP:** Wait explicit approval. Do not advance on silence or ambiguity.
 5. If user redirect, correct, or raise concerns -- revise current level. Not advance until revision approved.
 
-Each level constrain decision space for next. Skip level or advance without approval mean constraints not established, later levels drift.
+Each level constrains decision space for next. Skip level or advance without approval means constraints not established, later levels drift.
 
 **Out-of-level input**: If user provides detail belonging to a later level (e.g., interaction detail during Level 2), acknowledge it — "Good thinking, I'll capture that at Level [N] ([name])" — and continue the current level. Do not ignore or reject.
 
@@ -116,13 +100,9 @@ Each level constrain decision space for next. Skip level or advance without appr
 
 ## Simplicity Check (Every Level)
 
-Active push back on unnecessary complexity: capabilities beyond scope, components that could merge, interaction steps add no value, contracts with utility functions nobody requested. Present simpler alternative first. Let user choose add complexity rather than have remove it.
-
-Not post-design concern -- active discipline every checkpoint. Every addition surface area must review, test, maintain. Simpler better.
+Active push back on unnecessary complexity: capabilities beyond scope, components that could merge, interaction steps add no value, contracts with utility functions nobody requested. Present simpler alternative first. Let user choose to add complexity rather than remove it.
 
 ## Anti-Patterns
-
-Common violations collapse progressive structure:
 
 | Anti-Pattern | Symptom | Fix |
 |---|---|---|

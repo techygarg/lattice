@@ -83,14 +83,6 @@ class SendGridProvider implements EmailProvider {
 
 Poor version includes class body -- belongs Level 5.
 
-## Collapsed vs Progressive: Same Feature, Two Approaches
-
-**Collapsed** (single prompt → implementation): AI receives "build notification service", produces 400 lines code. Chose wrap BullMQ in custom RetryQueue abstraction. Added webhook notification channel. Defined interfaces inline within implementation. Dev must evaluate scope, architecture, integration, contracts, code quality -- all at once.
-
-**Progressive** (5 levels → implementation): Level 2, dev catches unnecessary RetryQueue wrapper -- BullMQ already handles retries natively. Level 1, webhook channel flagged out of scope. Level 4, interfaces agreed before any code. Level 5, implementation smaller, better integrated, already reviewed every design dimension.
-
-Progressive approach not take longer overall. Two-min conversation Level 2 that removes unnecessary abstraction saves thirty min reviewing, testing, maintaining code that wraps functionality framework already provides.
-
 ## Sequence Diagram Notation
 
 For Level 3 interactions, use ASCII or Mermaid. Both acceptable; choose whichever clearer for specific design.

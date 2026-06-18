@@ -49,7 +49,7 @@ If multiple language markers found repo root, note all ask user which primary st
 
 ### Step 2: Present Findings
 
-Report what found -- concise, structured. Present user:
+Present:
 
 ```
 ## Project Scan Results
@@ -71,11 +71,9 @@ Report what found -- concise, structured. Present user:
 - Review log: [found / none]
 ```
 
-**If everything already set up** (config exists all core standards docs exist): acknowledge "Lattice fully configured for this project" skip directly Step 4.
+**STOP: If `.lattice/config.yaml` and all core standards docs exist:** Tell user "Lattice fully configured." Skip to Step 4.
 
 ### Step 3: Guided Setup
-
-Based gaps found Step 2, suggest refiners priority order. Walk user through each missing piece one time.
 
 **Priority order**:
 
@@ -90,7 +88,7 @@ Based gaps found Step 2, suggest refiners priority order. Walk user through each
 - What refiner does (one sentence, from descriptions above)
 - Three choices: **Run now**, **Skip for later**, or **Skip all remaining**
 
-**If user says "run"** → Tell user invoke refiner: "Run `/[refiner-name]` now start guided interview." If refiner exits before completing, user can re-run -- existing partial output `.lattice/standards/` will not block interview from restarting.
+**If user says "run"** → Tell user invoke refiner: "Run `/[refiner-name]` now start guided interview."
 
 **If user says "skip"** → Move next refiner priority order.
 
@@ -108,11 +106,9 @@ language: {detected-language}
 paths: {}
 ```
 
-If user runs at least one refiner, refiner itself create or update config file -- no need create here. Set `language` key from detected language even if no refiners run -- atoms use it as fallback when language-idioms document not present.
+If user runs at least one refiner, refiner itself create or update config file -- no need create here. Set `language` key from detected language even if no refiners run.
 
 ### Step 4: Next Steps
-
-Present workflow so user knows what do next.
 
 ```
 ## You're Ready
