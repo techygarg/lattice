@@ -95,14 +95,19 @@ Statements the team proceeds with as true. If any assumption proves wrong, revis
 
 *(Scenarios ordered chronologically — natural implementation sequence.)*
 
-## Implementation Notes
-1. ...
-2. ...
+## Technical Constraints
+Non-negotiable inputs for design. Populate with:
+- Fixed external interfaces (SDKs, platform APIs, existing contracts that cannot change)
+- Pre-existing internal interfaces that cannot be modified
+- Hard platform/runtime limits (e.g., "must run on .NET 6", "no new NuGet deps")
+
+**STOP: No implementation decisions here — no class names, method shapes, DTO designs.** Those belong in the design context doc. Constraint = what design cannot change, not how design should work.
 
 ## Open Questions
 - [ ] ...
 
 ## Links
-- Design: *(updated when design-blueprint creates a context anchor doc for this feature)*
+- Design: *(link added by design-blueprint when context doc is created)*
+- Design overrides: *(populated by design-blueprint — lists any field, type, or behavior changed from this spec during design; empty means L4 contracts are fully consistent with this spec)*
 - Epic index: [index.md](../index.md)
 ```

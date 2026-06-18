@@ -9,15 +9,15 @@ description: "Investigate, reproduce, and safely fix a bug with regression prote
 
 Load these skills based on bug scope (see Steps 2 and 5 for when):
 
-1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) so fix match real project (always)
-2. `framework:context-anchoring` -- Load existing feature context doc when available, capture root cause + repair decisions for future (always)
-3. `framework:learning-harvest` -- Load prior operational learnings inform diagnosis; harvest new patterns at session end (always)
-4. `framework:collaborative-judgment` -- Surface meaningful repair trade-offs instead of silent patch choice (always)
-5. `framework:clean-code` -- Keep fix focused, readable, minimal scope (always)
-6. `framework:test-quality` -- Create + validate failing regression test that proves bug exists + fix works (always)
-7. `framework:architecture` -- Validate layer placement, dependency direction, correct repair location (conditional)
-8. `framework:domain-driven-design` -- Validate invariants, aggregate boundaries, domain behavior when bug involves domain logic (conditional)
-9. `framework:secure-coding` -- Validate trust boundaries, input handling, authorization, injection safety when bug touches security-sensitive code (conditional)
+1. `framework:knowledge-priming` -- (always)
+2. `framework:context-anchoring` -- (always)
+3. `framework:learning-harvest` -- (always)
+4. `framework:collaborative-judgment` -- (always)
+5. `framework:clean-code` -- (always)
+6. `framework:test-quality` -- (always)
+7. `framework:architecture` -- (conditional)
+8. `framework:domain-driven-design` -- (conditional)
+9. `framework:secure-coding` -- (conditional)
 
 ## Workflow
 
@@ -26,7 +26,7 @@ Load these skills based on bug scope (see Steps 2 and 5 for when):
 Start from failure, not proposed fix.
 
 - Gather **observed behavior**, **expected behavior**, **reproduction path**, any evidence: failing test, error message, stack trace, log excerpt, request payload, recent change.
-- Use `framework:learning-harvest` Load behavior. Focus hint: "bug investigation — focus: reliability, quality signals". Prior learnings about failure modes, fragile areas, and recurring defect classes inform diagnosis from the start.
+- Use `framework:learning-harvest` Load behavior. Focus hint: "bug investigation — focus: reliability, quality signals".
 - Use `framework:context-anchoring` Document Discovery to check for existing context doc for affected feature/module.
   - **If found** → Load it (context-anchoring Load behavior). Honor logged decisions + constraints as active commitments while diagnosing.
   - **If not found** → Proceed from bug report + current code. Don't block diagnosis on missing context.
@@ -35,7 +35,7 @@ End this step, summarize bug one sentence:
 
 > "Observed X, expected Y, reproducible via Z."
 
-If can't state bug clearly yet, keep gathering evidence before proposing code changes.
+**STOP:** If can't state bug clearly yet, gather more evidence before proposing code changes.
 
 ### Step 2: Reproduce and Localize
 
@@ -56,7 +56,7 @@ Localize issue before editing:
 - **Involve domain invariants or aggregate behavior?** If yes, plan load `framework:domain-driven-design`
 - **Likely fix touch multiple layers or dependency flow?** If yes, plan load `framework:architecture`
 
-If multiple plausible root causes remain, use `framework:collaborative-judgment` to present leading hypotheses + what evidence would distinguish. Don't guess and patch speculatively.
+If multiple plausible root causes remain, use `framework:collaborative-judgment` to present leading hypotheses + what evidence would distinguish.
 
 Before writing regression test, state root cause hypothesis explicitly, use `framework:collaborative-judgment` to surface:
 
@@ -71,7 +71,7 @@ End step with explicit bug contract:
 > **P (fix postcondition):** [what correct behavior looks like when C holds]
 > **Preserved:** [what must remain identical for all inputs outside C]
 
-If can't state all three, keep localizing before writing tests.
+**STOP:** If can't state all three, keep localizing before writing tests.
 
 **Optional persistence check**: Now that bug reproduced + localized, decide whether persist investigation:
 
@@ -94,9 +94,9 @@ If can't state all three, keep localizing before writing tests.
 
 **Stopping rule**:
 
-- If can't create stable failing automated test, pause, explain why before making code changes
-- Record closest executable reproduction you have
-- Don't present speculative fix as "complete" without automated reproducer unless user explicitly accepts limitation
+- **STOP:** If can't create stable failing automated test, explain why before making code changes.
+- Record closest executable reproduction you have.
+- Don't present speculative fix as "complete" without automated reproducer unless user explicitly accepts limitation.
 - If bug can't be tested directly due to tight coupling/deep integration, introduce minimum structural seam needed to make testable (method extraction, parameter injection, interface boundary). Not refactor — prerequisite for regression protection. Apply `framework:clean-code` inline, keep seam minimal.
 
 **Phase B — Preservation Baseline (must stay GREEN)**
@@ -185,5 +185,3 @@ After fix complete, recommend `/review` when change:
 - changes security-sensitive code
 - changes domain behavior
 - introduces non-trivial structural correction
-
-`/review` provides independent pass on repair, can capture broader learnings for future work.

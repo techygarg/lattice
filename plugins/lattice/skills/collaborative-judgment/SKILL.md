@@ -4,10 +4,6 @@ description: "Protocol for handling ambiguous decisions and missing/conflicting 
 ---
 # Collaborative Judgment
 
-## Problem
-
-AI resolve ambiguity silent. User never know decision made. Silent micro-assumption make code feel "off". Undo woven assumption cost more than upfront choice.
-
 ## When Decide vs When Ask
 
 Most decision NOT ambiguous. AI decide when:
@@ -25,9 +21,9 @@ Surface decision only when ALL three true:
 
 **Confidence test**: "Considered two+ approaches, neither clearly better given project context." True → surface. False → decide, move on.
 
-**Err side of deciding only when grounded.** Confident AI occasionally disputable > uncertain AI ask everything. But grounded autonomy ≠ guessing. If evidence thin, missing, or conflicting, don't silent choose.
+**Err side of deciding only when grounded.** Grounded autonomy ≠ guessing. **STOP:** If evidence thin, missing, or conflicting, don't silent choose.
 
-Not all uncertainty = judgment call. Sometimes problem is **knowledge gap / hallucination risk**. Stop and inspect / ask when ANY signal fire:
+Stop and inspect / ask when ANY signal fire:
 
 1. **No grounding** -- can't cite source for a project-specific claim.
 2. **Generic prior filling local gap** -- about to assume file path, API shape, config key, data contract, naming convention, workflow because "projects usually do X."
@@ -37,7 +33,7 @@ Not all uncertainty = judgment call. Sometimes problem is **knowledge gap / hall
 
 If any signal fire, don't invent options just to fit this protocol. First inspect available evidence. If still unresolved, ask targeted clarification.
 
-**Conflict rule**: conflicting active sources = automatic ask. Surface the contradiction explicitly. Don't pick winner silently.
+**STOP:** Conflicting active sources — surface contradiction, ask. Never pick winner silently.
 
 ## Presentation Format
 
@@ -98,5 +94,3 @@ Protocol become less active as project mature:
 - **First feature**: more judgment calls (no documented preferences yet).
 - **After run refiners**: fewer (project standards documented).
 - **After several features**: rare (context docs, learnings cover most cases).
-
-Well-configured project see almost no judgment calls. If AI still ask frequently after multiple features, standards documents need improvement. Example: aggregate boundary questions keep surface, DDD defaults document may not define sizing heuristic -- run domain-driven-design refiner capture team preference, eliminate question permanently.

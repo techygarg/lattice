@@ -21,19 +21,24 @@ Read apply skills order:
 
 ### Step 1: Establish Context
 
-Use `framework:learning-harvest` Load behavior. Focus hint: "design session — focus: design patterns, reliability, structural health". Prior learnings about decomposition choices, failure-prone patterns, and structural debt inform design decisions from the start.
+Use `framework:learning-harvest` Load behavior. Focus hint: "design session — focus: design patterns, reliability, structural health".
 
 Use `framework:context-anchoring` set up feature living doc.
 
 - **Document Discovery**: Check existing context anchor doc feature (scan context base directory, match by feature name or frontmatter).
-- **If exists** → Load (context-anchoring Load behavior). Present structured acknowledgment -- feature name, decision count, open questions, constraints. Resume last design checkpoint recorded doc.
+- **If exists** → Load (context-anchoring Load behavior). Present structured acknowledgment -- feature name, status, decision count, open questions, constraints. Resume last design checkpoint recorded doc.
 - **If not** → Create (context-anchoring Create behavior). New feature doc from template. Confirm feature name, summary, requirement doc link with user before creating.
+
+**Load requirement constraints**: Read `requirement_doc` from context doc frontmatter.
+- Null/absent → skip.
+- Found → read it. Extract `## Technical Constraints`. Treat as non-negotiable — same authority as architecture rules. Surface to user before Level 1.
+- Conflict during design → surface via `framework:collaborative-judgment`. User decides; record any change back in requirement doc `## Technical Constraints` before continuing.
 
 ### Step 2: Walk the Design Levels
 
 If key use cases or success criteria unclear now, use `framework:collaborative-judgment` surface what needs answering before starting Level 1.
 
-Drive through `framework:design-first` 5 levels sequentially. Each level, present design output, get user approval, then **persist approved output into context anchor doc before advancing**. Context doc is blueprint -- if not written down, not exist.
+Drive through `framework:design-first` 5 levels sequentially. Each level, present design output, get user approval, then **persist approved output into context anchor doc before advancing**.
 
 **Enrichment rule**: After user approves each level, use `framework:context-anchoring` Enrich behavior write following into context doc:
 
@@ -42,9 +47,9 @@ Drive through `framework:design-first` 5 levels sequentially. Each level, presen
 3. **Constraints identified** -- non-negotiable boundaries emerged.
 4. **Open questions** surfaced but remain unresolved.
 
-NOT advance next level until current level output persisted. Context doc must be single source truth every stage.
+NOT advance next level until current level output persisted.
 
-When applying architectural atoms each level, use `framework:collaborative-judgment` surface real design judgment calls immediately — not batch during design, each level constrains next.
+When applying architectural atoms each level, use `framework:collaborative-judgment` surface real design judgment calls immediately — not batch during design.
 
 Apply architectural atoms levels where add value:
 
@@ -53,6 +58,7 @@ Apply architectural atoms levels where add value:
 - On approval → Enrich context doc with approved capabilities under `## Design: Level 1 -- Capabilities` section.
 
 **Level 2 (Components)**:
+- **Challenge each component before approving: does it need to exist?** An abstraction with one known implementation, a layer with one caller, or a component solving a problem that isn't confirmed yet — inline or defer it. Add complexity only when the design explicitly justifies it.
 - Apply `framework:architecture` -- validate each component maps defined architectural layer, dependencies follow loaded architecture rules, component boundaries clear.
 - Apply `framework:domain-driven-design` -- identify aggregates, entities, value objects. Determine which components live domain layer which infrastructure.
 - On approval → Enrich context doc with approved component list, layer assignments, diagram under `## Design: Level 2 -- Components` section. Log architectural decisions (layer choices, DDD classifications) Decisions Log.
@@ -72,15 +78,24 @@ Apply architectural atoms levels where add value:
 After Level 4 (Contracts) approved and persisted:
 
 - **Verify completeness**: Context doc must now contain all four design level sections (Capabilities, Components, Interactions, Contracts) plus every decision made during design process. If any level output missing from doc, enrich now before proceeding.
+
+- **Check requirement spec drift**: Read `requirement_doc` from context doc frontmatter.
+  - Null/absent → skip. Note in Design Summary: "No requirement doc — drift check skipped."
+  - Path unreadable → STOP: "Requirement doc not found at `[path]`. Verify before continuing."
+  - Found → compare L4 contracts against requirement doc Scenarios/ACs and `## Technical Constraints`. For each divergence, write to requirement doc `## Links` as a discrete file edit:
+    `- Design override: \`[field/behavior]\` — changed from [X] to [Y]. Reason: [from Decisions Log].`
+  - No divergences → write: `- Design alignment: L4 consistent with requirement spec — no overrides.`
+  - **STOP: Do not set `status: approved` until this check is complete and overrides are written.**
+
 - **Write design summary**: Use `framework:context-anchoring` Enrich add `## Design Summary` section to context doc containing:
   - Components and layer assignments
   - Key contracts and interfaces
   - Architectural constraints
   - Domain model decisions (if applicable)
   - Open questions resolved during design
-  - Design status: **Approved -- ready for implementation**
-- **Log completion decision**: Add decision entry Decisions Log: "Design approved at Level 4. Blueprint complete ready for implementation."
+- **Set approved status**: Write `status: approved` to context doc frontmatter. **STOP: discrete file edit — not prose.** Without this, code-forge will not proceed.
+- **Log completion decision**: Add decision entry Decisions Log: "Design approved at Level 4. Status set to approved — ready for implementation."
 - Present summary user as confirmation.
-- Design complete. NOT proceed Level 5 (Implementation) -- that separate concern handled by `framework:code-forge` molecule or equivalent implementation skill.
+- Design complete. NOT proceed Level 5 (Implementation).
 - Use `framework:learning-harvest` Harvest behavior. Session context: "design session — architectural decomposition and contract definition". Synthesize and propose cross-cutting patterns from this session — decomposition approaches, architectural trade-offs, scope decisions that could inform future designs. User confirms what enters the document.
-- Suggest user invoke `/code-forge` when ready begin coding against approved blueprint.
+- Suggest user invoke `/code-forge` when ready begin coding against the approved design.

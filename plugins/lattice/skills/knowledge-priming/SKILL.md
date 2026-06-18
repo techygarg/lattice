@@ -5,77 +5,44 @@ description: "Load project-specific context -- tech stack, architecture overview
 
 # Knowledge Priming
 
-## Purpose
-
-AI default = internet average. No project context → guesses framework, invents conventions, generic code not match stack. Knowledge priming fix: load concise project identity doc before design/implement/review.
-
-Not teach code principles (clean-code), structure rules (architecture), domain modeling (domain-driven-design). Answer different question: **"What is this project?"** -- tech stack, architecture style, directory layout, trusted docs, conventions other skills not infer from code.
-
 ## Config Resolution
 
-1. Look `.lattice/config.yaml` in repo root
-2. If found, check `paths.knowledge_base` for custom doc path
-3. If doc exist at path, read + apply as ambient project context
-4. If no config/path/doc found -- see "When No Document Exists"
-
-No embedded defaults. Every project identity unique -- no sensible generic default for "what your project." Knowledge base doc created by `knowledge-priming-refiner` skill or hand-written.
+1. Look for `.lattice/config.yaml` in repo root.
+2. If found, check `paths.knowledge_base` for custom doc path.
+3. If doc exists at that path, read the full document.
+4. **STOP: Apply the loaded document as ambient context before any design, implement, or review work begins.**
+5. If no config, path, or doc found → see "When No Document Exists".
 
 ## When No Document Exists
 
-If no knowledge base doc found during config resolution, inform user:
+Inform the user:
 
-> No project knowledge base found. Without it, AI skills work from generic assumptions about tech stack, architecture, conventions.
+> No project knowledge base found. AI skills will operate from generic assumptions about tech stack, architecture, and conventions.
 >
-> To create one, trigger **knowledge-priming-refiner** skill -- guided interview (~10 questions) that produces concise document (~50 lines). Once created, every Lattice skill use it as ambient context.
+> To create one, trigger **knowledge-priming-refiner** — guided interview (~10 questions) producing a concise document (~50 lines).
 >
 > Can also create `.lattice/standards/knowledge-base.md` manually and reference in `.lattice/config.yaml` under `paths.knowledge_base`.
 
-Message informational, not blocking. All skills continue work without knowledge base -- just operate without project-specific context.
+Do not block. Continue without knowledge base.
 
 ## What the Document Contains
 
-Knowledge base doc from `knowledge-priming-refiner` has 5 sections:
-
 | # | Section | What It Captures |
 |---|---------|-----------------|
-| 1 | **Architecture Overview** | Big picture: what kind application, major components, how interact |
+| 1 | **Architecture Overview** | App type, major components, how they interact |
 | 2 | **Tech Stack and Versions** | Specific technologies with version numbers, including "not X" clarifications |
-| 3 | **Curated Knowledge Sources** | Official docs, trusted blogs, internal references team relies on (5-10 max) |
+| 3 | **Curated Knowledge Sources** | Official docs, trusted blogs, internal references (5–10 max) |
 | 4 | **Project Structure** | Directory layout showing where things live |
-| 5 | **Project Conventions** | Brief project-specific conventions other skills not infer |
-
-Doc intentionally lean -- under 50 lines focused content. Every token compete for context window, so knowledge base capture what matter most, omit what other skills already handle.
-
-## How It Is Used
-
-When knowledge base doc loaded, become **ambient context** for all skills. Any molecule compose this atom load first, before design/implement/review work. Examples how used:
-
-- **Design molecules** use ground design decisions in actual tech stack + architecture -- propose components fit real project structure not generic patterns
-- **Implementation molecules** use generate code match project framework, version-specific APIs, directory conventions, naming patterns
-- **Review molecules** use evaluate changes against project actual standards -- flag deviations from documented conventions not generic best practices
-
-Knowledge base always-on context. Unlike conditional atoms (DDD, secure-coding, test-quality) activate based on what code touched, knowledge base apply every interaction because project identity always relevant.
+| 5 | **Project Conventions** | Project-specific conventions other skills cannot infer from code |
 
 ## Scope Boundary
 
-Knowledge priming capture **project identity + technical context**. Deliberately exclude concerns covered by other atoms:
+| Concern | Owned By |
+|---------|----------|
+| Coding style, naming principles, function design | clean-code atom |
+| Architectural layers, dependency direction | architecture atom |
+| Domain modeling, aggregate design | domain-driven-design atom |
+| Input validation, injection prevention | secure-coding atom |
+| Test structure, assertion quality | test-quality atom |
 
-| Concern | Where It Belongs | Not Here |
-|---------|-----------------|----------|
-| Coding style, naming principles, function design | clean-code atom | No code examples, no naming rules |
-| Architectural layers, dependency direction | architecture atom | No structural rules |
-| Domain modeling, aggregate design | domain-driven-design atom | No DDD patterns |
-| Input validation, injection prevention | secure-coding atom | No security rules |
-| Test structure, assertion quality | test-quality atom | No testing patterns |
-
-If content teach *how write code*, belong in atoms above. Knowledge priming answer *"what we working with?"* -- not *"how should write?"*
-
-## Integration with Other Skills
-
-This atom composed by all three molecules:
-
-- **`design-blueprint`** -- load knowledge base at start ground design in real tech stack + architecture
-- **`code-forge`** -- load knowledge base inform implementation decisions, framework-specific patterns, directory placement
-- **`review`** -- load knowledge base evaluate changes against project-specific conventions + stack constraints
-
-When composed by molecule, knowledge base loaded once at beginning, remain active throughout workflow. When used standalone, load on first reference to project context.
+Knowledge priming answers *"what are we working with?"* — not *"how should we write?"*

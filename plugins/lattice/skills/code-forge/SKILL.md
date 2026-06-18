@@ -23,20 +23,32 @@ Read, apply:
 
 ### Step 1: Establish Implementation Context
 
-Use `framework:learning-harvest` Load behavior. Focus hint: "implementation session — focus: implementation craft, quality signals, reliability". Prior learnings about coding patterns, recurring quality issues, and failure modes inform implementation from the start — e.g., learnings say "anemic domain models keep appearing," push behavior into entities. Learnings flag "missing input validation on VOs," validate in constructors from start.
+Use `framework:learning-harvest` Load behavior. Focus hint: "implementation session — focus: implementation craft, quality signals, reliability".
 
 Use `framework:context-anchoring` Doc Discovery check existing context anchor doc for feature impl.
 
-- **If found** → Load (context-anchor Load behavior). Present struct ack -- feature name, decision count, open Qs, constraints. Honor all logged decisions/constraints as active commits.
+- **If found** → Load (context-anchor Load behavior). Present struct ack -- feature name, **status**, decision count, open Qs, constraints. Honor all logged decisions/constraints as active commits.
 - **If not found** → Nudge user: "Have design doc/blueprint for feature? Or work from discussed?" Accept either graceful.
   - User provides doc → load, follow.
-  - Proceed without → all atom rails still apply; just no struct blueprint ref. Work from verbal reqs in convo.
+  - Proceed without → all atom rails still apply; just no approved design doc to reference. Work from verbal reqs in convo.
+
+**Design completeness check** — STOP gates before Step 2:
+
+**Check 1 — status:** Read frontmatter `status`.
+- `approved` → pass.
+- Anything else → STOP: "Context doc not approved (`status: [value]`). Run design-blueprint first. Proceed anyway?" Confirm → log in Decisions Log, continue as "Without approved design."
+
+**Check 2 — levels present:** Scan body for `## Design: Level 3` and `## Design: Level 4`.
+- Both present → pass.
+- Either missing → STOP: "Missing [Level 3 / Level 4 / both]. Proceed anyway?" Confirm → log absent levels in Decisions Log, treat as gaps to fill during implementation.
+
+Both pass → proceed as **"With approved design"**.
 
 ### Step 2: Plan Implementation Order
 
-**With blueprint**: Extract component list, layer assigns from context anchor doc. Use L2 (Components) decisions for layer place, L3 (Interactions) for dep flow.
+**With approved design**: Extract component list, layer assigns from context anchor doc. Use L2 (Components) decisions for layer place, L3 (Interactions) for dep flow.
 
-**Without blueprint**: Classify req components→arch layers using layer defs from `framework:architecture`. Each component, determine:
+**Without approved design**: Classify req components→arch layers using layer defs from `framework:architecture`. Each component, determine:
 
 - Primary responsibility? (biz rules, data access, coord, external I/O)
 - Which layer in loaded arch doc matches responsibility?
@@ -67,6 +79,7 @@ Each component in planned order, gen **code+tests together** -- tests not aftert
 
 Every component:
 
+- **Prefer the simpler path first.** Before writing custom code: does a stdlib function, platform built-in, or existing dependency already cover this? If yes — use it. Can it be expressed in shorter code? Use that. Write custom code only when simpler options genuinely fall short.
 - **Place correct arch layer** per `framework:architecture`. Valid dep direction follows loaded arch rules.
 - **Apply `framework:clean-code` self-valid** during gen. Run inline checks: SRP comply, meaningful naming, low cyclomatic complexity, proper err handle, no magic vals, clean func sigs, no dead code, appropriate abstract level, clear control flow, minimal comments (code self-doc).
 - **Write tests** using `framework:test-quality` self-valid.
@@ -75,7 +88,7 @@ Conditional checks per component:
 
 - **If domain layer** → Apply `framework:domain-driven-design` self-valid.
 - **If trust boundary** (HTTP handler, external API call, user input process, file I/O) → Apply `framework:secure-coding` self-valid.
-- **If blueprint exists** → Verify component fulfills L4 (Contracts) spec. Flag any deviation from agreed contract.
+- **If blueprint exists AND Level 4 was confirmed present in Step 1** → Verify component fulfills L4 (Contracts) spec. Flag any deviation from agreed contract. If user proceeded without L4 (Step 1 Check 2 failed), skip this check — there are no contracts to verify against.
 
 **Post-Gen Verification** (applies every component, all review modes):
 
@@ -102,7 +115,7 @@ Step checks **arch coherence** -- not code quality (verified per-component Step 
 - **Dep direction**: Apply `framework:architecture` verif across all components — verify inter-component dep direction follows loaded arch rules. No layer import from layer not permitted depend.
 - **Zero Impl Rule**: Check no new components, interactions, contracts intro beyond planned Step 2. Something added, flag -- may be necessary, but should be conscious decision, not scope creep.
 - **Final security scan**: Apply `framework:secure-coding` across component boundaries. Check data flowing between components crosses trust bounds safely.
-- **Learnings check**: If operational learnings loaded Step 1, verify previously-flagged patterns not recur this impl. Past insight said "anemic domain models keep appearing" — check entities this impl have behavior.
+- **Learnings check**: If operational learnings loaded Step 1, verify previously-flagged patterns not recur this impl.
 
 ### Step 5: Enrich Context
 
@@ -113,7 +126,12 @@ Throughout Steps 3-4, use `framework:context-anchoring` Enrich behavior keep liv
 - **Resolve open Qs** -- Qs from design phase answered during impl, log resolution.
 - **If no context doc exists**, significant impl decisions made → suggest create. Decisions worth preserve future sessions.
 
-Use `framework:learning-harvest` Harvest behavior. Session context: "implementation session — code generation from design contracts". Synthesize and propose cross-cutting patterns from this session — implementation gotchas, design-to-reality gaps, library/framework lessons that could inform future implementations. User confirms what enters the document.
+Use `framework:learning-harvest` Harvest behavior. Session context: "implementation session — code generation from design contracts". Synthesize and propose cross-cutting patterns from this session — implementation gotchas, design-to-reality gaps, library/framework lessons. User confirms what enters the document.
+
+**Close feature lifecycle**: Two discrete file edits — do not skip either:
+1. Write `status: complete` to context doc frontmatter.
+2. If `requirement_doc` is set in context doc frontmatter, write `status: complete` to that file too.
+**STOP: Both required.**
 
 After enrich context doc, recommend review:
 

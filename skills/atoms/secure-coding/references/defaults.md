@@ -1,7 +1,5 @@
 # Secure Coding: Default Principles
 
-Embedded defaults for secure code. Synthesizes OWASP, SANS, defensive programming into actionable guidelines.
-
 Custom `.lattice/secure-coding.md` (via `.lattice/config.yaml`) overrides this.
 
 ## Table of Contents

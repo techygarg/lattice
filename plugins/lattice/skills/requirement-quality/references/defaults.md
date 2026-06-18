@@ -1,6 +1,6 @@
 # Requirements: Default Standards
 
-Embedded defaults for the requirement-quality atom. Opinionated guardrails — override via refiner or write `.lattice/standards/requirement-standards.md` directly.
+Embedded defaults for the requirement-quality atom. Override via refiner or write `.lattice/standards/requirement-standards.md` directly.
 
 ---
 
@@ -22,9 +22,7 @@ Feature is complete, self-contained unit of product behavior. Must be independen
 
 **Test for completeness**: can a developer open this file, read it, and begin design-blueprint without asking a single clarifying question? If no → feature is incomplete.
 
-**Size signal**: more than 5 scenarios → challenge whether one feature or two. Fewer than 2 scenarios → consider merging with related feature.
-
-**Not a story**: feature is the atomic unit. Story decomposition is a team execution concern, downstream of feature spec.
+**Size signal**: more than 5 scenarios → challenge whether one feature or two. Fewer than 2 scenarios → merge with related feature.
 
 ---
 
@@ -127,7 +125,7 @@ Implementation notes describe the natural build sequence for the feature — wha
 
 **Level of detail**: behavioral, not technical. "Core form validation and submission" not "wire the zod schema to the POST /api/forms endpoint".
 
-**Purpose**: sequencing hint for design-blueprint and code-forge. Not a story breakdown. Not a task list. The developer uses these as a chronological guide, not as prescribed tickets.
+**Purpose**: sequencing hint for design-blueprint and code-forge — not a task list.
 
 **Format**: numbered list, each a short phrase.
 
@@ -137,6 +135,3 @@ Implementation notes describe the natural build sequence for the feature — wha
 3. [Error/edge handling] — [what it protects]
 ```
 
----
-
-*Defaults informed by BABOK (Business Analysis Body of Knowledge), BDD (Behaviour-Driven Development) practice, Gojko Adzic Specification by Example (2011), and product management craft.*

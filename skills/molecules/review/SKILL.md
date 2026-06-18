@@ -42,13 +42,13 @@ Review-standards doc has 7 sections map to workflow steps:
 | §6 Health Log Preferences | Step 5 (Harvest Learnings and Log Review) |
 | §7 Custom Review Dimensions | Step 3 (Run Targeted Validation) |
 
-Each step notes where config applies with "**Config override**" callouts. When no review-standards doc exists, ignore callouts & use defaults.
+Each step notes where config applies with "**Config override**" callouts.
 
 ## Workflow
 
 ### Step 1: Identify the Delta
 
-Use `framework:learning-harvest` Load behavior. Focus hint: "review session — focus: all categories". Prior learnings across all categories inform review — recurring patterns are more likely to be flagged, known fragile areas get extra attention.
+Use `framework:learning-harvest` Load behavior. Focus hint: "review session — focus: all categories".
 
 Determine what code reviewing & establish scope.
 
@@ -75,12 +75,12 @@ Classify delta:
 
 **Conditionally load** based on delta classification:
 
-| Condition | Load | Why |
-|-----------|------|-----|
-| Delta touches multiple layers, adds new files, or changes file locations | `framework:architecture` | Structural changes can break dependency direction or layer responsibilities |
-| Delta includes files in domain folder or modifies domain objects | `framework:domain-driven-design` | Domain changes can break aggregate boundaries, anemic models, or invariant enforcement |
-| Delta touches trust boundaries (HTTP handlers, auth, DB queries, external APIs, secrets, config) | `framework:secure-coding` | Security-sensitive code needs injection, validation, and secrets checks |
-| Delta includes test files | `framework:test-quality` | Test code has own quality standards (AAA, isolation, naming) |
+| Condition | Load |
+|-----------|------|
+| Delta touches multiple layers, adds new files, or changes file locations | `framework:architecture` |
+| Delta includes files in domain folder or modifies domain objects | `framework:domain-driven-design` |
+| Delta touches trust boundaries (HTTP handlers, auth, DB queries, external APIs, secrets, config) | `framework:secure-coding` |
+| Delta includes test files | `framework:test-quality` |
 
 When multiple atoms load, run independently -- each atom's checklist applied to parts of delta relevant to it. Findings from different atoms merged Step 4.
 
@@ -131,7 +131,7 @@ Severity levels:
 
 When finding borderline between severity levels, use `framework:collaborative-judgment` — note uncertainty inline with both interpretations rather than silently classifying.
 
-End with **"What's done well"** sentence highlighting something positive about delta -- good naming, proper error handling, clean test structure, correct layer placement. Every review should acknowledge what's working, not just what's broken.
+End with **"What's done well"** sentence highlighting something positive about delta -- good naming, proper error handling, clean test structure, correct layer placement.
 
 **Full mode** (when user asks for detailed/comprehensive review):
 
@@ -154,7 +154,7 @@ Organize findings by atom. For each atom loaded:
 After all atom sections, add:
 
 - **What's done well**: List 2-3 positive observations.
-- **Improvement suggestions** (optional): If broader patterns beyond individual findings -- e.g., "consider extracting shared validation layer" -- note here. Keep to 1-2 suggestions max.
+- **Improvement suggestions** (optional): If broader patterns beyond individual findings -- e.g., "consider extracting shared validation layer", or whether the delta introduces complexity where a simpler path exists (stdlib, platform built-in, fewer abstractions) -- note here. Keep to 1-2 suggestions max.
 
 **Config override (§2 Severity Classification):** If review-standards doc defines custom severity levels or per-atom overrides:
 - Use custom severity level definitions instead of (override) or merged with (overlay) defaults above.
@@ -171,13 +171,11 @@ After all atom sections, add:
 
 ### Step 5: Harvest Learnings and Log Review
 
-After presenting report, harvest learnings & log review for project health visibility.
+After presenting report, harvest learnings & log review.
 
 **Harvest Learnings** — use `framework:learning-harvest` Harvest behavior:
 
 Session context: "review session — code quality assessment against atom standards". Synthesize and propose cross-cutting patterns from this review — recurring quality anti-patterns, structural issues that keep appearing, reliability gaps. User confirms what enters the document.
-
-Review is often the highest-signal producer of operational learnings because it sees patterns across features. However, the same rigor applies: only propose patterns grounded in this session's findings, only write what the user confirms.
 
 **Log Review** — append to `.lattice/reviews/review-log.md`:
 
@@ -194,7 +192,7 @@ Review is often the highest-signal producer of operational learnings because it 
 - **Strengths**: [one positive highlight]
 ```
 
-4. Health signal, not detailed report. Keep concise — bullets help track trends, not replicate full review.
+4. Health signal only. Keep concise.
 5. If log exceeds ~20 entries, move oldest entries to one-line `## History` summary section at top of file.
 
 **Config override (§5 Insight Capture Preferences):** If review-standards doc defines insight capture preferences:

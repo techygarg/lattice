@@ -35,8 +35,6 @@ Check for `.lattice/config.yaml`. Load `knowledge-base.md` and `architecture.md`
 
 If no `.lattice/` config exists, offer to run `lattice-init` first. If declined, infer defaults from the scan.
 
-Use `framework:knowledge-priming` to establish codebase identity before analysis.
-
 ---
 
 ### Step 2: Silent Scan — Architectural Signal Extraction
@@ -92,19 +90,9 @@ This is signal extraction, not a full read. **Target: 15–25 file reads** (view
 
 Read `references/interview-guide.md`. Apply the four-act arc, question bank per act, answer interpretation table, conversation principles, and red flags from that document.
 
-**Four acts — in order, do not reorder:**
-- Act 1 — Burning Platform (always, max 2 questions)
-- Act 2 — History (always, max 2 questions)
-- Act 3 — Vision (always, max 2 questions)
-- Act 4 — Guardrails (selective, max 2 questions)
+**If the user explicitly declines the interview** ("just analyze the code", "don't ask me questions"): *"The recommended direction will be based solely on code signals without team context. It may miss delivery constraints, team topology, or unstated goals. Proceed?"* If confirmed, skip to Step 4. Flag the Team Vision section in the insights document as "inferred, not confirmed."
 
-**In practice: 5–7 questions total.** Skip any act's questions the scan already answered. If the user described their pain or goal when invoking the molecule, that counts as Act 1 answered — acknowledge it rather than re-asking: *"You mentioned [X] — let me confirm I understood that correctly before we continue."*
-
-**This principle applies to all acts** — if the user provided history (Act 2), vision (Act 3), or constraints (Act 4) in their invocation or earlier responses, acknowledge what was said and confirm understanding rather than re-asking. The interview fills gaps in knowledge, not a form to complete.
-
-**If the user explicitly declines the interview** ("just analyze the code", "don't ask me questions"): acknowledge the limitation — *"The recommended direction will be based solely on code signals without team context. It may miss delivery constraints, team topology, or unstated goals. Proceed?"* If confirmed, skip to Step 4. Act 3 (vision) will be inferred from the scan and stated pain only — flag this clearly in the insights document's Team Vision section as "inferred, not confirmed."
-
-**Non-negotiable behavioral rule:** Act 3 answers are architectural inputs, not soft context. The recommended direction in Step 5 must visibly respond to what the team said in Act 3. Consult the answer interpretation table in `references/interview-guide.md` to map vision answers to architectural implications before forming the recommendation.
+**STOP:** Act 3 answers are architectural inputs, not soft context. The recommended direction in Step 5 must visibly respond to what the team said in Act 3. Consult the answer interpretation table in `references/interview-guide.md` before forming the recommendation.
 
 ---
 
@@ -137,7 +125,7 @@ Ask specifically: *"Does this map accurately reflect how the codebase is structu
 
 If the map has not converged after 3 correction rounds, use `framework:collaborative-judgment` to surface the specific unresolved points and ask the user to make a decision rather than continuing to iterate.
 
-**Do NOT advance to Step 5 until the user explicitly confirms the current architecture map.**
+**STOP:** Do not advance to Step 5 until the user explicitly confirms the current architecture map.
 
 Use `framework:collaborative-judgment` for genuine ambiguities in the current-state read.
 
@@ -181,11 +169,9 @@ graph TD
 - Annotated target folder tree — layers as directories, representative files per layer with one-line role annotations. Apply `framework:knowledge-priming` and `.lattice/standards/language-idioms.md` (if it exists) to ensure layer names and file naming conventions match this codebase's language and framework — not a generic OOP template. Not exhaustive — enough to make the structure unambiguous.
 - Bounded context map (when DDD applies)
 
-State explicitly: *"This recommended direction is the best current understanding. It will be refined as the team acts on it."*
+Ask: *"Does this direction address the pain you described? Are there constraints or preferences that should change this proposal?"*
 
-Ask specifically: *"Does this direction address the pain you described? Are there constraints or preferences that should change this proposal?"*
-
-**Do NOT advance to Step 6 until the user explicitly confirms the recommended direction.**
+**STOP:** Do not advance to Step 6 until the user explicitly confirms the recommended direction.
 
 If the direction has not converged after 3 revision rounds, use `framework:collaborative-judgment` to surface the specific unresolved tensions (e.g., vision vs. constraints, simplicity vs. completeness) and ask the user to make a decision rather than continuing to iterate.
 
@@ -219,7 +205,7 @@ For each first move:
 
 Ask: *"Do these first moves match your team's capacity and what you want to tackle first?"*
 
-**Do NOT advance to Step 7 until the user confirms the gap assessment and first moves.**
+**STOP:** Do not advance to Step 7 until the user confirms the gap assessment and first moves.
 
 ---
 
@@ -288,5 +274,3 @@ Must change / Should change / Explicitly defer / Leave alone.
 Use today's date in YYYY-MM-DD format wherever `[date]` appears in the Session Status table.
 
 On subsequent sessions that resume this document, append an entry to the Progress Log before closing: date, which phase was revisited, what changed, any new findings that emerged.
-
-The document must be complete enough that a new AI session or new team member can read it and understand exactly what was found, what was agreed, and what to do next. No re-briefing required.

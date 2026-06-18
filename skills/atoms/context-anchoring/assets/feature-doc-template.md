@@ -2,6 +2,7 @@
 feature: <Feature Name>
 requirement_doc: null
 created: <YYYY-MM-DD>
+status: draft
 ---
 
 # <Feature Name>
@@ -17,12 +18,13 @@ created: <YYYY-MM-DD>
 
 ## Open Questions
 
-<!-- When resolved, capture as decision above and remove from here. -->
+None.
 
 ## Constraints
 
-<!-- Non-negotiable once recorded. Add only when confirmed. -->
+None.
 
 ## Key Files
 
-<!-- Add as dev progresses. List paths with brief role note. -->
+| Path | Role |
+|---|---|

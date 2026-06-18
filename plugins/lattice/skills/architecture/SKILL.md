@@ -7,8 +7,6 @@ description: "Enforce architectural rules when generating or modifying code. Def
 
 ## Config Resolution
 
-Skill support two mode: **clean architecture** (default) and **custom architecture** (team-define). Mode determine which rule load.
-
 **Step 1 — Determine mode:**
 
 1. Read `.lattice/config.yaml` in repo root
@@ -43,4 +41,4 @@ If `paths.language_idioms` exist in config, read **"Dependency Management"** sec
 
 STOP after generate each component. Read **Self-Validation Checklist** and **Anti-Pattern Scan** from loaded enforce rule (clean-architecture.md or custom-architecture.md) and apply.
 
-**Project-specific checks:** If architecture content doc (loaded in Step 3) contains a **Validation Checklist** section (§6), apply those checks as additional project-specific validation after the enforce rule checklist. These are team-customized checks produced by the architecture-refiner.
+**Project-specific checks:** If architecture content doc (loaded in Step 3) contains a **Validation Checklist** section (§6), apply those checks as additional project-specific validation after the enforce rule checklist.

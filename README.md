@@ -60,7 +60,7 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
     ```
    The Codex plugin package lives in [`plugins/lattice/`](plugins/lattice/) and is registered by [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). It contains the same 26 skills flattened for Codex discovery.
    
-   *This duplication currently to suport codex. In future, we may find a better approach as tools evolves.*
+   *This duplication currently to support codex. In future, we may find a better approach as tools evolves.*
 
    **Option C — Clone and install locally (any AI tool)**
    ```bash
