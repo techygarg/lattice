@@ -25,6 +25,7 @@ body:
         - collaborative-judgment (atom)
         - requirement-quality (atom)
         - lattice-init (molecule)
+        - refiners-update (molecule)
         - design-blueprint (molecule)
         - code-forge (molecule)
         - refactor-safely (molecule)
