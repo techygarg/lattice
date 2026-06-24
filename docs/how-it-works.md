@@ -47,6 +47,7 @@ All skills and their invocation commands. Invoke any skill in your AI tool's cha
 | Skill | Command | What it does |
 |-------|---------|-------------|
 | lattice-init | `/lattice-init` | Guided setup — scans project, detects config, suggests refiners, creates `.lattice/config.yaml` |
+| refiners-update | `/refiners-update` | Update-mode counterpart to lattice-init — scans existing standards, captures what changed, routes each affected one to its refiner's revise mode, records a git-native change note |
 | requirement-forge | `/requirement-forge` | Collaborative feature specification as a senior PM + BA pair — produces epic/feature hierarchy in `.lattice/requirements/` as direct input to design-blueprint |
 | design-blueprint | `/design-blueprint` | Complete design workflow through 5 levels, produces an approved blueprint before any code is written |
 | code-forge | `/code-forge` | Implements from an approved blueprint or verbal requirements using inside-out layer ordering |
@@ -158,6 +159,14 @@ Guided setup — bridges installing Lattice and getting first value. Run once pe
 **Composes**: knowledge-priming
 
 Scans the project, presents setup status, suggests refiners in priority order (knowledge-priming first), then shows the design-to-review workflow.
+
+### refiners-update
+
+Update-mode counterpart to `lattice-init` — revises existing standards after a significant change (architecture shift, language switch, new domain rules). Re-runnable; owns no living document.
+
+**Composes**: knowledge-priming
+
+Scans `.lattice/standards/` for existing refiner outputs, captures what changed, then routes each affected standard to its refiner's revise mode and records a git-native `Last updated` change note. Does not create missing standards — that stays with `lattice-init`.
 
 ### requirement-forge
 
