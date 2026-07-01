@@ -167,7 +167,7 @@ Collaborative feature specification as a senior PM + BA pair. Upstream in the pi
 
 **Two modes**: collaborative (confirmation gates per phase) or autonomous (drafts everything, then presents).
 
-**Workflow**: Standards check → session resume → intake (existing material or verbal) → epic definition → feature discovery per epic → feature spec per feature (frame confirmed before scenarios) → write apex index. Output: `.lattice/requirements/` folder feeding directly into design-blueprint.
+**Workflow**: Standards check → session resume → intake (existing material or verbal) → epic definition → feature discovery per epic → feature spec per feature (frame confirmed before scenarios) → refresh generated epic and index views. Output: `.lattice/requirements/` folder feeding directly into design-blueprint.
 
 ### design-blueprint
 
