@@ -63,7 +63,7 @@ Present 3 proposed personas with a one-line rationale for each:
 
 Wait for the user to confirm or adjust before proceeding.
 
-**Do NOT proceed to Step 3 until personas are agreed.**
+**STOP: do NOT proceed to Step 3 until personas are agreed.**
 
 ---
 
@@ -92,7 +92,7 @@ For each chosen scenario, follow the skill's instructions literally. Treat silen
 - The decision belongs to this skill rather than another skill or pipeline stage
 - The missing guidance would likely cause a real failure, confusion, or drift
 
-If any of these are false, do not record a finding.
+**STOP: if any of these are false, do not record a finding.**
 
 **3b — Persona-specific concerns**
 
@@ -158,7 +158,7 @@ Severity definitions:
 - **WARNING** — practical issue likely to cause confusion, inconsistency, drift, or degraded output
 - **OBSERVATION** — real but lower-impact improvement; omit if speculative, trivial, or unlikely
 
-Do not force every severity bucket to be non-empty. It is valid to report zero observations, zero warnings, or no findings at all.
+**STOP: do not force every severity bucket to be non-empty.** It is valid to report zero observations, zero warnings, or no findings at all.
 
 ```
 ## Skill Review — {skill-name}
@@ -166,7 +166,7 @@ Personas: {Persona A} | {Persona B} | {Persona C}
 
 If no retained findings remain after pruning:
 
-No material practical gaps found. The skill appears ready for use as written.
+No material practical gaps found.
 
 Otherwise present:
 
@@ -205,8 +205,8 @@ If no findings remain, state that no fixes are recommended and stop.
 ## Step 6: Apply agreed fixes
 
 For each confirmed fix:
-- Make the minimal change that addresses the gap — do not rewrite surrounding content
+- Make the minimal change that addresses the gap. **STOP: do not rewrite surrounding content.**
 - After each edit, state: what changed, which gap it closes, which persona(s) raised it
-- Do not fix warnings or observations unless the user explicitly asks
+- **STOP: do not fix warnings or observations unless the user explicitly asks.**
 
 After all fixes: present a brief closure summary — gaps closed, gaps deferred, what a second run of this skill would likely find.

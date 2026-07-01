@@ -32,11 +32,9 @@ Result: PASS | FAIL (N errors, M warnings)
 - The report distinguishes errors (must fix) from warnings (judgment calls)
 - After "fix mode" is applied, re-running the validator returns PASS
 
-Validates one or more Lattice SKILL.md files against all conventions. Always reads conventions from `CLAUDE.md` — never from memory.
-
 ## Step 1: Load conventions
 
-Read `CLAUDE.md` — Skill Conventions section. This is the source of truth. Do not rely on memory.
+Read `PROJECT.md` — Skill Conventions section. This is the source of truth. **STOP: do not rely on memory.**
 
 Read `references/convention-rules.md` for the detailed per-tier checklist.
 
@@ -67,7 +65,7 @@ For every `paths.{key}` config key referenced in a refiner or atom:
 - Check it appears in `docs/configuration.md` paths table
 
 For every `.lattice/{subfolder}/` path referenced in a molecule:
-- Check that subfolder is in the known subfolders list in `CLAUDE.md`
+- Check that subfolder is in the known subfolders list in `PROJECT.md`
 
 ## Step 5: Three-angle structural review
 
@@ -95,34 +93,33 @@ Each lens asks a different question:
 
 ## Step 6: Report
 
-Format findings as:
+**STOP: a passing category gets the bare word `PASS`** — no restated commentary; findings text only on FAIL/WARN. Format findings as:
 
 ```
 ## Skill Validator — {skill-name}
 Tier: {atom | molecule | refiner}
 
 ### Structural
-PASS — all structural checks clean
+PASS
 
 ### Tier conventions
 FAIL — [Atom] Self-Validation Checklist missing STOP language on check 3
 FAIL — [Molecule] Planning molecule Step 2 has no confirmation gate
 
 ### Cross-references
-PASS — all framework: references resolve
+PASS
 
 ### Three-angle review
 [PO]   PASS
-[BA]   WARN — Scenario: no guidance for interrupted session (resume behavior)
-[Tech] FAIL — .lattice/myoutput/ is not in CLAUDE.md known subfolders list
+[BA]   WARN — no guidance for interrupted session (resume behavior)
+[Tech] FAIL — .lattice/myoutput/ not in known subfolders list
 
 ---
 Result: FAIL (2 errors, 1 warning)
-Fix errors before writing to the repo. Warnings are judgment calls.
 ```
 
 Distinguish errors (must fix) from warnings (should consider).
 
 ## Step 7: Fix mode (optional)
 
-If the user says "fix it" or "apply fixes" — apply all error-level findings directly to the files. Re-run validation after fixes. Do not fix warnings without asking which ones to apply.
+If the user says "fix it" or "apply fixes" — apply all error-level findings directly to the files. Re-run validation after fixes. **STOP: do not fix warnings without asking which ones to apply.**

@@ -52,14 +52,13 @@ For every refiner:
 ### `.lattice/` folder Structure section
 
 - [ ] `standards/` lists all current refiner output files
-- [ ] All known subfolders are listed (`requirements/`, `transform/`, `context/`, `learnings/`, `reviews/`, `standards/`)
+- [ ] All known subfolders are listed (`requirements/`, `insights/`, `context/`, `learnings/`, `reviews/`, `standards/`)
 - [ ] Subfolder Lifecycles table has a row for every subfolder
 
 ### Pipeline section
 
 - [ ] All pipeline paths use current molecule names
 - [ ] Full pipeline includes `requirement-forge` as optional upstream step
-- [ ] `plan-transformation` path is present for codebase transformation
 
 ---
 
@@ -136,12 +135,12 @@ Special case — `requirement_standards`:
 
 ---
 
-## 5. `CLAUDE.md`
+## 5. `PROJECT.md`
 
 ### Known subfolders list (Key Patterns section)
 
 - [ ] `requirements/` listed with description "epic/feature specs produced by requirement-forge"
-- [ ] `transform/` listed
+- [ ] `insights/` listed
 - [ ] All other known subfolders present
 
 ### Skill Conventions section
@@ -224,7 +223,7 @@ For each `Required Skills` entry in a molecule:
 ```bash
 # Run this to surface any remaining stale references after fixes
 grep -rn "requirements atom\|framework:requirements\b\|consumed.*requirement-forge molecule" \
-  docs/ README.md CLAUDE.md .github/ skills/ \
+  docs/ README.md PROJECT.md CLAUDE.md .github/ skills/ \
   --include="*.md" --include="*.yml" 2>/dev/null
 ```
 

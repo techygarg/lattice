@@ -71,9 +71,9 @@ Write a one-paragraph design summary and confirm with the user.
 
 ## Step 3: Read current conventions
 
-Read `CLAUDE.md` — the Skill Conventions section. Always read it fresh; never rely on memory.
+Read `PROJECT.md` — the Skill Conventions section. Always read it fresh; never rely on memory.
 
-Note the current skill counts (atoms/molecules/refiners) — they will need updating in CLAUDE.md after creation, but that is `skill-align`'s job.
+Note the current skill counts (atoms/molecules/refiners) — they will need updating in PROJECT.md after creation, but that is `skill-align`'s job.
 
 ---
 
