@@ -318,7 +318,9 @@ The `.lattice/` folder is the living context layer described earlier -- the proj
 │   ├── review-standards.md
 │   └── requirement-standards.md
 ├── requirements/            # Feature specs produced by requirement-forge
-│   ├── index.md             # Epic/feature apex index
+│   ├── index.md             # Thin apex -- epic list, definitions, glossary (generated)
+│   ├── epics/
+│   │   └── <epic>.md        # Epic description + generated feature table
 │   └── features/
 │       └── <feature>.md
 ├── context/                 # Per-feature living documents
@@ -336,7 +338,7 @@ The `.lattice/` folder is the living context layer described earlier -- the proj
 | Subfolder | Purpose | Lifecycle |
 |-----------|---------|-----------|
 | `standards/` | Refiner-produced customization docs consumed by atoms via config resolution | Stable — set once during project setup, rarely changed |
-| `requirements/` | Epic/feature specs produced by requirement-forge. `index.md` is the apex; `features/` holds per-feature files | Per cycle — created when features are specced, updated when specs evolve. Feeds design-blueprint. |
+| `requirements/` | Epic/feature specs produced by requirement-forge. `index.md` is a thin generated apex, `epics/` holds one generated rollup per epic, `features/` holds per-feature files — the only layer routinely hand-written | Per cycle — created when features are specced, updated when specs evolve. Feeds design-blueprint. |
 | `context/` | Per-feature living documents managed by context-anchoring | Per feature — created when feature starts, enriched during design and implementation |
 | `learnings/` | Operational learnings managed by `learning-harvest` atom — accumulated patterns from design, implementation, review, and repair sessions. Loaded at session start, harvested at session end. | Append-only with self-regulating tightening — atom proposes consolidation when document grows dense |
 | `reviews/` | Review log entries for project health visibility | Rolling window — capped at ~20 entries, older entries summarized |

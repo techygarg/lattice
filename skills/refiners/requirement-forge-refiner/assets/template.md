@@ -214,8 +214,8 @@ Feature status progresses in this order:
 |---|---|
 | draft | Being specced — not yet agreed |
 | approved | Spec agreed; ready for design-blueprint |
-| in-design | design-blueprint session in progress or complete |
-| implemented | code-forge complete; feature shipped |
+| in-design | Design work is underway or complete for this feature |
+| implemented | Feature is built and shipped |
 
 ---
 

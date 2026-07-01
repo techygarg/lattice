@@ -21,6 +21,7 @@ paths:
   operational_learnings: .lattice/learnings/operational-learnings.md
 
 architecture_mode: clean
+requirements_layout: sharded
 ```
 
 ## Top-level Fields
@@ -31,6 +32,7 @@ architecture_mode: clean
 | `language` | string | Project's primary language identifier (e.g., `go`, `rust`, `python`, `java`, `typescript`, `csharp`). Set by `lattice-init` or `language-idioms-refiner`. Used as fallback by atoms when `paths.language_idioms` document is not present. |
 | `paths` | map | Logical key → file path mappings. All keys are optional. |
 | `architecture_mode` | string | Architecture enforcement mode. `clean` (default) or `custom`. See below. |
+| `requirements_layout` | string | Requirements folder layout. `sharded` (current) or `flat` (legacy, pre-migration). See below. |
 
 ## `paths` Keys
 
@@ -64,6 +66,17 @@ Controls which enforcement rules the `architecture` atom loads internally. This 
 - **Team uses hexagonal, modular monolith, or custom style:** Run `/architecture-refiner`, choose the appropriate style. Produces a document with `mode: override`. Config: `paths.architecture` set, `architecture_mode: custom`.
 
 The `architecture-refiner` sets `architecture_mode` automatically based on the user's style choice.
+
+## `requirements_layout` Key
+
+Controls whether `requirement-forge` treats `.lattice/requirements/` as sharded-by-epic or expects the legacy flat form.
+
+| Value | Behavior |
+|-------|----------|
+| `sharded` (current) | `index.md` is a thin apex; each epic has its own file at `epics/{epic-slug}.md` with a generated feature table. `requirement-forge` writes only feature files during normal work — epic and index rollups are regenerated from `features/*.md` frontmatter, never hand-appended. |
+| `flat` / absent with a pre-existing `index.md` | Legacy layout — every epic's feature table lives inline in `index.md` itself. `requirement-forge` will not attempt migration; it points the user at `/lattice-init` to check for and apply available upgrades. |
+
+Set automatically — by `requirement-forge` when it creates the first epic in a new project, or by `lattice-init`'s migration step for existing projects. Not intended to be hand-edited.
 
 ## Custom Document Frontmatter
 
