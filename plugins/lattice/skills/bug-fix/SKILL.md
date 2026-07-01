@@ -177,7 +177,7 @@ Use `framework:context-anchoring` Enrich behavior to preserve important parts of
 
 If no context doc exists + fix exposed non-trivial design/domain lesson, suggest creating one.
 
-Use `framework:learning-harvest` Harvest behavior. Session context: "bug investigation — root cause diagnosis and repair". Synthesize and propose cross-cutting patterns from this session — root cause categories, failure modes likely to recur elsewhere, boundary condition gaps. User confirms what enters the document.
+**Harvest learnings.** Use `framework:learning-harvest` Harvest behavior. Session context: "bug investigation — root cause diagnosis and repair". Synthesize and propose cross-cutting patterns from this session — root cause categories, failure modes likely to recur elsewhere, boundary condition gaps. User confirms what enters the document. **STOP: run this before recommending `/review` below.**
 
 After fix complete, recommend `/review` when change:
 

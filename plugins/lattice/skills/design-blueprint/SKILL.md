@@ -100,5 +100,5 @@ After Level 4 (Contracts) approved and persisted:
 - **Log completion decision**: Add decision entry Decisions Log: "Design approved at Level 4. Status set to approved — ready for implementation."
 - Present summary user as confirmation.
 - Design complete. NOT proceed Level 5 (Implementation).
-- Use `framework:learning-harvest` Harvest behavior. Session context: "design session — architectural decomposition and contract definition". Synthesize and propose cross-cutting patterns from this session — decomposition approaches, architectural trade-offs, scope decisions that could inform future designs. User confirms what enters the document.
+- **Harvest learnings.** Use `framework:learning-harvest` Harvest behavior. Session context: "design session — architectural decomposition and contract definition". Synthesize and propose cross-cutting patterns from this session — decomposition approaches, architectural trade-offs, scope decisions that could inform future designs. User confirms what enters the document. **STOP: run this before the next bullet — do not jump straight to the `/code-forge` suggestion.**
 - Suggest user invoke `/code-forge` when ready begin coding against the approved design.

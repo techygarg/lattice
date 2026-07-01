@@ -175,7 +175,7 @@ After presenting report, harvest learnings & log review.
 
 **Harvest Learnings** — use `framework:learning-harvest` Harvest behavior:
 
-Session context: "review session — code quality assessment against atom standards". Synthesize and propose cross-cutting patterns from this review — recurring quality anti-patterns, structural issues that keep appearing, reliability gaps. User confirms what enters the document.
+Session context: "review session — code quality assessment against atom standards". Synthesize and propose cross-cutting patterns from this review — recurring quality anti-patterns, structural issues that keep appearing, reliability gaps. User confirms what enters the document. **STOP: complete this before Log Review below.**
 
 **Log Review** — append to `.lattice/reviews/review-log.md`:
 

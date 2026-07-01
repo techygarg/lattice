@@ -126,7 +126,7 @@ Throughout Steps 3-4, use `framework:context-anchoring` Enrich behavior keep liv
 - **Resolve open Qs** -- Qs from design phase answered during impl, log resolution.
 - **If no context doc exists**, significant impl decisions made → suggest create. Decisions worth preserve future sessions.
 
-Use `framework:learning-harvest` Harvest behavior. Session context: "implementation session — code generation from design contracts". Synthesize and propose cross-cutting patterns from this session — implementation gotchas, design-to-reality gaps, library/framework lessons. User confirms what enters the document.
+**Harvest learnings.** Use `framework:learning-harvest` Harvest behavior. Session context: "implementation session — code generation from design contracts". Synthesize and propose cross-cutting patterns from this session — implementation gotchas, design-to-reality gaps, library/framework lessons. User confirms what enters the document. **STOP: run this before closing the feature lifecycle below.**
 
 **Close feature lifecycle**: Write `status: complete` to context doc frontmatter. **STOP: required.**
 
