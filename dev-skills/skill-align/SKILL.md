@@ -164,5 +164,6 @@ The sync is complete when:
 - `PROJECT.md` known subfolders list covers every `.lattice/` output directory
 - No document contains a skill name that no longer exists in `skills/`
 - The pipeline descriptions in `README.md` and `docs/how-it-works.md` use current molecule names in the right order
+- Every molecule that hardcodes its own refiner list (`refiners-update`'s map table, `lattice-init`'s Step 3 priority list) has one entry per live refiner in `skills/refiners/` — no missing, no stale
 
 See `references/audit-checklist.md` for the exhaustive per-document rules.
