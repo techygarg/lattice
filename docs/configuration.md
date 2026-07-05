@@ -73,10 +73,12 @@ Controls whether `requirement-forge` treats `.lattice/requirements/` as sharded-
 
 | Value | Behavior |
 |-------|----------|
-| `sharded` (current) | `index.md` is a thin apex; each epic has its own file at `epics/{epic-slug}.md` with a generated feature table. `requirement-forge` writes only feature files during normal work — epic and index rollups are regenerated from `features/*.md` frontmatter, never hand-appended. |
+| `sharded` (current) | `index.md` is a thin apex; each epic has its own file at `epics/{epic-slug}.md` with a generated feature table listing name and summary only — no status, priority, or dependency columns. `requirement-forge` writes only feature files during normal work — epic and index rollups regenerate only when a feature is added, removed, or renamed under an epic, never on a status/priority/dependency change; those fields live solely in each feature file's own frontmatter. |
 | `flat` / absent with a pre-existing `index.md` | Legacy layout — every epic's feature table lives inline in `index.md` itself. `requirement-forge` will not attempt migration; it points the user at `/lattice-init` to check for and apply available upgrades. |
 
 Set automatically — by `requirement-forge` when it creates the first epic in a new project, or by `lattice-init`'s migration step for existing projects. Not intended to be hand-edited.
+
+Requirements do not have to live in this repo at all — see `docs/practical-guide.md` for teams that track requirements in an external system instead.
 
 ## Custom Document Frontmatter
 

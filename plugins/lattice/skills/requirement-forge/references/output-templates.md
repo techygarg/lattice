@@ -34,9 +34,9 @@ last_updated: [Date]
 
 <!-- GENERATED — regenerated from epics/*.md headers, do not hand-edit below -->
 
-| Epic | Summary | Status |
-|---|---|---|
-| [Epic Name](epics/epic-slug.md) | one-paragraph description, condensed to one line | planned |
+| Epic | Summary |
+|---|---|
+| [Epic Name](epics/epic-slug.md) | one-paragraph description, condensed to one line |
 
 <!-- END GENERATED -->
 ```
@@ -50,7 +50,6 @@ Header is hand-authored (written once at Step 3, rarely revisited). Feature tabl
 ```markdown
 ---
 epic: [Epic Name]
-status: planned
 ---
 
 # [Epic Name]
@@ -72,12 +71,12 @@ Content from source materials intentionally not mapped to any feature in this cy
 
 ## Features
 
-<!-- GENERATED — regenerated from features/*.md frontmatter where epic matches, do not hand-edit below -->
+<!-- GENERATED — regenerated from features/*.md filenames/titles where epic matches, do not hand-edit below. Status, priority, and dependencies live only in each feature file — never mirrored here. -->
 
-| Feature | Summary | Status | Priority | Depends On |
-|---|---|---|---|---|
-| [Feature A](../features/feature-a.md) | one-line summary | draft | P0 | — |
-| [Feature B](../features/feature-b.md) | one-line summary | draft | P1 | Feature A |
+| Feature | Summary |
+|---|---|
+| [Feature A](../features/feature-a.md) | one-line summary |
+| [Feature B](../features/feature-b.md) | one-line summary |
 
 <!-- END GENERATED -->
 ```

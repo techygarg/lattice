@@ -92,7 +92,7 @@ Ask: *"Does this epic structure reflect how you think about the product?"*
 
 **Immediately after confirmation:**
 1. Create `.lattice/requirements/`, `.lattice/requirements/epics/`, and `.lattice/requirements/features/` if they do not exist.
-2. Write one `.lattice/requirements/epics/{epic-slug}.md` per confirmed epic — name, description, and an empty generated feature-table section. Read `references/output-templates.md` for the exact structure. Epics not selected for this session's focus are still created (marked `planned`), just with no features yet.
+2. Write one `.lattice/requirements/epics/{epic-slug}.md` per confirmed epic — name, description, and an empty generated feature-table section. Read `references/output-templates.md` for the exact structure. Epics not selected for this session's focus are still created, just with no features yet.
 3. Write `.lattice/requirements/index.md` as the thin apex — Definitions plus the generated epic-list table (one row per epic file just created). Read `references/output-templates.md` for the exact structure.
 4. Ensure `.lattice/config.yaml` has `requirements_layout: sharded`. Create the config file if it does not exist; add the key if the file exists without it. Never overwrite an existing `sharded` value.
 
@@ -146,8 +146,9 @@ Write the confirmed feature file to `.lattice/requirements/features/{feature-nam
 
 After all features for the current session scope are confirmed and written, regenerate the derived sections — never hand-edit them:
 
-- **For each epic touched this session**: regenerate `epics/{epic-slug}.md`'s feature table by scanning every `features/*.md` file where `epic` matches, reading `status`, `priority`, `depends_on` from frontmatter. Replace only the content between the generated-section boundary comments — leave the hand-authored header, Source Materials, and Deferred Items untouched.
+- **For each epic touched this session**: regenerate `epics/{epic-slug}.md`'s feature table by scanning every `features/*.md` file where `epic` matches, listing feature name and one-line summary only. **Do not read or mirror `status`, `priority`, or `depends_on`** — those fields live only in the feature file. Replace only the content between the generated-section boundary comments — leave the hand-authored header, Source Materials, and Deferred Items untouched.
 - **Regenerate `index.md`'s epic-list table** the same way, scanning `epics/*.md` headers.
+- **STOP: this regeneration is triggered only by a feature being added, removed, or renamed under an epic in this session — never by a status, priority, or dependency change alone.** A feature's own status/priority/depends_on edit is a single-file write with no downstream regeneration.
 - **Hand-authored additions** (not generated, appended directly to the relevant epic file):
   - If source documents were provided during intake, add/update a `## Source Materials` table mapping each document to the features derived from it.
   - Add a `## Deferred Items` section listing content intentionally excluded from the current feature set, with reasons.

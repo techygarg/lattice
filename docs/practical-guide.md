@@ -36,7 +36,7 @@ Molecules work, but results will be generic. Without `/knowledge-priming-refiner
 
 ### What is the `.lattice/` folder and should I commit it to version control?
 
-The `.lattice/` folder is Lattice's living context layer. It holds `config.yaml` (your settings), `standards/` (refiner outputs like architecture and coding rules), `requirements/` (epic and feature specs produced by requirement-forge), `context/` (per-feature living documents capturing decisions and blueprints), `reviews/` (review log), and `learnings/` (operational learnings accumulated across design, implementation, review, and bug-fix sessions). Commit it — it's the shared source of truth for your team's standards and accumulates value over time.
+The `.lattice/` folder is Lattice's living context layer. It holds `config.yaml` (your settings), `standards/` (refiner outputs like architecture and coding rules), `requirements/` (epic and feature specs produced by requirement-forge), `context/` (per-feature living documents capturing decisions and blueprints), `reviews/` (review log), and `learnings/` (operational learnings accumulated across design, implementation, review, and bug-fix sessions). Commit it — it's the shared source of truth for your team's standards and accumulates value over time. `requirements/` is the one exception worth calling out: it's optional and pluggable — teams that already track requirements in an external system (Jira, Linear, etc.) can skip it entirely and point `design-blueprint` at an external reference instead. Commit it only if you're using it.
 
 ---
 
@@ -48,7 +48,7 @@ Use `/requirement-forge` when the feature scope, problem statement, or acceptanc
 
 ### What is the structure requirement-forge produces?
 
-Three artifacts in `.lattice/requirements/`: a thin `index.md` apex file (definitions, glossary, and a generated list of epics), one `epics/{epic-slug}.md` per epic (hand-authored header plus a generated feature table with status, priority, and dependencies), and per-feature files in `features/`. Each feature file contains a problem statement, user/personas, scope (in-scope and out-of-scope), boundary conditions, assumptions, ordered scenarios (each with acceptance criteria), implementation notes, and open questions. If source documents were provided during intake, the relevant epic file also includes a Source Materials table (tracing which documents produced which features) and a Deferred Items section (content intentionally excluded from the current feature set). The feature file is the direct input to `design-blueprint`.
+Three artifacts in `.lattice/requirements/`: a thin `index.md` apex file (definitions, glossary, and a generated list of epics), one `epics/{epic-slug}.md` per epic (hand-authored header plus a generated feature table listing name and summary), and per-feature files in `features/` — each carrying its own `status`, `priority`, and `depends_on` frontmatter, which is never mirrored into the rollups. Each feature file contains a problem statement, user/personas, scope (in-scope and out-of-scope), boundary conditions, assumptions, ordered scenarios (each with acceptance criteria), implementation notes, and open questions. If source documents were provided during intake, the relevant epic file also includes a Source Materials table (tracing which documents produced which features) and a Deferred Items section (content intentionally excluded from the current feature set). The feature file is the direct input to `design-blueprint`.
 
 ### What is a scenario in requirement-forge?
 
