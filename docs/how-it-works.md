@@ -167,7 +167,7 @@ Collaborative feature specification as a senior PM + BA pair. Upstream in the pi
 
 **Two modes**: collaborative (confirmation gates per phase) or autonomous (drafts everything, then presents).
 
-**Workflow**: Standards check → session resume → intake (existing material or verbal) → epic definition → feature discovery per epic → feature spec per feature (frame confirmed before scenarios) → write apex index. Output: `.lattice/requirements/` folder feeding directly into design-blueprint.
+**Workflow**: Standards check → session resume → intake (existing material or verbal) → epic definition → feature discovery per epic → feature spec per feature (frame confirmed before scenarios) → refresh generated epic and index views. Output: `.lattice/requirements/` folder feeding directly into design-blueprint.
 
 ### design-blueprint
 
@@ -318,7 +318,9 @@ The `.lattice/` folder is the living context layer described earlier -- the proj
 │   ├── review-standards.md
 │   └── requirement-standards.md
 ├── requirements/            # Feature specs produced by requirement-forge
-│   ├── index.md             # Epic/feature apex index
+│   ├── index.md             # Thin apex -- epic list, definitions, glossary (generated)
+│   ├── epics/
+│   │   └── <epic>.md        # Epic description + generated feature table
 │   └── features/
 │       └── <feature>.md
 ├── context/                 # Per-feature living documents
@@ -336,7 +338,7 @@ The `.lattice/` folder is the living context layer described earlier -- the proj
 | Subfolder | Purpose | Lifecycle |
 |-----------|---------|-----------|
 | `standards/` | Refiner-produced customization docs consumed by atoms via config resolution | Stable — set once during project setup, rarely changed |
-| `requirements/` | Epic/feature specs produced by requirement-forge. `index.md` is the apex; `features/` holds per-feature files | Per cycle — created when features are specced, updated when specs evolve. Feeds design-blueprint. |
+| `requirements/` | Epic/feature specs produced by requirement-forge. `index.md` is a thin generated apex, `epics/` holds one generated rollup per epic (name/summary only), `features/` holds per-feature files — the only layer routinely hand-written and the sole owner of status/priority/dependency fields | Per cycle — created when features are specced, updated when specs evolve. Rollups regenerate only on feature add/remove/rename, never on a status change. Feeds design-blueprint. Optional — requirements may instead live in an external system referenced via `requirement_doc`. |
 | `context/` | Per-feature living documents managed by context-anchoring | Per feature — created when feature starts, enriched during design and implementation |
 | `learnings/` | Operational learnings managed by `learning-harvest` atom — accumulated patterns from design, implementation, review, and repair sessions. Loaded at session start, harvested at session end. | Append-only with self-regulating tightening — atom proposes consolidation when document grows dense |
 | `reviews/` | Review log entries for project health visibility | Rolling window — capped at ~20 entries, older entries summarized |

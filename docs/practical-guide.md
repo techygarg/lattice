@@ -36,7 +36,7 @@ Molecules work, but results will be generic. Without `/knowledge-priming-refiner
 
 ### What is the `.lattice/` folder and should I commit it to version control?
 
-The `.lattice/` folder is Lattice's living context layer. It holds `config.yaml` (your settings), `standards/` (refiner outputs like architecture and coding rules), `requirements/` (epic and feature specs produced by requirement-forge), `context/` (per-feature living documents capturing decisions and blueprints), `reviews/` (review log), and `learnings/` (review insights). Commit it — it's the shared source of truth for your team's standards and accumulates value over time.
+The `.lattice/` folder is Lattice's living context layer. It holds `config.yaml` (your settings), `standards/` (refiner outputs like architecture and coding rules), `requirements/` (epic and feature specs produced by requirement-forge), `context/` (per-feature living documents capturing decisions and blueprints), `reviews/` (review log), and `learnings/` (operational learnings accumulated across design, implementation, review, and bug-fix sessions). Commit it — it's the shared source of truth for your team's standards and accumulates value over time. `requirements/` is the one exception worth calling out: it's optional and pluggable — teams that already track requirements in an external system (Jira, Linear, etc.) can skip it entirely and point `design-blueprint` at an external reference instead. Commit it only if you're using it.
 
 ---
 
@@ -48,7 +48,7 @@ Use `/requirement-forge` when the feature scope, problem statement, or acceptanc
 
 ### What is the structure requirement-forge produces?
 
-Two artifacts in `.lattice/requirements/`: an `index.md` apex file (epic glossary with links to all features, their status, priority, and dependencies) and per-feature files in `features/`. Each feature file contains a problem statement, user/personas, scope (in-scope and out-of-scope), boundary conditions, assumptions, ordered scenarios (each with acceptance criteria), implementation notes, and open questions. If source documents were provided during intake, `index.md` also includes a Source Materials table (tracing which documents produced which features) and a Deferred Items section (content intentionally excluded from the current feature set). The feature file is the direct input to `design-blueprint`.
+Three artifacts in `.lattice/requirements/`: a thin `index.md` apex file (definitions, glossary, and a generated list of epics), one `epics/{epic-slug}.md` per epic (hand-authored header plus a generated feature table listing name and summary), and per-feature files in `features/` — each carrying its own `status`, `priority`, and `depends_on` frontmatter, which is never mirrored into the rollups. Each feature file contains a problem statement, user/personas, scope (in-scope and out-of-scope), boundary conditions, assumptions, ordered scenarios (each with acceptance criteria), implementation notes, and open questions. If source documents were provided during intake, the relevant epic file also includes a Source Materials table (tracing which documents produced which features) and a Deferred Items section (content intentionally excluded from the current feature set). The feature file is the direct input to `design-blueprint`.
 
 ### What is a scenario in requirement-forge?
 
@@ -60,7 +60,7 @@ No — requirement-forge works with built-in defaults out of the box. When no st
 
 ### I have existing PRDs, feature lists, or Confluence pages. How does requirement-forge handle them?
 
-The molecule opens by asking whether you have existing material before assuming a blank slate. Provide file paths, paste text, or describe where documents live. It reads everything silently and runs a structured triage: classifies each document by type (product requirements, technical design, stakeholder wishlist, marketing — only product requirements and wishlists feed the pipeline), identifies overlaps between documents (same capability described differently), surfaces contradictions for your resolution, checks granularity (ACs mistaken for features, or broad epics mistaken for features), identifies gaps (implied behaviors never explicitly stated), and flags orphaned content (material that doesn't map to any feature — collected for the Deferred Items section of `index.md`). It then presents a structured hypothesis with proposed epics and features. You confirm or correct before anything is written.
+The molecule opens by asking whether you have existing material before assuming a blank slate. Provide file paths, paste text, or describe where documents live. It reads everything silently and runs a structured triage: classifies each document by type (product requirements, technical design, stakeholder wishlist, marketing — only product requirements and wishlists feed the pipeline), identifies overlaps between documents (same capability described differently), surfaces contradictions for your resolution, checks granularity (ACs mistaken for features, or broad epics mistaken for features), identifies gaps (implied behaviors never explicitly stated), and flags orphaned content (material that doesn't map to any feature — collected for the relevant epic's Deferred Items section). It then presents a structured hypothesis with proposed epics and features. You confirm or correct before anything is written.
 
 ### My requirement-forge session ended before all features were specced. What happens next time?
 
@@ -68,11 +68,11 @@ The molecule's first action is always to scan `.lattice/requirements/` for exist
 
 ### I only want to spec one feature, not design a whole product. Does requirement-forge force me through a full epic structure?
 
-No. If your description or documents reveal only 1–3 features, the molecule offers a single-feature fast path: spec the feature directly, then write a minimal placeholder epic to `index.md` so the structure is in place for later expansion. You are not forced to define a complete epic before speccing a single feature.
+No. If your description or documents reveal only 1–3 features, the molecule offers a single-feature fast path: spec the feature directly, then create a placeholder `epics/{epic-slug}.md` plus a thin `index.md` pointing to it, so the structure is in place for later expansion. You are not forced to define a complete epic before speccing a single feature.
 
 ### How does requirement-forge connect to design-blueprint?
 
-Each feature file has a `Links: Design` field that gets updated when `design-blueprint` creates a context anchor doc for that feature. The `design-blueprint` molecule's context-anchoring step accepts a "requirement doc link" pointing to the feature file — it loads the problem statement and scope as starting context for the design session. The two molecules complement each other: requirement-forge defines WHAT and WHY; design-blueprint defines HOW.
+Each feature file has a `Links: Design` field that `design-blueprint` writes the first time it resolves that feature's requirement doc in Step 1 — on either a new design session or a resumed one. The `design-blueprint` molecule's context-anchoring step accepts a "requirement doc link" pointing to the feature file — it loads the problem statement and scope as starting context for the design session. The two molecules complement each other: requirement-forge defines WHAT and WHY; design-blueprint defines HOW.
 
 ### What is the difference between collaborative and autonomous mode in requirement-forge?
 
@@ -88,7 +88,7 @@ Feature files include an explicit Assumptions section — statements the team pr
 
 ### What happens to content from my source documents that doesn't map to any feature?
 
-It goes into the Deferred Items section of `index.md` — intentionally excluded content with reasons for deferral. Nothing disappears silently. Marketing copy, competitive positioning, out-of-scope ideas, and deferred feature suggestions are all tracked so stakeholders can verify that everything from the source material was either mapped to a feature or consciously set aside.
+It goes into the relevant epic's Deferred Items section — intentionally excluded content with reasons for deferral. Nothing disappears silently. Marketing copy, competitive positioning, out-of-scope ideas, and deferred feature suggestions are all tracked so stakeholders can verify that everything from the source material was either mapped to a feature or consciously set aside.
 
 ### Can I use the `requirement-quality` atom on its own to validate specs I already wrote?
 

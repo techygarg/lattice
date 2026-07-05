@@ -210,7 +210,7 @@ Use `framework:context-anchoring` Enrich behavior to preserve important parts of
 
 If no context doc exists and refactor involved non-trivial structural reasoning, suggest creating one so decisions not lost across sessions.
 
-Use `framework:learning-harvest` Harvest behavior. Session context: "refactoring session — structural restructuring and debt resolution". Synthesize and propose cross-cutting patterns from this session — structural debt that accumulated, migration strategies that worked, characterization test gaps discovered. User confirms what enters the document.
+**Harvest learnings.** Use `framework:learning-harvest` Harvest behavior. Session context: "refactoring session — structural restructuring and debt resolution". Synthesize and propose cross-cutting patterns from this session — structural debt that accumulated, migration strategies that worked, characterization test gaps discovered. User confirms what enters the document. **STOP: run this before recommending `/review` below.**
 
 After refactor complete, recommend `/review` when change:
 

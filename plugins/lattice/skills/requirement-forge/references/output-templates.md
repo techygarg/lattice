@@ -6,6 +6,8 @@ Read this file when writing `.lattice/requirements/` documents. Use these templa
 
 ## Apex File: `.lattice/requirements/index.md`
 
+Thin and rarely hand-touched. Everything below the boundary comment is generated at Step 6 by scanning `epics/*.md` headers — never hand-append a row here.
+
 ```markdown
 ---
 project: [Project Name]
@@ -19,18 +21,6 @@ last_updated: [Date]
 **Epic:** [from loaded standards or built-in default]
 **Feature:** [from loaded standards or built-in default]
 
----
-
-## Epics
-
-### [Epic Name]
-[One-paragraph description.]
-
-| Feature | Summary | Status | Priority | Depends On |
-|---|---|---|---|---|
-| [Feature A](features/feature-a.md) | one-line summary | draft | P0 | — |
-| [Feature B](features/feature-b.md) | one-line summary | draft | P1 | Feature A |
-
 <!-- If loaded standards include §10 Domain Terminology, add: -->
 ## Glossary
 
@@ -38,17 +28,57 @@ last_updated: [Date]
 |---|---|
 | [Term] | [Project-specific definition from standards §10] |
 
-<!-- If source documents were provided during intake, add: -->
+---
+
+## Epics
+
+<!-- GENERATED — regenerated from epics/*.md headers, do not hand-edit below -->
+
+| Epic | Summary |
+|---|---|
+| [Epic Name](epics/epic-slug.md) | one-paragraph description, condensed to one line |
+
+<!-- END GENERATED -->
+```
+
+---
+
+## Epic File: `.lattice/requirements/epics/{epic-slug}.md`
+
+Header is hand-authored (written once at Step 3, rarely revisited). Feature table is generated at Step 6 — never hand-append a row.
+
+```markdown
+---
+epic: [Epic Name]
+---
+
+# [Epic Name]
+
+[One-paragraph description.]
+
+<!-- If source documents were provided during intake, add/update at Step 6: -->
 ## Source Materials
 
 | Document | Type | Features Derived |
 |---|---|---|
 | [document name or path] | [PRD / stakeholder notes / Jira export / etc.] | [Feature A, Feature B] |
 
+<!-- Add/update at Step 6 when applicable: -->
 ## Deferred Items
 Content from source materials intentionally not mapped to any feature in this cycle.
 
 - [Item] — reason for deferral
+
+## Features
+
+<!-- GENERATED — regenerated from features/*.md filenames/titles where epic matches, do not hand-edit below. Status, priority, and dependencies live only in each feature file — never mirrored here. -->
+
+| Feature | Summary |
+|---|---|
+| [Feature A](../features/feature-a.md) | one-line summary |
+| [Feature B](../features/feature-b.md) | one-line summary |
+
+<!-- END GENERATED -->
 ```
 
 ---
@@ -109,5 +139,5 @@ Non-negotiable inputs for design. Populate with:
 ## Links
 - Design: *(link added by design-blueprint when context doc is created)*
 - Design overrides: *(populated by design-blueprint — lists any field, type, or behavior changed from this spec during design; empty means L4 contracts are fully consistent with this spec)*
-- Epic index: [index.md](../index.md)
+- Epic index: [epic-slug.md](../epics/epic-slug.md)
 ```

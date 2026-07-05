@@ -1,6 +1,6 @@
 # Lattice Convention Rules — Validator Reference
 
-Detailed per-tier checks for the skill-validate. Read this alongside CLAUDE.md.
+Detailed per-tier checks for the skill-validate. Read this alongside PROJECT.md.
 
 ---
 
@@ -67,12 +67,12 @@ Detailed per-tier checks for the skill-validate. Read this alongside CLAUDE.md.
 - [ ] Linear numbered steps
 - [ ] No session resume check required (generative molecules don't maintain living documents across sessions)
 
-### Planning/interactive molecule checks (design-blueprint, plan-transformation, requirement-forge pattern)
+### Planning/interactive molecule checks (design-blueprint, architecture-compass, requirement-forge pattern)
 - [ ] Step 1 checks for existing output document — if found, reads it and resumes from earliest incomplete step
 - [ ] Every phase has: (1) present output, (2) specific targeted question, (3) hard gate language "Do NOT advance to Step N until the user explicitly confirms"
 - [ ] Can exit early with partial output as a valid outcome
 - [ ] Writes to a named `.lattice/{subfolder}/` — never to `.lattice/` root
-- [ ] Subfolder is in CLAUDE.md known subfolders list
+- [ ] Subfolder is in PROJECT.md known subfolders list
 
 ### Output document template checks (planning molecules)
 - [ ] A template or structure for the output document is defined in the SKILL.md

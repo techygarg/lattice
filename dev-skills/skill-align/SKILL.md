@@ -1,6 +1,6 @@
 ---
 name: skill-align
-description: "Audit and fix all Lattice documentation, README, docs/, GitHub issue templates, and CLAUDE.md to ensure they are fully aligned with the current skill inventory. Documentation drift is the most common source of user confusion in Lattice — a skill exists in the codebase but not in the docs, or a renamed skill leaves a stale reference in the bug report template. If you've made any change to skills/ and haven't run this, run it now. Use when the user says 'align docs', 'audit docs', 'update documentation', 'skill align', 'check docs are in sync', 'audit skill inventory', 'ensure docs are aligned', 'are the docs up to date', or 'what needs updating'. Standalone — does not call other skills."
+description: "Audit and fix all Lattice documentation, README, docs/, PROJECT.md, GitHub issue templates, and CLAUDE.md to ensure they are fully aligned with the current skill inventory. Documentation drift is the most common source of user confusion in Lattice — a skill exists in the codebase but not in the docs, or a renamed skill leaves a stale reference in the bug report template. If you've made any change to skills/ and haven't run this, run it now. Use when the user says 'align docs', 'audit docs', 'update documentation', 'skill align', 'check docs are in sync', 'audit skill inventory', 'ensure docs are aligned', 'are the docs up to date', or 'what needs updating'. Standalone — does not call other skills."
 ---
 
 # Lattice Sync
@@ -11,13 +11,13 @@ description: "Audit and fix all Lattice documentation, README, docs/, GitHub iss
 
 **Output:**
 - A findings report listing every gap as `[GAP]`, `[STALE]`, or `[WRONG]` with file and description
-- All found gaps fixed in-place across: `README.md`, `docs/how-it-works.md`, `docs/configuration.md`, `docs/practical-guide.md`, `CLAUDE.md`, `.github/ISSUE_TEMPLATE/bug_report.yml`
+- All found gaps fixed in-place across: `README.md`, `docs/how-it-works.md`, `docs/configuration.md`, `docs/practical-guide.md`, `PROJECT.md`, `CLAUDE.md`, `.github/ISSUE_TEMPLATE/bug_report.yml`
 - A final clean confirmation: "No gaps found" or a list of what was changed
 
 **How to verify this skill did its job:**
 ```bash
 grep -rn "requirements atom\|framework:requirements\b" \
-  docs/ README.md CLAUDE.md .github/ skills/ \
+  docs/ README.md PROJECT.md CLAUDE.md .github/ skills/ \
   --include="*.md" --include="*.yml"
 ```
 Any result from this grep means the sync is incomplete. A clean run returns no output.
@@ -33,7 +33,7 @@ Also verify: every skill in `skills/` appears in the bug_report.yml dropdown and
 
 ## Phase 1 — Build the live inventory
 
-Read the skills directory tree. Do NOT assume you already know the inventory — always read from files.
+Read the skills directory tree. **STOP: do NOT assume you already know the inventory** — always read from files.
 
 ```bash
 find skills/ -name "SKILL.md" | sort
@@ -60,7 +60,7 @@ Read `references/audit-checklist.md` for the complete per-document audit rules b
 
 ## Phase 2 — Audit each document
 
-Work through every document in this order. For each, apply the checks in `references/audit-checklist.md`. Log every finding as:
+Work through every document in this order. For each, apply the checks in `references/audit-checklist.md`. **STOP: a document with zero findings gets no entry in the report** — do not print a heading or a "no gaps" line for it. Log every finding as:
 
 ```
 [GAP]    file:line — description of what is missing or wrong
@@ -73,7 +73,7 @@ Documents to audit:
 2. `docs/configuration.md`
 3. `docs/practical-guide.md`
 4. `README.md`
-5. `CLAUDE.md`
+5. `PROJECT.md` — Skill Conventions, Known subfolders list, and Repository Structure counts all live here
 6. `.github/ISSUE_TEMPLATE/bug_report.yml`
 7. `.github/ISSUE_TEMPLATE/skill_request.yml` *(generic — only check if skill-specific examples are present)*
 8. `.github/ISSUE_TEMPLATE/documentation.yml` *(generic — only check if skill names appear)*
@@ -100,14 +100,14 @@ Ask: *"Ready to apply all fixes? Or are there any findings you want to skip?"*
 
 ## Phase 3 — Fix
 
-Apply every agreed fix. For each document, make all changes in a single edit pass — do not make multiple passes over the same file.
+Apply every agreed fix. For each document, make all changes in a single edit pass. **STOP: do not make multiple passes over the same file.**
 
 After all fixes are applied, run one final verification grep to confirm no old references remain:
 
 ```bash
 # Check for stale atom names or wrong consumed-by text
 grep -rn "<old-name>\|consumed.*molecule\|consumed.*wrong" \
-  docs/ README.md CLAUDE.md .github/ --include="*.md" --include="*.yml"
+  docs/ README.md PROJECT.md CLAUDE.md .github/ --include="*.md" --include="*.yml"
 ```
 
 If the grep returns results, fix them before declaring done.
@@ -142,14 +142,14 @@ Exception: `review-refiner` is consumed by the `review` molecule directly — it
 
 ## Known `.lattice/` subfolders
 
-Every molecule that writes living documents must use a named subfolder. If a new molecule is found that writes to `.lattice/` and its subfolder is not in this list, flag it for addition to `CLAUDE.md`:
+Every molecule that writes living documents must use a named subfolder. If a new molecule is found that writes to `.lattice/` and its subfolder is not in this list, flag it for addition to `PROJECT.md`:
 
 - `standards/` — refiner outputs
 - `context/` — feature anchor docs (context-anchoring atom)
-- `learnings/` — review insights
+- `learnings/` — operational learnings (learning-harvest atom)
 - `reviews/` — review log
-- `transform/` — plan-transformation output
-- `requirements/` — requirement-forge output
+- `insights/` — architecture-compass output
+- `requirements/` — epic/feature specs (requirement-forge)
 
 ---
 
@@ -161,7 +161,7 @@ The sync is complete when:
 - Every molecule appears in `bug_report.yml` skill dropdown
 - Every atom appears in `bug_report.yml` skill dropdown
 - Every refiner appears in `bug_report.yml` skill dropdown
-- `CLAUDE.md` known subfolders list covers every `.lattice/` output directory
+- `PROJECT.md` known subfolders list covers every `.lattice/` output directory
 - No document contains a skill name that no longer exists in `skills/`
 - The pipeline descriptions in `README.md` and `docs/how-it-works.md` use current molecule names in the right order
 

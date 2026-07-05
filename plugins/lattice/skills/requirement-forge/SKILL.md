@@ -42,7 +42,8 @@ If no standards document is found at `paths.requirement_standards`: recommend `r
 
 Scan `.lattice/requirements/` for existing documents.
 
-- **If `index.md` exists** → read it, inventory all feature files. Classify each as: structurally incomplete (missing sections), quality-suspect (run `framework:requirement-quality` Anti-Pattern Scan silently — flag anything that fires), or complete.
+- **Legacy format check** — if `index.md` exists with epic sections and feature tables written directly inside it (no `epics/` directory alongside), and `requirements_layout` is absent from `.lattice/config.yaml`: tell the user "This project's requirements index uses an older Lattice layout. Run `/lattice-init` to check for and apply available upgrades." **STOP:** do not attempt migration in this molecule.
+- **If `index.md` exists** (sharded layout) → read it plus `epics/*.md`, inventory all feature files under `features/`. Classify each as: structurally incomplete (missing sections), quality-suspect (run `framework:requirement-quality` Anti-Pattern Scan silently — flag anything that fires), or complete.
 - **If issues found** → surface per file. User decides: fix now, skip, or move to another.
 - **If everything complete** → ask what to do next, then re-enter at the right step:
   - Add features to existing epic → **Step 4**
@@ -65,13 +66,13 @@ Open with: *"Do you have existing material I should read — PRDs, feature lists
 3. **Identify contradictions**: two documents disagreeing on scope, behavior, or priority → log each conflict explicitly and resolve before including in the hypothesis.
 4. **Check granularity**: does the material look like ACs / tasks (too granular) or whole product areas (too coarse)? Name it before presenting the hypothesis.
 5. **Identify gaps**: what user-facing behaviors are implied but never stated? What failure paths are missing?
-6. **Flag orphaned content**: material that doesn't map to any feature (deferred ideas, out-of-scope suggestions, marketing copy) → collect for the Deferred Items section of `index.md` in Step 6.
+6. **Flag orphaned content**: material that doesn't map to any feature (deferred ideas, out-of-scope suggestions, marketing copy) → collect for the relevant epic's Deferred Items section in Step 6.
 
 Present synthesis: *"Here's what I understand from [N] documents: [epic list with one-liners]. Sources classified as [types]. [Any contradictions or gaps.] [Orphaned content flagged for deferral.] Does this map reflect your vision? What's wrong or missing?"*
 
 **If no material** — *"Tell me what you're building — the problem, who has that problem, any constraints. Don't worry about structure yet."* Listen, synthesize, present the same hypothesis format.
 
-**Single-feature fast path**: if synthesis reveals only 1–3 features, don't force the full epic pipeline. Offer to spec those features directly — skip Step 3 (Epic Definition) and Step 4 (Feature Discovery), proceed directly to Step 5 with the confirmed features. Write a placeholder `index.md` with a single epic before starting Step 5.
+**Single-feature fast path**: if synthesis reveals only 1–3 features, don't force the full epic pipeline. Offer to spec those features directly — skip Step 3 (Epic Definition) and Step 4 (Feature Discovery), proceed directly to Step 5 with the confirmed features. Before starting Step 5, create a placeholder epic: one `.lattice/requirements/epics/{epic-slug}.md` and the thin `index.md` pointing to it, same as Step 3's write sequence.
 
 **Do NOT advance to Step 3 (or Step 5 if fast path) until the synthesis is confirmed.**
 
@@ -89,7 +90,13 @@ Ask: *"Does this epic structure reflect how you think about the product?"*
 
 **Do NOT advance to Step 4 until the epic list is confirmed.**
 
-**Immediately after confirmation, write `.lattice/requirements/index.md`** with the confirmed epics — names, descriptions, and empty feature tables. Create `.lattice/requirements/` if it does not exist. Read `references/output-templates.md` for the exact structure. Epics not selected for this session's focus are listed as `planned` with no feature rows.
+**Immediately after confirmation:**
+1. Create `.lattice/requirements/`, `.lattice/requirements/epics/`, and `.lattice/requirements/features/` if they do not exist.
+2. Write one `.lattice/requirements/epics/{epic-slug}.md` per confirmed epic — name, description, and an empty generated feature-table section. Read `references/output-templates.md` for the exact structure. Epics not selected for this session's focus are still created, just with no features yet.
+3. Write `.lattice/requirements/index.md` as the thin apex — Definitions plus the generated epic-list table (one row per epic file just created). Read `references/output-templates.md` for the exact structure.
+4. Ensure `.lattice/config.yaml` has `requirements_layout: sharded`. Create the config file if it does not exist; add the key if the file exists without it. Never overwrite an existing `sharded` value.
+
+**STOP: do not write feature tables into `index.md` or hand-append rows to an epic file at any point** — see Step 6.
 
 ---
 
@@ -101,9 +108,9 @@ Apply `framework:requirement-quality` anti-pattern scan proactively here — sur
 
 Ask: *"Does this feature breakdown feel right for [Epic Name]?"*
 
-**After confirming each epic's feature list, update `index.md`** — add the confirmed feature rows (name, one-line summary, status `draft`, priority, dependencies) under that epic's table. The index grows incrementally as each epic's features are confirmed.
+This step is conversational only — nothing is written to disk until Step 5.
 
-**Do NOT advance to Step 5 until the feature list for every in-scope epic is confirmed and written to `index.md`.**
+**Do NOT advance to Step 5 until the feature list for every in-scope epic is confirmed.**
 
 ---
 
@@ -135,16 +142,19 @@ Write the confirmed feature file to `.lattice/requirements/features/{feature-nam
 
 ---
 
-### Step 6: Finalize Apex Index
+### Step 6: Refresh Generated Views
 
-After all features for the current session scope are confirmed and written, do a final update to `.lattice/requirements/index.md`:
+After all features for the current session scope are confirmed and written, regenerate the derived sections — never hand-edit them:
 
-- Update feature statuses if any changed during Step 5 (e.g., a feature was split or merged)
-- Add `depends_on` cross-references discovered during feature spec that were not visible at Step 4
-- If standards include §10 Domain Terminology, include a `## Glossary` section populated from those terms
-- If source documents were provided during intake, include a `## Source Materials` table mapping each document to the features derived from it, and a `## Deferred Items` section listing content intentionally excluded from the current feature set with reasons
+- **For each epic touched this session**: regenerate `epics/{epic-slug}.md`'s feature table by scanning every `features/*.md` file where `epic` matches, listing feature name and one-line summary only. **Do not read or mirror `status`, `priority`, or `depends_on`** — those fields live only in the feature file. Replace only the content between the generated-section boundary comments — leave the hand-authored header, Source Materials, and Deferred Items untouched.
+- **Regenerate `index.md`'s epic-list table** the same way, scanning `epics/*.md` headers.
+- **STOP: this regeneration is triggered only by a feature being added, removed, or renamed under an epic in this session — never by a status, priority, or dependency change alone.** A feature's own status/priority/depends_on edit is a single-file write with no downstream regeneration.
+- **Hand-authored additions** (not generated, appended directly to the relevant epic file):
+  - If source documents were provided during intake, add/update a `## Source Materials` table mapping each document to the features derived from it.
+  - Add a `## Deferred Items` section listing content intentionally excluded from the current feature set, with reasons.
+- If standards include §10 Domain Terminology, include a `## Glossary` section in `index.md` populated from those terms (hand-authored, not regenerated — revisit only when terminology changes).
 
-Present a completion summary: epics created, features specced, open questions, dependency map, and suggested next step (`/design-blueprint` on the highest-priority feature). When design-blueprint runs on a feature, update the `Design:` link in that feature file.
+Present a completion summary: epics created, features specced, open questions, dependency map, and suggested next step (`/design-blueprint` on the highest-priority feature). Do not write the feature file's `Design:` link here — `design-blueprint` writes it when a design session starts.
 
 ---
 

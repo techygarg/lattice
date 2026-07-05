@@ -126,12 +126,11 @@ Throughout Steps 3-4, use `framework:context-anchoring` Enrich behavior keep liv
 - **Resolve open Qs** -- Qs from design phase answered during impl, log resolution.
 - **If no context doc exists**, significant impl decisions made → suggest create. Decisions worth preserve future sessions.
 
-Use `framework:learning-harvest` Harvest behavior. Session context: "implementation session — code generation from design contracts". Synthesize and propose cross-cutting patterns from this session — implementation gotchas, design-to-reality gaps, library/framework lessons. User confirms what enters the document.
+**Harvest learnings.** Use `framework:learning-harvest` Harvest behavior. Session context: "implementation session — code generation from design contracts". Synthesize and propose cross-cutting patterns from this session — implementation gotchas, design-to-reality gaps, library/framework lessons. User confirms what enters the document. **STOP: run this before closing the feature lifecycle below.**
 
-**Close feature lifecycle**: Two discrete file edits — do not skip either:
-1. Write `status: complete` to context doc frontmatter.
-2. If `requirement_doc` is set in context doc frontmatter, write `status: complete` to that file too.
-**STOP: Both required.**
+**Close feature lifecycle**: Write `status: complete` to context doc frontmatter. **STOP: required.**
+
+**STOP: do not write status to `requirement_doc`.** The feature file's status is owned by whoever manages the requirement — a human, or an external system it may live in. This molecule manages its own context doc only.
 
 After enrich context doc, recommend review:
 

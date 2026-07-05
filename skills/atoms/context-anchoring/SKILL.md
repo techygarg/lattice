@@ -33,6 +33,8 @@ Context anchor docs solve:
 
 Two docs per feature: **requirement doc** (static, written upfront, not managed by this skill) and **context anchor doc** (living, evolving, managed by this skill). Requirement doc define *what* build. Context anchor doc capture *how* and *why* -- decisions, constraints, reasoning that emerge during development.
 
+The requirement doc may live in this repo, or in whatever system the team already tracks requirements in (Jira, Linear, a wiki) -- this atom never writes to it regardless of where it lives.
+
 ## Document Lifecycle
 
 Three behaviors govern context anchor doc lifecycle. Each triggered reactively (user ask) or proactively (AI suggest). Both cases, AI **always confirm before acting** -- propose, user dispose.
@@ -62,7 +64,7 @@ Always confirm before creating.
 **Steps**:
 
 1. **Identify feature name.** Derive kebab-case filename from feature name (e.g., "User Authentication" → `user-authentication.md`). Confirm name with user.
-2. **Ask about requirement doc.** If user have requirement document, capture path for `requirement_doc` frontmatter field. If not, leave `null`.
+2. **Ask about requirement doc.** If user has a requirement document, capture it for the `requirement_doc` frontmatter field -- a local file path, or an external reference (URL, ticket ID, or other identifier resolvable via a connected MCP tool). If neither, leave `null`.
 3. **Create dir** if `<context_base>/` not already exist.
 4. **Generate from template.** Read `./assets/feature-doc-template.md` and fill in:
    - Frontmatter: `feature`, `requirement_doc`, `created` (today date), `status: draft`
@@ -72,7 +74,7 @@ Always confirm before creating.
      ```
      ---
      feature: <feature-name>
-     requirement_doc: <path or null>
+     requirement_doc: <local path, external reference, or null>
      created: <today's date>
      status: draft
      ---
@@ -96,7 +98,7 @@ Always confirm before loading.
 **Steps**:
 
 1. **Read context doc.** Parse frontmatter and all sections.
-2. **Read linked requirement doc** if `requirement_doc` not null. Use to understand feature goals and scope, but not modify.
+2. **Resolve linked requirement doc** if `requirement_doc` not null. Local path → read directly. External reference (URL, ticket ID, or other identifier) and a connected MCP tool can resolve it → attempt fetch. Neither applies → ask the user to paste the current requirement constraints directly -- expected, not an error. Use whatever is resolved to understand feature goals and scope, but not modify.
 3. **Present structured acknowledgment** (see Output Formats below):
    - Feature name and summary
    - **Status** (from frontmatter `status` field — surface explicitly)

@@ -31,8 +31,11 @@ Use `framework:context-anchoring` set up feature living doc.
 
 **Load requirement constraints**: Read `requirement_doc` from context doc frontmatter.
 - Null/absent → skip.
-- Found → read it. Extract `## Technical Constraints`. Treat as non-negotiable — same authority as architecture rules. Surface to user before Level 1.
-- Conflict during design → surface via `framework:collaborative-judgment`. User decides; record any change back in requirement doc `## Technical Constraints` before continuing.
+- Local path → read it. Extract `## Technical Constraints`. Treat as non-negotiable — same authority as architecture rules. Surface to user before Level 1.
+- External reference (URL, ticket ID, or other non-local-path identifier) → if a connected MCP tool can resolve it, fetch and extract constraints the same way. If no MCP tool is connected or the fetch returns nothing, ask the user to paste the current constraints directly — expected, not an error.
+- Conflict during design → surface via `framework:collaborative-judgment`. User decides; record any change back in requirement doc `## Technical Constraints` if it is a local file. If external, record the change in the context doc's Decisions Log instead — this molecule never writes back to an external system.
+
+**Write the back-link**: If `requirement_doc` resolved to a readable local file at `.lattice/requirements/features/{feature-name}.md`, write into its `## Links` section: `- Design: [{feature-name}.md](../../context/{feature-name}.md)`. Discrete file edit, done once — skip if the link is already present.
 
 ### Step 2: Walk the Design Levels
 
@@ -81,11 +84,11 @@ After Level 4 (Contracts) approved and persisted:
 
 - **Check requirement spec drift**: Read `requirement_doc` from context doc frontmatter.
   - Null/absent → skip. Note in Design Summary: "No requirement doc — drift check skipped."
-  - Path unreadable → STOP: "Requirement doc not found at `[path]`. Verify before continuing."
-  - Found → compare L4 contracts against requirement doc Scenarios/ACs and `## Technical Constraints`. For each divergence, write to requirement doc `## Links` as a discrete file edit:
-    `- Design override: \`[field/behavior]\` — changed from [X] to [Y]. Reason: [from Decisions Log].`
-  - No divergences → write: `- Design alignment: L4 consistent with requirement spec — no overrides.`
-  - **STOP: Do not set `status: approved` until this check is complete and overrides are written.**
+  - Local path, unreadable → STOP: "Requirement doc not found at `[path]`. Verify before continuing." (a broken local path is an error)
+  - External reference, unresolvable (no connected MCP tool, or the fetch returns nothing) → do not STOP — this is expected, not broken. Ask the user to paste current constraints/scenarios if a comparison is wanted, or note in Design Summary: "Requirement doc is external and unavailable this session — drift check skipped."
+  - Resolved (local file read, external reference fetched, or user pasted constraints) → compare L4 contracts against Scenarios/ACs and `## Technical Constraints`. Present findings: each divergence as `[field/behavior] — changed from [X] to [Y]. Reason: [from Decisions Log]`, or "L4 consistent with requirement spec — no overrides" if none. Ask: *"Record this in the requirement doc?"*
+  - **STOP: do not write to `requirement_doc` until confirmed.** Confirmed and local → write each as `- Design override: [field/behavior] — changed from [X] to [Y]. Reason: [...]`, or `- Design alignment: L4 consistent with requirement spec — no overrides.` if none. Confirmed and external → this molecule never writes to an external system; note the findings in Design Summary instead. Declined → note in Design Summary instead: "Drift check results not written to requirement doc — see Decisions Log."
+  - **STOP: Do not set `status: approved` until this check is complete.**
 
 - **Write design summary**: Use `framework:context-anchoring` Enrich add `## Design Summary` section to context doc containing:
   - Components and layer assignments
@@ -94,8 +97,10 @@ After Level 4 (Contracts) approved and persisted:
   - Domain model decisions (if applicable)
   - Open questions resolved during design
 - **Set approved status**: Write `status: approved` to context doc frontmatter. **STOP: discrete file edit — not prose.** Without this, code-forge will not proceed.
+
+  **STOP: do not write status to `requirement_doc`.** The feature file's status is owned by whoever manages the requirement — a human, or an external system it may live in. This molecule manages its own context doc only.
 - **Log completion decision**: Add decision entry Decisions Log: "Design approved at Level 4. Status set to approved — ready for implementation."
 - Present summary user as confirmation.
 - Design complete. NOT proceed Level 5 (Implementation).
-- Use `framework:learning-harvest` Harvest behavior. Session context: "design session — architectural decomposition and contract definition". Synthesize and propose cross-cutting patterns from this session — decomposition approaches, architectural trade-offs, scope decisions that could inform future designs. User confirms what enters the document.
+- **Harvest learnings.** Use `framework:learning-harvest` Harvest behavior. Session context: "design session — architectural decomposition and contract definition". Synthesize and propose cross-cutting patterns from this session — decomposition approaches, architectural trade-offs, scope decisions that could inform future designs. User confirms what enters the document. **STOP: run this before the next bullet — do not jump straight to the `/code-forge` suggestion.**
 - Suggest user invoke `/code-forge` when ready begin coding against the approved design.

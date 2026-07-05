@@ -1,6 +1,6 @@
 ---
 name: lattice-init
-description: "Guided setup experience for new Lattice projects -- scans the repository, detects existing configuration, suggests refiners in priority order, and creates the .lattice/ config. Bridges the gap between installing skills and getting first value. Use when the user says 'lattice init', 'set up lattice', 'initialize lattice', 'get started with lattice', or 'configure lattice for this project'."
+description: "Guided setup and upgrade-check experience for Lattice projects -- scans the repository, detects existing configuration and outdated conventions, suggests refiners and available upgrades in priority order, and creates or reconciles the .lattice/ config. Bridges the gap between installing skills and getting first value, and between upgrading Lattice and adopting its newest conventions. Use when the user says 'lattice init', 'set up lattice', 'initialize lattice', 'get started with lattice', 'configure lattice for this project', 'check for lattice upgrades', or 'upgrade lattice conventions'."
 ---
 
 # Lattice Init
@@ -46,6 +46,7 @@ If multiple language markers found repo root, note all ask user which primary st
 - `.lattice/context/` → feature context documents (count them)
 - `.lattice/learnings/operational-learnings.md` → accumulated operational learnings (managed by learning-harvest atom)
 - `.lattice/reviews/review-log.md` → review log
+- `.lattice/requirements/index.md` → check shape: if epic sections and feature tables are written directly inside it (no `epics/` directory alongside) and `requirements_layout` is absent from config, flag as **legacy layout — upgrade available**
 
 ### Step 2: Present Findings
 
@@ -69,28 +70,34 @@ Present:
 - Context documents: [N found / none]
 - Review learnings: [found / none]
 - Review log: [found / none]
+- Requirements layout: [sharded / legacy — upgrade available / not found]
 ```
 
-**STOP: If `.lattice/config.yaml` and all core standards docs exist:** Tell user "Lattice fully configured." Skip to Step 4.
+**STOP: If `.lattice/config.yaml` and all core standards docs exist AND no legacy requirements layout was detected:** Tell user "Lattice fully configured." Skip to Step 4.
+
+**STOP:** if a legacy requirements layout was detected, do not skip on that basis alone — present it as a gap in Step 3 even when everything else is fully configured.
 
 ### Step 3: Guided Setup
 
 **Priority order**:
 
-1. **Knowledge-priming-refiner** (if `.lattice/standards/knowledge-base.md` missing) -- "Captures project identity -- tech stack, architecture, directory layout, conventions. Every other skill uses this context make better decisions."
-2. **Language-idioms-refiner** (if `.lattice/standards/language-idioms.md` missing) -- "Defines how your language expresses engineering patterns -- error handling, type system, naming, testing, DI. Multiple atoms use this to adapt pseudocode defaults to your language. Fast interview: proposes language-idiomatic defaults, you confirm or adjust."
-3. **Architecture-refiner** (if `.lattice/standards/architecture.md` missing AND project has source code dir) -- "Defines project architecture standards — layer structure, dependency rules, validation checklist. Supports multiple styles: clean architecture (default), hexagonal / ports & adapters, modular monolith, or custom."
-4. **DDD-refiner** (if `.lattice/standards/ddd-principles.md` missing AND project has domain folder or domain-like structure) -- "Captures aggregate design rules, entity patterns, domain event conventions so DDD atom enforces domain modeling style."
-5. **Clean-code-refiner** (if `.lattice/standards/clean-code.md` missing) -- "Tailors coding standards -- function size limits, complexity thresholds, naming conventions. Defaults work well most projects, so optional."
-6. **Review-refiner** (if `.lattice/standards/review-standards.md` missing) -- "Customizes how review molecule works -- atom loading rules, severity levels, report format, scope rules. Defaults work well most projects, so optional."
+1. **Requirements layout upgrade** (if legacy layout detected in Step 1) -- "Your requirements index uses an older layout that hand-edits one shared file per feature, which causes merge conflicts when multiple developers work in parallel. The current layout shards it by epic and generates rollups from feature files instead of hand-editing them. One-time migration; does not touch any feature file's content beyond a link repointing (a rare exception is surfaced and confirmed, never silent). This upgrade only matters if your team keeps requirements in this repo -- teams tracking requirements in an external system (Jira, Linear, etc.) can skip it."
+2. **Knowledge-priming-refiner** (if `.lattice/standards/knowledge-base.md` missing) -- "Captures project identity -- tech stack, architecture, directory layout, conventions. Every other skill uses this context make better decisions."
+3. **Language-idioms-refiner** (if `.lattice/standards/language-idioms.md` missing) -- "Defines how your language expresses engineering patterns -- error handling, type system, naming, testing, DI. Multiple atoms use this to adapt pseudocode defaults to your language. Fast interview: proposes language-idiomatic defaults, you confirm or adjust."
+4. **Architecture-refiner** (if `.lattice/standards/architecture.md` missing AND project has source code dir) -- "Defines project architecture standards — layer structure, dependency rules, validation checklist. Supports multiple styles: clean architecture (default), hexagonal / ports & adapters, modular monolith, or custom."
+5. **DDD-refiner** (if `.lattice/standards/ddd-principles.md` missing AND project has domain folder or domain-like structure) -- "Captures aggregate design rules, entity patterns, domain event conventions so DDD atom enforces domain modeling style."
+6. **Clean-code-refiner** (if `.lattice/standards/clean-code.md` missing) -- "Tailors coding standards -- function size limits, complexity thresholds, naming conventions. Defaults work well most projects, so optional."
+7. **Review-refiner** (if `.lattice/standards/review-standards.md` missing) -- "Customizes how review molecule works -- atom loading rules, severity levels, report format, scope rules. Defaults work well most projects, so optional."
 
 **For each gap**, present user:
-- What refiner does (one sentence, from descriptions above)
+- What it does (one sentence, from descriptions above)
 - Three choices: **Run now**, **Skip for later**, or **Skip all remaining**
 
-**If user says "run"** → Tell user invoke refiner: "Run `/[refiner-name]` now start guided interview."
+**If user says "run"**:
+- For the requirements layout upgrade → read `references/requirements-migration.md` and follow those steps directly in this session. Confirm the plan (epics detected, files to be created, index.md's new contents) before writing anything.
+- For any refiner → tell user to invoke it: "Run `/[refiner-name]` now start guided interview."
 
-**If user says "skip"** → Move next refiner priority order.
+**If user says "skip"** → Move to next item in priority order.
 
 **If user says "skip all"** → Jump Step 4.
 
