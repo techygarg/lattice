@@ -97,10 +97,10 @@ For each confirmed standard, in the order it appears in the map:
 
 1. Offer the choice: **Revise now**, **Skip**, or **Skip all remaining**.
 2. On **Revise now**: apply the corresponding refiner's **revise** path — its own "Check for existing documents → Revise" flow, which loads the existing document and updates only the sections the change touched. Reference and apply the refiner skill; do not copy its interview here. Tell the user: "Applying `{refiner}` in revise mode to update `{doc}`."
-3. When the refiner's revision completes and control returns here, append (or update) the change note as the final footer line, preserving the existing footer:
+3. When the refiner's revision completes and control returns here, append (or update) the change note as the final line of the document's existing footer, matching the footer's own plain-italic style (`*...*`) — not a blockquote:
 
    ```
-   > _Last updated: {YYYY-MM-DD} — {this doc's tagged reason(s) from Step 3}_
+   *Last updated: {YYYY-MM-DD} — {this doc's tagged reason(s) from Step 3}*
    ```
 
    Use the current date, and only the reason(s) tagged to this specific doc — not the full multi-change text from Step 2 when other captured changes did not touch it. If a prior "Last updated" line exists, replace it with the new one.
