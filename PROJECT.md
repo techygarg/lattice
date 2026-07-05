@@ -9,7 +9,7 @@ AI assistants structured thinking. Skills are markdown files with no runtime or 
 skills/
 ├── atoms/{skill-name}/SKILL.md              # Single-principle guardrails (11 skills)
 │   └── references/defaults.md               # Embedded defaults for config resolution
-├── molecules/{skill-name}/SKILL.md           # Multi-step workflows composing atoms (8 skills)
+├── molecules/{skill-name}/SKILL.md           # Multi-step workflows composing atoms (9 skills)
 └── refiners/{skill-name}/SKILL.md            # Guided interviews producing .lattice/ config (7 skills)
     └── assets/template*.md                   # Output template(s) with interview guidance
 docs/
@@ -128,7 +128,7 @@ After modifying any skill:
 ./tools/install.sh /path/to/your-ai-tool/skills/
 ```
 
-Copies all 26 skills (flattened) into the provided skills directory. Pass the skills folder of whichever AI tool you are using (e.g. `.claude/skills/`, `.cursor/skills/`, `.codex/skills/`). Verify the skill loads correctly.
+Copies all 27 skills (flattened) into the provided skills directory. Pass the skills folder of whichever AI tool you are using (e.g. `.claude/skills/`, `.cursor/skills/`, `.codex/skills/`). Verify the skill loads correctly.
 
 For the Codex plugin package, also run:
 

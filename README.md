@@ -58,7 +58,7 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
     codex plugin add lattice@lattice
     codex plugin list | rg -i lattice
     ```
-   The Codex plugin package lives in [`plugins/lattice/`](plugins/lattice/) and is registered by [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). It contains the same 26 skills flattened for Codex discovery.
+   The Codex plugin package lives in [`plugins/lattice/`](plugins/lattice/) and is registered by [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). It contains the same 27 skills flattened for Codex discovery.
    
    *This duplication currently to support codex. In future, we may find a better approach as tools evolves.*
 
