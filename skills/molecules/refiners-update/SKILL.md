@@ -61,6 +61,8 @@ Present the result:
 
 Ask the user what changed and why — in one or two sentences. This is the trigger. It becomes the change note recorded on each revised document and drives which standards are affected.
 
+If the answer describes more than one distinct change (e.g. an architecture shift *and* a language switch together), capture each as its own short reason instead of one merged sentence. Each affected standard's change note (Step 4) must carry only the reason(s) that actually apply to it — a doc should never be stamped with a reason for a change that did not touch it.
+
 Prompt with the common change types if the user is unsure:
 - Architecture shift (new layer, moved to CQRS, dropped a pattern)
 - Language or framework change
@@ -85,6 +87,8 @@ From the trigger, propose which existing standards are likely affected and why. 
 
 Ask the user to confirm or adjust the set before proceeding. Only documents that actually exist (from Step 1) are eligible — for anything that should change but does not exist yet, follow the creation note above.
 
+If Step 2 captured more than one distinct change, tag each affected standard with which of those change(s) justifies its inclusion — a doc can be justified by more than one. Carry this doc-to-reason tagging into Step 4; it determines what each doc's change note says.
+
 ### Step 4: Revise each affected standard
 
 **Execution model:** You — the AI running this molecule — drive each revision yourself: load and apply the refiner skill's revise flow as part of this molecule's execution, then return here to append the change note before moving to the next standard. Do not hand control back to the user and end your turn between revising and noting — the change note is this molecule's responsibility and must be written while you still hold control. (If a refiner is instead run as a separate session, the note will be missed — re-invoke `/refiners-update` afterward; its idempotent re-scan re-detects the revised document so the note still gets recorded.)
@@ -96,10 +100,10 @@ For each confirmed standard, in the order it appears in the map:
 3. When the refiner's revision completes and control returns here, append (or update) the change note as the final footer line, preserving the existing footer:
 
    ```
-   > _Last updated: {YYYY-MM-DD} — {one-line reason from Step 2}_
+   > _Last updated: {YYYY-MM-DD} — {this doc's tagged reason(s) from Step 3}_
    ```
 
-   Use the current date. If a prior "Last updated" line exists, replace it with the new one.
+   Use the current date, and only the reason(s) tagged to this specific doc — not the full multi-change text from Step 2 when other captured changes did not touch it. If a prior "Last updated" line exists, replace it with the new one.
 4. On **Skip**: move to the next standard. On **Skip all remaining**: jump to Step 5.
 
 ### Step 5: Summary
