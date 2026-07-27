@@ -22,15 +22,34 @@ Patterns that recur frequently may graduate to standards via a refiner. That pro
 
 ## Config Resolution
 
+**Main document**:
+
 1. Check `.lattice/config.yaml` for `paths.operational_learnings`
 2. If found, use that file path
 3. If not, use default `.lattice/learnings/operational-learnings.md`
+
+**Archive document** — the sink for long-form narrative moved out of the main document:
+
+1. Check `.lattice/config.yaml` for `paths.operational_learnings_archive`
+2. If found, use that file path
+3. If not, default to `operational-learnings-archive.md` as a sibling of the resolved main document — a custom main path carries the archive with it
+4. Resolve lazily. **STOP: do not create the archive until something is actually being moved into it.**
+
+**STOP: never read the archive during Load Behavior.** Archived narrative is retrieval-on-demand, on a specific question. Loading it back into session context defeats the reason it was moved.
 
 **Backward compatibility**: If default path not found, check these legacy paths in order:
 - `.lattice/learnings.md` — flat file at root
 - `.lattice/learnings/review-insights.md` — prior naming convention
 
 If found, offer migration to canonical path and format. If user declines, read as flat input. **STOP: do not write to it.**
+
+**Declined-migration fallback** — where writes go when a legacy file is in use:
+
+1. Writes go to the canonical path resolved above, never to the legacy file. Create file and directory if absent.
+2. The legacy file is read-only for the whole session — Load reads it, dedup reads it, nothing writes it.
+3. Dedup (Harvest Step 5) checks BOTH the canonical file and the declined legacy file. **STOP: skipping the legacy file here re-captures patterns the user already has.**
+4. Health assessment (Harvest Step 6) sizes both files together — the user pays context for both.
+5. **STOP: do not re-offer migration in the same session.** Declined once is declined until the user raises it.
 
 ## Document Structure
 
@@ -123,17 +142,66 @@ Invoked at session end. Composing workflow passes a **session context** (what ki
 
 4. **User decides.** Accept, edit, reject, add their own, or skip all. **STOP: do NOT argue for rejected entries.**
 
-5. **Write confirmed entries only.** Dedup against existing entries (update with recurrence note if same pattern exists). Create file/dir if needed.
+5. **Write confirmed entries only.** Write to the resolved main document — with a declined legacy file in play, that is the canonical path, never the legacy file (see Config Resolution). Dedup against existing entries in the main document and in any declined legacy file (update with recurrence note if same pattern exists). Create file/dir if needed.
 
-6. **Assess health.** Count entries per category and total (already read for dedup in Step 5). Any category exceeds ~10 entries, or total exceeds ~35 → note in one line: "Operational learnings is growing dense — say 'tighten learnings' to run Tighten standalone." Pattern recurred 4+ times → note it as a promotion candidate the same way. **STOP: do not run Tighten in this session** — flag only, never act.
+6. **Assess health — size first, count second.** What this protects is context-window tokens: every composing molecule loads this document at session start, so the team pays bytes, not bullets. Ten sprawling entries cost more than forty tight ones. Size is the primary signal; counts are secondary.
+
+   Take the main document's size on disk — already read for dedup in Step 5, no extra cost. Size unavailable? Approximate as total entries × average entry length. Add any declined legacy file (see Config Resolution).
+
+   | Signal | Soft — flag | Hard — STOP |
+   |---|---|---|
+   | **Document size** (primary) | ~40KB | ~80KB |
+   | **Entries in one category** (secondary) | ~10 | ~20 |
+   | **Total entries** (secondary) | ~35 | ~70 |
+
+   **Soft threshold — flag only.** Any signal crosses its soft column → note in one line: "Operational learnings is at [size] — say 'tighten learnings' to run Tighten standalone." Pattern recurred 4+ times → note it as a promotion candidate the same way. **STOP: do not run Tighten in this session** — flag only, never act.
+
+   **Hard threshold — a sequencing gate on you, not a question for the user.** Any signal crosses its hard column → the main document comes back under its soft threshold before the molecule closes. Do it now, in this session:
+
+   1. Take the longest entries in the main document — the ones carrying narrative, incident retelling, or a reasoning trail.
+   2. Move that narrative to the archive document (path per Config Resolution, format per Tighten Behavior Step 2). Keep rule + discriminator in the main document with a back-reference.
+   3. Re-measure. Still over soft → repeat on the next-longest entries.
+   4. Report in one line: "Moved narrative from [N] entries to [archive path] — main document [old size] → [new size]."
+
+   **STOP: relocation only — never deletion, consolidation, or promotion.** Moving narrative to the archive loses nothing, so it needs no approval. Dropping or merging an entry does, and stays a per-candidate judgment call the user makes in Tighten.
+
+   **STOP: do not ask permission and do not wait for the user.** Harvest is not a confirmation gate — this is a step you finish before the molecule moves on, the same way Harvest itself runs before the molecule's closing recommendation.
+
+   **STOP: do not run Tighten here either.** After relocating, if the document is still dense with overlapping entries, flag Tighten as due exactly as the soft threshold does.
 
 ## Tighten Behavior
 
 Invoked standalone only — Harvest may flag that tightening is due, but never launches it.
 
 1. Read full document.
-2. Identify: consolidation opportunities (same pattern, different words), noise (one-off, never recurred), promotion candidates (recurred 4+ times — suggest refiner), stale entries (project has changed).
-3. Present each candidate individually — consolidation, noise, promotion, and staleness are different judgment calls. Accept / edit / reject per candidate, not as one batch.
+2. Identify candidates:
+
+   | Candidate | Signal | Disposition |
+   |---|---|---|
+   | **Consolidation** | Same pattern, different words, across entries | Merge into one entry |
+   | **Noise** | One-off, never recurred | Remove |
+   | **Promotion** | Recurred 4+ times | Suggest the relevant refiner — it has become a rule |
+   | **Stale** | Project has changed, entry no longer describes it | Remove |
+   | **Archive** | Entry runs past the two-line format — carries narrative, incident detail, or a reasoning trail | Move the narrative to the archive document; keep rule + discriminator in the main document |
+
+   **Archive is the destination for length, not for irrelevance.** An entry still earning its place but too long to sit in a document loaded every session belongs in the archive, not the noise pile — removing it loses the reasoning, archiving keeps it retrievable.
+
+   **Archive entry format** — same category headings as the main document:
+
+   ```markdown
+   ## [Category]
+
+   ### YYYY-MM-DD [context] Pattern
+   [Narrative: what happened, what was tried, what the debate was, why it resolved this way.]
+   ```
+
+   The main document keeps the standard bullet plus a back-reference:
+
+   `- YYYY-MM-DD [context] Pattern — actionable takeaway ([detail](operational-learnings-archive.md#anchor))`
+
+   **STOP: the main-document bullet must stand alone without the archive.** Rule plus discriminator — what to do, and the condition that tells a reader it applies to them. A bullet that only makes sense after opening the archive is not tightened, just truncated.
+
+3. Present each candidate individually — consolidation, noise, promotion, staleness, and archiving are different judgment calls. Accept / edit / reject per candidate, not as one batch.
 4. Apply only what user confirms.
 
 ## Self-Validation Checklist
