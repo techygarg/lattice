@@ -138,6 +138,7 @@ Non-negotiable inputs for design. Populate with:
 
 ## Links
 - Design: *(link added by design-blueprint when context doc is created)*
-- Design overrides: *(populated by design-blueprint — lists any field, type, or behavior changed from this spec during design; empty means L4 contracts are fully consistent with this spec)*
+- Design override: *(added by design-blueprint — one bullet per field, type, or behavior changed from this spec during design, with the reason; none means L4 contracts are fully consistent with this spec)*
+- Design alignment: *(added by design-blueprint when L4 contracts confirmed consistent with this spec and no overrides exist)*
 - Epic index: [epic-slug.md](../epics/epic-slug.md)
 ```

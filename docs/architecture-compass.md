@@ -133,12 +133,14 @@ A progressive insights document with a defined structure:
 Session Status        — phase checkpoint table, honest about what stage was reached
 Repository Identity   — language, framework, scope boundary, constraints
 Why We're Doing This  — the burning platform, from the interview
+Team Vision & Guardrails — vision and off-limits from Acts 3–4 ("inferred, not confirmed" if the interview was declined)
 Archaeology Findings  — quick wins, risks, dead code, hidden coupling
 Domain Map            — core domain, seams, bounded contexts (if applicable)
 Current Architecture  — agreed map with Mermaid diagram
 Recommended Direction — agreed target with diagram, folder tree, dependency rules
 Gap Assessment        — must / should / defer / leave alone
 First Moves           — 2–3 structural decisions with molecule guidance
+Progress Log          — dated entries appended on every subsequent session
 ```
 
 The document has two layers:
@@ -160,7 +162,7 @@ First Moves section → each move uses:
     └─ /refactor-safely
 
   New structure (new layer, new interface, new boundary)
-    └─ /design-blueprint (enters at Level 4, from first move description)
+    └─ /design-blueprint (entry level per its Complexity Calibration)
          └─ /code-forge
 
   Verify each move

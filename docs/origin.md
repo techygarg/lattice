@@ -66,7 +66,7 @@ The `design-first` atom encodes the five-level methodology: Capabilities, Compon
 
 Decisions need somewhere durable to live after the session ends.
 
-The `context-anchoring` atom manages per-feature living documents. Every molecule uses it. `design-blueprint` creates the document, `code-forge` enriches it with implementation decisions, `refactor-safely` and `bug-fix` record their own decisions in it. The document survives across sessions, restoring full context when work resumes.
+The `context-anchoring` atom manages per-feature living documents. Every code-facing molecule uses it. `design-blueprint` creates the document, `code-forge` enriches it with implementation decisions, `refactor-safely` and `bug-fix` record their own decisions in it. The document survives across sessions, restoring full context when work resumes.
 
 ### Encoding Team Standards → code-quality atoms and refiners
 
@@ -78,7 +78,7 @@ Each code-quality atom — `clean-code`, `architecture`, `domain-driven-design`,
 
 The final pattern: turn AI sessions into something a team can learn from rather than discard.
 
-All molecules contribute to and consume from `.lattice/learnings/operational-learnings.md` via the `learning-harvest` atom. The atom proposes cross-cutting patterns; the user confirms what enters the document. If a review found "anemic domain models," the next `code-forge` session reads that pattern and avoids it. If a design session discovered that splitting entities with independent lifecycles prevents invariant conflicts, future design sessions benefit. The loop is bidirectional and user-curated.
+All code-facing molecules contribute to and consume from `.lattice/learnings/operational-learnings.md` via the `learning-harvest` atom. The atom proposes cross-cutting patterns; the user confirms what enters the document. If a review found "anemic domain models," the next `code-forge` session reads that pattern and avoids it. If a design session discovered that splitting entities with independent lifecycles prevents invariant conflicts, future design sessions benefit. The loop is bidirectional and user-curated.
 
 ![The Feedback Flywheel](image/image4.png)
 

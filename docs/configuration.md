@@ -29,7 +29,7 @@ requirements_layout: sharded
 | Field | Type | Description |
 |-------|------|-------------|
 | `version` | integer | Schema version. Currently `1`. |
-| `language` | string | Project's primary language identifier (e.g., `go`, `rust`, `python`, `java`, `typescript`, `csharp`). Set by `lattice-init` or `language-idioms-refiner`. Used as fallback by atoms when `paths.language_idioms` document is not present. |
+| `language` | string | Project's primary language identifier (e.g., `go`, `rust`, `python`, `java`, `typescript`, `csharp`). Set by `lattice-init` or `language-idioms-refiner`; informational metadata describing the project. Atoms do not read this key — language adaptation is driven entirely by `paths.language_idioms`. |
 | `paths` | map | Logical key → file path mappings. All keys are optional. |
 | `architecture_mode` | string | Architecture enforcement mode. `clean` (default) or `custom`. See below. |
 | `requirements_layout` | string | Requirements folder layout. `sharded` (current) or `flat` (legacy, pre-migration). See below. |

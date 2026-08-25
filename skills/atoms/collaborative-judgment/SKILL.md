@@ -4,36 +4,36 @@ description: "Protocol for handling ambiguous decisions and missing/conflicting 
 ---
 # Collaborative Judgment
 
-## When Decide vs When Ask
+## When to Decide vs When to Ask
 
-Most decision NOT ambiguous. AI decide when:
+Most decisions are NOT ambiguous. The AI decides on its own when:
 
-- **Rule clear.** 80-line function doing 5 things violate SRP. Domain entity import database break dependency rule. Fix.
-- **Project documented preference.** Knowledge base, refiner docs, context anchor specify choice -- follow. Not ambiguity, documented intent.
-- **Low-impact.** Variable naming, import order, test data -- choose, move on.
-- **Grounding solid.** Can point to source: user instruction, inspected code/artifact, failing test/log, knowledge base, refiner doc, context anchor. No repo-specific fact from memory alone.
+- **The rule is clear.** An 80-line function doing 5 things violates SRP. A domain entity importing the database breaks the dependency rule. Fix it.
+- **The project has a documented preference.** The knowledge base, refiner docs, or context anchor specify the choice -- follow it. That is not ambiguity; it is documented intent.
+- **The impact is low.** Variable naming, import order, test data -- choose and move on.
+- **Grounding is solid.** You can point to a source: user instruction, inspected code/artifact, failing test/log, knowledge base, refiner doc, context anchor. Never take a repo-specific fact from memory alone.
 
-Surface decision only when ALL three true:
+Surface a decision only when ALL three are true:
 
-1. **Multiple valid approach** -- genuine fork between reasonable options.
-2. **No active context resolve** -- checked user instruction, inspected code/artifacts, current evidence, knowledge base, refiner docs, context anchor. Still unresolved.
-3. **Meaningful consequences** -- affect architecture, behavior, maintainability. Not cosmetic.
+1. **Multiple valid approaches** -- a genuine fork between reasonable options.
+2. **No active context resolves it** -- user instruction, inspected code/artifacts, current evidence, knowledge base, refiner docs, and context anchor have all been checked. Still unresolved.
+3. **Consequences are meaningful** -- affects architecture, behavior, or maintainability. Not cosmetic.
 
-**Confidence test**: "Considered two+ approaches, neither clearly better given project context." True → surface. False → decide, move on.
+**Confidence test**: "I considered two or more approaches, and neither is clearly better given this project's context." True → surface. False → decide and move on.
 
-**Err side of deciding only when grounded.** Grounded autonomy ≠ guessing. **STOP:** If evidence thin, missing, or conflicting, don't silent choose.
+**Default to deciding -- but only when grounded.** Grounded autonomy ≠ guessing. **STOP:** If the evidence is thin, missing, or conflicting, do not silently choose.
 
-Stop and inspect / ask when ANY signal fire:
+Stop and inspect / ask when ANY signal fires:
 
-1. **No grounding** -- can't cite source for a project-specific claim.
-2. **Generic prior filling local gap** -- about to assume file path, API shape, config key, data contract, naming convention, workflow because "projects usually do X."
-3. **Missing fact collapses answer** -- one unresolved fact would make one option clearly right/wrong.
+1. **No grounding** -- you cannot cite a source for a project-specific claim.
+2. **Generic priors filling a local gap** -- you are about to assume a file path, API shape, config key, data contract, naming convention, or workflow because "projects usually do X."
+3. **A missing fact collapses the answer** -- one unresolved fact would make one option clearly right or wrong.
 4. **Conflicting sources** -- user instruction, code, docs, tests, logs, or context docs disagree.
-5. **Unfalsifiable assumption** -- can't say what evidence would prove current assumption wrong.
+5. **Unfalsifiable assumption** -- you cannot say what evidence would prove the current assumption wrong.
 
-If any signal fire, don't invent options just to fit this protocol. First inspect available evidence. If still unresolved, ask targeted clarification.
+If any signal fires, do not invent options just to fit this protocol. Inspect the available evidence first. If it stays unresolved, ask a targeted clarification.
 
-**STOP:** Conflicting active sources — surface contradiction, ask. Never pick winner silently.
+**STOP:** Conflicting active sources — surface the contradiction and ask. Never pick a winner silently.
 
 ## Presentation Format
 
@@ -52,45 +52,45 @@ Use when multiple **grounded** options remain:
 >
 > I lean toward **[option]** because [one sentence of reasoning].
 
-Two options norm. Three maximum. No essays.
+Two options is the norm. Three is the maximum. No essays.
 
 ### B. Clarification needed
 
-Use when issue is missing/conflicting knowledge, not balanced options:
+Use when the issue is missing/conflicting knowledge, not balanced options:
 
 > **Clarification needed**: [missing fact or contradiction]
 >
 > Checked: [sources]
 > Missing/conflicting: [exact fact]
-> Need from you: [1-3 targeted questions or requested artifact]
+> Need from you: [1–3 targeted questions or a requested artifact]
 > Why it matters: [one sentence]
 
-No fabricated options. Ask only for facts that materially change direction. If answer available in inspected repo/docs/tests, inspect first -- ask user only when gap remains.
+No fabricated options. Ask only for facts that materially change direction. If the answer is available in the inspected repo/docs/tests, inspect first -- ask the user only when the gap remains.
 
 ## Batching
 
-Not interrupt every judgment call. Collect, surface at natural checkpoints:
+Do not interrupt for every judgment call. Collect and surface at natural checkpoints:
 
-- **During implementation** (code-forge): batch per component. Surface all judgment call for component together before present code.
-- **During design** (design-blueprint): surface immediately. Each design level constrain next -- batching risk cascading misalignment.
-- **During review** (review): note uncertainty inline in report with both interpretations.
-- **Standalone / freeform**: batch per logical task segment. Surface all judgment call when feature scope clear -- not one at time.
-- **Knowledge gap / conflicting evidence**: surface immediately when next step depend on missing fact. Don't batch a blocker just to preserve flow.
+- **During implementation** (code-forge): batch per component. Surface all judgment calls for a component together before presenting its code.
+- **During design** (design-blueprint): surface immediately. Each design level constrains the next -- batching risks cascading misalignment.
+- **During review** (review): note uncertainty inline in the report, with both interpretations.
+- **Standalone / freeform**: batch per logical task segment. Surface all judgment calls once the feature scope is clear -- not one at a time.
+- **Knowledge gap / conflicting evidence**: surface immediately when the next step depends on the missing fact. Do not batch a blocker just to preserve flow.
 
-**Escalation signal**: Single component produce >3 judgment calls, project need clearer standards. Suggest run relevant refiner instead ask each individually.
+**Escalation signal**: a single component producing more than 3 judgment calls means the project needs clearer standards. Suggest running the relevant refiner instead of asking about each one individually.
 
 ## Resolution
 
-When user resolve judgment call or clarification:
+When the user resolves a judgment call or clarification:
 
-1. **Apply immediately** -- implement choice in current context.
-2. **Treat as commitment** -- chosen option, clarified fact, or conflict resolution not revisited silently later in session.
-3. **Suggest persistence** -- if decision apply similar future situations, suggest capture via `framework:context-anchoring` (per-feature) or recommend run relevant refiner (project-wide).
+1. **Apply immediately** -- implement the choice in the current context.
+2. **Treat it as a commitment** -- the chosen option, clarified fact, or conflict resolution is not revisited silently later in the session.
+3. **Suggest persistence** -- if the decision applies to similar future situations, suggest capturing it via `framework:context-anchoring` (per-feature) or recommend running the relevant refiner (project-wide).
 
 ## Diminishing Rule
 
-Protocol become less active as project mature:
+This protocol becomes less active as the project matures:
 
 - **First feature**: more judgment calls (no documented preferences yet).
-- **After run refiners**: fewer (project standards documented).
-- **After several features**: rare (context docs, learnings cover most cases).
+- **After running refiners**: fewer (project standards are documented).
+- **After several features**: rare (context docs and learnings cover most cases).

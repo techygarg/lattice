@@ -1,6 +1,6 @@
 ---
 name: architecture
-description: "Enforce architectural rules when generating or modifying code. Defaults to clean architecture; supports any architecture style via the architecture-refiner. Validates layer responsibilities, dependency direction, and structural constraints using the loaded architecture rules. Use when generating code, reviewing architecture, creating new files, or when the user mentions 'architecture', 'layers', 'structure', 'dependency rules', 'hexagonal architecture', 'ports and adapters', 'modular monolith', or 'onion architecture'. Also use when reviewing generated code for structural compliance."
+description: "Enforce architectural rules when generating or modifying code, and validate proposed designs before approval (design mode). Defaults to clean architecture; supports any architecture style via the architecture-refiner. Validates layer responsibilities, dependency direction, and structural constraints using the loaded architecture rules. Use when generating code, reviewing architecture, creating new files, or when the user mentions 'architecture', 'layers', 'structure', 'dependency rules', 'hexagonal architecture', 'ports and adapters', 'modular monolith', or 'onion architecture'. Also use when reviewing generated code for structural compliance."
 ---
 
 # Architecture
@@ -22,11 +22,12 @@ description: "Enforce architectural rules when generating or modifying code. Def
 **Step 3 — Load architecture content:**
 
 - **Clean architecture mode:**
-  1. Check `paths.architecture` in `.lattice/config.yaml` for custom doc
-  2. If found, read doc and check YAML frontmatter for `mode`:
-     - **`mode: overlay`**: Read `./references/clean-architecture-defaults.md` first, then apply custom doc section on top. Section match by heading — custom section replace matching default, new section append.
-     - **`mode: override`**: Custom doc take full precedence. Must be comprehensive.
-  3. If no custom doc → read `./references/clean-architecture-defaults.md`
+  1. Check `paths.architecture` in `.lattice/config.yaml` for a custom document path.
+  2. If a document exists at that path → read it and check its YAML frontmatter for `mode`:
+     - **`mode: overlay`** (or no mode field): read `./references/clean-architecture-defaults.md` first, then apply the custom document's sections on top. Sections match by exact heading — a custom section replaces the matching default; new sections append after the defaults.
+     - **`mode: override`**: the custom document takes full precedence. It must be comprehensive.
+  3. If the path is configured but no document exists at it → tell the user which configured path is missing, then read `./references/clean-architecture-defaults.md`.
+  4. If there is no configured path → read `./references/clean-architecture-defaults.md`.
 
 - **Custom mode:**
   1. Check `paths.architecture` in `.lattice/config.yaml` for team architecture doc
@@ -35,10 +36,19 @@ description: "Enforce architectural rules when generating or modifying code. Def
 
 **Step 4 — Language adaptation:**
 
-If `paths.language_idioms` exist in config, read **"Dependency Management"** section and adapt dependency direction enforcement to language idioms (e.g., Go interface-at-consumer, Java DI containers, Rust trait bounds). Language idioms take precedence over pseudocode defaults.
+If `paths.language_idioms` is set in the config and the document exists, read its **"Dependency Management"** section and adapt dependency direction enforcement to language idioms (e.g., Go interface-at-consumer, Java DI containers, Rust trait bounds). Language idioms take precedence over pseudocode defaults.
 
 ## Enforcement
 
-STOP after generate each component. Read **Self-Validation Checklist** and **Anti-Pattern Scan** from loaded enforce rule (clean-architecture.md or custom-architecture.md) and apply.
+**STOP after generating each component.** Read the **Self-Validation Checklist** and **Anti-Pattern Scan** from the loaded enforce rule (clean-architecture.md or custom-architecture.md) and apply them.
 
 **Project-specific checks:** If architecture content doc (loaded in Step 3) contains a **Validation Checklist** section (§6), apply those checks as additional project-specific validation after the enforce rule checklist.
+
+## Design Mode
+
+When invoked during design — no code is being written; a planning molecule is validating a proposed design artifact — apply the same enforce rule as a forward-looking check:
+
+1. Take the proposed artifact (component list, layer assignment, data flow, or contract set) as the unit of validation.
+2. Evaluate it against the **Self-Validation Checklist** and **Anti-Pattern Scan** from the loaded enforce rule, plus the project-specific Validation Checklist if present — before the artifact is presented for user approval.
+3. Report violations as concrete findings on the artifact ("Component X reaches from layer A to layer C, skipping B"), not generic advice. Resolve them through the design.
+4. **STOP:** do not skip checklist evaluation on the grounds that no code exists yet — the proposed structure is what gets validated.

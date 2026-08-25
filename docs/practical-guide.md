@@ -36,7 +36,7 @@ Molecules work, but results will be generic. Without `/knowledge-priming-refiner
 
 ### What is the `.lattice/` folder and should I commit it to version control?
 
-The `.lattice/` folder is Lattice's living context layer. It holds `config.yaml` (your settings), `standards/` (refiner outputs like architecture and coding rules), `requirements/` (epic and feature specs produced by requirement-forge), `context/` (per-feature living documents capturing decisions and blueprints), `reviews/` (review log), and `learnings/` (operational learnings accumulated across design, implementation, review, and bug-fix sessions). Commit it — it's the shared source of truth for your team's standards and accumulates value over time. `requirements/` is the one exception worth calling out: it's optional and pluggable — teams that already track requirements in an external system (Jira, Linear, etc.) can skip it entirely and point `design-blueprint` at an external reference instead. Commit it only if you're using it.
+The `.lattice/` folder is Lattice's living context layer. It holds `config.yaml` (your settings), `standards/` (refiner outputs like architecture and coding rules), `requirements/` (epic and feature specs produced by requirement-forge), `context/` (per-feature living documents capturing decisions and blueprints), `reviews/` (review log), `learnings/` (operational learnings accumulated across design, implementation, review, and bug-fix sessions), and `insights/` (the architectural insights document produced by architecture-compass). Commit it — it's the shared source of truth for your team's standards and accumulates value over time. `requirements/` is the one exception worth calling out: it's optional and pluggable — teams that already track requirements in an external system (Jira, Linear, etc.) can skip it entirely and point `design-blueprint` at an external reference instead. Commit it only if you're using it.
 
 ---
 
@@ -72,7 +72,7 @@ No. If your description or documents reveal only 1–3 features, the molecule of
 
 ### How does requirement-forge connect to design-blueprint?
 
-Each feature file has a `Links: Design` field that `design-blueprint` writes the first time it resolves that feature's requirement doc in Step 1 — on either a new design session or a resumed one. The `design-blueprint` molecule's context-anchoring step accepts a "requirement doc link" pointing to the feature file — it loads the problem statement and scope as starting context for the design session. The two molecules complement each other: requirement-forge defines WHAT and WHY; design-blueprint defines HOW.
+Each feature file's `## Links` section gains a `- Design:` back-link that `design-blueprint` writes the first time it resolves that feature's requirement doc in Step 1 — on either a new design session or a resumed one. The `design-blueprint` molecule's context-anchoring step accepts a "requirement doc link" pointing to the feature file — it loads the problem statement and scope as starting context for the design session. The two molecules complement each other: requirement-forge defines WHAT and WHY; design-blueprint defines HOW.
 
 ### What is the difference between collaborative and autonomous mode in requirement-forge?
 
@@ -92,7 +92,7 @@ It goes into the relevant epic's Deferred Items section — intentionally exclud
 
 ### Can I use the `requirement-quality` atom on its own to validate specs I already wrote?
 
-Yes. The atom works standalone — it does not require the molecule. Point it at any feature spec file and it runs the 11-item self-validation checklist (problem statement, scope, personas, assumptions, scenarios, ACs, independence, etc.) and the 15-item anti-pattern scan. It will flag issues like vague problem statements, missing failure scenarios, persona-less specs, hidden assumptions, and wrong granularity. Use it as a quality gate before handing any spec to `design-blueprint`.
+Yes. The atom works standalone — it does not require the molecule. Point it at any feature spec file and it runs the 12-item self-validation checklist (problem statement, scope, boundary conditions, assumptions, scenarios, ACs, independence, implementation notes, coherence) and the 17-item anti-pattern scan. It will flag issues like vague problem statements, missing failure scenarios, persona-less specs, hidden assumptions, and wrong granularity. Use it as a quality gate before handing any spec to `design-blueprint`.
 
 ---
 
@@ -200,7 +200,7 @@ Use `/design-blueprint` when the feature involves real design decisions — new 
 
 ### What is the "inside-out implementation order" in code-forge?
 
-Inside-out means code-forge implements from the innermost layer outward: domain/core entities first, then use cases, then adapters/infrastructure, then the entry points (controllers, handlers). This order ensures outer layers always depend on already-implemented inner layers — matching the dependency direction defined in your architecture rules and preventing placeholder stubs from leaking into the final code.
+Inside-out means code-forge implements from the innermost layer of your architecture outward, following the dependency direction of your loaded architecture doc — with clean architecture, for example: domain entities first, then application use cases, then adapters/infrastructure, then the entry points (controllers, handlers). This order ensures outer layers always depend on already-implemented inner layers and prevents placeholder stubs from leaking into the final code.
 
 ---
 
@@ -276,7 +276,7 @@ They pull the repo — `.lattice/` is already there with all the team's standard
 
 ### What are review insights and how do they feed back into code generation?
 
-`/review` captures two things: a **review log** (`.lattice/reviews/review-log.md`) for health tracking and trends, and **operational learnings** (`.lattice/learnings/operational-learnings.md`) for recurring cross-cutting patterns worth remembering. Operational learnings feed back into all molecules — when `/code-forge`, `/design-blueprint`, `/bug-fix`, or `/refactor-safely` runs next, it loads these patterns and uses them to avoid repeating past mistakes (e.g., if learnings flag "anemic domain models keep appearing," code-forge actively pushes behavior into entities from the start). All molecules both consume and contribute to operational learnings via the `learning-harvest` atom.
+`/review` captures two things: a **review log** (`.lattice/reviews/review-log.md`) for health tracking and trends, and **operational learnings** (`.lattice/learnings/operational-learnings.md`) for recurring cross-cutting patterns worth remembering. Operational learnings feed back into the code-facing molecules — when `/code-forge`, `/design-blueprint`, `/bug-fix`, or `/refactor-safely` runs next, it loads these patterns and uses them to avoid repeating past mistakes (e.g., if learnings flag "anemic domain models keep appearing," code-forge actively pushes behavior into entities from the start). Those four molecules and `/review` both consume and contribute to operational learnings via the `learning-harvest` atom.
 
 ### How do I know if Lattice is actually improving my code quality over time?
 
@@ -304,4 +304,4 @@ Check three things: first, that `.lattice/standards/knowledge-base.md` exists an
 
 ### The architecture atom isn't loading my custom document. What could be wrong?
 
-Check three things: (1) `.lattice/config.yaml` has `paths.architecture` pointing to the correct file path; (2) the file actually exists at that path; (3) `architecture_mode: custom` is set — without it, the atom uses clean architecture defaults and ignores the custom document. If all three are correct, check that the document has a valid markdown structure with headings the atom can parse.
+Check three things: (1) `.lattice/config.yaml` has `paths.architecture` pointing to the correct file path; (2) the file actually exists at that path; (3) if your team follows a non-clean style, `architecture_mode: custom` must be set — without it the atom enforces clean-architecture rules and treats your document as an overlay on those defaults rather than as the sole rulebook. If all three are correct, check that the document has a valid markdown structure with headings the atom can parse.
