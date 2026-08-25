@@ -119,7 +119,7 @@ Every code-quality atom supports project-specific customization through the same
 4. If no config exists, use the atom's embedded `./references/defaults.md`
 5. **Language adaptation**: If `paths.language_idioms` exists, the atom reads the specific section(s) it needs from the language idioms document and adapts its pseudocode defaults to the project's language. Each atom declares which sections it references (e.g., clean-code reads "Error Handling", "Naming Conventions", etc.). Language idioms take precedence over pseudocode patterns where they conflict. See [docs/configuration.md](configuration.md) for the `language_idioms` key.
 
-The full resolution order is: **defaults → language idioms (if present) → custom overlay (if present)**.
+The full application order is: **embedded defaults → custom overlay sections (if present) → language idioms (if present)**.
 
 Atoms work out of the box with opinionated defaults. Customization is opt-in, not required. Most teams use overlay -- the defaults are good starting points, and typically only a few sections need adjustment.
 
@@ -137,9 +137,9 @@ Molecules are orchestrated multi-step workflows. Each molecule composes multiple
 
 Five molecules share a common session infrastructure: **design-blueprint**, **code-forge**, **bug-fix**, **refactor-safely**, and **review**.
 
-**Always composed** (every session): knowledge-priming, context-anchoring, learning-harvest, collaborative-judgment
+**Always composed**: knowledge-priming, learning-harvest, and collaborative-judgment in all five; plus context-anchoring in the four feature-session molecules (`design-blueprint`, `code-forge`, `bug-fix`, `refactor-safely`) — `review` is delta-scoped and does not use context documents.
 
-**Session lifecycle**:
+**Session lifecycle** (steps 2 and 4 do not apply to `review`):
 1. Load operational learnings at session start (learning-harvest Load)
 2. Load or create feature context (context-anchoring)
 3. Do the molecule-specific work with quality atoms applied as relevant
@@ -193,7 +193,7 @@ Generates implementation from an approved blueprint or verbal requirements.
 **Unique atoms**: architecture (always), clean-code (always), domain-driven-design (conditional: domain layer), secure-coding (conditional: trust boundaries), test-quality (always when writing tests)
 
 **What distinguishes it**:
-- Plans an inside-out build order (Domain → Infrastructure → Application → Interface)
+- Plans an inside-out build order following the dependency direction of the loaded architecture doc (innermost layer first — with clean architecture: Domain → Infrastructure → Application → Interface)
 - Generates code and tests together per component
 - Post-generation verification: runs atom self-validation checklists and anti-pattern scans, fixes violations before presenting
 - Cross-component verification: architectural coherence, dependency direction, no unplanned scope, past learnings don't recur
@@ -319,13 +319,16 @@ The `.lattice/` folder is the living context layer described earlier -- the proj
 ```
 .lattice/
 ├── config.yaml              # Central config (only file at root)
-├── standards/               # Refiner-produced customization documents
+├── standards/               # Standards documents consumed via config resolution
 │   ├── knowledge-base.md
 │   ├── clean-code.md
 │   ├── architecture.md
 │   ├── ddd-principles.md
+│   ├── language-idioms.md
 │   ├── review-standards.md
-│   └── requirement-standards.md
+│   ├── requirement-standards.md
+│   ├── test-quality.md      # optional, hand-written
+│   └── secure-coding.md     # optional, hand-written
 ├── requirements/            # Feature specs produced by requirement-forge
 │   ├── index.md             # Thin apex -- epic list, definitions, glossary (generated)
 │   ├── epics/
@@ -347,7 +350,7 @@ The `.lattice/` folder is the living context layer described earlier -- the proj
 | Subfolder | Purpose | Lifecycle |
 |-----------|---------|-----------|
 | `standards/` | Refiner-produced customization docs consumed by atoms via config resolution | Stable — set once during project setup, rarely changed |
-| `requirements/` | Epic/feature specs produced by requirement-forge. `index.md` is a thin generated apex, `epics/` holds one generated rollup per epic (name/summary only), `features/` holds per-feature files — the only layer routinely hand-written and the sole owner of status/priority/dependency fields | Per cycle — created when features are specced, updated when specs evolve. Rollups regenerate only on feature add/remove/rename, never on a status change. Feeds design-blueprint. Optional — requirements may instead live in an external system referenced via `requirement_doc`. |
+| `requirements/` | Epic/feature specs produced by requirement-forge. `index.md` is a thin generated apex, `epics/` holds one generated rollup per epic (name/summary only), `features/` holds per-feature files — the only layer routinely hand-written and the sole owner of status/priority/dependency fields | Per cycle — created when features are specced, updated when specs evolve. Rollups regenerate only on feature add/remove/rename, never on a status change. Feeds design-blueprint. Optional — requirements may instead live in an external system referenced via `requirement_doc` (a frontmatter field in the feature's context document, not a config key). |
 | `context/` | Per-feature living documents managed by context-anchoring | Per feature — created when feature starts, enriched during design and implementation |
 | `learnings/` | Operational learnings managed by `learning-harvest` atom — accumulated patterns from design, implementation, review, and repair sessions. Loaded at session start, harvested at session end. | Append-only with self-regulating tightening — atom proposes consolidation when document grows dense |
 | `reviews/` | Review log entries for project health visibility | Rolling window — capped at ~20 entries, older entries summarized |
@@ -364,8 +367,8 @@ This convention ensures the folder stays organized as the framework adds new cap
 | Dimension | Atoms | Molecules | Refiners |
 |-----------|-------|-----------|----------|
 | **Purpose** | Teach one principle | Orchestrate a workflow | Optionally customize atom defaults |
-| **Invocation** | Auto-activate based on context, or invoked by molecules | User invokes explicitly (e.g., `/design-blueprint`) | User invokes when customization is needed (e.g., `/architecture-refiner`) |
-| **Artifacts produced** | None (inline checks) | Blueprints, reviews, context documents | `.lattice/` config files |
+| **Invocation** | Loaded by molecules, or invoked directly (e.g., `/clean-code`) | User invokes explicitly (e.g., `/design-blueprint`) | User invokes when customization is needed (e.g., `/architecture-refiner`) |
+| **Artifacts produced** | None (inline checks) | Blueprints, requirement specs, reviews, insights documents, context documents | Standards documents in `.lattice/standards/` |
 | **Composes others?** | No | Yes (composes atoms) | No |
 | **Configured by refiners?** | Yes (via `.lattice/` config files) | review molecule supports config via review-refiner | N/A |
 | **Frequency of use** | Every generation (automatic) | Per feature, bug, or review | As needed -- when standards are first set or evolve |

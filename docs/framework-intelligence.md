@@ -58,7 +58,7 @@ The flywheel is the central mechanism of the living context layer -- the engine 
 
 **Problem**: Without feedback loops, the same mistakes repeat across features. Review finds "anemic domain models" in Payment, then again in User, then again in Order. Each session starts from zero.
 
-**Solution**: All molecules both consume and contribute to a shared operational learnings document via the `learning-harvest` atom. The AI proposes patterns; the user decides what's worth preserving. The framework gets smarter with use.
+**Solution**: The code-facing molecules (`design-blueprint`, `code-forge`, `refactor-safely`, `bug-fix`) and `review` both consume and contribute to a shared operational learnings document via the `learning-harvest` atom. The AI proposes patterns; the user decides what's worth preserving. The framework gets smarter with use.
 
 ```
 ┌────────────────┐     ┌─────────────┐     ┌───────────────────────────┐
@@ -105,7 +105,7 @@ What trends reveal over time:
 - Whether code quality improves (fewer findings per review)
 - Which layers have the most issues (where to focus training)
 
-Rolling window of 15-20 entries prevents bloat. Older entries get a one-line summary in a "History" section.
+A rolling window of ~20 entries (configurable) prevents bloat. Older entries get a one-line summary in a "History" section.
 
 ---
 

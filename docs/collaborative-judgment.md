@@ -39,9 +39,9 @@ Collaborative-judgment is not like the other atoms. Code-quality atoms apply to 
 
 ### How atoms link back
 
-Each code-quality atom carries two small embedded pieces that connect to this protocol:
+The code-quality atoms carry two embedded pieces that connect to this protocol (wording varies slightly per atom):
 
-1. **The checklist header instruction**: *"If a check is a judgment call with multiple valid approaches (see Ambiguity Signals), flag it — present your options and reasoning rather than silently choosing."* This tells the AI: when you hit a gray area during verification, do not silently resolve it.
+1. **The checklist header instruction**: *"If a check is a judgment call with multiple valid approaches (see Ambiguity Signals), flag it — present options and reasoning rather than silently choosing."* This tells the AI: when you hit a gray area during verification, do not silently resolve it.
 
 2. **The Ambiguity Signals section**: domain-specific gray areas where that atom's checks tend to produce judgment calls — borderline SRP in clean-code, layer placement in architecture, aggregate boundaries in DDD, trust boundary scope in secure-coding.
 
