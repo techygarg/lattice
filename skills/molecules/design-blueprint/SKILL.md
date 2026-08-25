@@ -1,106 +1,100 @@
 ---
 name: design-blueprint
-description: "Run a complete design workflow -- from establishing context through 5 progressive design levels to an approved blueprint. Composes context anchoring, design-first methodology, architecture, and DDD into a unified process. Handles both new features (create context doc) and resuming existing work (load context doc). Use when starting a design, planning architecture, or when the user says 'design a feature', 'blueprint', 'start designing', 'plan the architecture', or 'let's design before coding'."
+description: "Run a complete design workflow -- from establishing context through four progressive design levels (Capabilities, Components, Interactions, Contracts) to an approved blueprint. Composes knowledge-priming, context-anchoring, learning-harvest, collaborative-judgment, design-first, architecture, and domain-driven-design into one process. Handles both new features (create context doc) and resuming existing work (load context doc). Level 5 (Implementation) is delegated to code-forge. Use when starting a design, planning architecture, or when the user says 'design a feature', 'blueprint', 'start designing', 'plan the architecture', or 'let's design before coding'."
 ---
 
 # Design Blueprint
 
 ## Required Skills
 
-Read apply skills order:
+Read and apply in order before Step 1:
 
-1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) ground decisions real project
-2. `framework:context-anchoring` -- Create or load feature context anchor doc
-3. `framework:learning-harvest` -- Load prior operational learnings inform design; harvest new patterns at session end (always)
-4. `framework:collaborative-judgment` -- Surface real design judgment calls structured options instead silent assuming (always)
-5. `framework:design-first` -- Walk through 5 progressive design levels
-6. `framework:architecture` -- Apply structural rules Component and Interaction levels
-7. `framework:domain-driven-design` -- Apply domain modeling Component, Interaction, Contract levels
+1. `framework:knowledge-priming` -- Load the project knowledge base so every decision grounds in the real project. (always)
+2. `framework:context-anchoring` -- Create or load the feature's living context doc (Create / Load / Enrich behaviors). (always)
+3. `framework:learning-harvest` -- Load prior operational learnings at session start; harvest new ones at session end. (always)
+4. `framework:collaborative-judgment` -- Surface genuine judgment calls as structured options instead of silently assuming. (always)
+5. `framework:design-first` -- Owns the 5-level methodology. Its Entry Assessment, Complexity Calibration, Simplicity Check, and Level Completion Protocol govern Step 2. (Step 2)
+6. `framework:architecture` -- Validate components, layers, dependency direction, and boundary rules (design mode). (Levels 2-4)
+7. `framework:domain-driven-design` -- Model aggregates, entities, value objects, events, and contracts (design mode). (Levels 2-4)
 
 ## Workflow
 
 ### Step 1: Establish Context
 
-Use `framework:learning-harvest` Load behavior. Focus hint: "design session — focus: design patterns, reliability, structural health".
+1. Run `framework:learning-harvest` Load behavior. Focus hint: "design session — focus: design patterns, reliability, structural health".
+2. Set up the feature's living doc with `framework:context-anchoring`:
+   - **Discover**: scan `.lattice/context/` for an existing anchor doc matching the feature name or frontmatter.
+   - **Found** → Load behavior. Present the structured acknowledgment: feature name, status, decision count, open questions, constraints. Then run the resume check below.
+   - **Not found** → Create behavior. Confirm the feature name, summary, and requirement doc link with the user before creating. Then begin Step 2 — the Entry Assessment sets the entry level.
 
-Use `framework:context-anchoring` set up feature living doc.
+3. **Resume check** (when a doc was found) — derive the earliest incomplete step from the doc itself. **STOP:** Never re-walk agreed work:
+   - `status: approved` → design is finished. Say so and stop; suggest `/code-forge`.
+   - No sections starting `## Design: Level` → start Step 2 at Level 1.
+   - Some levels persisted → summarize the approved levels briefly, then resume at the first missing level at or after the recorded entry level (the `[Entry]` Decisions Log entry; older docs without one → treat entry as Level 1).
+   - Every level from entry through Level 4 persisted, but no `## Design Summary`, or `status` ≠ `approved` → go directly to Step 3.
 
-- **Document Discovery**: Check existing context anchor doc feature (scan context base directory, match by feature name or frontmatter).
-- **If exists** → Load (context-anchoring Load behavior). Present structured acknowledgment -- feature name, status, decision count, open questions, constraints. Resume last design checkpoint recorded doc.
-- **If not** → Create (context-anchoring Create behavior). New feature doc from template. Confirm feature name, summary, requirement doc link with user before creating.
+4. **Requirement constraints**: read `requirement_doc` from the context doc frontmatter.
+   - Absent → skip.
+   - Local path, unreadable → STOP: "Requirement doc not found at `[path]`. Verify before continuing."
+   - Local path, readable → read it and extract `## Technical Constraints`. Treat as non-negotiable — same authority as architecture rules. Surface to the user before the first level is presented.
+   - External reference (URL, ticket ID, or other non-local-path identifier) → resolve via a connected MCP tool if one can. If none is connected or the fetch returns nothing, ask the user to paste the current constraints — expected, not an error.
+   - Conflict during design → surface via `framework:collaborative-judgment`. The user decides; record the change back in the requirement doc's `## Technical Constraints` if local, or in the Decisions Log if external — this molecule never writes to an external system.
 
-**Load requirement constraints**: Read `requirement_doc` from context doc frontmatter.
-- Null/absent → skip.
-- Local path → read it. Extract `## Technical Constraints`. Treat as non-negotiable — same authority as architecture rules. Surface to user before Level 1.
-- External reference (URL, ticket ID, or other non-local-path identifier) → if a connected MCP tool can resolve it, fetch and extract constraints the same way. If no MCP tool is connected or the fetch returns nothing, ask the user to paste the current constraints directly — expected, not an error.
-- Conflict during design → surface via `framework:collaborative-judgment`. User decides; record any change back in requirement doc `## Technical Constraints` if it is a local file. If external, record the change in the context doc's Decisions Log instead — this molecule never writes back to an external system.
-
-**Write the back-link**: If `requirement_doc` resolved to a readable local file at `.lattice/requirements/features/{feature-name}.md`, write into its `## Links` section: `- Design: [{feature-name}.md](../../context/{feature-name}.md)`. Discrete file edit, done once — skip if the link is already present.
+5. **Write the back-link**: if `requirement_doc` resolved to a readable local file at `.lattice/requirements/features/{feature-name}.md`, add to its `## Links` section: `- Design: [{feature-name}.md](../../context/{feature-name}.md)`. One discrete file edit; skip if the link is already present.
 
 ### Step 2: Walk the Design Levels
 
-If key use cases or success criteria unclear now, use `framework:collaborative-judgment` surface what needs answering before starting Level 1.
+Run design-first's Entry Assessment first: state the proposed entry level from its Complexity Calibration table and wait for confirmation. Record the confirmed entry level as the first Decisions Log entry: `[Entry] Start at Level N (name) — rationale.` If key use cases or success criteria are unclear, surface them via `framework:collaborative-judgment` before producing the first level output.
 
-Drive through `framework:design-first` 5 levels sequentially. Each level, present design output, get user approval, then **persist approved output into context anchor doc before advancing**.
+Drive the levels sequentially from the confirmed entry level through Level 4 via `framework:design-first`. Complexity Calibration sets how deep each level goes; it never removes a gate or skips persistence.
 
-**Enrichment rule**: After user approves each level, use `framework:context-anchoring` Enrich behavior write following into context doc:
+**Gate (every level)** — follow design-first's Level Completion Protocol: present the level output with its targeted gating question, then **STOP — do NOT advance until the user explicitly confirms**, not on silence, not on ambiguity.
 
-1. **Approved level output** itself (capabilities list, component diagram, interaction flows, or contracts) -- captured as **clean, structured summary** under dedicated section that level. Use same format as level presentation: numbered list Level 1, component table + diagram Level 2, sequence/flow Level 3, typed interfaces Level 4.
-2. **Decisions made** during level discussion -- choices, reasoning, alternatives rejected.
-3. **Constraints identified** -- non-negotiable boundaries emerged.
-4. **Open questions** surfaced but remain unresolved.
+**Persist (after every approval, before advancing)** — use `framework:context-anchoring` Enrich to write into the context doc:
+1. The approved output as a clean structured summary under `## Design: Level N -- {Name}`, same format as presented (numbered list L1; component table + diagram L2; sequence/flow L3; typed interfaces L4). Persist diagrams as Mermaid.
+2. One Decisions Log entry per decision: `[Level N] Chose X because Y. Rejected: Z.`
+3. Constraints identified during the discussion (non-negotiable boundaries that emerged).
+4. Open questions surfaced but unresolved.
 
-NOT advance next level until current level output persisted.
+**STOP:** Do not present the next level until these writes are done.
 
-When applying architectural atoms each level, use `framework:collaborative-judgment` surface real design judgment calls immediately — not batch during design.
+**Judgment calls**: when applying architectural atoms at any level, surface genuine design judgment calls immediately via `framework:collaborative-judgment` — never batch them to the end of a level.
 
-Apply architectural atoms levels where add value:
+**Evidence rule (Level 2)**: before presenting components, quickly explore the codebase and map each proposed component to the existing modules/packages it extends, wraps, or modifies — or mark it `new`. Present the mapping with the components. Never invent a parallel structure that ignores what exists.
 
-**Level 1 (Capabilities)**:
-- Present capabilities list per `framework:design-first`.
-- On approval → Enrich context doc with approved capabilities under `## Design: Level 1 -- Capabilities` section.
+Level-specific applications:
 
-**Level 2 (Components)**:
-- **Challenge each component before approving: does it need to exist?** An abstraction with one known implementation, a layer with one caller, or a component solving a problem that isn't confirmed yet — inline or defer it. Add complexity only when the design explicitly justifies it.
-- Apply `framework:architecture` -- validate each component maps defined architectural layer, dependencies follow loaded architecture rules, component boundaries clear.
-- Apply `framework:domain-driven-design` -- identify aggregates, entities, value objects. Determine which components live domain layer which infrastructure.
-- On approval → Enrich context doc with approved component list, layer assignments, diagram under `## Design: Level 2 -- Components` section. Log architectural decisions (layer choices, DDD classifications) Decisions Log.
+- **Level 1 (Capabilities)**: numbered user-facing capabilities, max 5, no technical detail (per design-first).
+- **Level 2 (Components)**: challenge each component before approving — does it need to exist? One known implementation, one caller, or an unconfirmed problem → inline it or defer. Then validate in design mode: `framework:architecture` (layer mapping, dependency direction, boundary clarity) and `framework:domain-driven-design` (aggregates, entities, value objects; domain vs infrastructure placement).
+- **Level 3 (Interactions)**: `framework:architecture` — data flows follow the loaded patterns; boundary-crossing rules respected. `framework:domain-driven-design` — cross-aggregate communication uses domain events / eventual consistency.
+- **Level 4 (Contracts)**: `framework:domain-driven-design` — repository interfaces, value object types, aggregate root boundaries reflecting the tactical choices from earlier levels. `framework:architecture` — boundary-data rules and interface ownership respected. Every Level 3 interaction maps to at least one interface.
 
-**Level 3 (Interactions)**:
-- Apply `framework:architecture` -- validate data flows follow patterns defined loaded architecture doc and boundary crossing rules respected.
-- Apply `framework:domain-driven-design` -- define aggregate interactions, domain events. Cross-aggregate communication should use domain events eventual consistency.
-- On approval → Enrich context doc with approved interaction flows (sequence diagrams, data flow descriptions) under `## Design: Level 3 -- Interactions` section. Log flow decisions Decisions Log.
+**Regression rule**: if the user reopens an approved level, re-run that level's gate. On re-approval, mark every downstream persisted level section stale ("stale — pending re-approval after Level N change") and re-present them for confirmation before Step 3. **STOP:** Never leave contradictory approved sections in the doc.
 
-**Level 4 (Contracts)**:
-- Apply `framework:domain-driven-design` -- define repository interfaces, value object types, aggregate root boundaries. Contracts should reflect tactical patterns agreed earlier levels.
-- Apply `framework:architecture` -- validate contracts respect boundary-data rules and interface ownership per loaded architecture doc.
-- On approval → Enrich context doc with approved interfaces and type definitions under `## Design: Level 4 -- Contracts` section. Log contract decisions Decisions Log.
+**Early exit**: if the user wants to stop or shortcut the design, follow design-first's Mid-level exit. Persist whatever was approved and leave `status` as `draft` — a partial doc is a valid outcome.
 
 ### Step 3: Finalize Blueprint
 
-After Level 4 (Contracts) approved and persisted:
+After Level 4 is approved and persisted:
 
-- **Verify completeness**: Context doc must now contain all four design level sections (Capabilities, Components, Interactions, Contracts) plus every decision made during design process. If any level output missing from doc, enrich now before proceeding.
+1. **Verify completeness and consistency**: the context doc must contain all four level sections plus every decision made during the design. Enrich anything missing now. Then check:
+   - Every Level 3 interaction maps to at least one Level 4 interface.
+   - Every Level 4 interface is owned by exactly one Level 2 component (a shared type is owned by its defining component).
+   Fix any gap through the affected level's gate — never silently.
 
-- **Check requirement spec drift**: Read `requirement_doc` from context doc frontmatter.
-  - Null/absent → skip. Note in Design Summary: "No requirement doc — drift check skipped."
-  - Local path, unreadable → STOP: "Requirement doc not found at `[path]`. Verify before continuing." (a broken local path is an error)
-  - External reference, unresolvable (no connected MCP tool, or the fetch returns nothing) → do not STOP — this is expected, not broken. Ask the user to paste current constraints/scenarios if a comparison is wanted, or note in Design Summary: "Requirement doc is external and unavailable this session — drift check skipped."
-  - Resolved (local file read, external reference fetched, or user pasted constraints) → compare L4 contracts against Scenarios/ACs and `## Technical Constraints`. Present findings: each divergence as `[field/behavior] — changed from [X] to [Y]. Reason: [from Decisions Log]`, or "L4 consistent with requirement spec — no overrides" if none. Ask: *"Record this in the requirement doc?"*
-  - **STOP: do not write to `requirement_doc` until confirmed.** Confirmed and local → write each as `- Design override: [field/behavior] — changed from [X] to [Y]. Reason: [...]`, or `- Design alignment: L4 consistent with requirement spec — no overrides.` if none. Confirmed and external → this molecule never writes to an external system; note the findings in Design Summary instead. Declined → note in Design Summary instead: "Drift check results not written to requirement doc — see Decisions Log."
-  - **STOP: Do not set `status: approved` until this check is complete.**
+2. **Check requirement spec drift**: read `requirement_doc` from the context doc frontmatter.
+   - Absent → note in Design Summary: "No requirement doc — drift check skipped."
+   - Local path, unreadable → STOP: "Requirement doc not found at `[path]`. Verify before continuing." (A broken local path is an error.)
+   - External reference, unresolvable (no connected MCP tool, or the fetch returns nothing) → do not STOP — expected, not broken. Ask the user to paste current constraints/scenarios if a comparison is wanted, or note in Design Summary: "Requirement doc is external and unavailable this session — drift check skipped."
+   - Resolved (local file read, external fetch succeeded, or user pasted constraints) → compare L4 contracts against Scenarios/ACs and `## Technical Constraints`. Present each divergence as `[field/behavior] — changed from [X] to [Y]. Reason: [from Decisions Log]`, or "L4 consistent with requirement spec — no overrides" if none. Ask: *"Record this in the requirement doc?"*
+   - **STOP: do not write to `requirement_doc` until confirmed.** Confirmed and local → write each finding into the requirement doc's `## Links` section as `- Design override: [field/behavior] — changed from [X] to [Y]. Reason: [...]`, or `- Design alignment: L4 consistent with requirement spec — no overrides.` if none. Confirmed and external → this molecule never writes to an external system; record the findings in the Design Summary instead. Declined → note in Design Summary: "Drift check results not written to requirement doc — see Decisions Log."
 
-- **Write design summary**: Use `framework:context-anchoring` Enrich add `## Design Summary` section to context doc containing:
-  - Components and layer assignments
-  - Key contracts and interfaces
-  - Architectural constraints
-  - Domain model decisions (if applicable)
-  - Open questions resolved during design
-- **Set approved status**: Write `status: approved` to context doc frontmatter. **STOP: discrete file edit — not prose.** Without this, code-forge will not proceed.
+3. **Write the design summary**: use `framework:context-anchoring` Enrich to add a `## Design Summary` section containing components and layer assignments, key contracts and interfaces, architectural constraints, domain model decisions (if applicable), and open questions resolved during design.
 
-  **STOP: do not write status to `requirement_doc`.** The feature file's status is owned by whoever manages the requirement — a human, or an external system it may live in. This molecule manages its own context doc only.
-- **Log completion decision**: Add decision entry Decisions Log: "Design approved at Level 4. Status set to approved — ready for implementation."
-- Present summary user as confirmation.
-- Design complete. NOT proceed Level 5 (Implementation).
-- **Harvest learnings.** Use `framework:learning-harvest` Harvest behavior. Session context: "design session — architectural decomposition and contract definition". Synthesize and propose cross-cutting patterns from this session — decomposition approaches, architectural trade-offs, scope decisions that could inform future designs. User confirms what enters the document. **STOP: run this before the next bullet — do not jump straight to the `/code-forge` suggestion.**
-- Suggest user invoke `/code-forge` when ready begin coding against the approved design.
+4. **Set approved status**: write `status: approved` into the context doc frontmatter. **STOP: discrete file edit — not prose.** Without it, code-forge will not proceed. **STOP: never write status to `requirement_doc`** — the requirement's status belongs to whoever manages it (a human, or an external system); this molecule manages only its own context doc.
+
+5. Log the completion decision: "Design approved at Level 4. Status set to approved — ready for implementation." Present the summary to the user as confirmation.
+
+6. **Harvest learnings**: run `framework:learning-harvest` Harvest behavior. Session context: "design session — architectural decomposition and contract definition". Synthesize and propose cross-cutting patterns from this session — decomposition approaches, architectural trade-offs, scope decisions that could inform future designs. The user confirms what enters the document. **STOP: run this before the next bullet — do not jump straight to the `/code-forge` suggestion.**
+
+7. Design complete. Do NOT proceed to Level 5 (Implementation). Suggest the user invoke `/code-forge` when ready to begin coding against the approved design.

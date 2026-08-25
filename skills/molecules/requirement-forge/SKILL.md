@@ -42,16 +42,16 @@ If no standards document is found at `paths.requirement_standards`: recommend `r
 
 Scan `.lattice/requirements/` for existing documents.
 
-- **Legacy format check** — if `index.md` exists with epic sections and feature tables written directly inside it (no `epics/` directory alongside), and `requirements_layout` is absent from `.lattice/config.yaml`: tell the user "This project's requirements index uses an older Lattice layout. Run `/lattice-init` to check for and apply available upgrades." **STOP:** do not attempt migration in this molecule.
+- **Legacy format check** — if `index.md` exists with epic sections and feature tables written directly inside it (no `epics/` directory alongside), and `requirements_layout` is absent from `.lattice/config.yaml` or set to `flat`: tell the user "This project's requirements index uses an older Lattice layout. Run `/lattice-init` to check for and apply available upgrades." **STOP:** do not attempt migration in this molecule.
 - **If `index.md` exists** (sharded layout) → read it plus `epics/*.md`, inventory all feature files under `features/`. Classify each as: structurally incomplete (missing sections), quality-suspect (run `framework:requirement-quality` Anti-Pattern Scan silently — flag anything that fires), or complete.
-- **If issues found** → surface per file. User decides: fix now, skip, or move to another.
+- **If issues found** → surface per file. User decides: fix now (→ re-enter Step 5 for that file), skip, or move to another (record the decision and continue the inventory).
 - **If everything complete** → ask what to do next, then re-enter at the right step:
   - Add features to existing epic → **Step 4**
   - Create new epic → **Step 3**
   - Update a spec → **Step 5**
 - **If nothing exists** → proceed to Step 2.
 
-**Do NOT advance to Step 2 until all resume decisions are recorded.**
+**STOP:** Do not advance to Step 2 until all resume decisions are recorded.
 
 ---
 
@@ -72,9 +72,9 @@ Present synthesis: *"Here's what I understand from [N] documents: [epic list wit
 
 **If no material** — *"Tell me what you're building — the problem, who has that problem, any constraints. Don't worry about structure yet."* Listen, synthesize, present the same hypothesis format.
 
-**Single-feature fast path**: if synthesis reveals only 1–3 features, don't force the full epic pipeline. Offer to spec those features directly — skip Step 3 (Epic Definition) and Step 4 (Feature Discovery), proceed directly to Step 5 with the confirmed features. Before starting Step 5, create a placeholder epic: one `.lattice/requirements/epics/{epic-slug}.md` and the thin `index.md` pointing to it, same as Step 3's write sequence.
+**Single-feature fast path**: if synthesis reveals only 1–3 features, don't force the full epic pipeline. Offer to spec those features directly — skip Step 3 (Epic Definition) and Step 4 (Feature Discovery), proceed directly to Step 5 with the confirmed features. Before starting Step 5, create a placeholder epic: one `.lattice/requirements/epics/{epic-slug}.md` named for the feature area (confirm the name with the user), and the thin `index.md` pointing to it, same as Step 3's write sequence.
 
-**Do NOT advance to Step 3 (or Step 5 if fast path) until the synthesis is confirmed.**
+**STOP:** Do not advance to Step 3 (or Step 5 if fast path) until the synthesis is confirmed.
 
 ---
 
@@ -88,7 +88,7 @@ Challenge any epic that is too narrow (one feature doesn't warrant an epic) or t
 
 Ask: *"Does this epic structure reflect how you think about the product?"*
 
-**Do NOT advance to Step 4 until the epic list is confirmed.**
+**STOP:** Do not advance to Step 4 until the epic list is confirmed.
 
 **Immediately after confirmation:**
 1. Create `.lattice/requirements/`, `.lattice/requirements/epics/`, and `.lattice/requirements/features/` if they do not exist.
@@ -110,7 +110,7 @@ Ask: *"Does this feature breakdown feel right for [Epic Name]?"*
 
 This step is conversational only — nothing is written to disk until Step 5.
 
-**Do NOT advance to Step 5 until the feature list for every in-scope epic is confirmed.**
+**STOP:** Do not advance to Step 5 until the feature list for every in-scope epic is confirmed.
 
 ---
 
@@ -120,25 +120,25 @@ Work through confirmed features one at a time.
 
 **Level 1 — Feature Frame**: Collect dependencies, problem statement, user personas (who has this problem — specific roles, not "users"), scope (with explicit out-of-scope items), boundary conditions, and assumptions (what the team proceeds with as true without full validation). Challenge each field: wrong problem, wrong user, inflated scope. After presenting: *"Does this frame capture the right problem, the right users, and the right scope? Let's lock this before scenarios."*
 
-**Do NOT begin scenarios until the frame is confirmed.**
+**STOP:** Do not begin scenarios until the frame is confirmed.
 
 **Level 2 — Scenarios**: Spec scenarios one at a time in implementation order. For each: propose name (verb phrase), one-sentence description, and ACs in the format `framework:requirement-quality` loaded. After the first success-path scenario, probe: *"Where's the failure path? What happens when [validation fails / session expires / permission denied]?"*
 
 After all scenarios: *"Does this fully cover [Feature Name]? Anything missed?"*
 
-**Do NOT begin implementation slices until all scenarios are confirmed.**
+**STOP:** Do not begin implementation slices until all scenarios are confirmed.
 
 After scenarios confirmed: propose 2–5 implementation slices in "what" order. *"Here's how I'd sequence building this: [list]. Does this feel right?"*
 
-**Do NOT write the feature file until implementation slices are confirmed.**
+**STOP:** Do not write the feature file until implementation slices are confirmed.
 
 **Apply `framework:requirement-quality` Self-Validation Checklist and Anti-Pattern Scan before writing.** Failures → fix. Ambiguity signals → surface via `framework:collaborative-judgment`.
 
-**Populate `depends_on`** in frontmatter from any dependencies identified in Step 4 (Feature Discovery).
+**Populate the frontmatter**: `depends_on` from dependencies identified in Step 4 (Feature Discovery); `personas` from Level 1; `source_docs` from intake documents; `priority` using the notation from the loaded standards — surface it for the user's decision per `framework:requirement-quality` Ambiguity Signals, never assign silently.
 
 Write the confirmed feature file to `.lattice/requirements/features/{feature-name}.md`. Read `references/output-templates.md` for the exact file structure. Create the `features/` directory if it does not exist.
 
-**Do NOT advance to the next feature until the current feature passes checks and is written.**
+**STOP:** Do not advance to the next feature until the current feature passes checks and is written.
 
 ---
 
@@ -167,8 +167,8 @@ Pause only for **genuine blockers** — situations where continuing would produc
 - Missing domain knowledge that cannot be inferred (the molecule cannot determine which of two plausible interpretations is correct)
 - Scope so ambiguous that two equally valid epic structures exist with different feature decompositions
 
-Do NOT pause for: naming choices, priority assignments, scope boundary judgment calls, or AC wording. Make the best call and log the decision.
+Do NOT pause for: naming choices, priority assignments, scope boundary judgment calls, or AC wording. Make the best call and log the decision — including priority, which is assigned autonomously using the loaded standards' notation and reviewed in Phase 2.
 
 **Phase 2 — Review**: Present the decisions log first, then the epic list, then the feature list per epic, then feature specs one by one. User corrects, adds, or removes.
 
-**Phase 3 — Write**: After confirmation, write all files. `framework:requirement-quality` checks run before each write.
+**Phase 3 — Write**: After confirmation, write all files, then run Step 6 to regenerate the derived views. `framework:requirement-quality` checks run before each write.
