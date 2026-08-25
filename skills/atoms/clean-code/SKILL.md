@@ -1,62 +1,64 @@
 ---
 name: clean-code
-description: "Apply clean code principles when generating or modifying implementation code. Enforces function focus, naming clarity, complexity management, error handling, and self-documenting style. Use during code generation, refactoring, or when the user mentions 'clean code', 'code quality', 'refactor this', 'simplify this', 'improve this', 'make this cleaner', 'clean this up', 'tidy this', 'coding guidelines', or 'implementation quality'. This skill governs the craft of writing individual code units -- not architecture (see architecture), not security posture (see secure-coding), and not test structure (see test-quality)."
+description: "Apply clean code principles when generating or modifying implementation code. Enforces function focus, naming clarity, complexity management, error handling, and self-documenting style. Use when the user mentions 'clean code', 'code quality', 'coding guidelines', or 'implementation quality'. Loaded automatically by the code-generating molecules (code-forge, refactor-safely, bug-fix). This skill governs the craft of writing individual code units -- not architecture (see architecture), not security posture (see secure-coding), not test structure (see test-quality), and not refactoring workflows (see refactor-safely)."
 ---
 # Clean Code
 
 ## Config Resolution
 
-Skill support project custom. Order:
+Projects can customize this skill's standards. Resolution order:
 
-1. Look `.lattice/config.yaml` in repo root
-2. If found, check `paths.clean_code` for custom doc path
-3. If custom path exist, read doc and check YAML frontmatter for `mode`:
-   - **`mode: override`** (or no mode): Custom doc full precedence. Use instead embedded default. Must be comprehensive -- sole reference.
-   - **`mode: overlay`**: Read embedded `./references/defaults.md` first, then apply custom doc sections on top. Custom sections replace matching sections in default (matched by heading). New sections appended after default.
-4. If no config/path/file, read `./references/defaults.md`
-5. **Language adaptation**: If `paths.language_idioms` exist in config, read that document and adapt defaults using these sections:
-   - **"Error Handling"** → adapt §8 (Error Handling) patterns to language idioms. Language idioms take precedence over pseudocode defaults.
-   - **"Type System & Object Model"** → adapt §1 (Single Responsibility) cohesion guidance to language constructs (e.g., struct vs class).
-   - **"Naming Conventions"** → adapt §4 (Meaningful Naming) patterns to language conventions.
-   - **"Parameter & Function Design"** → adapt §2 (Small, Focused Functions) and §5 (Parameter Design) to language capabilities.
-   - **"Dependency Management"** → adapt §9 (Test-Friendly Code) DI patterns to language idioms.
+1. Read `.lattice/config.yaml` in the repo root.
+2. If found, check `paths.clean_code` for a custom document path.
+3. If a custom document exists at that path, read it and check its YAML frontmatter for `mode`:
+   - **`mode: override`**: the custom document has full precedence. Use it instead of the embedded defaults. It must be comprehensive -- treat it as the sole reference.
+   - **`mode: overlay`** (or no mode field): read the embedded `./references/defaults.md` first, then apply the custom document's sections on top. A custom section replaces the matching default section (matched by exact heading); new sections append after the defaults.
+4. If a custom path is configured but no document exists at it → tell the user which configured path is missing, then fall back to `./references/defaults.md`.
+5. If there is no config file or no `paths.clean_code` key, read `./references/defaults.md`.
+6. **Language adaptation**: if `paths.language_idioms` is set in the config and the document exists, read it and adapt the defaults using these sections:
+   - **"Error Handling"** → adapt §8 (Error Handling) patterns to the language's idioms. Language idioms take precedence over the pseudocode defaults.
+   - **"Type System & Object Model"** → adapt §1 (Single Responsibility) cohesion guidance to the language's constructs (e.g., struct vs class).
+   - **"Naming Conventions"** → adapt §4 (Meaningful Naming) patterns to the language's conventions.
+   - **"Parameter & Function Design"** → adapt §2 (Small, Focused Functions) and §5 (Parameter Design) to the language's capabilities.
+   - **"Dependency Management"** → adapt §9 (Test-Friendly Code) dependency-injection patterns to the language's idioms.
 
 ## Self-Validation Checklist
 
-**STOP** after each component. Verify ALL. Fix any failed check before presenting. Judgment calls → flag with options (see Ambiguity Signals).
+**STOP after generating each component. Verify ALL checks. Fix every failed check before presenting. Judgment calls → present options (see Ambiguity Signals).**
 
-1. **SINGLE RESPONSIBILITY**: Describe each function without "and"? If not → extract separate function.
-2. **SIZE**: Each function under size threshold per loaded doc (~20 lines default)? If not → extract sub-operation into named function.
-3. **COMPLEXITY**: Cyclomatic complexity under threshold per loaded doc (~10 default)? If not → flatten with guard clause, extract branch.
-4. **ABSTRACTION LEVEL**: Each function operate at one level? If high-level mixed with low-level → extract detail.
-5. **NAMING**: Function/variable name reveal intent without context? If not → rename self-documenting.
-6. **PARAMETERS**: Parameter count under threshold per loaded doc (4 default)? If not → group into object.
-7. **PRIMITIVE OBSESSION**: String/number/boolean clearer as named type? If so → introduce parameter object or typed wrapper.
-8. **ERROR HANDLING**: Every fail-able operation have explicit handling with actionable message? Handled at right level?
+1. **SINGLE RESPONSIBILITY**: Can you describe each function without "and"? If not → extract a separate function.
+2. **SIZE**: Is each function under the size threshold from the loaded doc (~20 lines default)? If not → extract a sub-operation into its own named function.
+3. **COMPLEXITY**: Is cyclomatic complexity under the threshold from the loaded doc (~10 default)? If not → flatten with a guard clause or extract a branch.
+4. **ABSTRACTION LEVEL**: Does each function operate at one level of abstraction? If high-level logic mixes with low-level detail → extract the detail.
+5. **NAMING**: Does each function/variable name reveal intent without needing surrounding context? If not → rename to be self-documenting.
+6. **PARAMETERS**: Is the parameter count under the threshold from the loaded doc (4 default)? If not → group parameters into an object.
+7. **PRIMITIVE OBSESSION**: Would a string/number/boolean be clearer as a named type? If so → introduce a parameter object or typed wrapper.
+8. **ERROR HANDLING**: Does every fail-able operation have explicit handling with an actionable message? Is it handled at the right level?
 
-**Project-specific checks:** If loaded doc (from Config Resolution) contains a Validation Checklist section (§10), apply those checks as additional project-specific validation after the checklist above.
+**Project-specific checks**: if the loaded doc (from Config Resolution) contains a Validation Checklist section (§10 from the clean-code-refiner template), apply those checks as additional project-specific validation after the checklist above.
+
+All checks pass → state "Passes clean-code. [next step]."
 
 ## Active Anti-Pattern Scan
 
-After checklist, scan for these. If find, fix before present.
+After the checklist, scan for each of these. Any box you can check → fix before presenting.
 
-- [ ] **God Function**: Function exceed ~30 lines doing multiple thing; description need "and" → extract focused function
-- [ ] **Deep Nesting**: Three+ level indentation → flatten with early return/guard clause
-- [ ] **Cryptic Naming**: Variable like `d`, `tmp2`, `processData` → rename reveal intent
-- [ ] **Long Parameter Lists**: Five+ parameter → group into object or split function
-- [ ] **Premature Abstraction**: Utility extracted from only two similar block → inline until Rule of Three with same reason to change
-- [ ] **Swallowed Errors**: Empty catch, generic "something went wrong," silently return null → handle explicitly
-- [ ] **Comments as Deodorant**: Comment explain convoluted code instead refactor → rename self-documenting; keep only "why" comment, remove "what"
-- [ ] **Hidden Side Effects**: Function named `getX` also write cache/send notification → rename or separate
-- [ ] **Dead Code**: Commented-out block, unused import, unreachable branch → delete (version control preserve)
-- [ ] **Untestable Logic**: Side effect tangled with business logic; unit test need mock I/O → push side effect to boundary, extract pure function, inject dependency
+- [ ] **God Function**: a function exceeds ~30 lines doing multiple things; describing it requires "and" → extract focused functions.
+- [ ] **Deep Nesting**: three or more levels of indentation → flatten with early returns / guard clauses.
+- [ ] **Cryptic Naming**: variables like `d`, `tmp2`, `processData` → rename to reveal intent.
+- [ ] **Long Parameter Lists**: five or more parameters → group into an object or split the function.
+- [ ] **Premature Abstraction**: a utility extracted from only two similar blocks → inline it until the Rule of Three (third instance with the same reason to change).
+- [ ] **Swallowed Errors**: empty catch blocks, generic "something went wrong" messages, silent null returns → handle explicitly.
+- [ ] **Comments as Deodorant**: a comment explains convoluted code instead of the code being fixed → rename to self-document; keep only "why" comments, remove "what" comments.
+- [ ] **Hidden Side Effects**: a function named `getX` also writes a cache or sends notifications → rename or separate the concern.
+- [ ] **Dead Code**: commented-out blocks, unused imports, unreachable branches → delete them (version control preserves history).
+- [ ] **Untestable Logic**: side effects tangled with business logic; unit testing requires mocking I/O → push side effects to the boundary, extract pure functions, inject dependencies.
 
 ## Ambiguity Signals
 
-Multiple valid outcome. Present option rather than silently choose. See `./references/defaults.md` for resolution guidance on each signal below.
+Multiple valid outcomes exist. Present the options rather than silently choosing. If `framework:collaborative-judgment` is loaded, use its presentation format. See `./references/defaults.md` for resolution guidance on each signal below.
 
-- **Single Responsibility**: Two tightly-coupled sequential operation may be one responsibility (pipeline), not two. "And" test catch true violation AND false positive.
-- **Function Size**: Near-threshold (20-30 lines) with one clear purpose -- extract may create five unclear smaller function. Present tradeoff.
-- **DRY vs Premature Abstraction**: Two identical block may serve different purpose and diverge. Until third instance with same reason to change, genuinely ambiguous.
-- **Error Handling Strategy**: Exception vs Result type vs error code depend on language idiom and team convention, not universal.
-
+- **Single Responsibility**: two tightly-coupled sequential operations may be one responsibility (a pipeline), not two. The "and" test catches true violations AND false positives.
+- **Function Size**: near-threshold size (20–30 lines) with one clear purpose -- extraction may create five unclear smaller functions. Present the tradeoff.
+- **DRY vs Premature Abstraction**: two identical blocks may serve different purposes and diverge independently. Until a third instance with the same reason to change appears, this is genuinely ambiguous.
+- **Error Handling Strategy**: exception vs Result type vs error codes depends on language idiom and team convention, not on universal rules.
