@@ -97,16 +97,6 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
 
 Helper skills for creating and maintaining Lattice itself — see [`dev-skills/`](dev-skills/).
 
-## Star History
-
-<a href="https://www.star-history.com/?repos=techygarg%2Flattice&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=techygarg/lattice&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=techygarg/lattice&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=techygarg/lattice&type=date&legend=top-left" />
- </picture>
-</a>
-
 ## StarMapper
 
 <a href="https://starmapper.bruniaux.com/techygarg/lattice">
