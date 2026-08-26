@@ -9,12 +9,13 @@ description: "Apply requirement quality principles when generating or validating
 
 Skill supports project-specific standards. Order:
 
-1. Look for `.lattice/config.yaml` in repo root
-2. If found, check `paths.requirement_standards` for custom doc path
-3. If custom path exists, read doc and check YAML frontmatter for `mode`:
-   - **`mode: override`** (or no mode): Custom doc full precedence. Use instead of embedded defaults. Must be comprehensive — sole reference.
-   - **`mode: overlay`**: Read embedded `./references/defaults.md` first, then apply custom doc sections on top. Custom sections replace matching sections in defaults (matched by heading). New sections appended after.
-4. If no config/path/file, read `./references/defaults.md`
+1. Look for `.lattice/config.yaml` in the repo root
+2. If found, check `paths.requirement_standards` for a custom document path
+3. If a custom document exists at that path, read it and check its YAML frontmatter for `mode`:
+   - **`mode: override`**: the custom document has full precedence. Use it instead of the embedded defaults. It must be comprehensive — treat it as the sole reference.
+   - **`mode: overlay`** (or no mode field): read the embedded `./references/defaults.md` first, then apply the custom document's sections on top. A custom section replaces the matching default section (matched by exact heading); new sections append after the defaults.
+4. If a custom path is configured but no document exists at it → tell the user which configured path is missing, then fall back to `./references/defaults.md`
+5. If there is no config file or no `paths.requirement_standards` key → read `./references/defaults.md`
 
 Custom standards produced by `requirement-forge-refiner` → consumed by this atom → composed by `requirement-forge` molecule.
 

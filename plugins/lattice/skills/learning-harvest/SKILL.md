@@ -22,9 +22,10 @@ Patterns that recur frequently may graduate to standards via a refiner. That pro
 
 ## Config Resolution
 
-1. Check `.lattice/config.yaml` for `paths.operational_learnings`
-2. If found, use that file path
-3. If not, use default `.lattice/learnings/operational-learnings.md`
+1. Check `.lattice/config.yaml` for `paths.operational_learnings`.
+2. If set and the file exists at that path → use it.
+3. If set but no file exists there → tell the user which configured path is missing, then use the default `.lattice/learnings/operational-learnings.md`.
+4. If not set → use the default `.lattice/learnings/operational-learnings.md`.
 
 **Backward compatibility**: If default path not found, check these legacy paths in order:
 - `.lattice/learnings.md` — flat file at root
@@ -123,7 +124,7 @@ Invoked at session end. Composing workflow passes a **session context** (what ki
 
 4. **User decides.** Accept, edit, reject, add their own, or skip all. **STOP: do NOT argue for rejected entries.**
 
-5. **Write confirmed entries only.** Dedup against existing entries (update with recurrence note if same pattern exists). Create file/dir if needed.
+5. **Write confirmed entries only.** Dedup against existing entries (update with a recurrence note if the same pattern exists). Create the file and directory if needed.
 
 6. **Assess health.** Count entries per category and total (already read for dedup in Step 5). Any category exceeds ~10 entries, or total exceeds ~35 → note in one line: "Operational learnings is growing dense — say 'tighten learnings' to run Tighten standalone." Pattern recurred 4+ times → note it as a promotion candidate the same way. **STOP: do not run Tighten in this session** — flag only, never act.
 
@@ -147,6 +148,8 @@ Before writing any entry, verify ALL. **STOP: if any fails, do not write.**
 5. **Actionable standalone** — STOP: a developer on a different feature can act on this without this conversation's context. Confidence level is not a gate — the user decides if it is worth capturing.
 6. **Not redundant** — STOP: Not already in standards, atom defaults, or existing learnings. At most, add recurrence note.
 7. **Concise** — STOP: Scannable in 10 seconds. Two lines max.
+
+All checks pass on an entry → write it.
 
 ## Standalone Invocation
 

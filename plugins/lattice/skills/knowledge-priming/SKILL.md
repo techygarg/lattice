@@ -7,11 +7,12 @@ description: "Load project-specific context -- tech stack, architecture overview
 
 ## Config Resolution
 
-1. Look for `.lattice/config.yaml` in repo root.
-2. If found, check `paths.knowledge_base` for custom doc path.
-3. If doc exists at that path, read the full document.
-4. **STOP: Apply the loaded document as ambient context before any design, implement, or review work begins.**
-5. If no config, path, or doc found → see "When No Document Exists".
+1. Look for `.lattice/config.yaml` in the repo root.
+2. If found, check `paths.knowledge_base` for a custom document path.
+3. If a document exists at that path, read the full document.
+4. **STOP: Apply the loaded document as ambient context before any design, implementation, or review work begins.**
+5. If a path is configured but no document exists at it → tell the user which configured path is missing, then see "When No Document Exists".
+6. If there is no config file or no `paths.knowledge_base` key → see "When No Document Exists".
 
 ## When No Document Exists
 
@@ -19,11 +20,11 @@ Inform the user:
 
 > No project knowledge base found. AI skills will operate from generic assumptions about tech stack, architecture, and conventions.
 >
-> To create one, trigger **knowledge-priming-refiner** — guided interview (~10 questions) producing a concise document (~50 lines).
+> To create one, trigger **knowledge-priming-refiner** — a guided interview (~10 questions) producing a concise document (~50 lines).
 >
-> Can also create `.lattice/standards/knowledge-base.md` manually and reference in `.lattice/config.yaml` under `paths.knowledge_base`.
+> You can also create `.lattice/standards/knowledge-base.md` manually and reference it in `.lattice/config.yaml` under `paths.knowledge_base`.
 
-Do not block. Continue without knowledge base.
+Do not block. Continue without the knowledge base.
 
 ## What the Document Contains
 

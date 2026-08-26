@@ -1,66 +1,66 @@
 ---
 name: secure-coding
-description: "Apply security-conscious thinking when generating or modifying code. Enforces trust boundary awareness, input validation, injection prevention, secrets management, and defense-in-depth authorization. Use when generating code that handles user input, authentication, authorization, database queries, external APIs, file operations, or when the user mentions 'security review', 'secure this', 'check for vulnerabilities', 'trust boundary', 'input validation', or 'OWASP'. This skill governs the security posture of generated code -- not architecture (see architecture) and not code craft (see clean-code)."
+description: "Apply security-conscious thinking when generating or modifying code. Enforces trust boundary awareness, input validation, injection prevention, secrets management, and defense-in-depth authorization. Use when generating code that handles user input, authentication, authorization, database queries, external APIs, or file operations, or when the user mentions 'security review', 'secure this', 'check for vulnerabilities', 'trust boundary', 'input validation', or 'OWASP'. Loaded automatically by the code-generating molecules (code-forge, refactor-safely, bug-fix). This skill governs the security posture of generated code -- not architecture (see architecture) and not code craft (see clean-code)."
 ---
 
 # Secure Coding
 
 ## Config Resolution
 
-Skill support project-custom. Order:
+Projects can customize this skill's standards. Resolution order:
 
-1. Look `.lattice/config.yaml` in repo root
-2. If found, check `paths.secure_coding` for custom doc path
-3. If custom path exist, read doc, check YAML frontmatter for `mode`:
-   - **`mode: override`** (or no mode): Custom doc take full precedence.
-     Use instead embed default. Must be comprehensive -- sole reference.
-   - **`mode: overlay`**: Read embed `./references/defaults.md` first, then apply
-     custom doc sections on top. Custom sections replace matching
-     sections in default (match by heading). New sections append after default.
-4. If no config, no path, or path not found, read `./references/defaults.md`
-5. **Language adaptation**: If `paths.language_idioms` exist in config, read **"Error Handling"** section and adapt §1 (Trust Boundary Identification) error message patterns to language idioms. Language idioms take precedence over pseudocode defaults.
+1. Read `.lattice/config.yaml` in the repo root.
+2. If found, check `paths.secure_coding` for a custom document path.
+3. If a custom document exists at that path, read it and check its YAML frontmatter for `mode`:
+   - **`mode: override`**: the custom document has full precedence. Use it instead of the embedded defaults. It must be comprehensive -- treat it as the sole reference.
+   - **`mode: overlay`** (or no mode field): read the embedded `./references/defaults.md` first, then apply the custom document's sections on top. A custom section replaces the matching default section (matched by exact heading); new sections append after the defaults.
+4. If a custom path is configured but no document exists at it → tell the user which configured path is missing, then fall back to `./references/defaults.md`.
+5. If there is no config file or no `paths.secure_coding` key, read `./references/defaults.md`.
+6. **Language adaptation**: if `paths.language_idioms` is set in the config and the document exists, read its **"Error Handling"** section and adapt §1 (Trust Boundary Identification) error-message patterns to the language's idioms. Language idioms take precedence over the pseudocode defaults.
 
 ## Self-Validation Checklist
 
-STOP after gen each component. Verify ALL before proceed. If check clearly fail, fix code before present. If check judgment call with multiple valid approach (see Ambiguity Signals), flag — present options and reasoning rather than silent choose.
+**STOP after generating each component. Verify ALL checks before proceeding. A check clearly fails → fix the code before presenting. A check is a judgment call with multiple valid approaches (see Ambiguity Signals) → flag it -- present options and reasoning rather than silently choosing.**
 
-1. **TRUST BOUNDARIES**: Where trusted code meet untrusted data? All boundaries explicit identified?
-2. **INPUT VALIDATION**: Every external input validated at boundary with allowlist before reach business logic?
-3. **QUERY SAFETY**: All database query parameterized? Any string concat in query build?
-4. **COMMAND SAFETY**: Any shell/command execution? If so, input strict allowlisted?
-5. **SECRETS**: Any API key, password, token, connection string in code? If so → move to env var or secret manager.
-6. **OUTPUT ENCODING**: Output encoded appropriate for render context (HTML, JSON, URL)?
-7. **AUTHORIZATION**: Authorization verified at service layer, not just controller? Each endpoint enforce least privilege?
-8. **ERROR MESSAGES**: Error message exposed to user avoid reveal internal detail (stack trace, SQL query, file path)?
-9. **DEPENDENCIES**: New third-party package necessary? Version pinned or constrained? Any known-vulnerable package added?
+1. **TRUST BOUNDARIES**: Where does trusted code meet untrusted data? Are all boundaries explicitly identified?
+2. **INPUT VALIDATION**: Is every external input validated at the boundary with an allowlist before it reaches business logic?
+3. **QUERY SAFETY**: Are all database queries parameterized? Is any string concatenation used in query building?
+4. **COMMAND SAFETY**: Is there any shell/command execution? If so, is the input strictly allowlisted?
+5. **SECRETS**: Are there API keys, passwords, tokens, or connection strings in code? If so → move them to environment variables or a secret manager.
+6. **OUTPUT ENCODING**: Is output encoded appropriately for its render context (HTML, JSON, URL)?
+7. **AUTHORIZATION**: Is authorization verified at the service layer, not just the controller? Does every endpoint enforce least privilege?
+8. **ERROR MESSAGES**: Do error messages exposed to users avoid revealing internal detail (stack traces, SQL queries, file paths)?
+9. **DEPENDENCIES**: Is each new third-party package necessary? Are versions pinned or constrained? Is any known-vulnerable package being added?
+
+All checks pass → state "Passes secure-coding. [next step]."
 
 ## Active Anti-Pattern Scan
 
-**STOP:** After verify checklist above, scan output for specific anti-pattern. If find any, fix before present code.
+**STOP:** After verifying the checklist above, scan the output for each anti-pattern below. Any box you can check → fix before presenting the code.
 
-- [ ] **Trust All Input**: No validation on request param; data flow direct to business logic → validate at boundary with allowlist
-- [ ] **SQL String Concatenation**: User input interpolated into SQL query → use parameterized query or ORM query builder
-- [ ] **Hardcoded Secrets**: API key, password, token in source code → use env var or secret manager
-- [ ] **Missing Authorization**: Auth checked at login but not re-verified at service or resource level → check at every layer
-- [ ] **Overly Broad Permissions**: Admin access granted where read-only suffice → apply least privilege
-- [ ] **Unvalidated Redirects**: User-controlled URL used in redirect → allowlist permitted destination
-- [ ] **Verbose Error Messages**: Stack trace or SQL in API response → return generic message, log detail server-side
-- [ ] **Logging Sensitive Data**: Password, token, PII in log file → log event, not value; mask sensitive field
+- [ ] **Trust All Input**: no validation on request parameters; data flows straight into business logic → validate at the boundary with an allowlist.
+- [ ] **SQL String Concatenation**: user input interpolated into a SQL query → use a parameterized query or ORM query builder.
+- [ ] **Hardcoded Secrets**: API key, password, or token in source code → use an env var or secret manager.
+- [ ] **Missing Authorization**: auth checked at login but not re-verified at the service or resource level → check at every layer.
+- [ ] **Overly Broad Permissions**: admin access granted where read-only suffices → apply least privilege.
+- [ ] **Unvalidated Redirects**: a user-controlled URL used in a redirect → allowlist permitted destinations.
+- [ ] **Verbose Error Messages**: stack trace or SQL in an API response → return a generic message; log details server-side.
+- [ ] **Logging Sensitive Data**: passwords, tokens, or PII in log files → log the event, not the value; mask sensitive fields.
 
 ## Ambiguity Signals
 
-Check often have multiple valid outcome. When encounter, present option rather than silent choose.
+Checks here often have multiple valid outcomes. When you encounter one, present the options rather than silently choosing. If `framework:collaborative-judgment` is loaded, use its presentation format.
 
-- **Trust Boundary Scope**: Internal API behind trusted gateway may or may not need full boundary validation.
-- **Error Message Detail**: How much info is "actionable but safe" depend on whether consumer is human user, frontend client, or internal service.
-- **Validation Depth**: Whether to re-validate at inner layer (defense-in-depth) or trust boundary validation alone.
-- **Auth vs Authz Failure Response**: Whether to return 401 (not authenticated) or 403 (not authorized) depend on whether identity is known.
+- **Trust Boundary Scope**: an internal API behind a trusted gateway may or may not need full boundary validation.
+- **Error Message Detail**: how much detail is "actionable but safe" depends on whether the consumer is a human user, a frontend client, or an internal service.
+- **Validation Depth**: whether to re-validate at inner layers (defense-in-depth) or trust boundary validation alone.
+- **Auth vs Authz Failure Response**: whether to return 401 (not authenticated) or 403 (not authorized) depends on whether the identity is known.
 
 ## Core Principle
 
-Govern security posture of generated code — trust boundaries, input validation, injection prevention, secrets, authorization.
+Govern the security posture of generated code -- trust boundaries, input validation, injection prevention, secrets, authorization.
 
-Boundary with clean-code: clean-code governs error message craft; this skill governs what error messages must not reveal (internal detail).
+Boundary with clean-code: clean-code governs error-message craft; this skill governs what error messages must not reveal (internal detail).
 
 Boundary with architecture: architecture defines *where* checks live (service layer, not controller); this skill defines *what* to check (identity confirmed, permission granted, resource owned).
 
