@@ -24,7 +24,7 @@ Scenario-driven answers to common questions practitioners have when adopting and
 
 ### I just installed Lattice. What do I do first?
 
-Run `/lattice-init`. It scans your project, creates `.lattice/config.yaml`, and tells you which refiners to run based on what it finds. After that, run the suggested refiners (starting with `/knowledge-priming-refiner`, then `/language-idioms-refiner`) to give Lattice context about your project and language. Once done, you're ready to use any molecule.
+Run `/lattice-init`. It scans your project, creates `.lattice/config.yaml`, and confirms you're ready — from that moment Lattice runs on built-in defaults with full functionality, so you can start using any molecule immediately. Refiner interviews (`/knowledge-priming-refiner`, `/language-idioms-refiner`, ...) are optional upgrades that pin your team's conventions instead of generic defaults; run them anytime.
 
 ### My project already has 50k+ lines of code. Is Lattice only for new projects?
 
@@ -32,7 +32,7 @@ No. Lattice works for brownfield codebases too. Run `/lattice-init` to scan the 
 
 ### What happens if I skip all refiners and just start using molecules?
 
-Molecules work, but results will be generic. Without `/knowledge-priming-refiner`, Lattice has no awareness of your project — it can't tailor generated code to your stack or conventions. Without `/language-idioms-refiner`, atoms use pseudocode defaults which assume OOP + exceptions — problematic for Go, Rust, or functional languages. The other refiners (architecture, clean code, DDD, review) have solid embedded defaults, so skipping those is fine initially. But `/knowledge-priming-refiner` and `/language-idioms-refiner` are strongly recommended.
+Molecules work out of the box on built-in defaults — `code-forge` even generates with your language's native idioms when no language-idioms doc exists. What you give up without `/knowledge-priming-refiner` is a pinned record of your stack and conventions applied every session, and without `/language-idioms-refiner`, language-specific patterns follow the model's general knowledge instead of your team's explicit choices. The other refiners (architecture, clean code, DDD, review) have solid embedded defaults. Refiners are optional — run them when you want generic defaults replaced by your team's rules.
 
 ### What is the `.lattice/` folder and should I commit it to version control?
 

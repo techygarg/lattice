@@ -158,7 +158,7 @@ Guided setup — bridges installing Lattice and getting first value. Run once pe
 
 **Composes**: knowledge-priming
 
-Scans the project, presents setup status, suggests refiners in priority order (knowledge-priming first), then shows the design-to-review workflow.
+Scans the project, presents setup status, confirms readiness on built-in defaults (fresh installs need zero interviews), optionally offers refiner interviews in priority order (knowledge-priming first), then shows the design-to-review workflow.
 
 ### refiners-update
 
