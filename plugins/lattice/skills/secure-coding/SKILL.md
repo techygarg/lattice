@@ -16,7 +16,7 @@ Projects can customize this skill's standards. Resolution order:
    - **`mode: overlay`** (or no mode field): read the embedded `./references/defaults.md` first, then apply the custom document's sections on top. A custom section replaces the matching default section (matched by exact heading); new sections append after the defaults.
 4. If a custom path is configured but no document exists at it → tell the user which configured path is missing, then fall back to `./references/defaults.md`.
 5. If there is no config file or no `paths.secure_coding` key, read `./references/defaults.md`.
-6. **Language adaptation**: if `paths.language_idioms` is set in the config and the document exists, read its **"Error Handling"** section and adapt §1 (Trust Boundary Identification) error-message patterns to the language's idioms. Language idioms take precedence over the pseudocode defaults.
+6. **Language adaptation**: if `paths.language_idioms` is set in the config and the document exists, read its **"Error Handling"** section and adapt §2 (Input Validation Patterns) error-message patterns to the language's idioms. Language idioms take precedence over the pseudocode defaults.
 
 ## Self-Validation Checklist
 

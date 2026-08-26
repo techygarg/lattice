@@ -17,7 +17,7 @@ description: "Facilitate a structured conversation to define language-specific i
 
 | Section | Consumed by |
 |---------|------------|
-| **Error Handling** | `clean-code` atom (§8), `secure-coding` atom (§1 trust boundary messages) |
+| **Error Handling** | `clean-code` atom (§8), `secure-coding` atom (§2 validation error messages) |
 | **Type System & Object Model** | `clean-code` atom (§1 SRP/cohesion), `domain-driven-design` atom (entities, VOs, aggregates) |
 | **Naming Conventions** | `clean-code` atom (§4) |
 | **Testing Patterns** | `test-quality` atom (§5 naming, §4 isolation, §6 builders) |
@@ -74,6 +74,8 @@ Determine the project language before starting the interview:
    - `Package.swift` → Swift
 3. **Multiple languages detected**: Ask the user which is the primary language. One language-idioms document per project (covers the primary language).
 4. **No detection**: Ask the user directly.
+
+<!-- synced with lattice-init "Language/framework detection" -- edit both -->
 
 Present the detected language: "I detected this is a **Go** project (found `go.mod`). I'll propose Go-idiomatic patterns for each section. You can confirm or adjust."
 

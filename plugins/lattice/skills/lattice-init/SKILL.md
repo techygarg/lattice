@@ -17,16 +17,20 @@ Read apply skills order:
 
 Detect signals about project understand shape existing Lattice state.
 
-**Language/framework detection** -- check files repo root:
+**Language/framework detection** -- check files in repo root:
 - `package.json` → Node.js / TypeScript
+- `tsconfig.json` → TypeScript (confirm over JavaScript)
 - `go.mod` → Go
-- `pom.xml` or `build.gradle` → Java
+- `pom.xml` or `build.gradle` or `build.gradle.kts` → Java or Kotlin
 - `Cargo.toml` → Rust
-- `requirements.txt` or `pyproject.toml` → Python
+- `requirements.txt` or `pyproject.toml` or `setup.py` → Python
 - `Gemfile` → Ruby
 - `*.csproj` or `*.sln` → C# / .NET
+- `Package.swift` → Swift
 
-If multiple language markers found repo root, note all ask user which primary stack use refiner suggestions before continuing.
+<!-- synced with language-idioms-refiner "Detect the language" -- edit both -->
+
+If multiple language markers are found in the repo root, note all of them and ask the user which is the primary stack before continuing.
 
 **Directory structure** -- list top-level dirs. Identify common patterns:
 - `src/`, `lib/`, `app/` → source code
@@ -59,25 +63,32 @@ Present:
 **Structure**: [key directories found]
 
 ### Lattice Setup Status
-- `.lattice/config.yaml`: [exists / not found]
+
+Running mode: **[customized -- standards docs active below / built-in defaults -- full functionality]**
+
+- `.lattice/config.yaml`: [exists / not created yet]
 - Language: [detected language / language key from config / not detected]
-- Language idioms: [found at .lattice/standards/language-idioms.md / not found]
-- Knowledge base: [found at .lattice/standards/knowledge-base.md / not found]
-- Architecture standards: [found at .lattice/standards/architecture.md / not found]
-- Clean code standards: [found / not found]
-- DDD standards: [found / not found]
-- Review standards: [found / not found]
+- Language idioms: [.lattice/standards/language-idioms.md / built-in default]
+- Knowledge base: [.lattice/standards/knowledge-base.md / built-in default]
+- Architecture standards: [.lattice/standards/architecture.md / built-in default]
+- Clean code standards: [.lattice/standards/clean-code.md / built-in default]
+- DDD standards: [.lattice/standards/ddd-principles.md / built-in default]
+- Review standards: [.lattice/standards/review-standards.md / built-in default]
 - Context documents: [N found / none]
-- Review learnings: [found / none]
-- Review log: [found / none]
+- Review learnings: [found at .lattice/learnings/operational-learnings.md / none]
+- Review log: [found at .lattice/reviews/review-log.md / none]
 - Requirements layout: [sharded / legacy — upgrade available / not found]
 ```
+
+**STOP (fresh install): if no `.lattice/` state exists at all AND no legacy requirements layout was detected** — create the minimal `.lattice/config.yaml` shown in Step 3, tell the user: "Lattice is ready. It runs on built-in defaults with full functionality. Refiner interviews that pin your team's conventions are optional — ask for them anytime." Skip to Step 4. Do not present the customization menu unprompted.
 
 **STOP: If `.lattice/config.yaml` and all core standards docs exist AND no legacy requirements layout was detected:** Tell user "Lattice fully configured." Skip to Step 4.
 
 **STOP:** if a legacy requirements layout was detected, do not skip on that basis alone — present it as a gap in Step 3 even when everything else is fully configured.
 
 ### Step 3: Guided Setup
+
+Reached only when something needs attention (a gap above) or the user asked to customize. Frame every item below as optional refinement -- Lattice is fully functional without any of it.
 
 **Priority order**:
 
@@ -106,14 +117,14 @@ Present:
 ```yaml
 # .lattice/config.yaml -- Lattice Framework Configuration
 # All paths are relative to the repository root.
-# Run refiners to populate: /knowledge-priming-refiner, /language-idioms-refiner, /architecture-refiner, /ddd-refiner, /clean-code-refiner, /review-refiner
+# Runs on built-in defaults until customized -- refiner interviews are optional (see docs/configuration.md).
 
 version: 1
 language: {detected-language}
 paths: {}
 ```
 
-If user runs at least one refiner, refiner itself create or update config file -- no need create here. Set `language` key from detected language even if no refiners run.
+If the user runs at least one refiner, the refiner itself creates or updates the config file -- no need to create it here. Either way, set the `language` key from the detected language when the file is created.
 
 ### Step 4: Next Steps
 
