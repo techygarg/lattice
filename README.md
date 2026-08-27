@@ -91,6 +91,7 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
 - [Configuration Reference](docs/configuration.md) — every `.lattice/config.yaml` key documented
 - [Framework Intelligence](docs/framework-intelligence.md) — verification passes, feedback loops, AI compliance techniques
 - [Collaborative Judgment](docs/collaborative-judgment.md) — why AI should ask on genuine judgment calls or missing/conflicting facts and how it works at runtime
+- [Verification Agent](docs/agents/verification.md) — why the verifier subagent exists, the cost model behind it, and how to enable the done-gate manually or automatically per project
 - [The Article Series](https://martinfowler.com/articles/reduce-friction-ai/) — the five collaboration patterns Lattice operationalizes (martinfowler.com)
 
 ## Dev Skills
