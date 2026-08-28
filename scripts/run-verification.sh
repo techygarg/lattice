@@ -18,35 +18,35 @@
 #     - name: integration
 #       command: make integration
 #
-# Stages always run sequentially and verification always stops after the first
-# failed stage. Every executed stage writes a full log file; stdout carries only
-# marker lines and ids, never log content. The script writes a mechanical
-# summary.json — status, exit code, and logFile path per stage, plus a
-# run-level overallStatus/failedStages/headline verdict — that is the complete,
-# final answer. Nothing downstream (agent or human) recomputes it; they only
-# read it, on stdout or off disk.
+# Stages within one run always execute sequentially, and verification always
+# stops after the first failed stage. Every executed stage writes a full log
+# file; stdout carries only marker lines and ids, never log content. The
+# script writes a mechanical summary.json — status, exit code, and logFile
+# path per stage, plus a run-level overallStatus/failedStages/headline
+# verdict — that is the complete, final answer. Nothing downstream (agent or
+# human) recomputes it; they only read it, on stdout or off disk.
+#
+# Multiple runs (e.g. several verifier subagents) may invoke this script
+# concurrently: each run gets its own directory via a collision-checked
+# mkdir, retried on collision rather than silently sharing a directory, and
+# a run is never pruned while younger than a fixed grace period — even by
+# its own end-of-run cleanup — so a sibling run's cleanup can never delete a
+# just-finished run before its caller reads summary.json.
 
 set -u
+
+RUN_DIR_NAME_PATTERN='[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]T[0-9][0-9][0-9][0-9][0-9][0-9]Z-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'
+PRUNE_GRACE_MINUTES=5
+MAX_RUN_DIR_ATTEMPTS=20
 
 script_error() {
   echo "___VERIFICATION_SCRIPT_ERROR___:$1"
   exit 2
 }
 
-config_file="${1:-.lattice/verification.yaml}"
-
-[ -f "$config_file" ] || script_error "verification config not found: $config_file"
-[ -r "$config_file" ] || script_error "verification config is not readable: $config_file"
-
-version=""
-runs_dir="tmp/verification"
-failure_hint=""
-seen_stages=false
-in_failure_hint=false
-current_name=""
-current_command=""
-stage_names=()
-stage_commands=()
+# ---------------------------------------------------------------------------
+# String helpers
+# ---------------------------------------------------------------------------
 
 trim() {
   local s="$1"
@@ -74,6 +74,11 @@ json_escape() {
   s="${s//$'\t'/\\t}"
   printf '%s' "$s"
 }
+
+# ---------------------------------------------------------------------------
+# Config parsing — populates: version, runs_dir, failure_hint, stage_names[],
+# stage_commands[]
+# ---------------------------------------------------------------------------
 
 append_stage() {
   if [ -n "$current_name" ] || [ -n "$current_command" ]; then
@@ -112,32 +117,33 @@ parse_key_value() {
   esac
 }
 
-while IFS= read -r raw_line || [ -n "$raw_line" ]; do
-  line="${raw_line%$'\r'}"
-  trimmed="$(trim "$line")"
+parse_failure_hint_continuation() {
+  local line="$1"
+  case "$line" in
+    " "*|$'\t'*)
+      local hint_line
+      hint_line="$(trim "$line")"
+      if [ -n "$failure_hint" ]; then
+        failure_hint="$failure_hint $hint_line"
+      else
+        failure_hint="$hint_line"
+      fi
+      return 0
+      ;;
+    *)
+      in_failure_hint=false
+      return 1
+      ;;
+  esac
+}
 
-  if [ "$in_failure_hint" = true ]; then
-    case "$line" in
-      " "*|$'\t'*)
-        hint_line="$(trim "$line")"
-        if [ -n "$failure_hint" ]; then
-          failure_hint="$failure_hint $hint_line"
-        else
-          failure_hint="$hint_line"
-        fi
-        continue
-        ;;
-      *)
-        in_failure_hint=false
-        ;;
-    esac
-  fi
-
-  [ -z "$trimmed" ] && continue
-  case "$trimmed" in \#*) continue ;; esac
+parse_config_line() {
+  local line="$1"
+  local trimmed="$2"
 
   case "$line" in
     [![:space:]]*:*)
+      local key
       key="$(trim "${line%%:*}")"
       case "$key" in
         version|runsDir|failureHint) parse_key_value "$line" "$key" ;;
@@ -151,8 +157,9 @@ while IFS= read -r raw_line || [ -n "$raw_line" ]; do
     "  - "*|"- "*)
       seen_stages=true
       append_stage
+      local item
       item="$(trim "${line#*- }")"
-      [ -z "$item" ] && continue
+      [ -z "$item" ] && return 0
       case "$item" in
         name:*) parse_key_value "$item" name ;;
         command:*) parse_key_value "$item" command ;;
@@ -161,6 +168,7 @@ while IFS= read -r raw_line || [ -n "$raw_line" ]; do
       ;;
     "    "*|$'\t'*)
       [ "$seen_stages" = true ] || script_error "indented key found before stages"
+      local stage_line
       stage_line="$(trim "$line")"
       case "$stage_line" in
         name:*) parse_key_value "$stage_line" name ;;
@@ -172,20 +180,73 @@ while IFS= read -r raw_line || [ -n "$raw_line" ]; do
       ;;
     *) script_error "unsupported YAML shape near: $trimmed" ;;
   esac
-done < "$config_file"
+}
 
-append_stage
+parse_config() {
+  local config_file="$1"
+  local raw_line line trimmed
 
-[ "$version" = "1" ] || script_error "expected version: 1"
-[ -n "$runs_dir" ] || script_error "runsDir must not be empty"
-[ "${#stage_names[@]}" -gt 0 ] || script_error "stages must contain at least one stage"
+  while IFS= read -r raw_line || [ -n "$raw_line" ]; do
+    line="${raw_line%$'\r'}"
+    trimmed="$(trim "$line")"
 
-run_id="$(date -u +%Y%m%dT%H%M%SZ)-$(printf '%03x%03x' $((RANDOM % 4096)) $((RANDOM % 4096)))"
-run_dir="$runs_dir/$run_id"
+    if [ "$in_failure_hint" = true ] && parse_failure_hint_continuation "$line"; then
+      continue
+    fi
 
-if ! mkdir -p "$run_dir" 2>/dev/null; then
-  script_error "failed to create run directory: $run_dir"
-fi
+    [ -z "$trimmed" ] && continue
+    case "$trimmed" in \#*) continue ;; esac
+
+    parse_config_line "$line" "$trimmed"
+  done < "$config_file"
+
+  append_stage
+
+  [ "$version" = "1" ] || script_error "expected version: 1"
+  [ -n "$runs_dir" ] || script_error "runsDir must not be empty"
+  [ "${#stage_names[@]}" -gt 0 ] || script_error "stages must contain at least one stage"
+}
+
+# ---------------------------------------------------------------------------
+# Run directory lifecycle
+# ---------------------------------------------------------------------------
+
+# Concurrent invocations can land in the same wall-clock second, and bash's
+# $RANDOM is seeded per-process from time+pid — sibling processes forked in
+# the same instant can draw near-identical sequences, not independent ones.
+# A plain `mkdir` (not `-p`) is the actual collision guard: it fails if the
+# leaf already exists, so a same-run_id race is detected and retried instead
+# of two runs silently sharing one directory and clobbering each other's log
+# and summary.json. Sets run_id and run_dir on success.
+claim_run_dir() {
+  local attempt=0 candidate_id candidate_dir
+
+  while :; do
+    attempt=$((attempt + 1))
+    candidate_id="$(date -u +%Y%m%dT%H%M%SZ)-$(printf '%03x%03x' $((RANDOM % 4096)) $((RANDOM % 4096)))"
+    candidate_dir="$runs_dir/$candidate_id"
+    if mkdir "$candidate_dir" 2>/dev/null; then
+      run_id="$candidate_id"
+      run_dir="$candidate_dir"
+      return
+    fi
+    [ "$attempt" -ge "$MAX_RUN_DIR_ATTEMPTS" ] && \
+      script_error "failed to create a unique run directory under $runs_dir after $attempt attempts"
+  done
+}
+
+is_valid_run_dir_name() {
+  case "$1" in
+    $RUN_DIR_NAME_PATTERN) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+# True if $1 is younger than PRUNE_GRACE_MINUTES — a sibling run that either
+# hasn't finished or whose caller hasn't read summary.json yet.
+is_within_prune_grace_period() {
+  [ -n "$(find "$runs_dir" -mindepth 1 -maxdepth 1 -type d -name "$1" -mmin "-$PRUNE_GRACE_MINUTES" 2>/dev/null)" ]
+}
 
 prune_old_runs() {
   local keep="${VERIFICATION_KEEP_RUNS:-20}"
@@ -195,10 +256,13 @@ prune_old_runs() {
 
   local n=0 d
   while IFS= read -r d; do
-    case "$d" in
-      [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]T[0-9][0-9][0-9][0-9][0-9][0-9]Z-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]) ;;
-      *) continue ;;
-    esac
+    is_valid_run_dir_name "$d" || continue
+    # Never prune this invocation's own run, or any run still inside the
+    # grace period — same-second timestamps sort by an unrelated hex suffix,
+    # so "newest N" can otherwise rank a just-written run outside the keep
+    # window before its caller ever reads it.
+    [ "$d" = "$run_id" ] && continue
+    is_within_prune_grace_period "$d" && continue
     n=$((n + 1))
     if [ "$n" -gt "$keep" ]; then
       rm -rf "${runs_dir:?}/$d"
@@ -208,18 +272,23 @@ $(ls -1 "$runs_dir" 2>/dev/null | sort -r)
 EOF
 }
 
-stage_json=()
-failed=false
-halted_early=false
-failed_stage_name=""
-failed_exit_code=""
-skipped_stage_names=()
+# ---------------------------------------------------------------------------
+# Stage execution — populates: stage_json[], failed, failed_stage_name,
+# failed_exit_code
+# ---------------------------------------------------------------------------
+
+stage_json_entry() {
+  local name="$1" status="$2" exit_code="$3" duration="$4" wall_start="$5" wall_end="$6" command="$7" log="$8"
+  printf '{"name":"%s","status":"%s","exitCode":%s,"durationSeconds":%s,"wallStart":"%s","wallEnd":"%s","command":"%s","logFile":"%s"}' \
+    "$(json_escape "$name")" "$status" "$exit_code" "$duration" \
+    "$wall_start" "$wall_end" "$(json_escape "$command")" "$(json_escape "$log")"
+}
 
 run_stage() {
   local name="$1"
   local command="$2"
   local log="$run_dir/$name.log"
-  local wall_start wall_end start_epoch end_epoch exit_code status entry
+  local wall_start wall_end start_epoch end_epoch exit_code status
 
   wall_start=$(date -u +%Y-%m-%dT%H:%M:%SZ)
   start_epoch=$(date +%s)
@@ -237,10 +306,8 @@ run_stage() {
   echo "___VERIFICATION_WALL_START___:$wall_start"
   echo "___VERIFICATION_WALL_END___:$wall_end"
 
-  entry=$(printf '{"name":"%s","status":"%s","exitCode":%s,"durationSeconds":%s,"wallStart":"%s","wallEnd":"%s","command":"%s","logFile":"%s"}' \
-    "$(json_escape "$name")" "$status" "$exit_code" "$((end_epoch - start_epoch))" \
-    "$wall_start" "$wall_end" "$(json_escape "$command")" "$(json_escape "$log")")
-  stage_json+=("$entry")
+  stage_json+=("$(stage_json_entry "$name" "$status" "$exit_code" "$((end_epoch - start_epoch))" \
+    "$wall_start" "$wall_end" "$command" "$log")")
 
   if [ "$exit_code" -ne 0 ]; then
     failed_stage_name="$name"
@@ -250,55 +317,64 @@ run_stage() {
   return "$exit_code"
 }
 
-run_wall_start=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-run_start_epoch=$(date +%s)
+skip_stage() {
+  local name="$1"
+  local command="$2"
 
-echo "___VERIFICATION_RUN_ID___:$run_id"
-echo "___VERIFICATION_RUN_DIR___:$run_dir"
-echo "___VERIFICATION_RUN_WALL_START___:$run_wall_start"
-echo "___VERIFICATION_RUN_START_EPOCH___:$run_start_epoch"
+  halted_early=true
+  echo "___VERIFICATION_STAGE___:$name"
+  echo "___VERIFICATION_SKIPPED___:true"
+  skipped_stage_names+=("$name")
+  stage_json+=("$(printf '{"name":"%s","status":"skipped","command":"%s"}' \
+    "$(json_escape "$name")" "$(json_escape "$command")")")
+}
 
-i=0
-while [ "$i" -lt "${#stage_names[@]}" ]; do
-  if [ "$failed" = true ]; then
-    halted_early=true
-    echo "___VERIFICATION_STAGE___:${stage_names[$i]}"
-    echo "___VERIFICATION_SKIPPED___:true"
-    skipped_stage_names+=("${stage_names[$i]}")
-    stage_json+=("$(printf '{"name":"%s","status":"skipped","command":"%s"}' \
-      "$(json_escape "${stage_names[$i]}")" "$(json_escape "${stage_commands[$i]}")")")
-  else
-    if ! run_stage "${stage_names[$i]}" "${stage_commands[$i]}"; then
+run_all_stages() {
+  local i=0
+  while [ "$i" -lt "${#stage_names[@]}" ]; do
+    if [ "$failed" = true ]; then
+      skip_stage "${stage_names[$i]}" "${stage_commands[$i]}"
+    elif ! run_stage "${stage_names[$i]}" "${stage_commands[$i]}"; then
       failed=true
     fi
+    i=$((i + 1))
+  done
+}
+
+# ---------------------------------------------------------------------------
+# Verdict + summary.json — the complete, final answer (see header comment)
+# ---------------------------------------------------------------------------
+
+build_headline() {
+  if [ "$failed" = true ]; then
+    local headline="Failed at $failed_stage_name: exit code $failed_exit_code"
+    if [ "${#skipped_stage_names[@]}" -gt 0 ]; then
+      local skipped_joined
+      skipped_joined=$(IFS=,; echo "${skipped_stage_names[*]}")
+      headline="$headline; skipped: $skipped_joined"
+    fi
+    printf '%s' "$headline"
+  else
+    printf 'All %s stage(s) passed' "${#stage_names[@]}"
   fi
-  i=$((i + 1))
-done
+}
 
-run_wall_end=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-run_end_epoch=$(date +%s)
+write_summary() {
+  local stages_joined overall_status failed_stages_joined headline
 
-echo "___VERIFICATION_RUN_WALL_END___:$run_wall_end"
-echo "___VERIFICATION_RUN_END_EPOCH___:$run_end_epoch"
+  stages_joined=$(IFS=,; echo "${stage_json[*]}")
+  headline="$(build_headline)"
 
-stages_joined=$(IFS=,; echo "${stage_json[*]}")
-summary_file="$run_dir/summary.json"
-
-if [ "$failed" = true ]; then
-  overall_status="failed"
-  failed_stages_joined="\"$(json_escape "$failed_stage_name")\""
-  headline="Failed at $failed_stage_name: exit code $failed_exit_code"
-  if [ "${#skipped_stage_names[@]}" -gt 0 ]; then
-    skipped_joined=$(IFS=,; echo "${skipped_stage_names[*]}")
-    headline="$headline; skipped: $skipped_joined"
+  if [ "$failed" = true ]; then
+    overall_status="failed"
+    failed_stages_joined="\"$(json_escape "$failed_stage_name")\""
+  else
+    overall_status="passed"
+    failed_stages_joined=""
   fi
-else
-  overall_status="passed"
-  failed_stages_joined=""
-  headline="All ${#stage_names[@]} stage(s) passed"
-fi
 
-cat > "$summary_file" <<EOF
+  summary_file="$run_dir/summary.json"
+  cat > "$summary_file" <<EOF
 {
   "schemaVersion": 2,
   "runId": "$run_id",
@@ -315,7 +391,59 @@ cat > "$summary_file" <<EOF
   "stages": [$stages_joined]
 }
 EOF
+}
 
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
+config_file="${1:-.lattice/verification.yaml}"
+
+[ -f "$config_file" ] || script_error "verification config not found: $config_file"
+[ -r "$config_file" ] || script_error "verification config is not readable: $config_file"
+
+version=""
+runs_dir="tmp/verification"
+failure_hint=""
+seen_stages=false
+in_failure_hint=false
+current_name=""
+current_command=""
+stage_names=()
+stage_commands=()
+
+parse_config "$config_file"
+
+mkdir -p "$runs_dir" 2>/dev/null || script_error "failed to create runs directory: $runs_dir"
+
+run_id=""
+run_dir=""
+claim_run_dir
+
+stage_json=()
+failed=false
+halted_early=false
+failed_stage_name=""
+failed_exit_code=""
+skipped_stage_names=()
+
+run_wall_start=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+run_start_epoch=$(date +%s)
+
+echo "___VERIFICATION_RUN_ID___:$run_id"
+echo "___VERIFICATION_RUN_DIR___:$run_dir"
+echo "___VERIFICATION_RUN_WALL_START___:$run_wall_start"
+echo "___VERIFICATION_RUN_START_EPOCH___:$run_start_epoch"
+
+run_all_stages
+
+run_wall_end=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+run_end_epoch=$(date +%s)
+
+echo "___VERIFICATION_RUN_WALL_END___:$run_wall_end"
+echo "___VERIFICATION_RUN_END_EPOCH___:$run_end_epoch"
+
+write_summary
 echo "___VERIFICATION_SUMMARY_FILE___:$summary_file"
 
 prune_old_runs || true
