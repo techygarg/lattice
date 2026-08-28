@@ -23,13 +23,14 @@ docs/                                          # roles documented in full under 
     └── verification.md
 knowledge-base/                               # design workspace; don't read until asked explicitly
 tools/
-└── install.sh                                # Copies all skills flattened into the provided skills directory
+├── install.sh                                # Copies all skills flattened into the provided skills directory
+└── build-codex-plugin.sh                     # Rebuilds plugins/lattice/{skills,scripts} from source
 agents/
 └── verifier.md                               # Claude Code subagent: runs .lattice/verification.yaml stages, returns a JSON verdict
 scripts/
 └── run-verification.sh                       # Deterministic verification runner — host-independent, the portable core
 plugins/
-└── lattice/                                  # Codex packaging: same skills flattened for Codex discovery
+└── lattice/                                  # Codex packaging: same skills flattened, plus scripts/ (no agents/ — Codex has no subagent concept)
 ```
 
 ## Host Portability
@@ -149,6 +150,6 @@ For the Codex plugin package, also run:
 ./tools/build-codex-plugin.sh
 ```
 
-This refreshes `plugins/lattice/skills/` from the source tiered skill tree. If you have Codex's `plugin-creator` skill installed locally, also validate the packaged manifest — path varies per install, typically `~/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/lattice`; skip this if you don't have it, it's optional local tooling, not a repo dependency.
+This refreshes `plugins/lattice/skills/` from the source tiered skill tree and `plugins/lattice/scripts/` from `scripts/run-verification.sh`. If you have Codex's `plugin-creator` skill installed locally, also validate the packaged manifest — path varies per install, typically `~/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/lattice`; skip this if you don't have it, it's optional local tooling, not a repo dependency.
 
 When editing this file, update `CLAUDE.md` and `AGENTS.md` only if their pointer text needs to change — do not duplicate convention content into those files.

@@ -33,11 +33,14 @@ Verification is deterministic — it needs no judgment, no creativity, no large 
 
 Point 3 is also the direct answer to a natural question: why bother with a subagent at all, if you could just run the script yourself? Because both paths read the exact same file. The subagent adds isolation — the run's stdout and the file Read happen off in their own context, so only this small JSON blob crosses back into the session that asked for it — never a second, smarter opinion about what the file means.
 
-## How to Enable It
+## How It's Set Up
 
-**Manually, any time** — ask your session to run verification. If the host supports subagents, it spawns `verifier`; otherwise it runs `scripts/run-verification.sh .lattice/verification.yaml` directly and reads `summary.json` itself. Same contract either way — the subagent is an optimization, never a requirement.
+`/lattice-init` offers verification setup whenever `.lattice/verification.yaml` or the vendored script is missing — declining is a supported outcome; many projects won't want automated gating, and nothing else in Lattice depends on it existing. Accepting produces three things in the project, in order: a confirmed `.lattice/verification.yaml` built from detected stack commands, a vendored copy of the runner at `.lattice/scripts/run-verification.sh`, and (if agreed) the gate block below appended to the project's instruction file. Exact step-by-step behavior lives in `lattice-init`'s own SKILL.md (Step 8) — treat that as the source of truth if this summary and that file ever disagree.
 
-**Automatically, per project** — `/lattice-init` offers to append a marked block to your project's instruction file (`CLAUDE.md` for Claude Code, `AGENTS.md` where that's the convention):
+Two host-specific details worth knowing going in, since they're easy to get wrong by hand:
+
+- **Vendoring the script** copies from wherever Lattice is actually installed, never a guessed path: `$CLAUDE_PLUGIN_ROOT/scripts/run-verification.sh` on a Claude Code plugin install; on a Codex plugin install, a relative path from `lattice-init`'s own skill file, since Codex ships `scripts/` as an undeclared sibling of `skills/` with no plugin-root environment variable equivalent to `$CLAUDE_PLUGIN_ROOT`; the repo root in a Lattice dev checkout.
+- **Wiring the gate** targets `CLAUDE.md` on Claude Code, `AGENTS.md` on Codex or another AGENTS.md-convention host. A project with both files already present gets the block appended to both, since either host might read that project later.
 
 ```markdown
 <!-- lattice:verification -->
@@ -45,7 +48,16 @@ Before declaring any work done, run this project's verification suite (.lattice/
 <!-- /lattice:verification -->
 ```
 
-Because this is plain instruction text in a file every host already reads at session start, the same block works identically across hosts — no per-tool integration code, no plugin required. `/lattice-init` writes it for you once `.lattice/verification.yaml` and the vendored script both exist; declining just prints the block so you can paste it in yourself later.
+Because this is plain instruction text in a file every host already reads at session start, the same block works identically across hosts — no per-tool integration code, no plugin required. Declining the gate step still prints the block so it can be pasted in by hand later.
+
+## How It Runs, Per Host
+
+Once the config and the vendored script exist, "run verification" always resolves to the same underlying call: `bash .lattice/scripts/run-verification.sh .lattice/verification.yaml`, then read `summary.json`. What differs by host is who makes that call, and how isolated it is:
+
+- **Claude Code** — `agents/verifier.md` is auto-discovered from the `agents/` directory, a Claude Code plugin convention. A session can spawn it as a subagent: the Bash call and the file Read happen inside the subagent's own context, so only the small JSON verdict crosses back into the calling session.
+- **Codex, or any host with no subagent primitive** — there is nothing to spawn, so the session itself runs the script and reads `summary.json` inline, in its own context. Same file, same verdict, no isolation hop — this is the "otherwise" branch in the gate block above, and for Codex it is the *only* branch, always.
+
+This applies identically whether verification is triggered manually (you ask the session to run it) or automatically (the gate block above fires on its own before work is declared done) — the gate text is host-agnostic, so it produces the correct behavior on either host without modification.
 
 ## What Goes in `.lattice/verification.yaml`
 

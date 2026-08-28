@@ -8,6 +8,8 @@ knowledge-base/
 !sample/.lattice/
 !sample/.lattice/**
 
+tmp/
+
 # OS
 .DS_Store
 Thumbs.db

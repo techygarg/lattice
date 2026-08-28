@@ -51,6 +51,8 @@ If multiple language markers are found in the repo root, note all of them and as
 - `.lattice/learnings/operational-learnings.md` → accumulated operational learnings (managed by learning-harvest atom)
 - `.lattice/reviews/review-log.md` → review log
 - `.lattice/requirements/index.md` → check shape: if epic sections and feature tables are written directly inside it (no `epics/` directory alongside) and `requirements_layout` is absent from config, flag as **legacy layout — upgrade available**
+- `.lattice/verification.yaml` → verification stages config consumed by the verification runner
+- `.lattice/scripts/run-verification.sh` → vendored verification runner
 
 ### Step 2: Present Findings
 
@@ -78,6 +80,7 @@ Running mode: **[customized -- standards docs active below / built-in defaults -
 - Review learnings: [found at .lattice/learnings/operational-learnings.md / none]
 - Review log: [found at .lattice/reviews/review-log.md / none]
 - Requirements layout: [sharded / legacy — upgrade available / not found]
+- Verification suite: [.lattice/verification.yaml configured / not set up]
 ```
 
 **STOP (fresh install): if no `.lattice/` state exists at all AND no legacy requirements layout was detected** — create the minimal `.lattice/config.yaml` shown in Step 3, tell the user: "Lattice is ready. It runs on built-in defaults with full functionality. Refiner interviews that pin your team's conventions are optional — ask for them anytime." Skip to Step 4. Do not present the customization menu unprompted.
@@ -99,6 +102,21 @@ Reached only when something needs attention (a gap above) or the user asked to c
 5. **DDD-refiner** (if `.lattice/standards/ddd-principles.md` missing AND project has domain folder or domain-like structure) -- "Captures aggregate design rules, entity patterns, domain event conventions so DDD atom enforces domain modeling style."
 6. **Clean-code-refiner** (if `.lattice/standards/clean-code.md` missing) -- "Tailors coding standards -- function size limits, complexity thresholds, naming conventions. Defaults work well most projects, so optional."
 7. **Review-refiner** (if `.lattice/standards/review-standards.md` missing) -- "Customizes how review molecule works -- atom loading rules, severity levels, report format, scope rules. Defaults work well most projects, so optional."
+8. **Verification setup** (offer whenever `.lattice/verification.yaml` or `.lattice/scripts/run-verification.sh` is missing) -- Lattice's independent done-gate, deliberately not wired into any skill: `.lattice/verification.yaml` lists this project's real checks (build, unit, integration), a vendored runner reads that config and runs stages deterministically, and a `verifier` subagent returns one light verdict -- sessions stay quiet on green, hear only genuine failures on red. This is an additional capability, not part of any workflow: present what it does, answer questions about it, and let the user decide -- many projects will not want automated gating.
+
+   If the user accepts:
+   1. Detect candidate commands from the detected stack (e.g. `package.json` scripts, `go test ./...`, `pytest`, `cargo test`, `dotnet test`). Propose a stage list and confirm. Detect nothing runnable → say so and set up nothing: an empty stage list can only ever produce error results.
+   2. Write `.lattice/verification.yaml`: `version: 1`, optional `runsDir`, and one stage per confirmed command (`name` + `command`). Verification always stops on the first failed stage. Fold working-directory changes or timeouts into the command itself when needed. Schema reference: the header comment in `run-verification.sh`.
+   3. Vendor the runner to `.lattice/scripts/run-verification.sh` -- copy it from the Lattice distribution. Locate the source relative to how Lattice is installed, never guess a path: Claude Code plugin → `$CLAUDE_PLUGIN_ROOT/scripts/run-verification.sh`; Codex plugin → `scripts/run-verification.sh` two levels up from this skill's own directory (Codex plugins ship scripts as a sibling of `skills/`, not via an env var — there is no Codex plugin-root variable); framework dev checkout (neither applies) → `scripts/run-verification.sh` at the repo root. Exactly one of the two artifacts already existing → complete only the missing one.
+   4. Wire the gate: explain that nothing runs until something invokes it, then offer to append this marked block to the project's instruction file. Target file: `CLAUDE.md` if running as Claude Code, `AGENTS.md` if running as Codex or another AGENTS.md-convention host. If both files already exist in the project, append to both — either host may read the project later. If neither exists yet, create the one matching the current host only.
+
+      ```markdown
+      <!-- lattice:verification -->
+      Before declaring any work done, run this project's verification suite (.lattice/verification.yaml): spawn the `verifier` subagent when the host supports subagents; otherwise run `.lattice/scripts/run-verification.sh .lattice/verification.yaml` and read summary.json from the printed run directory. Green → reply in one line. Red → headline, failed stage name(s), their log paths; never open or paste a log into the session. Never mark work complete while any stage fails.
+      <!-- /lattice:verification -->
+      ```
+
+      On confirmation, append verbatim between the markers -- touch nothing else in the file; skip silently if the markers already exist. On decline, print the block and say where to paste it later.
 
 **For each gap**, present user:
 - What it does (one sentence, from descriptions above)
