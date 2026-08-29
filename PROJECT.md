@@ -12,23 +12,36 @@ skills/
 ├── molecules/{skill-name}/SKILL.md           # Multi-step workflows composing atoms (9 skills)
 └── refiners/{skill-name}/SKILL.md            # Guided interviews producing .lattice/ config (7 skills)
     └── assets/template*.md                   # Output template(s) with interview guidance
-docs/
-├── how-it-works.md                           # Technical reference (composability, config, pipeline)
-├── configuration.md                          # Config reference: every .lattice/config.yaml key documented
-├── framework-intelligence.md                 # Design rationale (verification, flywheel, AI compliance)
-├── collaborative-judgment.md                 # Why AI should ask on judgment calls or missing grounding; runtime flow
-├── practical-guide.md                        # Scenario-driven Q&A for practitioners
-└── architecture-compass.md                   # Architectural thinking partner: why it exists, what to expect
-knowledge-base/
-├── framework-gaps-and-opportunities.md       # Identified gaps and enhancement opportunities
-├── transform-molecule-requirements.md        # Original plan-transformation requirements (historical)
-├── architecture-compass-requirements.md      # Current requirements doc for architecture-compass molecule
-└── evals/                                    # Skill evaluation results
+docs/                                          # roles documented in full under Documentation Conventions below
+├── how-it-works.md
+├── configuration.md
+├── framework-intelligence.md
+├── collaborative-judgment.md
+├── practical-guide.md
+├── architecture-compass.md
+└── agents/
+    └── verification.md
+knowledge-base/                               # design workspace; don't read until asked explicitly
 tools/
-└── install.sh                                # Copies all skills flattened into the provided skills directory
+├── install.sh                                # Copies all skills flattened into the provided skills directory
+└── build-codex-plugin.sh                     # Rebuilds plugins/lattice/{skills,scripts} from source
+agents/
+└── verifier.md                               # Claude Code subagent: runs .lattice/verification.yaml stages, returns a JSON verdict
+scripts/
+└── run-verification.sh                       # Deterministic verification runner — host-independent, the portable core
+plugins/
+└── lattice/                                  # Codex packaging: same skills flattened, plus scripts/ (no agents/ — Codex has no subagent concept)
 ```
 
-`knowledge-base/` is the design workspace. Requirements docs and design artifacts live here before a SKILL.md is written. New molecules should start with a requirements doc in `knowledge-base/` — agree the design first, then write the skill.
+## Host Portability
+
+Lattice ships to multiple AI coding tools (Claude Code today, Codex via `plugins/lattice/`, more planned). Split every runtime component into:
+
+- **Portable core** — pure files + bash (e.g. `scripts/run-verification.sh`, the `.lattice/verification.yaml` contract). Ships identically to every host. No host-specific env vars, paths, or tool names inside it.
+- **Host adapters** — trigger surfaces translated per host: Claude Code auto-discovery dirs (`agents/` at repo root) are Claude Code conventions, not cross-host standards; Codex equivalents come from its own packaging pipeline. Never place shared behavior only in an adapter (this is why the verifier's done-gate installs as a marked block in the consumer's own instruction file via `/lattice-init` — project infrastructure, never wired into lattice skills).
+- **Graceful degradation** — capabilities degrade, they don't break. The verification suite must work on any host that can run shell and read files; subagent-based context isolation (Claude Code) is an optimization, never a requirement.
+
+Any reference to a host-provided path (e.g. `CLAUDE_PLUGIN_ROOT`) must sit in an explicit fallback chain whose last link is host-independent (the vendored copy `.lattice/scripts/run-verification.sh`, written by `/lattice-init`, then the development checkout). Naming avoids "harness" — in agentic-system vocabulary that word means the runtime scaffolding around a model, not a test runner.
 
 ## Skill Conventions
 
@@ -62,9 +75,9 @@ tools/
 
 Two distinct molecule types — apply the right conventions for each:
 
-**Generative molecules** (`code-forge`, `refactor-safely`, `bug-fix`) — produce code or targeted artifacts. Flow is mostly linear. Pause only on genuine judgment calls via `framework:collaborative-judgment`. Examples: code-forge, refactor-safely, bug-fix.
+**Generative molecules** (`code-forge`, `refactor-safely`, `bug-fix`) — produce code or targeted artifacts. Flow is mostly linear. Pause only on genuine judgment calls via `framework:collaborative-judgment`.
 
-**Planning/interactive molecules** (`design-blueprint`, `architecture-compass`) — produce living documents through structured agreement. Each phase must have an explicit confirmation gate before advancing. Must check for an existing output document at Step 1 and resume from the earliest incomplete step if found. Can exit early with a partial document as a valid outcome. Examples: design-blueprint, architecture-compass.
+**Planning/interactive molecules** (`design-blueprint`, `architecture-compass`) — produce living documents through structured agreement. Each phase must have an explicit confirmation gate before advancing. Must check for an existing output document at Step 1 and resume from the earliest incomplete step if found. Can exit early with a partial document as a valid outcome.
 
 #### Confirmation gate pattern (planning molecules only)
 
@@ -84,7 +97,7 @@ Without the gate language, AI sessions run straight through all steps without pa
 
 ## Documentation Conventions
 
-Seven docs with distinct, non-overlapping roles:
+Eight docs with distinct, non-overlapping roles:
 
 - **README.md** — Landing page: what Lattice is, skill inventory tables, getting started
 - **docs/how-it-works.md** — Technical reference: composability, config resolution, pipeline, .lattice/ folder
@@ -93,6 +106,7 @@ Seven docs with distinct, non-overlapping roles:
 - **docs/collaborative-judgment.md** — Design rationale: why AI should ask on judgment calls or missing grounding, runtime flow, architectural insight
 - **docs/practical-guide.md** — Scenario-driven Q&A: getting started, workflow, transformation, team usage, troubleshooting
 - **docs/architecture-compass.md** — Architectural thinking partner: why it exists, philosophy, what to expect, key design decisions
+- **docs/agents/verification.md** — Design rationale for the verifier subagent + runner: cost model, file-not-stdout philosophy, how to enable the done-gate manually or automatically per project
 
 Cross-reference via links. Never duplicate content across docs.
 
@@ -105,7 +119,7 @@ Cross-reference via links. Never duplicate content across docs.
 - **STOP language + numbered constraints**: creates cognitive boundaries for AI compliance
 - **Checkbox anti-patterns**: triggers AI completion behavior
 - **.lattice/ folder structure**: all persistent outputs in subfolders, only config.yaml at root. Known subfolders: `standards/` (refiner outputs), `context/` (feature anchor docs), `learnings/` (operational learnings managed by learning-harvest atom), `reviews/` (review log), `insights/` (architecture-compass output), `requirements/` (epic/feature specs produced by requirement-forge). New molecules that produce living documents must write into an existing or new named subfolder — never at the `.lattice/` root.
-- **Session resume pattern**: planning molecules that produce living documents must check for an existing document at Step 1. If found: read it, determine the earliest incomplete step, resume from there. Never restart a scan or re-run a phase that is already agreed and persisted.
+- **Session resume pattern** (planning molecules only, see Molecules section above): check for an existing living document at Step 1; if found, resume from the earliest incomplete step rather than restarting.
 
 ## Anti-Patterns
 
@@ -134,9 +148,8 @@ For the Codex plugin package, also run:
 
 ```bash
 ./tools/build-codex-plugin.sh
-python3 /Users/grahul/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/lattice
 ```
 
-This refreshes `plugins/lattice/skills/` from the source tiered skill tree and validates the packaged `.codex-plugin/plugin.json` that Codex ingests.
+This refreshes `plugins/lattice/skills/` from the source tiered skill tree and `plugins/lattice/scripts/` from `scripts/run-verification.sh`. If you have Codex's `plugin-creator` skill installed locally, also validate the packaged manifest — path varies per install, typically `~/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/lattice`; skip this if you don't have it, it's optional local tooling, not a repo dependency.
 
 When editing this file, update `CLAUDE.md` and `AGENTS.md` only if their pointer text needs to change — do not duplicate convention content into those files.

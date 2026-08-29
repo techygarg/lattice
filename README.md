@@ -58,7 +58,7 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
     codex plugin add lattice@lattice
     codex plugin list | rg -i lattice
     ```
-   The Codex plugin package lives in [`plugins/lattice/`](plugins/lattice/) and is registered by [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). It contains the same 27 skills flattened for Codex discovery.
+   The Codex plugin package lives in [`plugins/lattice/`](plugins/lattice/) and is registered by [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). It contains the same 27 skills flattened for Codex discovery, plus the verification runner script (`scripts/run-verification.sh`) — Codex has no subagent concept, so verification always runs the script directly rather than via a subagent.
    
    *This duplication currently to support codex. In future, we may find a better approach as tools evolves.*
 
@@ -91,21 +91,12 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
 - [Configuration Reference](docs/configuration.md) — every `.lattice/config.yaml` key documented
 - [Framework Intelligence](docs/framework-intelligence.md) — verification passes, feedback loops, AI compliance techniques
 - [Collaborative Judgment](docs/collaborative-judgment.md) — why AI should ask on genuine judgment calls or missing/conflicting facts and how it works at runtime
+- [Verification Agent](docs/agents/verification.md) — why the verifier subagent exists, the cost model behind it, and how to enable the done-gate manually or automatically per project
 - [The Article Series](https://martinfowler.com/articles/reduce-friction-ai/) — the five collaboration patterns Lattice operationalizes (martinfowler.com)
 
 ## Dev Skills
 
 Helper skills for creating and maintaining Lattice itself — see [`dev-skills/`](dev-skills/).
-
-## Star History
-
-<a href="https://www.star-history.com/?repos=techygarg%2Flattice&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=techygarg/lattice&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=techygarg/lattice&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=techygarg/lattice&type=date&legend=top-left" />
- </picture>
-</a>
 
 ## StarMapper
 
