@@ -1,0 +1,10 @@
+{
+  "version": "2",
+  "plugins": [
+    {
+      "id": "lattice",
+      "displayName": "Lattice",
+      "source": "https://github.com/techygarg/lattice"
+    }
+  ]
+}
