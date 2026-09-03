@@ -1,6 +1,6 @@
 {
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "lattice",
-  "displayName": "Lattice",
   "version": "2.1.0",
   "description": "Composable AI skills framework covering the full software delivery lifecycle — design, architecture, implementation, testing, and review.",
   "author": {
@@ -9,5 +9,22 @@
   "homepage": "https://github.com/techygarg/lattice",
   "repository": "https://github.com/techygarg/lattice",
   "license": "MIT",
-  "keywords": ["skills","requirement-analysis", "design-first","context-anchoring","collaborative-judgment","knowledge-priming","architecture","ddd","secure-coding","test-quality","clean-code","sdlc", "ai-workflow"]
+  "keywords": [
+    "skills",
+    "sdlc",
+    "design-first",
+    "requirement-forge",
+    "design-blueprint",
+    "code-forge",
+    "code-review",
+    "bug-fix",
+    "refactoring",
+    "architecture",
+    "ddd",
+    "secure-coding",
+    "test-quality",
+    "clean-code",
+    "tdd",
+    "ai-workflow"
+  ]
 }

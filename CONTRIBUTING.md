@@ -52,7 +52,7 @@ Skills are plain markdown files. Open any `SKILL.md` in an editor and you're wor
 ## Repository Structure
 
 ```
-skills/
+source/
 ├── atoms/{skill-name}/
 │   ├── SKILL.md              # The skill itself
 │   └── references/
@@ -63,9 +63,11 @@ skills/
     ├── SKILL.md
     └── assets/
         └── template.md       # Interview output template
+skills/                       # Generated, flat — run tools/build-skills.sh after editing source/
 docs/                         # Framework documentation
 tools/
-└── install.sh                # Copies skills into an AI tool's skills directory
+├── install.sh                # Copies skills into an AI tool's skills directory
+└── build-skills.sh           # Regenerates the shared root skills/ from source/
 sample/                       # .NET 8 User Service spec — use this to test your skill
 ```
 
@@ -87,14 +89,14 @@ description: "Trigger-phrase-rich description of when and why to invoke this ski
 **Rules:**
 - `name` — lowercase kebab-case. Must exactly match the skill's folder name.
 - `description` — include specific trigger phrases users or the AI would say. Pull from the actual phrasing people use. Example from `clean-code`: `"when the user mentions 'clean code', 'code quality', 'refactor this', 'simplify this', 'make this cleaner'"`. Vague descriptions like `"applies best practices"` are rejected.
-- Folder name must match `name` exactly: skill named `test-quality` lives in `skills/atoms/test-quality/`.
+- Folder name must match `name` exactly: skill named `test-quality` lives in `source/atoms/test-quality/`.
 - Config keys in `.lattice/config.yaml` use snake_case of the skill name: `test-quality` → `paths.test_quality`.
 
 ---
 
 ### Adding an Atom
 
-Atoms teach one engineering principle. The canonical example is `skills/atoms/clean-code/SKILL.md`.
+Atoms teach one engineering principle. The canonical example is `source/atoms/clean-code/SKILL.md`.
 
 **Section order — mandatory:**
 
@@ -167,7 +169,7 @@ Surface these as judgment calls rather than deciding silently:
 
 ### Adding a Molecule
 
-Molecules orchestrate atoms into multi-step workflows. The canonical example is `skills/molecules/code-forge/SKILL.md`.
+Molecules orchestrate atoms into multi-step workflows. The canonical example is `source/molecules/code-forge/SKILL.md`.
 
 **Required section:**
 
@@ -208,7 +210,7 @@ Apply atom checklists: run `framework:clean-code` self-validation, `framework:ar
 
 ### Adding a Refiner
 
-Refiners run a guided interview and write a standards document to `.lattice/standards/`. The canonical example is `skills/refiners/architecture-refiner/SKILL.md`.
+Refiners run a guided interview and write a standards document to `.lattice/standards/`. The canonical example is `source/refiners/architecture-refiner/SKILL.md`.
 
 **Structure:**
 

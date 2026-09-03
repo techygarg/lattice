@@ -58,9 +58,7 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
     codex plugin add lattice@lattice
     codex plugin list | rg -i lattice
     ```
-   The Codex plugin package lives in [`plugins/lattice/`](plugins/lattice/) and is registered by [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). It contains the same 27 skills flattened for Codex discovery, plus the verification runner script (`scripts/run-verification.sh`) — Codex has no subagent concept, so verification always runs the script directly rather than via a subagent.
-   
-   *This duplication currently to support codex. In future, we may find a better approach as tools evolves.*
+   The Codex plugin manifest lives in [`.codex-plugin/`](.codex-plugin/) and is registered by [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). Like every host plugin here, it's a thin manifest only — it points at the same shared, flat [`skills/`](skills/) folder every other host uses, plus the verification runner script (`scripts/run-verification.sh`) — Codex has no subagent concept, so verification always runs the script directly rather than via a subagent. Grok ([`.grok-plugin/`](.grok-plugin/)) and Kimi ([`.kimi-plugin/`](.kimi-plugin/)) follow the same pattern.
 
    **Option C — Clone and install locally (any AI tool)**
    ```bash
@@ -69,6 +67,11 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
    ./tools/install.sh /absolute/path/to/your/skills/folder
    ```
    Pass the skills directory for your tool: `~/.claude/skills/` for Claude Code, `.cursor/skills/` for Cursor, or any tool's skills folder.
+
+   **Option D — [Agent Plugins 1.0](https://agent-plugins.org)-conformant clients**
+   A root [`plugin.json`](plugin.json) conforming to the open, vendor-neutral Agent Plugins standard ships alongside the host-specific manifests above — any conformant client auto-discovers skills straight from the [`skills/`](skills/) folder with zero extra install steps. Shipped in Codex CLI, Cursor, VS Code / GitHub Copilot, and Kiro as of this writing.
+
+   See [`docs/plugins.md`](docs/plugins.md) for the full per-host status table and how to add a new host.
 
    > **Try it immediately.** The repo includes `sample/` — a realistic .NET 8 User Service spec with requirements, domain concepts, and constraints already written. Copy the `sample/` folder contents into any empty directory and follow the steps below.
 

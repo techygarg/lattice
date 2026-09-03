@@ -1,0 +1,28 @@
+{
+  "name": "lattice",
+  "description": "Lattice plugin for Grok Build",
+  "owner": {
+    "name": "Rahul Garg"
+  },
+  "plugins": [
+    {
+      "name": "lattice",
+      "description": "Composable AI skills framework covering the full software delivery lifecycle — design, architecture, implementation, testing, and review.",
+      "category": "development",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/techygarg/lattice.git",
+        "sha": "0000000000000000000000000000000000000000"
+      },
+      "homepage": "https://github.com/techygarg/lattice",
+      "keywords": [
+        "lattice",
+        "sdlc",
+        "design-first",
+        "architecture",
+        "code-review",
+        "ai-workflow"
+      ]
+    }
+  ]
+}

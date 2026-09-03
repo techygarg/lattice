@@ -10,9 +10,9 @@ description: "Create a new Lattice skill — atom, molecule, or refiner — foll
 **Input:** A description of what the skill should do and when it should trigger.
 
 **Output:** One or more skill files written to the correct path:
-- Atom → `skills/atoms/{name}/SKILL.md` + `skills/atoms/{name}/references/defaults.md`
-- Molecule → `skills/molecules/{name}/SKILL.md`
-- Refiner → `skills/refiners/{name}/SKILL.md` + `skills/refiners/{name}/assets/template.md`
+- Atom → `source/atoms/{name}/SKILL.md` + `source/atoms/{name}/references/defaults.md`
+- Molecule → `source/molecules/{name}/SKILL.md`
+- Refiner → `source/refiners/{name}/SKILL.md` + `source/refiners/{name}/assets/template.md`
 
 **How to verify this skill did its job:**
 - All required files exist at the correct paths
@@ -52,7 +52,7 @@ ls knowledge-base/ | grep -i {name}
 **If not found** → resolve these questions through conversation before writing:
 
 For a **molecule:**
-- Which atoms does it compose? (Read `skills/atoms/` to see what exists.)
+- Which atoms does it compose? (Read `source/atoms/` to see what exists.)
 - Is it **generative** (produces code/artifacts, linear flow) or **planning/interactive** (produces living documents, confirmation gates at each phase)?
 - What does it write to `.lattice/`? Which subfolder? (Must be a named subfolder, never the root.)
 - What is the session resume behavior — how does it handle an interrupted session?
@@ -81,7 +81,7 @@ Note the current skill counts (atoms/molecules/refiners) — they will need upda
 
 ### Writing an Atom
 
-**`skills/atoms/{name}/SKILL.md`** — sections in this exact order:
+**`source/atoms/{name}/SKILL.md`** — sections in this exact order:
 
 1. **YAML frontmatter** — `name` (lowercase-hyphenated), `description` (include trigger phrases)
 2. **Config Resolution** — always this pattern:
@@ -93,14 +93,14 @@ Note the current skill counts (atoms/molecules/refiners) — they will need upda
 5. **Ambiguity Signals** — genuine gray areas where two valid approaches exist; resolution guidance for each
 6. **Core Principle** — what the atom governs, what it does NOT govern (boundary with other atoms)
 
-**`skills/atoms/{name}/references/defaults.md`** — the embedded defaults:
+**`source/atoms/{name}/references/defaults.md`** — the embedded defaults:
 - Numbered sections (§1, §2...) matching what a future refiner would produce
 - Opinionated, specific content — not placeholders
 - End with an attribution line
 
 ### Writing a Molecule
 
-**`skills/molecules/{name}/SKILL.md`**:
+**`source/molecules/{name}/SKILL.md`**:
 
 1. **YAML frontmatter** — name, description with trigger phrases
 2. **Required Skills** — list every atom as `framework:{name}` with always/conditional qualifier
@@ -120,7 +120,7 @@ Note the current skill counts (atoms/molecules/refiners) — they will need upda
 
 ### Writing a Refiner
 
-**`skills/refiners/{name}/SKILL.md`** — cover all of these:
+**`source/refiners/{name}/SKILL.md`** — cover all of these:
 - What it produces (output path, two modes, config key, which atom reads it)
 - Scope clarification (what this refiner does NOT configure)
 - Check for existing doc before starting interview
@@ -131,7 +131,7 @@ Note the current skill counts (atoms/molecules/refiners) — they will need upda
 - Config update instructions (write `paths.{key}` to `.lattice/config.yaml`)
 - Document quality checks (one checklist per mode)
 
-**`skills/refiners/{name}/assets/template.md`**:
+**`source/refiners/{name}/assets/template.md`**:
 - Full document structure with `<!-- INTERVIEW GUIDANCE: -->` comments per section
 - Each guidance block contains: default content, what to ask, probing questions, what is customisable vs. fixed
 - Overlay preamble and override preamble (separate blocks, clearly labeled)

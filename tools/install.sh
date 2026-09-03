@@ -2,7 +2,7 @@
 set -euo pipefail
 
 LATTICE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-SKILLS_SOURCE="$LATTICE_DIR/skills"
+SKILLS_SOURCE="$LATTICE_DIR/source"
 
 usage() {
   cat <<EOF

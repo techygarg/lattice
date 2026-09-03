@@ -1,0 +1,27 @@
+{
+  "name": "lattice",
+  "version": "2.1.0",
+  "description": "Composable AI skills framework covering the full software delivery lifecycle — design, architecture, implementation, testing, and review.",
+  "keywords": [
+    "skills",
+    "sdlc",
+    "design-first",
+    "architecture",
+    "ddd",
+    "secure-coding",
+    "test-quality",
+    "clean-code",
+    "ai-workflow"
+  ],
+  "author": "Rahul Garg",
+  "homepage": "https://github.com/techygarg/lattice",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Lattice",
+    "shortDescription": "Composable SDLC skills for design, architecture, implementation, testing, and review.",
+    "longDescription": "Lattice gives structured skills covering the full delivery lifecycle: Requirement Forge (collaborative product interview → structured specs), Design Blueprint (five-level design process from capabilities to contracts), Code Forge (inside-out implementation with architecture and security guardrails), Review (severity-ordered code review across quality, architecture, DDD, and security), Bug Fix (reproduce-first repair with regression protection), Refactor Safely (characterization-first restructuring without breaking behavior), Architecture Compass (codebase assessment with recommended direction), and Lattice Init (guided project setup). Each molecule composes atoms — architecture, clean code, DDD, secure coding, test quality — loaded selectively based on what your code touches.",
+    "developerName": "Rahul Garg",
+    "websiteURL": "https://github.com/techygarg/lattice"
+  }
+}
