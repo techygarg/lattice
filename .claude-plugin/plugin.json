@@ -8,10 +8,5 @@
   "homepage": "https://github.com/techygarg/lattice",
   "repository": "https://github.com/techygarg/lattice",
   "license": "MIT",
-  "keywords": ["skills","design-first","requirement-analysis","context-anchoring","collaborative-judgment","knowledge-priming","architecture","ddd","secure-coding","test-quality","clean-code","sdlc", "ai-workflow"],
-  "skills": [
-    "./skills/atoms/",
-    "./skills/molecules/",
-    "./skills/refiners/"
-  ]
+  "keywords": ["skills","design-first","requirement-analysis","context-anchoring","collaborative-judgment","knowledge-priming","architecture","ddd","secure-coding","test-quality","clean-code","sdlc", "ai-workflow"]
 }
