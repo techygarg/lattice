@@ -8,10 +8,10 @@ description: "Validate any Lattice SKILL.md against all tier conventions — ato
 **Core responsibility:** Verify that a SKILL.md is structurally correct, follows all Lattice tier conventions, and composes correctly with the rest of the framework.
 
 **Input:** One or more of:
-- A file path: `skills/atoms/clean-code/SKILL.md`
+- A file path: `source/atoms/clean-code/SKILL.md`
 - A skill name: `clean-code` (resolves to the correct path automatically)
 - A tier: `atoms` (validates all skills in that tier)
-- No argument: validates all skills across all three tiers (count derived from `skills/` at runtime — never hardcoded)
+- No argument: validates all skills across all three tiers (count derived from `source/` at runtime — never hardcoded)
 
 **Output:** A findings report per skill:
 ```
@@ -58,7 +58,7 @@ Read `references/convention-rules.md` for the full per-tier checklist. Apply the
 
 For every `framework:{atom-name}` reference in a molecule:
 ```bash
-ls skills/atoms/{atom-name}/SKILL.md 2>/dev/null || echo "BROKEN REF: framework:{atom-name}"
+ls source/atoms/{atom-name}/SKILL.md 2>/dev/null || echo "BROKEN REF: framework:{atom-name}"
 ```
 
 For every `paths.{key}` config key referenced in a refiner or atom:

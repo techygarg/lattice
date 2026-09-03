@@ -8,7 +8,7 @@ description: "Audit any Lattice SKILL.md for language compliance — removes rat
 **Core responsibility:** Fix language that causes agents to skip or underweight instructions. Not behavioral gaps — that is `skill-review`'s job. Only phrasing: rationale prose, soft language, missing enforcement signals, redundant repetition.
 
 **Input:** One or more of:
-- A file path: `skills/atoms/clean-code/SKILL.md`
+- A file path: `source/atoms/clean-code/SKILL.md`
 - A skill name: `clean-code` (resolves to the correct path automatically)
 - A tier: `atoms` (tightens all skills in that tier)
 - No argument: tightens all skills across all tiers

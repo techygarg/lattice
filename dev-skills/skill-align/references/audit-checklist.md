@@ -215,14 +215,14 @@ For every refiner:
 ### Required Skills consistency (molecules)
 
 For each `Required Skills` entry in a molecule:
-- [ ] The referenced atom (`framework:<name>`) exists in `skills/atoms/<name>/`
+- [ ] The referenced atom (`framework:<name>`) exists in `source/atoms/<name>/`
 - [ ] The atom is described accurately (always/conditional)
 
 ### Hardcoded refiner list consistency (molecules)
 
 Some molecules maintain their own list or table of refiners instead of deriving it dynamically. Currently: `refiners-update`'s "Refiner → standards document map" table, and `lattice-init`'s Step 3 priority list. For each such list:
 - [ ] Every refiner in the live inventory (from Phase 1) has a corresponding row/entry
-- [ ] No entry exists for a refiner that no longer exists in `skills/refiners/`
+- [ ] No entry exists for a refiner that no longer exists in `source/refiners/`
 - [ ] Any config key referenced in the entry matches that refiner's actual `paths.*` key
 
 This is distinct from "Required Skills consistency" above — Required Skills lists atoms a molecule always/conditionally composes; this checks a molecule's own hardcoded routing table against the live refiner directory.

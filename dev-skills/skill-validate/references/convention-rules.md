@@ -58,7 +58,7 @@ Detailed per-tier checks for the skill-validate. Read this alongside PROJECT.md.
 ### Required Skills checks
 - [ ] Every atom reference uses `framework:{name}` format
 - [ ] Each reference has an always/conditional qualifier
-- [ ] Every referenced atom exists in `skills/atoms/{name}/SKILL.md`
+- [ ] Every referenced atom exists in `source/atoms/{name}/SKILL.md`
 - [ ] No atom content is inlined — only references
 
 ### Generative molecule checks (code-forge, refactor-safely, bug-fix pattern)
