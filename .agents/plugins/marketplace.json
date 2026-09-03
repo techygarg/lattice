@@ -8,7 +8,7 @@
       "name": "lattice",
       "source": {
         "source": "local",
-        "path": "./plugins/lattice"
+        "path": "./"
       },
       "policy": {
         "installation": "AVAILABLE",
