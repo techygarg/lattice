@@ -349,8 +349,8 @@ function getDocument(docId, user):
 
 ```
 // POOR: Hardcoded in source
-const DB_PASSWORD = "super_secret_123"
-const API_KEY = "sk-abc123def456"
+const DB_PASSWORD = "<hardcoded-literal>"
+const API_KEY = "<hardcoded-literal>"
 
 // GOOD: From environment
 const DB_PASSWORD = env.require("DB_PASSWORD")  // throws if not set

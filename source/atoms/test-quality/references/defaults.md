@@ -75,8 +75,8 @@ function should_send_welcome_email_when_user_registers():
   request = RegistrationRequest(
     name: "Jane Doe",
     email: "jane@example.com",
-    password: "SecurePass123!",
-    confirmPassword: "SecurePass123!",
+    password: "<test-fixture-password>",
+    confirmPassword: "<test-fixture-password>",
     acceptedTerms: true
   )
 
@@ -106,12 +106,12 @@ function test_user_registration():
   service = UserRegistrationService(InMemoryUserRepo())
 
   // Behavior 1: successful registration
-  result = service.register("jane@example.com", "password123")
+  result = service.register("jane@example.com", "<test-fixture-password-1>")
   assertTrue(result.success)
   assertEqual(result.user.email, "jane@example.com")
 
   // Behavior 2: duplicate rejection
-  result2 = service.register("jane@example.com", "password456")
+  result2 = service.register("jane@example.com", "<test-fixture-password-2>")
   assertFalse(result2.success)
   assertEqual(result2.error, "Email already registered")
 
@@ -119,16 +119,16 @@ function test_user_registration():
 function should_register_user_with_valid_email():
   service = UserRegistrationService(InMemoryUserRepo())
 
-  result = service.register("jane@example.com", "password123")
+  result = service.register("jane@example.com", "<test-fixture-password-1>")
 
   assertTrue(result.success)
   assertEqual(result.user.email, "jane@example.com")
 
 function should_reject_registration_when_email_already_exists():
   service = UserRegistrationService(InMemoryUserRepo())
-  service.register("jane@example.com", "password123")  // setup: existing user
+  service.register("jane@example.com", "<test-fixture-password-1>")  // setup: existing user
 
-  result = service.register("jane@example.com", "password456")
+  result = service.register("jane@example.com", "<test-fixture-password-2>")
 
   assertFalse(result.success)
   assertEqual(result.error, "Email already registered")
