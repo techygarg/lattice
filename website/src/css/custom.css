@@ -28,3 +28,27 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/*
+ * Layout fix, not a style choice: Infima's footer wraps its content in
+ * `.container-fluid` (full viewport width) while every other section on the
+ * page (navbar, hero, features) uses the normal constrained container. With
+ * only two link columns at the default `flex: 1`, each one stretched across
+ * half the *entire* browser width -- nothing in the footer shared an edge
+ * with the content above it, or with the other column. Constrain it to the
+ * same width as the rest of the page and let the columns hug their own
+ * content instead of stretching.
+ */
+.footer .container-fluid {
+  max-width: var(--ifm-container-width);
+  margin: 0 auto;
+}
+
+.footer__links.row {
+  justify-content: center;
+  gap: 4rem;
+}
+
+.footer__col {
+  flex: 0 1 auto;
+}
