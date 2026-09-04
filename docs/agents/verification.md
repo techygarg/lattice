@@ -1,3 +1,8 @@
+---
+sidebar_label: Verification
+description: Why verification runs as an isolated subagent instead of a slash command, and the cost model behind that choice.
+---
+
 # Verification: Design Rationale
 
 Why the verifier exists, the cost model behind it, and how to wire it into your own sessions.
@@ -29,7 +34,7 @@ Verification is deterministic — it needs no judgment, no creativity, no large 
 
 3. **The script is the source of truth for the verdict, not the agent.** `overallStatus`, `failedStages`, and `headline` are computed once, in the script, from data the stage loop already has — never re-derived by the subagent. This is what makes the two invocation paths equivalent: a human running the script directly and a subagent running it on their behalf reach the same file with the same verdict already in it. The subagent's only job is to run the script inside an isolated context and hand the file back unchanged — it never opens a `logFile`, and it never recomputes anything the file already states. On red, the calling session gets the failing stage's name and its `logFile` path, and opens that file itself, on its own terms, only if the verdict isn't enough.
 
-4. **Nothing is wired in automatically.** No molecule calls the verifier as part of its own workflow, and installing Lattice does not turn this on by itself. It's independent, opt-in infrastructure — see [Host Portability](../../PROJECT.md#host-portability) for why shared behavior stays out of host adapters. A team that doesn't want an automated gate is never forced into one.
+4. **Nothing is wired in automatically.** No molecule calls the verifier as part of its own workflow, and installing Lattice does not turn this on by itself. It's independent, opt-in infrastructure — see [Host Portability](https://github.com/techygarg/lattice/blob/main/PROJECT.md#host-portability) for why shared behavior stays out of host adapters. A team that doesn't want an automated gate is never forced into one.
 
 Point 3 is also the direct answer to a natural question: why bother with a subagent at all, if you could just run the script yourself? Because both paths read the exact same file. The subagent adds isolation — the run's stdout and the file Read happen off in their own context, so only this small JSON blob crosses back into the session that asked for it — never a second, smarter opinion about what the file means.
 

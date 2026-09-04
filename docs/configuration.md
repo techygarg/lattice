@@ -1,3 +1,7 @@
+---
+description: .lattice/config.yaml field reference -- what each key does and when you need to set it.
+---
+
 # Configuration Reference
 
 `.lattice/config.yaml` is the central config file for a Lattice-enabled project. It maps logical keys to project-specific documents that atoms and molecules load at runtime. The file is optional — all skills work out of the box with embedded defaults. Add keys only when you want to customize a skill's behavior. See [how-it-works.md](how-it-works.md#config-resolution) for how the resolution algorithm works.

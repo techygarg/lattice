@@ -1,3 +1,7 @@
+---
+description: Scenario-driven answers to the questions practitioners actually ask when adopting and using Lattice.
+---
+
 # Practical Guide
 
 Scenario-driven answers to common questions practitioners have when adopting and using Lattice. Each answer is self-contained and brief.

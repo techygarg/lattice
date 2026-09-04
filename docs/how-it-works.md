@@ -1,3 +1,7 @@
+---
+description: The composability model behind Lattice -- why atoms, molecules, and refiners exist as three separate tiers.
+---
+
 # How Lattice Works
 
 This document explains the composability model behind Lattice -- why three tiers exist, how each tier works, and how they fit together.
