@@ -1,3 +1,7 @@
+---
+description: How Lattice ships as one shared skill set across multiple AI coding tool hosts, and how to add a new one.
+---
+
 # Plugins
 
 Lattice ships as a plugin to multiple AI coding tools from one shared skill set. This is the reference for how that works and how to add a new host.
@@ -22,7 +26,7 @@ Lattice ships as a plugin to multiple AI coding tools from one shared skill set.
 | Kimi (Moonshot) | `.kimi-plugin/plugin.json` + `marketplace.json` | Experimental — Moonshot's own docs disagree on the real schema across their own sources; treat as unverified until confirmed against one authoritative doc |
 | [Agent Plugins 1.0](https://agent-plugins.org) | root `plugin.json` | Open, vendor-neutral standard (TSC: Amazon, Cursor, Microsoft, OpenAI, Vercel). Any conformant client auto-discovers skills straight from the existing root `skills/` folder — zero extra wiring, no `"skills"` field even needed. Shipped in Codex CLI, Cursor (additive, alongside its native manifest), VS Code / GitHub Copilot, and Kiro as of 2026-09. Claude Code does not support it yet. |
 
-Install instructions per host are in the [README](../README.md#getting-started) — this table is the reference for what's registered and why, not a how-to.
+Install instructions per host are in the [README](https://github.com/techygarg/lattice#getting-started) — this table is the reference for what's registered and why, not a how-to.
 
 ## Adding a new host
 

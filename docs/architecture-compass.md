@@ -1,3 +1,8 @@
+---
+sidebar_label: Architecture Compass
+description: What the architecture-compass molecule does for teams with an existing, drifted codebase, and what a session feels like.
+---
+
 # Architecture Compass: Design Rationale
 
 Why this molecule exists, what it does, and what to expect when you use it.

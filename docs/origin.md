@@ -1,3 +1,8 @@
+---
+sidebar_label: Origin
+description: Why five collaboration patterns from a martinfowler.com series became an installable framework.
+---
+
 # From Patterns to Framework — The Origin of Lattice
 
 *Why five collaboration patterns became an installable framework, and the design philosophy behind the decisions.*

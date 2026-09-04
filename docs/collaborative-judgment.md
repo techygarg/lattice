@@ -1,3 +1,8 @@
+---
+sidebar_label: Collaborative Judgment
+description: Why Lattice needs a cross-cutting protocol for when the AI should ask versus silently decide.
+---
+
 # Collaborative Judgment: Design Rationale
 
 Why Lattice needs a cross-cutting protocol that teaches the AI when to ask, what not to ask, and how to ask efficiently.

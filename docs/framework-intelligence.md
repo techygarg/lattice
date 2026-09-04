@@ -1,3 +1,7 @@
+---
+description: How the two-pass generation model, verification hierarchy, and feedback loops make the framework behave intelligently.
+---
+
 # Framework Intelligence
 
 How Lattice's base framework and living context layer create intelligence through feedback loops, verification passes, and AI compliance techniques.
