@@ -4,51 +4,144 @@
  * work well for content-centric websites.
  */
 
-/* You can override the default Infima variables here. */
+/*
+ * Palette and type sourced from the approved Lattice design canvas, which
+ * itself pulled exact hex values from docs/image/logo.svg (the Lattice
+ * mark) rather than inventing new brand colors -- teal nodes, dark-slate
+ * ink, coral feedback-loop accent, warm paper ground.
+ */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --ifm-color-primary: #146d62;
+  --ifm-color-primary-dark: #125f55;
+  --ifm-color-primary-darker: #115850;
+  --ifm-color-primary-darkest: #0e4a43;
+  --ifm-color-primary-light: #1c8a7b;
+  --ifm-color-primary-lighter: #279f8e;
+  --ifm-color-primary-lightest: #3db6a3;
+
+  --ifm-background-color: #f4f4ef;
+  --ifm-font-color-base: #23303a;
+  --ifm-color-emphasis-300: #d8d9d0;
+
+  --ifm-font-family-base: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --ifm-heading-font-family: 'Archivo', -apple-system, sans-serif;
+  --ifm-heading-font-weight: 800;
+  --ifm-font-family-monospace: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ifm-code-font-size: 90%;
+  --docusaurus-highlighted-code-line-bg: rgba(20, 109, 98, 0.12);
+
+  --ifm-menu-color: #5b6a73;
+  --ifm-menu-color-active: #146d62;
+  --ifm-menu-color-background-active: #ddeeeb;
+  --ifm-menu-color-background-hover: #e6e7e0;
+
+  /* Infima's admonition default is a thick left-only accent bar with no
+     other border -- give it a real border on all sides instead, at the
+     same width, in the color each admonition type already carries via
+     --ifm-alert-border-color. See "Docs callouts" below for the heading. */
+  --ifm-alert-border-width: 1.5px;
+  --ifm-alert-border-left-width: 1.5px;
+
+  /* Not wired into Infima directly -- available to any component (the
+     homepage uses these) that needs the mark's coral accent or a muted
+     secondary text tone distinct from --ifm-menu-color. */
+  --lattice-coral: #e27259;
+  --lattice-coral-text: #c15a3f;
+  --lattice-muted: #5b6a73;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-color-primary: #4fc3b4;
+  --ifm-color-primary-dark: #35b5a4;
+  --ifm-color-primary-darker: #27ac9a;
+  --ifm-color-primary-darkest: #1f8e7f;
+  --ifm-color-primary-light: #69cdc0;
+  --ifm-color-primary-lighter: #78d3c8;
+  --ifm-color-primary-lightest: #9ee0d8;
+
+  --ifm-background-color: #16202a;
+  --ifm-font-color-base: #e8eae6;
+  --ifm-color-emphasis-300: #2a3844;
+
+  --ifm-menu-color: #93a0a8;
+  --ifm-menu-color-active: #4fc3b4;
+  --ifm-menu-color-background-active: #16332f;
+  --ifm-menu-color-background-hover: #1e2a33;
+
+  --docusaurus-highlighted-code-line-bg: rgba(79, 195, 180, 0.16);
+
+  --lattice-coral: #f08b6e;
+  --lattice-coral-text: #f08b6e;
+  --lattice-muted: #93a0a8;
+}
+
+/* Docs callouts: label the heading like the rest of the site's small
+   caps/mono labels, now that it's a full border instead of a card. */
+.admonition-heading {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 /*
  * Layout fix, not a style choice: Infima's footer wraps its content in
  * `.container-fluid` (full viewport width) while every other section on the
- * page (navbar, hero, features) uses the normal constrained container. With
- * only two link columns at the default `flex: 1`, each one stretched across
- * half the *entire* browser width -- nothing in the footer shared an edge
- * with the content above it, or with the other column. Constrain it to the
- * same width as the rest of the page and let the columns hug their own
- * content instead of stretching.
+ * page (navbar, hero, features) uses the normal constrained container --
+ * constrain it to match. Beyond that, the default markup stacks the link
+ * columns above a separate centered copyright row, three rows tall. The
+ * links block and the copyright block are siblings in the same container
+ * (see FooterLayout in @docusaurus/theme-classic), so instead of swizzling
+ * just to reshuffle two already-adjacent siblings, both are placed in the
+ * SAME grid cell: the links row spreads its two columns to the container's
+ * edges with space-between, and copyright centers in the gap that leaves
+ * between them -- one row instead of three, Docs and Project on the
+ * outside, copyright in the middle.
  */
 .footer .container-fluid {
   max-width: var(--ifm-container-width);
   margin: 0 auto;
+  display: grid;
+  align-items: center;
+}
+
+.footer__links.row,
+.footer__bottom {
+  grid-area: 1 / 1;
 }
 
 .footer__links.row {
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.footer__bottom {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 4rem;
+  margin: 0;
 }
 
 .footer__col {
+  /* Infima's base .col sets width:100% as a literal property, and
+     flex-basis: auto (from the shorthand alone) defers to that width --
+     so overriding only `flex` still left each column computing to 100%
+     of the row and wrapping onto its own line. Override width/max-width
+     directly, not just the flex shorthand. */
   flex: 0 1 auto;
+  width: auto;
+  max-width: none;
+}
+
+@media screen and (max-width: 767px) {
+  /* Not enough width for three side-by-side zones -- fall back to a normal
+     stacked column, links first, copyright below. */
+  .footer .container-fluid {
+    display: block;
+  }
+  .footer__bottom {
+    margin-top: 2rem;
+  }
 }

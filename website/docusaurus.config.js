@@ -14,6 +14,23 @@ const config = {
   tagline: 'Composable AI skills that teach assistants structured thinking',
   favicon: 'img/logo.svg',
 
+  // Archivo (display), IBM Plex Sans (body), IBM Plex Mono (code/labels) --
+  // the type system from the approved design canvas. Google Fonts is the
+  // only external stylesheet host Docusaurus/the CSP setup here allows.
+  headTags: [
+    {
+      tagName: 'link',
+      attributes: {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap',
+      },
+    },
+  ],
+
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
@@ -121,9 +138,13 @@ const config = {
         ],
         copyright: `Copyright © ${new Date().getFullYear()} Lattice. Built with Docusaurus.`,
       },
+      // vsDark in both modes: code blocks stay consistently dark regardless
+      // of site theme, matching the token sheet. A bundled complete theme
+      // rather than hand-tuned token colors -- a deliberate, lower-risk
+      // stand-in for now; worth revisiting once this can be seen rendered.
       prism: {
-        theme: prismThemes.github,
-        darkTheme: prismThemes.dracula,
+        theme: prismThemes.vsDark,
+        darkTheme: prismThemes.vsDark,
       },
     }),
 };

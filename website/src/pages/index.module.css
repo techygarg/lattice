@@ -4,20 +4,90 @@
  */
 
 .heroBanner {
-  padding: 4rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  position: relative;
-  overflow: hidden;
+  gap: 22px;
+  padding: 8rem 2rem 4.5rem;
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.eyebrow {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary);
+}
+
+.title {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 900;
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  max-width: 780px;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: var(--lattice-muted);
+  max-width: 620px;
+  margin: 0;
 }
 
 .buttons {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.primaryButton {
+  background: var(--ifm-color-primary);
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 14px 26px;
+  border-radius: 6px;
+}
+
+.primaryButton:hover {
+  background: var(--ifm-color-primary-dark);
+  text-decoration: none;
+}
+
+.secondaryButton {
+  border: 1.5px solid var(--lattice-muted);
+  color: var(--ifm-font-color-base) !important;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 12.5px 24px;
+  border-radius: 6px;
+}
+
+.secondaryButton:hover {
+  border-color: var(--ifm-font-color-base);
+  text-decoration: none;
+}
+
+.heroDiagram {
+  margin-top: 28px;
+  max-width: 100%;
+  height: auto;
+  color: var(--ifm-font-color-base);
+}
+
+@media screen and (max-width: 736px) {
+  .heroBanner {
+    padding: 4rem 1.5rem 3rem;
+  }
+  .buttons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+  }
 }

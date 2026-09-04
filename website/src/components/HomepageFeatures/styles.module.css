@@ -1,11 +1,47 @@
 .features {
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
-  width: 100%;
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+  padding: 4.5rem 1.5rem 6.5rem;
 }
 
-.featureSvg {
-  height: 200px;
-  width: 200px;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3.5rem;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cardTitle {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 800;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.cardDescription {
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: var(--lattice-muted);
+  margin: 0;
+}
+
+.inlineCode {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.85em;
+  background: var(--ifm-color-emphasis-300);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+@media screen and (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
 }
