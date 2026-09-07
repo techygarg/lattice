@@ -76,6 +76,23 @@ const config = {
     ],
   ],
 
+  plugins: [
+    [
+      '@easyops-cn/docusaurus-search-local',
+      /** @type {import('@easyops-cn/docusaurus-search-local').PluginOptions} */
+      ({
+        hashed: true,
+        // Docs are read from ../docs (see presets.docs.path), not the
+        // Docusaurus-default website/docs -- the hasher needs the real path.
+        docsDir: ['../docs'],
+        docsRouteBasePath: '/docs',
+        indexBlog: false, // blog is disabled (blog: false in the preset config)
+        language: 'en',
+        highlightSearchTermsOnTargetPage: true,
+      }),
+    ],
+  ],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
