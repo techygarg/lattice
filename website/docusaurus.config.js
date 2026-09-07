@@ -139,6 +139,10 @@ const config = {
             title: 'Project',
             items: [
               {
+                label: 'Why I Built This',
+                to: '/story',
+              },
+              {
                 label: 'GitHub',
                 href: 'https://github.com/techygarg/lattice',
               },

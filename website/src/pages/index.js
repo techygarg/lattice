@@ -87,6 +87,25 @@ function HomepageHeader() {
   );
 }
 
+function HomepageStory() {
+  return (
+    <section className={styles.storySection}>
+      <p className={styles.storyEyebrow}>Straight from the person who built it</p>
+      <blockquote className={styles.storyQuote}>
+        Most AI-assisted coding skips straight to code. Lattice makes it design first, then write code you&apos;d
+        actually approve.
+      </blockquote>
+      <p className={styles.storySupport}>
+        Built from a five-part martinfowler.com series, turned into skills your assistant actually runs instead of
+        advice you have to remember to apply.
+      </p>
+      <Link className={styles.storyLink} to="/story">
+        Why I built Lattice, and where I want your feedback →
+      </Link>
+    </section>
+  );
+}
+
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
@@ -96,6 +115,7 @@ export default function Home() {
       <HomepageHeader />
       <main>
         <HomepageFeatures />
+        <HomepageStory />
       </main>
     </Layout>
   );

@@ -1,0 +1,195 @@
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 6rem 2rem 7rem;
+}
+
+.eyebrow {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary);
+  margin: 0;
+}
+
+.title {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 900;
+  font-size: clamp(2rem, 4.5vw, 2.9rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0.75rem 0 0.5rem;
+  text-wrap: balance;
+}
+
+.byline {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.85rem;
+  color: var(--lattice-muted);
+  letter-spacing: 0.02em;
+  margin: 0 0 3rem;
+}
+
+.lead {
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: var(--ifm-font-color-base);
+  margin: 0 0 1.5rem;
+}
+
+.body p {
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: var(--ifm-font-color-base);
+  margin: 0 0 1.5rem;
+}
+
+.sectionHeading {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 800;
+  font-size: 1.4rem;
+  margin: 3.5rem 0 1rem;
+}
+
+.feedbackIntro {
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: var(--ifm-font-color-base);
+  margin: 0 0 1.25rem;
+}
+
+.feedbackList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.feedbackList li {
+  position: relative;
+  padding-left: 1.4rem;
+  line-height: 1.65;
+  color: var(--ifm-font-color-base);
+}
+
+.feedbackList li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lattice-coral);
+}
+
+.callout {
+  border: 1.5px solid var(--ifm-color-emphasis-300);
+  border-left: 3px solid var(--ifm-color-primary);
+  border-radius: 8px;
+  padding: 1.75rem 2rem;
+  margin: 1rem 0 1rem;
+}
+
+.calloutTitle {
+  font-family: var(--ifm-font-family-monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+  margin: 0 0 0.75rem;
+}
+
+.calloutText {
+  margin: 0;
+  line-height: 1.7;
+  font-size: 1rem;
+  color: var(--ifm-font-color-base);
+}
+
+.commandChip {
+  font-family: var(--ifm-font-family-monospace);
+  background: var(--ifm-color-emphasis-300);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.88em;
+}
+
+.closing {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin: 2.5rem 0 0.5rem;
+}
+
+.signOff {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin: 0 0 2.5rem;
+}
+
+.ctaRow {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 0 0 1rem;
+}
+
+.primaryButton {
+  background: var(--ifm-color-primary);
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 12px 22px;
+  border-radius: 6px;
+}
+
+.primaryButton:hover {
+  background: var(--ifm-color-primary-dark);
+  text-decoration: none;
+}
+
+.secondaryButton {
+  border: 1.5px solid var(--lattice-muted);
+  color: var(--ifm-font-color-base) !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 10.5px 20px;
+  border-radius: 6px;
+}
+
+.secondaryButton:hover {
+  border-color: var(--ifm-font-color-base);
+  text-decoration: none;
+}
+
+.continueLinks {
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  display: flex;
+  gap: 0.75rem 1.75rem;
+  flex-wrap: wrap;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.85rem;
+}
+
+.continueLinks a {
+  color: var(--ifm-color-primary) !important;
+}
+
+@media screen and (max-width: 736px) {
+  .container {
+    padding: 4rem 1.5rem 5rem;
+  }
+}
