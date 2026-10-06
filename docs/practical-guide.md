@@ -76,7 +76,7 @@ No. If your description or documents reveal only 1–3 features, the molecule of
 
 ### How does requirement-forge connect to design-blueprint?
 
-Each feature file's `## Links` section gains a `- Design:` back-link that `design-blueprint` writes the first time it resolves that feature's requirement doc in Step 1 — on either a new design session or a resumed one. The `design-blueprint` molecule's context-anchoring step accepts a "requirement doc link" pointing to the feature file — it loads the problem statement and scope as starting context for the design session. The two molecules complement each other: requirement-forge defines WHAT and WHY; design-blueprint defines HOW.
+Each feature file's `## Links` section gains a `- Design:` back-link that `design-blueprint` writes the first time it resolves that feature's requirement doc in Step 1 — on either a new design session or a resumed one. The `design-blueprint` molecule's context-anchoring step accepts a "requirement doc link" pointing to the feature file — it loads the problem statement and scope as starting context for the design session. When a requirement doc is linked, design-blueprint takes it as Level 1 (Capabilities) and proposes starting at Level 2 or later, so you do not agree the same outcomes twice. It offers a capabilities walk-through first, for when someone else wrote the spec. The two molecules complement each other: requirement-forge defines WHAT and WHY; design-blueprint defines HOW.
 
 ### What is the difference between collaborative and autonomous mode in requirement-forge?
 
