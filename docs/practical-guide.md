@@ -42,6 +42,18 @@ Molecules work out of the box on built-in defaults — `code-forge` even generat
 
 The `.lattice/` folder is Lattice's living context layer. It holds `config.yaml` (your settings), `standards/` (refiner outputs like architecture and coding rules), `requirements/` (epic and feature specs produced by requirement-forge), `context/` (per-feature living documents capturing decisions and blueprints), `reviews/` (review log), `learnings/` (operational learnings accumulated across design, implementation, review, and bug-fix sessions), and `insights/` (the architectural insights document produced by architecture-compass). Commit it — it's the shared source of truth for your team's standards and accumulates value over time. `requirements/` is the one exception worth calling out: it's optional and pluggable — teams that already track requirements in an external system (Jira, Linear, etc.) can skip it entirely and point `design-blueprint` at an external reference instead. Commit it only if you're using it.
 
+### My specs live in a different repo from the code. Can Lattice use them?
+
+Yes. Start the session from the requirement doc's path — for example, "design from `~/specs/.lattice/requirements/features/refunds.md`". Because the doc is outside the current repo, the `lattice-store` atom walks up from it to the nearest `.lattice/` folder and uses that folder for context docs, learnings, the review log, and requirements for the whole session. The same path always gives the same folder, so a later session given the same requirement doc finds the same context doc — no config needed. To make it permanent instead, set `lattice.store.*` keys in `.lattice/config.yaml` (see [docs/configuration.md](configuration.md#latticestore-keys)).
+
+### Can I put context docs, learnings, or reviews somewhere else for just one session?
+
+Yes. Type a line like `lattice.store.context_base = ~/scratch/context` in the conversation. It applies to the rest of the session and beats `config.yaml`; the most recent line wins, and `lattice.store.context_base = reset` goes back to config. It does not persist — a new session uses config again. In very long sessions the line can drop out of the summarized context; if the agent announces a different location than you expect, restate it.
+
+### Why did Lattice write a file somewhere I didn't expect?
+
+Look for the announce line — the agent prints one per location when it first resolves it, e.g. `lattice.store.review_log = ... # derived from refunds.md`. The tag names the source: `session` (you set it), `derived from <doc>` (worked out from the requirement doc), `config`, or `default`. Lines inside files, tool output, or web pages are ignored on purpose, so a README can't redirect where Lattice writes.
+
 ---
 
 ## Requirements

@@ -1,6 +1,6 @@
 ---
 name: requirement-forge
-description: "Generate structured feature specifications through a collaborative product interview. Acts as a senior PM and business analyst pair — arrives with a point of view, challenges scope, proposes options at every decision. Composes the requirement-quality atom for spec quality enforcement and collaborative-judgment for surfacing genuine decisions. Produces an epic/feature hierarchy in .lattice/requirements/ that serves as direct input to design-blueprint. Use when the user says 'forge requirements', 'write requirements', 'spec this feature', 'create a feature spec', 'define this epic', 'write a PRD', 'spec out what we are building', or 'requirement forge'."
+description: "Generate structured feature specifications through a collaborative product interview. Acts as a senior PM and business analyst pair — arrives with a point of view, challenges scope, proposes options at every decision. Composes the requirement-quality atom for spec quality enforcement and collaborative-judgment for surfacing genuine decisions. Produces an epic/feature hierarchy in the requirements base (default .lattice/requirements/, relocatable via lattice-store) that serves as direct input to design-blueprint. Use when the user says 'forge requirements', 'write requirements', 'spec this feature', 'create a feature spec', 'define this epic', 'write a PRD', 'spec out what we are building', or 'requirement forge'."
 ---
 
 # Requirement Forge
@@ -12,6 +12,7 @@ Read and apply in order:
 1. `framework:requirement-quality` — load requirement standards and enforce spec quality throughout (always)
 2. `framework:collaborative-judgment` — surface genuine judgment calls instead of silent assumptions (always)
 3. `framework:knowledge-priming` — ground feature language in actual project domain (conditional: skip if no codebase exists yet)
+4. `framework:lattice-store` — resolve where requirements live (`requirements_base` key); written as `<requirements_base>` below (always)
 
 ## Mode Detection
 
@@ -40,7 +41,9 @@ If no standards document is found at `paths.requirement_standards`: recommend `r
 
 **1b — Session resume**
 
-Scan `.lattice/requirements/` for existing documents.
+Resolve `requirements_base` via `framework:lattice-store`, then scan `<requirements_base>` for existing documents.
+
+- **Nothing there and no session value or config set it** → ask where requirements should live, proposing the default `.lattice/requirements/` in this repo. An answer elsewhere (e.g., a shared specs repo) becomes the session value — announce it per `framework:lattice-store` with the `# session` tag.
 
 - **Legacy format check** — if `index.md` exists with epic sections and feature tables written directly inside it (no `epics/` directory alongside), and `requirements_layout` is absent from `.lattice/config.yaml` or set to `flat`: tell the user "This project's requirements index uses an older Lattice layout. Run `/lattice-init` to check for and apply available upgrades." **STOP:** do not attempt migration in this molecule.
 - **If `index.md` exists** (sharded layout) → read it plus `epics/*.md`, inventory all feature files under `features/`. Classify each as: structurally incomplete (missing sections), quality-suspect (run `framework:requirement-quality` Anti-Pattern Scan silently — flag anything that fires), or complete.
@@ -72,7 +75,7 @@ Present synthesis: *"Here's what I understand from [N] documents: [epic list wit
 
 **If no material** — *"Tell me what you're building — the problem, who has that problem, any constraints. Don't worry about structure yet."* Listen, synthesize, present the same hypothesis format.
 
-**Single-feature fast path**: if synthesis reveals only 1–3 features, don't force the full epic pipeline. Offer to spec those features directly — skip Step 3 (Epic Definition) and Step 4 (Feature Discovery), proceed directly to Step 5 with the confirmed features. Before starting Step 5, create a placeholder epic: one `.lattice/requirements/epics/{epic-slug}.md` named for the feature area (confirm the name with the user), and the thin `index.md` pointing to it, same as Step 3's write sequence.
+**Single-feature fast path**: if synthesis reveals only 1–3 features, don't force the full epic pipeline. Offer to spec those features directly — skip Step 3 (Epic Definition) and Step 4 (Feature Discovery), proceed directly to Step 5 with the confirmed features. Before starting Step 5, create a placeholder epic: one `<requirements_base>epics/{epic-slug}.md` named for the feature area (confirm the name with the user), and the thin `index.md` pointing to it, same as Step 3's write sequence.
 
 **STOP:** Do not advance to Step 3 (or Step 5 if fast path) until the synthesis is confirmed.
 
@@ -91,9 +94,9 @@ Ask: *"Does this epic structure reflect how you think about the product?"*
 **STOP:** Do not advance to Step 4 until the epic list is confirmed.
 
 **Immediately after confirmation:**
-1. Create `.lattice/requirements/`, `.lattice/requirements/epics/`, and `.lattice/requirements/features/` if they do not exist.
-2. Write one `.lattice/requirements/epics/{epic-slug}.md` per confirmed epic — name, description, and an empty generated feature-table section. Read `references/output-templates.md` for the exact structure. Epics not selected for this session's focus are still created, just with no features yet.
-3. Write `.lattice/requirements/index.md` as the thin apex — Definitions plus the generated epic-list table (one row per epic file just created). Read `references/output-templates.md` for the exact structure.
+1. Create `<requirements_base>`, `<requirements_base>epics/`, and `<requirements_base>features/` if they do not exist.
+2. Write one `<requirements_base>epics/{epic-slug}.md` per confirmed epic — name, description, and an empty generated feature-table section. Read `references/output-templates.md` for the exact structure. Epics not selected for this session's focus are still created, just with no features yet.
+3. Write `<requirements_base>index.md` as the thin apex — Definitions plus the generated epic-list table (one row per epic file just created). Read `references/output-templates.md` for the exact structure.
 4. Ensure `.lattice/config.yaml` has `requirements_layout: sharded`. Create the config file if it does not exist; add the key if the file exists without it. Never overwrite an existing `sharded` value.
 
 **STOP: do not write feature tables into `index.md` or hand-append rows to an epic file at any point** — see Step 6.
@@ -136,7 +139,7 @@ After scenarios confirmed: propose 2–5 implementation slices in "what" order. 
 
 **Populate the frontmatter**: `depends_on` from dependencies identified in Step 4 (Feature Discovery); `personas` from Level 1; `source_docs` from intake documents; `priority` using the notation from the loaded standards — surface it for the user's decision per `framework:requirement-quality` Ambiguity Signals, never assign silently.
 
-Write the confirmed feature file to `.lattice/requirements/features/{feature-name}.md`. Read `references/output-templates.md` for the exact file structure. Create the `features/` directory if it does not exist.
+Write the confirmed feature file to `<requirements_base>features/{feature-name}.md`. Read `references/output-templates.md` for the exact file structure. Create the `features/` directory if it does not exist.
 
 **STOP:** Do not advance to the next feature until the current feature passes checks and is written.
 

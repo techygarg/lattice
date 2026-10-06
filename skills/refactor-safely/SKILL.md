@@ -18,6 +18,7 @@ Load these skills based on refactor scope (see Steps 3, 5, 6 for conditional use
 8. `framework:architecture` -- Layer placement and dependency direction. (conditional: responsibilities move across layers in Steps 5/6)
 9. `framework:domain-driven-design` -- Aggregate boundaries and domain behavior. (conditional: domain rules move or sharpen in Step 6)
 10. `framework:secure-coding` -- Trust bounds, authorization, sensitive data handling. (conditional: security-sensitive code touched in Step 6)
+11. `framework:lattice-store` -- Resolve where living documents live; derive the store from an out-of-repo requirement doc. (always)
 
 ## Workflow
 
@@ -28,6 +29,7 @@ Start from the current pain, not from a preferred abstraction.
 - Identify the target area: a module, service, aggregate, endpoint path, or subsystem.
 - Clarify why the refactor is needed: mixed responsibilities, duplication, wrong-layer logic, coupling, poor testability, or unreadable control flow.
 - Clarify what the user expects to improve: simpler structure, correct layer placement, smaller units, clearer domain behavior, easier testing, or safer extension points.
+- **Derive the store**: if the user named a requirement doc, run `framework:lattice-store` Derive Behavior. None named → ask once: "Is there a requirement doc for this work?" — "no" or an external reference (URL, ticket ID) is a fine answer; config and defaults then apply. Do this before loading learnings or context docs.
 - Run `framework:learning-harvest` Load behavior. Focus hint: "refactoring session — focus: structural health, quality signals".
 - Run `framework:context-anchoring` Document Discovery to check for an existing context doc covering the affected feature/module:
   - **Found** → Load behavior. Honor every logged decision and constraint as an active commitment while planning the refactor. The doc already contains an approved refactor plan (preservation boundaries + target structure) → confirm it still matches the user's intent, then resume at Step 4 unless the user wants to revisit the plan first.

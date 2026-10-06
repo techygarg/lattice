@@ -11,11 +11,12 @@ Load/apply skills based on scope (see Step 2 for conditional loading):
 1. `framework:knowledge-priming` -- Load project context (tech stack, architecture, conventions) to evaluate against real standards (always loaded)
 2. `framework:learning-harvest` -- Load prior operational learnings inform review; harvest new patterns at session end (always)
 3. `framework:collaborative-judgment` -- Surface borderline findings with both interpretations instead of silently classifying (always loaded)
-4. `framework:clean-code` -- Code craft: SRP, naming, complexity, error handling (always loaded)
-5. `framework:architecture` -- Structural: layer rules, dependency direction, architectural flows (conditional)
-6. `framework:domain-driven-design` -- Domain modeling: aggregates, entities, value objects (conditional)
-7. `framework:secure-coding` -- Security: trust boundaries, injection, secrets, input handling (conditional)
-8. `framework:test-quality` -- Test: AAA structure, isolation, assertions, naming (conditional)
+4. `framework:lattice-store` -- Resolve review log location (`review_log` key) (always loaded)
+5. `framework:clean-code` -- Code craft: SRP, naming, complexity, error handling (always loaded)
+6. `framework:architecture` -- Structural: layer rules, dependency direction, architectural flows (conditional)
+7. `framework:domain-driven-design` -- Domain modeling: aggregates, entities, value objects (conditional)
+8. `framework:secure-coding` -- Security: trust boundaries, injection, secrets, input handling (conditional)
+9. `framework:test-quality` -- Test: AAA structure, isolation, assertions, naming (conditional)
 
 ## Config Resolution
 
@@ -177,10 +178,10 @@ After presenting report, harvest learnings & log review.
 
 Session context: "review session — code quality assessment against atom standards". Synthesize and propose cross-cutting patterns from this review — recurring quality anti-patterns, structural issues that keep appearing, reliability gaps. User confirms what enters the document. **STOP: complete this before Log Review below.**
 
-**Log Review** — append to `.lattice/reviews/review-log.md`:
+**Log Review** — append to `<review_log>` (resolve `review_log` via `framework:lattice-store`; default `.lattice/reviews/review-log.md`):
 
-1. Create `.lattice/reviews/` dir if doesn't exist.
-2. Append structured summary to `.lattice/reviews/review-log.md`. Create file with `# Review Log` heading if doesn't exist.
+1. Create parent dir of `<review_log>` if doesn't exist.
+2. Append structured summary to `<review_log>`. Create file with `# Review Log` heading if doesn't exist.
 3. Format — keep each entry under 8 lines:
 
 ```

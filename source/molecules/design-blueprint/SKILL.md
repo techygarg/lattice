@@ -13,27 +13,29 @@ Read and apply in order before Step 1:
 2. `framework:context-anchoring` -- Create or load the feature's living context doc (Create / Load / Enrich behaviors). (always)
 3. `framework:learning-harvest` -- Load prior operational learnings at session start; harvest new ones at session end. (always)
 4. `framework:collaborative-judgment` -- Surface genuine judgment calls as structured options instead of silently assuming. (always)
-5. `framework:design-first` -- Owns the 5-level methodology. Its Entry Assessment, Complexity Calibration, Simplicity Check, and Level Completion Protocol govern Step 2. (Step 2)
-6. `framework:architecture` -- Validate components, layers, dependency direction, and boundary rules (design mode). (Levels 2-4)
-7. `framework:domain-driven-design` -- Model aggregates, entities, value objects, events, and contracts (design mode). (Levels 2-4)
+5. `framework:lattice-store` -- Resolve where living documents live; derive the store from an out-of-repo requirement doc. (always)
+6. `framework:design-first` -- Owns the 5-level methodology. Its Entry Assessment, Complexity Calibration, Simplicity Check, and Level Completion Protocol govern Step 2. (Step 2)
+7. `framework:architecture` -- Validate components, layers, dependency direction, and boundary rules (design mode). (Levels 2-4)
+8. `framework:domain-driven-design` -- Model aggregates, entities, value objects, events, and contracts (design mode). (Levels 2-4)
 
 ## Workflow
 
 ### Step 1: Establish Context
 
-1. Run `framework:learning-harvest` Load behavior. Focus hint: "design session — focus: design patterns, reliability, structural health".
-2. Set up the feature's living doc with `framework:context-anchoring`:
-   - **Discover**: scan `.lattice/context/` for an existing anchor doc matching the feature name or frontmatter.
+1. **Derive the store**: if the user supplied a requirement doc, run `framework:lattice-store` Derive Behavior before anything else — it decides where learnings and context docs live for this session.
+2. Run `framework:learning-harvest` Load behavior. Focus hint: "design session — focus: design patterns, reliability, structural health".
+3. Set up the feature's living doc with `framework:context-anchoring`:
+   - **Discover**: scan `<context_base>` (resolved via `framework:lattice-store`) for an existing anchor doc matching the feature name or frontmatter.
    - **Found** → Load behavior. Present the structured acknowledgment: feature name, status, decision count, open questions, constraints. Then run the resume check below.
    - **Not found** → Create behavior. Confirm the feature name, summary, and requirement doc link with the user before creating. Then begin Step 2 — the Entry Assessment sets the entry level.
 
-3. **Resume check** (when a doc was found) — derive the earliest incomplete step from the doc itself. **STOP:** Never re-walk agreed work:
+4. **Resume check** (when a doc was found) — derive the earliest incomplete step from the doc itself. **STOP:** Never re-walk agreed work:
    - `status: approved` → design is finished. Say so and stop; suggest `/code-forge`.
    - No sections starting `## Design: Level` → begin Step 2 — the Entry Assessment (and its spec rule) sets the entry level.
    - Some levels persisted → summarize the approved levels briefly, then resume at the first missing level at or after the recorded entry level (the `[Entry]` Decisions Log entry; older docs without one → treat entry as Level 1).
    - Every level from entry through Level 4 persisted, but no `## Design Summary`, or `status` ≠ `approved` → go directly to Step 3.
 
-4. **Requirement constraints**: read `requirement_doc` from the context doc frontmatter.
+5. **Requirement constraints**: read `requirement_doc` from the context doc frontmatter.
    - Absent → skip.
    - Local path, unreadable → STOP: "Requirement doc not found at `[path]`. Verify before continuing."
    - Local path, readable → read it and extract `## Technical Constraints`. Treat as non-negotiable — same authority as architecture rules. Surface to the user before the first level is presented.
@@ -41,7 +43,7 @@ Read and apply in order before Step 1:
    - Either path resolved to the spec itself (not pasted constraints only) → Step 2's spec rule applies.
    - Conflict during design → surface via `framework:collaborative-judgment`. The user decides; record the change back in the requirement doc's `## Technical Constraints` if local, or in the Decisions Log if external — this molecule never writes to an external system.
 
-5. **Write the back-link**: if `requirement_doc` resolved to a readable local file at `.lattice/requirements/features/{feature-name}.md`, add to its `## Links` section: `- Design: [{feature-name}.md](../../context/{feature-name}.md)`. One discrete file edit; skip if the link is already present.
+6. **Write the back-link**: if `requirement_doc` resolved to a readable local file under `<requirements_base>features/` (resolved via `framework:lattice-store`), add to its `## Links` section: `- Design: [{feature-name}.md](<link>)`, where `<link>` is the path from the feature file's directory (`<requirements_base>features/`) to `<context_base>{feature-name}.md` — relative when both are in the same repo, absolute otherwise. Default layout → `../../context/{feature-name}.md`. **STOP: verify the link resolves to the context doc from the feature file's directory before writing it.** One discrete file edit; skip if the link is already present.
 
 ### Step 2: Walk the Design Levels
 

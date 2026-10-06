@@ -44,6 +44,7 @@ All skills and their invocation commands. Invoke any skill in your AI tool's cha
 | context-anchoring | `/context-anchoring` | Per-feature living documents that capture decisions and reasoning across sessions |
 | collaborative-judgment | `/collaborative-judgment` | Surfaces genuine judgment calls or missing/conflicting knowledge instead of silently assuming |
 | learning-harvest | `/learning-harvest` | Manages operational learnings lifecycle — load prior patterns, harvest new experiential insights, keep the document tight |
+| lattice-store | `/lattice-store` | Resolves where living documents (context docs, learnings, review log, requirements) are read and written — session value, derived from an out-of-repo requirement doc, config, or default |
 | requirement-quality | `/requirement-quality` | Feature specification quality — completeness, scenario structure, AC verifiability, independence, and implementation slice quality |
 
 ### Molecules — invoke to run a full workflow
@@ -93,6 +94,7 @@ Not every atom applies to every piece of code. The distinction matters for both 
 - **architecture** -- Defaults to clean architecture (layers, dependency direction) but supports any architectural style you document. Structural rules apply universally.
 - **knowledge-priming** -- Project context (tech stack, architecture, conventions) is always relevant. Without it, the AI defaults to generic assumptions.
 - **learning-harvest** -- Operational learnings from past sessions inform current work; new experiential patterns are proposed for user curation at session end.
+- **lattice-store** -- Any read or write of a living document resolves its location first, so every skill agrees on where context, learnings, reviews, and requirements live.
 - **collaborative-judgment** -- Genuine judgment calls and under-grounded uncertainty should be surfaced, not silently resolved. Composed by molecules alongside other atoms.
 
 **Conditionally apply:**
@@ -103,12 +105,13 @@ Not every atom applies to every piece of code. The distinction matters for both 
 
 ### The special ones
 
-Five atoms serve different purposes than the code-quality atoms:
+Six atoms serve different purposes than the code-quality atoms:
 
 - **knowledge-priming** is a context atom. It loads the project's identity -- tech stack, architecture overview, directory layout, trusted sources, and conventions -- so that all other skills operate with awareness of what the project actually is. Without it, the AI defaults to "the average of the internet." Unlike quality atoms, it has no embedded defaults -- every project's identity is unique. The knowledge base document is created by the `knowledge-priming-refiner` or written by hand.
 - **design-first** is a methodology atom, not a code quality atom. It guides structured thinking through 5 progressive levels (Capabilities → Components → Interactions → Contracts → Implementation) before any code is written. It prevents the AI from jumping straight to implementation.
 - **context-anchoring** is a persistence mechanism. It manages per-feature living documents that capture decisions, constraints, and reasoning across sessions. It solves the problem of AI context decay -- by message 30+, early decisions get contradicted unless they are written down.
 - **learning-harvest** is an experiential knowledge mechanism. It manages the operational learnings lifecycle -- a single cross-cutting document of patterns discovered while doing the work. Unlike standards (rules defined upfront), operational learnings capture what the team keeps learning the hard way or what approaches keep proving effective. The AI proposes; the user confirms what enters the document. Complements context-anchoring (per-feature decisions) with project-wide experiential patterns.
+- **lattice-store** is a location resolver. It decides where living documents — context docs, operational learnings, the review log, requirements — are read and written: a `lattice.store.<key> = <path>` line in the session first, then a store derived from an out-of-repo requirement doc, then `.lattice/config.yaml`, then defaults. Every skill that touches a living document resolves its path through it, so no skill hardcodes a `.lattice/` subfolder. See [docs/configuration.md](configuration.md#latticestore-keys) for keys and resolution order.
 - **collaborative-judgment** is an ambiguity protocol. It ensures the AI surfaces genuine judgment calls with structured options and stops on missing/conflicting grounding instead of silently assuming. Each code-quality atom defines its own Ambiguity Signals (domain-specific gray areas); this atom defines how to present, batch, clarify, and resolve them. It becomes less active as the project's standards grow more specific. See [docs/collaborative-judgment.md](collaborative-judgment.md) for the full design rationale.
 
 ### Config resolution
@@ -141,9 +144,10 @@ Molecules are orchestrated multi-step workflows. Each molecule composes multiple
 
 Five molecules share a common session infrastructure: **design-blueprint**, **code-forge**, **bug-fix**, **refactor-safely**, and **review**.
 
-**Always composed**: knowledge-priming, learning-harvest, and collaborative-judgment in all five; plus context-anchoring in the four feature-session molecules (`design-blueprint`, `code-forge`, `bug-fix`, `refactor-safely`) — `review` is delta-scoped and does not use context documents.
+**Always composed**: knowledge-priming, learning-harvest, collaborative-judgment, and lattice-store in all five; plus context-anchoring in the four feature-session molecules (`design-blueprint`, `code-forge`, `bug-fix`, `refactor-safely`) — `review` is delta-scoped and does not use context documents.
 
 **Session lifecycle** (steps 2 and 4 do not apply to `review`):
+0. Resolve living-document locations (lattice-store) — derive the store first when the session starts from an out-of-repo requirement doc
 1. Load operational learnings at session start (learning-harvest Load)
 2. Load or create feature context (context-anchoring)
 3. Do the molecule-specific work with quality atoms applied as relevant
@@ -359,6 +363,10 @@ The `.lattice/` folder is the living context layer described earlier -- the proj
 | `learnings/` | Operational learnings managed by `learning-harvest` atom — accumulated patterns from design, implementation, review, and repair sessions. Loaded at session start, harvested at session end. | Append-only with self-regulating tightening — atom proposes consolidation when document grows dense |
 | `reviews/` | Review log entries for project health visibility | Rolling window — capped at ~20 entries, older entries summarized |
 | `insights/` | Architectural insights document produced by architecture-compass | One per project — updated as direction evolves |
+
+### Relocating living documents
+
+`requirements/`, `context/`, `learnings/`, and `reviews/` are default locations, not fixed ones. The `lattice-store` atom can place them elsewhere — per session, derived from where the requirement doc lives, or via `lattice.store` in `config.yaml`. `standards/`, `config.yaml`, and `verification.yaml` always stay in the repo. See [docs/configuration.md](configuration.md#latticestore-keys).
 
 ### Convention
 

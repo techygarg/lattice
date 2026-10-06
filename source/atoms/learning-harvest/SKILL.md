@@ -22,12 +22,9 @@ Patterns that recur frequently may graduate to standards via a refiner. That pro
 
 ## Config Resolution
 
-1. Check `.lattice/config.yaml` for `paths.operational_learnings`.
-2. If set and the file exists at that path → use it.
-3. If set but no file exists there → tell the user which configured path is missing, then use the default `.lattice/learnings/operational-learnings.md`.
-4. If not set → use the default `.lattice/learnings/operational-learnings.md`.
+Resolve the `operational_learnings` key with `framework:lattice-store` (session value → derived → config → default `.lattice/learnings/operational-learnings.md`). If no file exists at the resolved path, name the path — Harvest creates it on first write.
 
-**Backward compatibility**: If default path not found, check these legacy paths in order:
+**Backward compatibility**: If the resolved path is the default and no file exists there, check these legacy paths in order:
 - `.lattice/learnings.md` — flat file at root
 - `.lattice/learnings/review-insights.md` — prior naming convention
 

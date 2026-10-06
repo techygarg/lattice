@@ -10,6 +10,7 @@ description: "Guided setup and upgrade-check experience for Lattice projects -- 
 Read apply skills order:
 
 1. `framework:knowledge-priming` -- Load project context understand what project is what already exists
+2. `framework:lattice-store` -- Resolve living-document locations for inventory
 
 ## Workflow
 
@@ -47,10 +48,12 @@ If multiple language markers are found in the repo root, note all of them and as
 - `.lattice/standards/clean-code.md` → clean code refiner output
 - `.lattice/standards/ddd-principles.md` → DDD refiner output
 - `.lattice/standards/review-standards.md` → review refiner output
-- `.lattice/context/` → feature context documents (count them)
-- `.lattice/learnings/operational-learnings.md` → accumulated operational learnings (managed by learning-harvest atom)
-- `.lattice/reviews/review-log.md` → review log
-- `.lattice/requirements/index.md` → check shape: if epic sections and feature tables are written directly inside it (no `epics/` directory alongside) and `requirements_layout` is absent from config, flag as **legacy layout — upgrade available**
+- **Living documents** -- resolve each location with `framework:lattice-store` (keys `context_base`, `operational_learnings`, `review_log`, `requirements_base`) and record the source tag. Any resolved path outside this repo → note it is not version-controlled with this repo.
+- `<context_base>` → feature context documents (count them)
+- `<operational_learnings>` → accumulated operational learnings (managed by learning-harvest atom)
+- `<review_log>` → review log
+- `paths.context_base` or `paths.operational_learnings` in config → flag as **legacy store keys — upgrade available**
+- `<requirements_base>index.md` → check shape: if epic sections and feature tables are written directly inside it (no `epics/` directory alongside) and `requirements_layout` is absent from config, flag as **legacy layout — upgrade available**
 - `.lattice/verification.yaml` → verification stages config consumed by the verification runner
 - `.lattice/scripts/run-verification.sh` → vendored verification runner
 
@@ -76,18 +79,20 @@ Running mode: **[customized -- standards docs active below / built-in defaults -
 - Clean code standards: [.lattice/standards/clean-code.md / built-in default]
 - DDD standards: [.lattice/standards/ddd-principles.md / built-in default]
 - Review standards: [.lattice/standards/review-standards.md / built-in default]
-- Context documents: [N found / none]
-- Review learnings: [found at .lattice/learnings/operational-learnings.md / none]
-- Review log: [found at .lattice/reviews/review-log.md / none]
+- Context documents: [N found at <context_base> (source) / none]
+- Review learnings: [found at <operational_learnings> (source) / none]
+- Review log: [found at <review_log> (source) / none]
+- Requirements location: [<requirements_base> (source)]
+- Legacy store keys: [paths.context_base / paths.operational_learnings found — upgrade available / none]
 - Requirements layout: [sharded / legacy — upgrade available / not found]
 - Verification suite: [.lattice/verification.yaml configured / not set up]
 ```
 
 **STOP (fresh install): if no `.lattice/` state exists at all AND no legacy requirements layout was detected** — create the minimal `.lattice/config.yaml` shown in Step 3, tell the user: "Lattice is ready. It runs on built-in defaults with full functionality. Refiner interviews that pin your team's conventions are optional — ask for them anytime." Skip to Step 4. Do not present the customization menu unprompted.
 
-**STOP: If `.lattice/config.yaml` and all core standards docs exist AND no legacy requirements layout was detected:** Tell user "Lattice fully configured." Skip to Step 4.
+**STOP: If `.lattice/config.yaml` and all core standards docs exist AND no legacy requirements layout or legacy store keys were detected:** Tell user "Lattice fully configured." Skip to Step 4.
 
-**STOP:** if a legacy requirements layout was detected, do not skip on that basis alone — present it as a gap in Step 3 even when everything else is fully configured.
+**STOP:** if a legacy requirements layout or legacy store keys were detected, do not skip on that basis alone — present it as a gap in Step 3 even when everything else is fully configured.
 
 ### Step 3: Guided Setup
 
@@ -117,6 +122,8 @@ Reached only when something needs attention (a gap above) or the user asked to c
       ```
 
       On confirmation, append verbatim between the markers -- touch nothing else in the file; skip silently if the markers already exist. On decline, print the block and say where to paste it later.
+
+9. **Store keys upgrade** (if legacy store keys detected in Step 1) -- "Your config sets `paths.context_base` / `paths.operational_learnings`. These still work, but the current convention groups all living-document locations under `lattice.store` (`context_base`, `operational_learnings`, `review_log`, `requirements_base`). One-time config edit: move each value under `lattice.store` unchanged, then remove the old key." Show the before/after config and confirm before writing.
 
 **For each gap**, present user:
 - What it does (one sentence, from descriptions above)

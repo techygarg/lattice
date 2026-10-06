@@ -10,11 +10,7 @@ description: "Manage per-feature living documents that capture decisions, constr
 
 ## Config Resolution
 
-This skill manages a directory of per-feature context docs. Resolution order:
-
-1. Read `.lattice/config.yaml` in the repo root.
-2. If found and `paths.context_base` is set → use that directory as the context base (the Create behavior creates it on demand).
-3. If there is no config file or no `paths.context_base` key → use the default `.lattice/context/`.
+This skill manages a directory of per-feature context docs. Resolve the `context_base` key with `framework:lattice-store` (session value → derived → config → default `.lattice/context/`). The Create behavior creates the directory on demand.
 
 Each feature gets one doc at `<context_base>/<feature-name>.md`. No default principles, no overlay modes, no override files -- just a thin template and per-feature docs that grow through enrichment.
 

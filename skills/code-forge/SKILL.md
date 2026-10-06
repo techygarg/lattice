@@ -18,13 +18,15 @@ Read and apply:
 7. `framework:domain-driven-design` -- Aggregates, entities, value objects, domain services. (conditional: domain-layer components only)
 8. `framework:secure-coding` -- Trust bounds, injection prevention, secrets handling. (conditional: trust-boundary code only)
 9. `framework:test-quality` -- AAA structure, isolation, assertion quality, naming. (always when writing tests)
+10. `framework:lattice-store` -- Resolve where living documents live; derive the store from an out-of-repo requirement doc. (always)
 
 ## Workflow
 
 ### Step 1: Establish Implementation Context
 
-1. Run `framework:learning-harvest` Load behavior. Focus hint: "implementation session — focus: implementation craft, quality signals, reliability".
-2. Run `framework:context-anchoring` Document Discovery: scan the context base directory (per the atom's Config Resolution) for an existing anchor doc covering this feature's implementation.
+1. **Derive the store**: if the user supplied a requirement doc, run `framework:lattice-store` Derive Behavior before anything else — it decides where learnings and context docs live for this session.
+2. Run `framework:learning-harvest` Load behavior. Focus hint: "implementation session — focus: implementation craft, quality signals, reliability".
+3. Run `framework:context-anchoring` Document Discovery: scan `<context_base>` (resolved via `framework:lattice-store`) for an existing anchor doc covering this feature's implementation.
    - **Found** → Load behavior. Present the structured acknowledgment: feature name, **status**, decision count, open questions, constraints. **STOP:** Honor every logged decision and constraint as an active commitment.
    - **Not found** → ask the user: "Is there a design doc or blueprint for this feature, or do we work from what we've discussed?" Accept either answer gracefully:
      - Doc provided → load it and follow it.

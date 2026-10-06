@@ -1,10 +1,10 @@
 # Requirement Forge — Output Templates
 
-Read this file when writing `.lattice/requirements/` documents. Use these templates exactly.
+Read this file when writing `<requirements_base>` documents (resolved via `lattice-store`; default `.lattice/requirements/`). Use these templates exactly.
 
 ---
 
-## Apex File: `.lattice/requirements/index.md`
+## Apex File: `<requirements_base>index.md`
 
 Thin and rarely hand-touched. Everything below the boundary comment is generated at Step 6 by scanning `epics/*.md` headers — never hand-append a row here.
 
@@ -43,7 +43,7 @@ last_updated: [Date]
 
 ---
 
-## Epic File: `.lattice/requirements/epics/{epic-slug}.md`
+## Epic File: `<requirements_base>epics/{epic-slug}.md`
 
 Header is hand-authored (written once at Step 3, rarely revisited). Feature table is generated at Step 6 — never hand-append a row.
 
@@ -83,7 +83,7 @@ Content from source materials intentionally not mapped to any feature in this cy
 
 ---
 
-## Feature File: `.lattice/requirements/features/{feature-name}.md`
+## Feature File: `<requirements_base>features/{feature-name}.md`
 
 ```markdown
 ---

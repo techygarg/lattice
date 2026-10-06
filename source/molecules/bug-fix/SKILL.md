@@ -18,6 +18,7 @@ Load these skills based on bug scope:
 7. `framework:architecture` -- Layer placement and dependency direction. (conditional: layer placement is in question — Steps 2/4/5)
 8. `framework:domain-driven-design` -- Domain invariants and aggregate behavior. (conditional: domain invariants involved — Steps 2/5)
 9. `framework:secure-coding` -- Trust bounds and sensitive data handling. (conditional: trust boundary crossed — Steps 2/5)
+10. `framework:lattice-store` -- Resolve where living documents live; derive the store from an out-of-repo requirement doc. (always)
 
 ## Workflow
 
@@ -26,6 +27,7 @@ Load these skills based on bug scope:
 Start from the failure, not from a proposed fix.
 
 - Gather the **observed behavior**, the **expected behavior**, the **reproduction path**, and any evidence: failing test, error message, stack trace, log excerpt, request payload, recent change.
+- **Derive the store**: if the user named a requirement doc, run `framework:lattice-store` Derive Behavior. None named → ask once: "Is there a requirement doc for this work?" — "no" or an external reference (URL, ticket ID) is a fine answer; config and defaults then apply. Do this before loading learnings or context docs.
 - Run `framework:learning-harvest` Load behavior. Focus hint: "bug investigation — focus: reliability, quality signals".
 - Run `framework:context-anchoring` Document Discovery to check for an existing context doc covering the affected feature/module:
   - **Found** → Load behavior. Honor every logged decision and constraint as an active commitment while diagnosing. An open investigation of this same bug is already logged in it → confirm with the user whether to resume that investigation or start fresh.

@@ -7,7 +7,7 @@ AI assistants structured thinking. Skills are markdown files with no runtime or 
 
 ```
 source/
-├── atoms/{skill-name}/SKILL.md              # Single-principle guardrails (11 skills)
+├── atoms/{skill-name}/SKILL.md              # Single-principle guardrails (12 skills)
 │   └── references/defaults.md               # Embedded defaults for config resolution
 ├── molecules/{skill-name}/SKILL.md           # Multi-step workflows composing atoms (9 skills)
 └── refiners/{skill-name}/SKILL.md            # Guided interviews producing .lattice/ config (7 skills)
@@ -72,7 +72,7 @@ Any reference to a host-provided path (e.g. `CLAUDE_PLUGIN_ROOT`) must sit in an
 - Section order: Config Resolution → Self-Validation Checklist → Active Anti-Pattern Scan → principle content
 - Self-Validation Checklist: numbered, labeled, imperative STOP language ("STOP and verify ALL...")
 - Anti-Pattern Scan: checkbox format ("[ ] God Function: ...")
-- Code-quality atoms have references/defaults.md and Ambiguity Signals sections; special atoms (knowledge-priming, design-first, context-anchoring, collaborative-judgment, learning-harvest) do not
+- Code-quality atoms have references/defaults.md and Ambiguity Signals sections; special atoms (knowledge-priming, design-first, context-anchoring, collaborative-judgment, learning-harvest, lattice-store) do not
 - The `architecture` atom is unified: sub-skills for clean architecture (default) and other styles; resolves `paths.architecture` with embedded defaults plus overlay/override from the team's document (see the atom's Config Resolution)
 - Canonical example: source/atoms/clean-code/SKILL.md
 
@@ -134,12 +134,13 @@ Cross-reference via links. Never duplicate content across docs.
 - **Overlay vs override**: overlay applies custom sections on top of defaults (matched by heading); override fully replaces
 - **STOP language + numbered constraints**: creates cognitive boundaries for AI compliance
 - **Checkbox anti-patterns**: triggers AI completion behavior
-- **.lattice/ folder structure**: all persistent outputs in subfolders, only config.yaml at root. Known subfolders: `standards/` (refiner outputs), `context/` (feature anchor docs), `learnings/` (operational learnings managed by learning-harvest atom), `reviews/` (review log), `insights/` (architecture-compass output), `requirements/` (epic/feature specs produced by requirement-forge). New molecules that produce living documents must write into an existing or new named subfolder — never at the `.lattice/` root.
+- **.lattice/ folder structure**: all persistent outputs in subfolders, only config.yaml at root. Known subfolders: `standards/` (refiner outputs), `context/` (feature anchor docs), `learnings/` (operational learnings managed by learning-harvest atom), `reviews/` (review log), `insights/` (architecture-compass output), `requirements/` (epic/feature specs produced by requirement-forge). New molecules that produce living documents must write into an existing or new named subfolder — never at the `.lattice/` root. Living-document locations (`context/`, `learnings/`, `reviews/`, `requirements/`) are defaults, resolved at runtime by the `lattice-store` atom (session value → derived from an out-of-repo requirement doc → `lattice.store.*` in config → legacy `paths.*` → default); a new living-document type adds a key there rather than hardcoding a path.
 - **Session resume pattern** (planning molecules only, see Molecules section above): check for an existing living document at Step 1; if found, resume from the earliest incomplete step rather than restarting.
 
 ## Anti-Patterns
 
 - Duplicating atom content inside molecules — reference atoms, never inline their rules
+- Hardcoding a living-document path (`.lattice/context/`, `.lattice/learnings/`, `.lattice/reviews/`, `.lattice/requirements/`) instead of resolving it via `framework:lattice-store`
 - Generic language ("apply best practices") — be specific and imperative
 - Mixing doc concerns (rationale in how-it-works, mechanics in framework-intelligence)
 - Skills without trigger phrases in the description field
@@ -158,7 +159,7 @@ After modifying any skill in `source/`:
 ./tools/install.sh /path/to/your-ai-tool/skills/
 ```
 
-Copies all 27 skills (flattened) into the provided skills directory. Pass the skills folder of whichever AI tool you are using (e.g. `.claude/skills/`, `.cursor/skills/`, `.codex/skills/`). Verify the skill loads correctly.
+Copies all 28 skills (flattened) into the provided skills directory. Pass the skills folder of whichever AI tool you are using (e.g. `.claude/skills/`, `.cursor/skills/`, `.codex/skills/`). Verify the skill loads correctly.
 
 Also regenerate the shared, git-tracked distribution folder before committing:
 
