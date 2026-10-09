@@ -1,7 +1,8 @@
 # Lattice
 
 Composable AI skills framework — three tiers (atoms, molecules, refiners) that teach
-AI assistants structured thinking. Skills are markdown files with no runtime or build step.
+AI assistants structured thinking. Skills are markdown files with no runtime; the only build step is
+`tools/install.sh`, which copies `source/` flat and expands shared includes.
 
 ## Repository Structure
 
@@ -10,8 +11,9 @@ source/
 ├── atoms/{skill-name}/SKILL.md              # Single-principle guardrails (11 skills)
 │   └── references/defaults.md               # Embedded defaults for config resolution
 ├── molecules/{skill-name}/SKILL.md           # Multi-step workflows composing atoms (9 skills)
-└── refiners/{skill-name}/SKILL.md            # Guided interviews producing .lattice/ config (7 skills)
-    └── assets/template*.md                   # Output template(s) with interview guidance
+├── refiners/{skill-name}/SKILL.md            # Guided interviews producing .lattice/ config (7 skills)
+│   └── assets/template*.md                   # Output template(s) with interview guidance
+└── shared/{name}.md                          # Snippets expanded into skills at install via `<!-- include: {name} -->`; never installed as skills
 skills/                                        # Generated, flat (no tier subfolders), git-tracked. The single
                                                 # distribution folder every host plugin manifest points at.
 docs/                                          # roles documented in full under Documentation Conventions below
@@ -26,7 +28,7 @@ docs/                                          # roles documented in full under 
     └── verification.md
 knowledge-base/                               # design workspace; don't read until asked explicitly
 tools/
-├── install.sh                                # Copies all skills flattened into the provided skills directory
+├── install.sh                                # Copies all skills flattened into the provided skills directory; expands includes
 └── build-skills.sh                           # Regenerates the shared root skills/ from source/
 agents/
 └── verifier.md                               # Claude Code subagent: runs .lattice/verification.yaml stages, returns a JSON verdict
@@ -87,6 +89,7 @@ Any reference to a host-provided path (e.g. `CLAUDE_PLUGIN_ROOT`) must sit in an
 - Compose atoms via "Required Skills" section listing framework:{atom-name}
 - Numbered workflow steps; never inline atom content — reference and apply atoms
 - Canonical example: source/molecules/code-forge/SKILL.md
+- Workflow molecules (all except `lattice-init`, `refiners-update`) carry `<!-- include: additional-instructions -->` on its own line directly before `## Workflow`. `tools/install.sh` expands it from `source/shared/additional-instructions.md`, with `__SKILL_KEY__` replaced by the folder name in snake_case. The section reads `additional_instructions.{molecule_key}` from config: user lines with highest priority over everything, gates included, shown verbatim at session start, no runtime policing. Never write the section inline — edit the snippet. Placement guidance (vs `AGENTS.md`/`CLAUDE.md` vs standards) lives in docs/configuration.md.
 
 Two distinct molecule types — apply the right conventions for each:
 
@@ -158,7 +161,7 @@ After modifying any skill in `source/`:
 ./tools/install.sh /path/to/your-ai-tool/skills/
 ```
 
-Copies all 27 skills (flattened) into the provided skills directory. Pass the skills folder of whichever AI tool you are using (e.g. `.claude/skills/`, `.cursor/skills/`, `.codex/skills/`). Verify the skill loads correctly.
+Copies all 27 skills (flattened) into the provided skills directory and expands `<!-- include: {name} -->` lines from `source/shared/` — it fails if a snippet is missing. Pass the skills folder of whichever AI tool you are using (e.g. `.claude/skills/`, `.cursor/skills/`, `.codex/skills/`). Verify the skill loads correctly.
 
 Also regenerate the shared, git-tracked distribution folder before committing:
 

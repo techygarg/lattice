@@ -19,6 +19,8 @@ Load these skills based on refactor scope (see Steps 3, 5, 6 for conditional use
 9. `framework:domain-driven-design` -- Aggregate boundaries and domain behavior. (conditional: domain rules move or sharpen in Step 6)
 10. `framework:secure-coding` -- Trust bounds, authorization, sensitive data handling. (conditional: security-sensitive code touched in Step 6)
 
+<!-- include: additional-instructions -->
+
 ## Workflow
 
 ### Step 1: Establish Refactor Context

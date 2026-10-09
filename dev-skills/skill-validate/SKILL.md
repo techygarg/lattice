@@ -64,6 +64,11 @@ ls source/atoms/{atom-name}/SKILL.md 2>/dev/null || echo "BROKEN REF: framework:
 For every `paths.{key}` config key referenced in a refiner or atom:
 - Check it appears in `docs/configuration.md` paths table
 
+For every `<!-- include: {name} -->` line:
+```bash
+ls source/shared/{name}.md 2>/dev/null || echo "BROKEN INCLUDE: {name}"
+```
+
 For every `.lattice/{subfolder}/` path referenced in a molecule:
 - Check that subfolder is in the known subfolders list in `PROJECT.md`
 

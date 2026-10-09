@@ -9,6 +9,7 @@ Lattice ships as a plugin to multiple AI coding tools from one shared skill set.
 ## How it works
 
 - `source/` is the canonical, tiered skill tree (`atoms/`, `molecules/`, `refiners/`) — where skills are authored. See [how-it-works.md](how-it-works.md) for the skill mechanics themselves.
+- `source/shared/` holds snippets used by several skills (today: the molecules' Additional Instructions section). A skill marks the spot with `<!-- include: {name} -->`; the build swaps in the snippet, so every generated skill is complete on its own.
 - `skills/` is generated, flat (no tier subfolders), and git-tracked — the single distribution folder every host manifest points at. Regenerate it after any change under `source/`:
   ```bash
   ./tools/build-skills.sh

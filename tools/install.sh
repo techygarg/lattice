@@ -3,6 +3,33 @@ set -euo pipefail
 
 LATTICE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 SKILLS_SOURCE="$LATTICE_DIR/source"
+SHARED_DIR="$SKILLS_SOURCE/shared"
+INCLUDE_PATTERN='^<!-- include: [a-z0-9-]+ -->$'
+
+# Replace each `<!-- include: {name} -->` line in an installed SKILL.md with
+# source/shared/{name}.md, substituting __SKILL_KEY__ with the skill's config key
+# (folder name, hyphens -> underscores). Fails on a missing snippet.
+expand_includes() {
+  local file="$1" key="$2" tmp
+  grep -Eq "$INCLUDE_PATTERN" "$file" || return 0
+  tmp="$file.tmp"
+  if ! awk -v shared="$SHARED_DIR" -v key="$key" -v pattern="$INCLUDE_PATTERN" '
+    $0 ~ pattern {
+      path = shared "/" $3 ".md"
+      if ((getline line < path) <= 0) { print "error: missing snippet " path > "/dev/stderr"; exit 1 }
+      do { gsub(/__SKILL_KEY__/, key, line); print line } while ((getline line < path) > 0)
+      close(path)
+      next
+    }
+    { print }
+  ' "$file" > "$tmp"; then
+    rm -f "$tmp"
+    echo "error: include expansion failed in $file" >&2
+    exit 1
+  fi
+  cat "$tmp" > "$file"
+  rm -f "$tmp"
+}
 
 usage() {
   cat <<EOF
@@ -51,6 +78,7 @@ for tier in atoms molecules refiners; do
     fi
 
     cp -R "$skill_dir" "$DEST/$skill_name"
+    expand_includes "$DEST/$skill_name/SKILL.md" "${skill_name//-/_}"
     count=$((count + 1))
   done
 done

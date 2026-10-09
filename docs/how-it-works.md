@@ -137,6 +137,8 @@ See [docs/configuration.md](configuration.md) for the complete list of valid con
 
 Molecules are orchestrated multi-step workflows. Each molecule composes multiple atoms, applying them at the right stage of the workflow. Molecules reference atoms -- they do not duplicate atom content.
 
+Every workflow molecule also reads its own optional `additional_instructions.{molecule}` lines from `.lattice/config.yaml` before Step 1 — a few project-specific habits applied with highest priority. See [configuration.md](configuration.md#additional_instructions-key).
+
 ### Shared pattern: lifecycle molecules
 
 Five molecules share a common session infrastructure: **design-blueprint**, **code-forge**, **bug-fix**, **refactor-safely**, and **review**.

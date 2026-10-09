@@ -19,6 +19,8 @@ Load these skills based on bug scope:
 8. `framework:domain-driven-design` -- Domain invariants and aggregate behavior. (conditional: domain invariants involved — Steps 2/5)
 9. `framework:secure-coding` -- Trust bounds and sensitive data handling. (conditional: trust boundary crossed — Steps 2/5)
 
+<!-- include: additional-instructions -->
+
 ## Workflow
 
 ### Step 1: Establish Bug Context

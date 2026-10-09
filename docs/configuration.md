@@ -26,6 +26,10 @@ paths:
 
 architecture_mode: clean
 requirements_layout: sharded
+
+additional_instructions:
+  design_blueprint:
+    - Suffix the context doc name with the platform: {feature}-ios or {feature}-android.
 ```
 
 ## Top-level Fields
@@ -37,6 +41,7 @@ requirements_layout: sharded
 | `paths` | map | Logical key → file path mappings. All keys are optional. |
 | `architecture_mode` | string | Architecture enforcement mode. `clean` (default) or `custom`. See below. |
 | `requirements_layout` | string | Requirements folder layout. `sharded` (current) or `flat` (legacy, pre-migration). See below. |
+| `additional_instructions` | map | Molecule key → list of short workflow instructions, applied with highest priority when that molecule runs. See below. |
 
 ## `paths` Keys
 
@@ -83,6 +88,50 @@ Controls whether `requirement-forge` treats `.lattice/requirements/` as sharded-
 Set automatically — by `requirement-forge` when it creates the first epic in a new project, or by `lattice-init`'s migration step for existing projects. Not intended to be hand-edited.
 
 Requirements do not have to live in this repo at all — see `docs/practical-guide.md` for teams that track requirements in an external system instead.
+
+## `additional_instructions` Key
+
+A few lines of your own workflow habits for a molecule — what to read first, how to name its output, which extra check to run — loaded only when that molecule runs. One line or a list. Supported keys: `requirement_forge`, `design_blueprint`, `code_forge`, `refactor_safely`, `bug_fix`, `review`, `architecture_compass`. Setup molecules (`lattice-init`, `refiners-update`) do not read it.
+
+```yaml
+additional_instructions:
+  design_blueprint:
+    - Suffix the context doc name with the platform: {feature}-ios or {feature}-android.
+    - Before designing, read the other platform's context doc if it exists.
+    - In the handoff, name the reviews this design needs: eng review always, design review if it has a UI.
+```
+
+| Rule | Behavior |
+|------|----------|
+| **Highest priority** | These lines sit on top of every other layer — the molecule's own steps, approval gates, and STOP rules, the atoms it composes, your standards documents, and operational learnings. On conflict, the line wins. A line can add a gate or remove one; that is your call. |
+| **Visible** | The molecule shows the loaded lines verbatim at session start, so anyone reading the session can see what changed its behavior. |
+| **Molecules only** | Atoms are shared by many molecules; changing one would quietly change all of them. There is no atom-level key; a line can still override an atom's rule, but only inside that molecule's sessions. |
+
+Nothing below is enforced — the molecule applies whatever you write. It is advice for keeping the file useful.
+
+### Choosing where an instruction goes
+
+The three places load at different times and serve different purposes. Pick by asking two questions, in order:
+
+1. **Does it need to apply when this molecule is not running?** (a plain chat, a quick edit, another molecule) → **`AGENTS.md` / `CLAUDE.md`**. Your agent instruction file loads in every session, cross-cutting. Lattice never reads or replaces it.
+2. **Does it shape the artifact or the session?** If it changes *what the output contains* (spec format, ticket ID on every spec, coding or architecture rules) → usually **a standards document** under `.lattice/standards/`, via the matching refiner, so every molecule using that atom picks it up; a short rule meant only for this molecule's runs can live here. If it changes *how this molecule's session runs* (what to read first, how to name the output, which extra check or review to call for) → **`additional_instructions.{molecule}`**.
+
+| | `AGENTS.md` / `CLAUDE.md` | `additional_instructions.{molecule}` | `.lattice/standards/*.md` |
+|---|---|---|---|
+| **Scope** | Every agent session, cross-cutting | One molecule's sessions only | The atom(s) that read the document, in every molecule that composes them |
+| **Loads** | Always | Only when that molecule runs | When the atom runs |
+| **Holds** | Repo-wide habits: build/test commands, commit and branch rules, tone, "never touch X" | Workflow habits for that molecule: inputs to read, output naming, extra checks, handoff steps | Durable rules for what the artifact must look like |
+| **Size** | Whatever your host tolerates | A handful of lines — they load on every run | A full document |
+| **Example** | "Run `make test` before saying done." | "Before designing, read the other platform's context doc if it exists." | "Every spec carries the Jira ticket ID." |
+
+**Common mistakes**
+
+- Copying `AGENTS.md` / `CLAUDE.md` lines here. If the agent already loads it every session, repeating it costs tokens and creates a second source that drifts.
+- Moving cross-cutting rules here to save tokens. A line under `design_blueprint` is invisible to every other session — the agent will not follow it during a quick fix or a different molecule.
+- Growing a full rule set here. A few standard lines are fine; once it reads like a standards document, a refiner's document is easier to maintain and shared by every molecule that uses the atom.
+- Same line under several molecules. If it applies to every Lattice workflow and beyond, it belongs in `AGENTS.md` / `CLAUDE.md`.
+
+Not hand-edited by any skill — write and maintain it yourself.
 
 ## Custom Document Frontmatter
 

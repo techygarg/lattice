@@ -47,7 +47,7 @@ git clone https://github.com/techygarg/lattice.git
 cd lattice
 ```
 
-Skills are plain markdown files. Open any `SKILL.md` in an editor and you're working.
+Skills are plain markdown files. Open any `SKILL.md` in an editor and you're working. One exception: a line like `<!-- include: additional-instructions -->` is replaced at install time with `source/shared/additional-instructions.md` — edit shared text there, not inline.
 
 ## Repository Structure
 
@@ -59,14 +59,15 @@ source/
 │       └── defaults.md       # Embedded defaults (code-quality atoms only)
 ├── molecules/{skill-name}/
 │   └── SKILL.md
-└── refiners/{skill-name}/
-    ├── SKILL.md
-    └── assets/
-        └── template.md       # Interview output template
+├── refiners/{skill-name}/
+│   ├── SKILL.md
+│   └── assets/
+│       └── template.md       # Interview output template
+└── shared/{name}.md          # Snippets expanded into skills by install.sh (<!-- include: {name} -->)
 skills/                       # Generated, flat — run tools/build-skills.sh after editing source/
 docs/                         # Framework documentation
 tools/
-├── install.sh                # Copies skills into an AI tool's skills directory
+├── install.sh                # Copies skills into an AI tool's skills directory; expands includes
 └── build-skills.sh           # Regenerates the shared root skills/ from source/
 sample/                       # .NET 8 User Service spec — use this to test your skill
 ```

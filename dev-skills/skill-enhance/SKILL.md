@@ -21,7 +21,7 @@ description: "Full enhancement pipeline for an existing Lattice skill — rewrit
 
 ## Step 1: Scope and baseline
 
-1. Read PROJECT.md (single source of truth for conventions) and the target SKILL.md in full.
+1. Read PROJECT.md (single source of truth for conventions) and the target SKILL.md in full. For each `<!-- include: {name} -->` line, also read `source/shared/{name}.md` — `tools/install.sh` swaps it in at that spot. Text inside an include belongs to `source/shared/{name}.md` — edit it there, never inline it into one skill; the change reaches every skill that includes it.
 2. Classify: tier (atom / molecule / refiner); if molecule, its type per PROJECT.md — **generative** (`code-forge`, `refactor-safely`, `bug-fix`) or **planning/interactive** (`design-blueprint`, `architecture-compass`). This governs every later rule: never transplant confirmation gates into generative molecules, never strip them from planning ones.
 3. **STOP: capture the full git diff of target + likely-touched files BEFORE any edit**, written to a temp file whose path you will hand to the Step 5 verifier. This baseline is the preservation oracle for Steps 3-5. Without it, "did we drop anything?" is unanswerable.
 
