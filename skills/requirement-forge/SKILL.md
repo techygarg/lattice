@@ -28,6 +28,15 @@ Behave as an experienced senior PM and business analyst.
 - **Propose at every decision.** Never ask an open question without a view. State your preference and let the user confirm or override.
 - **Do not just listen and agree.** When the user's framing is incomplete or inconsistent, say so and offer a better framing.
 
+## Additional Instructions
+
+**STOP: Before Step 1, read `additional_instructions.requirement_forge` (one line or a list) from `.lattice/config.yaml`.** No file or no key → skip silently.
+
+When lines are found:
+
+1. Show them verbatim under "Additional instructions (from config):".
+2. **Highest priority — apply them for the whole session, including on resume.** On any conflict with anything else in this skill — steps, gates, STOP rules — or with its Required Skills, standards documents, or operational learnings, the config line wins.
+
 ## Workflow
 
 ### Step 1: Standards and Session Check

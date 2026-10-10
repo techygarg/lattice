@@ -105,7 +105,8 @@ Note the current skill counts (atoms/molecules/refiners) — they will need upda
 1. **YAML frontmatter** — name, description with trigger phrases
 2. **Required Skills** — list every atom as `framework:{name}` with always/conditional qualifier
 3. **Mode Detection** (if the molecule has modes) — how modes are invoked, what each changes
-4. **Workflow** — numbered steps with clear inputs and outputs per step
+4. **`<!-- include: additional-instructions -->`** on its own line directly before Workflow (workflow molecules; skip setup molecules like `lattice-init`) — `tools/install.sh` expands it from `source/shared/additional-instructions.md`. Never write the section inline.
+5. **Workflow** — numbered steps with clear inputs and outputs per step
 
 **Generative molecule conventions** (`code-forge`, `bug-fix`, `refactor-safely` pattern):
 - Linear numbered steps, no confirmation gates

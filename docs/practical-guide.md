@@ -182,6 +182,10 @@ Yes. Create the file directly under `.lattice/standards/` (e.g., `architecture.m
 
 Add them to `.lattice/standards/knowledge-base.md`. The knowledge-priming atom loads this document into every workflow, so any rule, convention, or constraint you put there is available to all atoms and molecules. You can edit it directly or use `/knowledge-priming-refiner` to build it via a guided interview.
 
+### I keep repeating the same instruction every time I run a molecule. Where do I put it?
+
+In `.lattice/config.yaml` under `additional_instructions.{molecule}` (e.g. `design_blueprint`) — a few lines such as "suffix the context doc name with the platform" or "read the backend repo in `../api` before designing". The molecule shows them at session start and applies them above everything else, gates included. Keep it to a handful of lines, and only lines that matter while this molecule runs: anything every agent session needs belongs in `AGENTS.md` / `CLAUDE.md`, and rules for what the artifact must contain belong in a refiner's standards document. See [when to use which](configuration.md#choosing-where-an-instruction-goes).
+
 ---
 
 ## Workflow

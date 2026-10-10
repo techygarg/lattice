@@ -17,6 +17,8 @@ Read and apply in order before Step 1:
 6. `framework:architecture` -- Validate components, layers, dependency direction, and boundary rules (design mode). (Levels 2-4)
 7. `framework:domain-driven-design` -- Model aggregates, entities, value objects, events, and contracts (design mode). (Levels 2-4)
 
+<!-- include: additional-instructions -->
+
 ## Workflow
 
 ### Step 1: Establish Context
@@ -41,11 +43,11 @@ Read and apply in order before Step 1:
    - Either path resolved to the spec itself (not pasted constraints only) → Step 2's spec rule applies.
    - Conflict during design → surface via `framework:collaborative-judgment`. The user decides; record the change back in the requirement doc's `## Technical Constraints` if local, or in the Decisions Log if external — this molecule never writes to an external system.
 
-5. **Write the back-link**: if `requirement_doc` resolved to a readable local file at `.lattice/requirements/features/{feature-name}.md`, add to its `## Links` section: `- Design: [{feature-name}.md](../../context/{feature-name}.md)`. One discrete file edit; skip if the link is already present.
+5. **Write the back-link**: if `requirement_doc` resolved to a readable local file, add to its `## Links` section (create it at the end if missing): `- Design: [{context-doc-filename}]({path from the requirement doc to this context doc})`. Several context docs may link one requirement (e.g. one per platform) — one line each. One discrete file edit; skip if this context doc's link is already present.
 
 ### Step 2: Walk the Design Levels
 
-Run design-first's Entry Assessment first: state the proposed entry level from its Complexity Calibration table and wait for confirmation. Record the confirmed entry level as the first Decisions Log entry: `[Entry] Start at Level N (name) — rationale.` If key use cases or success criteria are unclear, surface them via `framework:collaborative-judgment` before producing the first level output.
+Run design-first's Entry Assessment first: state the proposed entry level from its Complexity Calibration table and wait for confirmation. Record the confirmed entry level in the Decisions Log: `[Entry] Start at Level N (name) — rationale.` If key use cases or success criteria are unclear, surface them via `framework:collaborative-judgment` before producing the first level output.
 
 **Spec as Level 1**: when the context doc has no `## Design: Level` section yet and `requirement_doc` resolved to the spec itself, the spec is Level 1. Do not re-validate it — spec quality belongs to requirement-forge.
 - Propose entry at Level 2 or the calibrated level, whichever is later, and offer: "Level 1 comes from the linked spec. Starting at Level [N]. Want a capabilities walk-through first?" **STOP — do NOT advance until the user answers.**

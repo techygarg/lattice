@@ -53,7 +53,8 @@ Detailed per-tier checks for the skill-validate. Read this alongside PROJECT.md.
 1. YAML frontmatter
 2. `## Required Skills` (with `framework:{atom-name}` references and always/conditional labels)
 3. `## Workflow` (numbered steps)
-4. Optional: Mode Detection, Persona sections
+4. Optional: Mode Detection, Persona, Config Resolution sections
+5. Workflow molecules (all except `lattice-init`, `refiners-update`): `<!-- include: additional-instructions -->` on its own line directly before `## Workflow` — never the section written inline
 
 ### Required Skills checks
 - [ ] Every atom reference uses `framework:{name}` format

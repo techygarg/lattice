@@ -44,6 +44,8 @@ Review-standards doc has 7 sections map to workflow steps:
 
 Each step notes where config applies with "**Config override**" callouts.
 
+<!-- include: additional-instructions -->
+
 ## Workflow
 
 ### Step 1: Identify the Delta

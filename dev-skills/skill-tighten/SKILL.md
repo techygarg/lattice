@@ -34,7 +34,7 @@ Result: TIGHTENED ({N} changes) | CLEAN (no changes needed)
 
 ## Step 1: Read the skill
 
-Read the full SKILL.md. Also read all sibling files: `references/defaults.md`, `references/methodology-detail.md`, `assets/template.md`, or any file referenced by a `Read` instruction in the skill body.
+Read the full SKILL.md. Also read all sibling files: `references/defaults.md`, `references/methodology-detail.md`, `assets/template.md`, or any file referenced by a `Read` instruction in the skill body. For each `<!-- include: {name} -->` line, also read `source/shared/{name}.md` — `tools/install.sh` swaps it in at that spot.
 
 Do not edit yet — complete the full audit first.
 
@@ -132,6 +132,7 @@ Rules:
 - Do not remove checklist items, branching logic, gates, or output format specifications
 - Do not restructure sections — targeted cuts and additions only
 - If a T1 section contains one buried imperative, extract that line and discard the section wrapper
+- Text inside an include belongs to `source/shared/{name}.md` — edit it there, never inline it into one skill; the change reaches every skill that includes it.
 
 ---
 

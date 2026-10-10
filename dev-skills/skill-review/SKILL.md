@@ -26,7 +26,7 @@ description: "Deep behavioral audit of a Lattice skill — proposes 3 review per
 
 ## Step 1: Read the skill
 
-Read the full SKILL.md and all referenced files (defaults.md, template.md, references/).
+Read the full SKILL.md and all referenced files (defaults.md, template.md, references/). For each `<!-- include: {name} -->` line, also read `source/shared/{name}.md` — `tools/install.sh` swaps it in at that spot.
 
 Form a clear understanding of:
 - What the skill claims to do and who uses it
@@ -206,6 +206,7 @@ If no findings remain, state that no fixes are recommended and stop.
 
 For each confirmed fix:
 - Make the minimal change that addresses the gap. **STOP: do not rewrite surrounding content.**
+- Text inside an include belongs to `source/shared/{name}.md` — edit it there, never inline it into one skill; the change reaches every skill that includes it.
 - After each edit, state: what changed, which gap it closes, which persona(s) raised it
 - **STOP: do not fix warnings or observations unless the user explicitly asks.**
 

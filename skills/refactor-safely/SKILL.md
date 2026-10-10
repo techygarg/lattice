@@ -19,6 +19,15 @@ Load these skills based on refactor scope (see Steps 3, 5, 6 for conditional use
 9. `framework:domain-driven-design` -- Aggregate boundaries and domain behavior. (conditional: domain rules move or sharpen in Step 6)
 10. `framework:secure-coding` -- Trust bounds, authorization, sensitive data handling. (conditional: security-sensitive code touched in Step 6)
 
+## Additional Instructions
+
+**STOP: Before Step 1, read `additional_instructions.refactor_safely` (one line or a list) from `.lattice/config.yaml`.** No file or no key → skip silently.
+
+When lines are found:
+
+1. Show them verbatim under "Additional instructions (from config):".
+2. **Highest priority — apply them for the whole session, including on resume.** On any conflict with anything else in this skill — steps, gates, STOP rules — or with its Required Skills, standards documents, or operational learnings, the config line wins.
+
 ## Workflow
 
 ### Step 1: Establish Refactor Context

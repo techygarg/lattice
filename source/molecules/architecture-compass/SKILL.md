@@ -14,6 +14,8 @@ Read, apply:
 3. `framework:domain-driven-design` -- Strategic DDD only: bounded contexts, domain seams (conditional: only when domain complexity warrants it)
 4. `framework:collaborative-judgment` -- Surface judgment calls during co-design rounds (always)
 
+<!-- include: additional-instructions -->
+
 ## Workflow
 
 ### Step 1: Load Existing Context

@@ -19,6 +19,8 @@ Read and apply:
 8. `framework:secure-coding` -- Trust bounds, injection prevention, secrets handling. (conditional: trust-boundary code only)
 9. `framework:test-quality` -- AAA structure, isolation, assertion quality, naming. (always when writing tests)
 
+<!-- include: additional-instructions -->
+
 ## Workflow
 
 ### Step 1: Establish Implementation Context

@@ -19,6 +19,15 @@ Load these skills based on bug scope:
 8. `framework:domain-driven-design` -- Domain invariants and aggregate behavior. (conditional: domain invariants involved — Steps 2/5)
 9. `framework:secure-coding` -- Trust bounds and sensitive data handling. (conditional: trust boundary crossed — Steps 2/5)
 
+## Additional Instructions
+
+**STOP: Before Step 1, read `additional_instructions.bug_fix` (one line or a list) from `.lattice/config.yaml`.** No file or no key → skip silently.
+
+When lines are found:
+
+1. Show them verbatim under "Additional instructions (from config):".
+2. **Highest priority — apply them for the whole session, including on resume.** On any conflict with anything else in this skill — steps, gates, STOP rules — or with its Required Skills, standards documents, or operational learnings, the config line wins.
+
 ## Workflow
 
 ### Step 1: Establish Bug Context
