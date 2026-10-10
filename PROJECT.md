@@ -152,6 +152,7 @@ Cross-reference via links. Never duplicate content across docs.
 - Writing transformation slices that contain non-structural items (naming, test coverage, code style) — slices must map to structural deltas only
 - Skipping the session resume check in planning molecules — always check for an existing living document before starting fresh
 - Using `context-anchoring` in molecules that own their own living document structure — `context-anchoring` is scoped to feature dev context docs (design-blueprint, code-forge, refactor-safely, bug-fix). Molecules with distinct doc structures (architecture-compass, requirement-forge) manage session persistence natively via Step 1 resume logic
+- Hardcoding a living-document path (`.lattice/context/`, `.lattice/learnings/...`) in a molecule or refiner — resolve through the owning atom's Config Resolution (`context-anchoring` for `paths.context_base`, `learning-harvest` for `paths.operational_learnings`)
 
 ## Testing Changes
 

@@ -428,7 +428,7 @@ Cross-section impact:
 
 ### File Location
 
-Managed by the `learning-harvest` atom at `.lattice/learnings/operational-learnings.md`. The review molecule invokes learning-harvest's Harvest behavior at session end — this section provides additional capture guidance.
+Managed by the `learning-harvest` atom at `paths.operational_learnings` (default `.lattice/learnings/operational-learnings.md`). The review molecule invokes learning-harvest's Harvest behavior at session end — this section provides additional capture guidance.
 
 ### Entry Format
 
@@ -499,7 +499,7 @@ Customizable:
 
 Fixed:
 - Log must include date, scope, and result counts at minimum
-- File path is .lattice/reviews/review-log.md (configurable via config.yaml)
+- File path is .lattice/reviews/review-log.md (relocate via an additional_instructions.review line in config.yaml)
 - Log is append-only (no overwriting)
 
 Cross-section impact:
@@ -509,7 +509,7 @@ Cross-section impact:
 
 ### File Location
 
-Append to `.lattice/reviews/review-log.md`. Create the file with a `# Review Log` heading if it doesn't exist.
+Append to the review log (default `.lattice/reviews/review-log.md`; an `additional_instructions.review` line can relocate it). Create the file with a `# Review Log` heading if it doesn't exist.
 
 ### Entry Format
 

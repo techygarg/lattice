@@ -47,9 +47,9 @@ If multiple language markers are found in the repo root, note all of them and as
 - `.lattice/standards/clean-code.md` → clean code refiner output
 - `.lattice/standards/ddd-principles.md` → DDD refiner output
 - `.lattice/standards/review-standards.md` → review refiner output
-- `.lattice/context/` → feature context documents (count them)
-- `.lattice/learnings/operational-learnings.md` → accumulated operational learnings (managed by learning-harvest atom)
-- `.lattice/reviews/review-log.md` → review log
+- Context base → feature context documents (count them). Resolve per `context-anchoring` Config Resolution: `paths.context_base`, else `.lattice/context/`.
+- Operational learnings → accumulated operational learnings. Resolve per `learning-harvest` Config Resolution: `paths.operational_learnings`, else `.lattice/learnings/operational-learnings.md`.
+- Review log → the path an `additional_instructions.review` line names, else `.lattice/reviews/review-log.md`.
 - `.lattice/requirements/index.md` → check shape: if epic sections and feature tables are written directly inside it (no `epics/` directory alongside) and `requirements_layout` is absent from config, flag as **legacy layout — upgrade available**
 - `.lattice/verification.yaml` → verification stages config consumed by the verification runner
 - `.lattice/scripts/run-verification.sh` → vendored verification runner
@@ -76,9 +76,9 @@ Running mode: **[customized -- standards docs active below / built-in defaults -
 - Clean code standards: [.lattice/standards/clean-code.md / built-in default]
 - DDD standards: [.lattice/standards/ddd-principles.md / built-in default]
 - Review standards: [.lattice/standards/review-standards.md / built-in default]
-- Context documents: [N found / none]
-- Review learnings: [found at .lattice/learnings/operational-learnings.md / none]
-- Review log: [found at .lattice/reviews/review-log.md / none]
+- Context documents: [N found at <resolved context base> / none]
+- Review learnings: [found at <resolved learnings path> / none]
+- Review log: [found at <resolved review log path> / none]
 - Requirements layout: [sharded / legacy — upgrade available / not found]
 - Verification suite: [.lattice/verification.yaml configured / not set up]
 ```

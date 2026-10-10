@@ -186,6 +186,30 @@ Add them to `.lattice/standards/knowledge-base.md`. The knowledge-priming atom l
 
 In `.lattice/config.yaml` under `additional_instructions.{molecule}` (e.g. `design_blueprint`) — a few lines such as "suffix the context doc name with the platform" or "read the backend repo in `../api` before designing". The molecule shows them at session start and applies them above everything else, gates included. Keep it to a handful of lines, and only lines that matter while this molecule runs: anything every agent session needs belongs in `AGENTS.md` / `CLAUDE.md`, and rules for what the artifact must contain belong in a refiner's standards document. See [when to use which](configuration.md#choosing-where-an-instruction-goes).
 
+### Our specs live in a separate repo. Can requirement-forge and design-blueprint use them?
+
+Yes. Only `requirement-forge` writes requirements, so one instruction moves them:
+
+```yaml
+additional_instructions:
+  requirement_forge:
+    - Write and read requirements under ~/specs/.lattice/requirements/
+```
+
+`design-blueprint` reaches the spec through the context doc's `requirement_doc` link, which can point anywhere local, and writes its back-links as relative paths between the two files. Context docs and learnings stay in the code repo by default — they describe this codebase. Your agent host must allow access outside the workspace.
+
+### Can I keep the review log somewhere else?
+
+Yes — only the `review` molecule writes it:
+
+```yaml
+additional_instructions:
+  review:
+    - Append the review log to docs/reviews/review-log.md
+```
+
+To move context docs or learnings, use `paths.context_base` and `paths.operational_learnings` instead; every molecule that touches them resolves through the owning atom. See [path values](configuration.md#paths-keys).
+
 ---
 
 ## Workflow

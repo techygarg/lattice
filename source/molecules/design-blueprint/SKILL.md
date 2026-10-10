@@ -25,7 +25,7 @@ Read and apply in order before Step 1:
 
 1. Run `framework:learning-harvest` Load behavior. Focus hint: "design session — focus: design patterns, reliability, structural health".
 2. Set up the feature's living doc with `framework:context-anchoring`:
-   - **Discover**: scan `.lattice/context/` for an existing anchor doc matching the feature name or frontmatter.
+   - **Discover**: run context-anchoring Document Discovery — scan the context base directory (per the atom's Config Resolution) for an existing anchor doc matching the feature name or frontmatter.
    - **Found** → Load behavior. Present the structured acknowledgment: feature name, status, decision count, open questions, constraints. Then run the resume check below.
    - **Not found** → Create behavior. Confirm the feature name, summary, and requirement doc link with the user before creating. Then begin Step 2 — the Entry Assessment sets the entry level.
 
@@ -52,7 +52,7 @@ Run design-first's Entry Assessment first: state the proposed entry level from i
 **Spec as Level 1**: when the context doc has no `## Design: Level` section yet and `requirement_doc` resolved to the spec itself, the spec is Level 1. Do not re-validate it — spec quality belongs to requirement-forge.
 - Propose entry at Level 2 or the calibrated level, whichever is later, and offer: "Level 1 comes from the linked spec. Starting at Level [N]. Want a capabilities walk-through first?" **STOP — do NOT advance until the user answers.**
 - User wants the walk-through → enter at Level 1, using the spec as input.
-- Otherwise, save `## Design: Level 1 -- Capabilities` as one line: `Taken from [{spec-file}](../requirements/features/{spec-file}). Not re-walked.` — the link is relative to the context doc; an external spec gets its reference instead. Do not copy the spec.
+- Otherwise, save `## Design: Level 1 -- Capabilities` as one line: `Taken from [{spec-file}]({path from this context doc to the spec}). Not re-walked.` — compute the relative path from the actual locations of both files; an external spec gets its reference instead. Do not copy the spec.
 
 Drive the levels sequentially from the confirmed entry level through Level 4 via `framework:design-first`. Complexity Calibration sets how deep each level goes; it never removes a gate or skips persistence.
 

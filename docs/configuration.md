@@ -59,6 +59,8 @@ additional_instructions:
 | `context_base` | **Directory** path for per-feature living documents. Unlike all other keys, this is a directory, not a file. | (none — managed by `context-anchoring` atom) | `.lattice/context/` | `context-anchoring` atom | N/A |
 | `operational_learnings` | Operational learnings file — accumulated patterns from practice (design, implementation, review, repair). Living document managed by `learning-harvest` atom, not a standards doc. | (none — managed by `learning-harvest` atom) | `.lattice/learnings/operational-learnings.md` | `learning-harvest` atom | N/A (append-only living document, no overlay/override) |
 
+**Path values**: relative paths resolve from the repo root. Absolute paths and `~` work too, including locations outside the repo — your agent host must allow reading and writing there. The requirements folder and the review log have no `paths` key; to move them, add a line under [`additional_instructions`](#additional_instructions-key) for the molecule that writes them (recipes in `docs/practical-guide.md`).
+
 ## `architecture_mode` Key
 
 Controls which enforcement rules the `architecture` atom loads internally. This key determines the atom's behavior — it does not affect what other atoms or molecules do.
@@ -87,7 +89,7 @@ Controls whether `requirement-forge` treats `.lattice/requirements/` as sharded-
 
 Set automatically — by `requirement-forge` when it creates the first epic in a new project, or by `lattice-init`'s migration step for existing projects. Not intended to be hand-edited.
 
-Requirements do not have to live in this repo at all — see `docs/practical-guide.md` for teams that track requirements in an external system instead.
+Requirements do not have to live in this repo at all — see `docs/practical-guide.md` for teams that keep specs in a separate repo or track requirements in an external system instead.
 
 ## `additional_instructions` Key
 
