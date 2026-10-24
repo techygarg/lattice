@@ -59,7 +59,7 @@ Experiential patterns from practice. Complements standards (what should be) with
 **Entry format**: `- YYYY-MM-DD [context] Pattern — actionable takeaway`
 
 - `context`: type of session (e.g., "design", "implementation", "review", "bug fix", "refactoring"). Not a feature name — learnings are cross-cutting.
-- Each entry ONE bullet, max 2 lines, scannable in under 10 seconds.
+- Each entry ONE bullet, max 2 lines, scannable in under 10 seconds. **STOP: keep to two lines even when existing entries are longer — do not copy their length or shape.**
 
 ## Load Behavior
 
@@ -124,9 +124,9 @@ Invoked at session end. Composing workflow passes a **session context** (what ki
 
 4. **User decides.** Accept, edit, reject, add their own, or skip all. **STOP: do NOT argue for rejected entries.**
 
-5. **Write confirmed entries only.** Dedup against existing entries (update with a recurrence note if the same pattern exists). Create the file and directory if needed.
+5. **Write confirmed entries only.** Dedup against existing entries (if the same pattern exists, append `(recurred YYYY-MM-DD)` to that entry). **STOP: add the date only — if the takeaway changed, reword the entry within two lines.** Create the file and directory if needed.
 
-6. **Assess health.** Count entries per category and total (already read for dedup in Step 5). Any category exceeds ~10 entries, or total exceeds ~35 → note in one line: "Operational learnings is growing dense — say 'tighten learnings' to run Tighten standalone." Pattern recurred 4+ times → note it as a promotion candidate the same way. **STOP: do not run Tighten in this session** — flag only, never act.
+6. **Assess health.** Count entries per category and total (already read for dedup in Step 5). Any category exceeds ~10 entries, or total exceeds ~35 → note in one line: "Operational learnings is growing dense — say 'tighten learnings' to run Tighten standalone." An entry with 4+ `recurred` dates → note it as a promotion candidate the same way. **STOP: do not run Tighten in this session** — flag only, never act.
 
 ## Tighten Behavior
 
@@ -146,7 +146,7 @@ Before writing any entry, verify ALL. **STOP: if any fails, do not write.**
 3. **Experiential, not prescriptive** — STOP: Reads like "what we learned" not "what the rule should be." If it's a rule, it belongs in standards via a refiner.
 4. **Cross-cutting** — STOP: Applies beyond this feature. Feature-specific decisions belong in context anchor doc.
 5. **Actionable standalone** — STOP: a developer on a different feature can act on this without this conversation's context. Confidence level is not a gate — the user decides if it is worth capturing.
-6. **Not redundant** — STOP: Not already in standards, atom defaults, or existing learnings. At most, add recurrence note.
+6. **Not redundant** — STOP: Not already in standards, atom defaults, or existing learnings. At most, add a recurrence date.
 7. **Concise** — STOP: Scannable in 10 seconds. Two lines max.
 
 All checks pass on an entry → write it.
