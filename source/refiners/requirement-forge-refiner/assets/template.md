@@ -188,7 +188,7 @@ Priority lives at the feature level (frontmatter field).
 ## §7 Status Workflow
 
 <!-- INTERVIEW GUIDANCE:
-Default: draft → approved → in-design → implemented
+Default: draft → approved
 
 Ask: "Does this status workflow match how features move through your team's process? Do you need additional statuses?"
 
@@ -201,6 +201,7 @@ Common additions:
 - ready-for-design (after approval, before design starts)
 - in-development (after design approved, code in progress)
 - deprecated / cancelled
+- in-design / implemented (set by a person — the linked context doc's status already shows design and build progress)
 
 What is customisable: the entire workflow and status labels.
 What is fixed: a status field must exist in the feature file's frontmatter; requirement-forge writes only the first status and the agreed one — later statuses are set by a person.
@@ -208,16 +209,14 @@ What is fixed: a status field must exist in the feature file's frontmatter; requ
 
 Feature status progresses in this order:
 
-`draft` → `approved` → `in-design` → `implemented`
+`draft` → `approved`
 
 | Status | Meaning |
 |---|---|
 | draft | Being specced — not yet agreed |
 | approved | Spec agreed; ready for design-blueprint |
-| in-design | Design work is underway or complete for this feature |
-| implemented | Feature is built and shipped |
 
-requirement-forge sets `draft` when it first writes a feature file, and `approved` when the user confirms the finished spec — or a person sets `approved` after stakeholder review. `in-design` and `implemented` are set by a person; design-blueprint and code-forge never write requirement status.
+requirement-forge sets `draft` when it first writes a feature file, and `approved` when the user confirms the finished spec — or a person sets `approved` after stakeholder review. Progress after that is not tracked here: the spec's `- Design:` link leads to the context doc, whose own status shows whether the design is approved or the feature built. design-blueprint and code-forge never write requirement status.
 
 ---
 

@@ -96,16 +96,14 @@ Priority lives at the feature level (frontmatter). Not at the scenario level.
 
 ## §7 Status Workflow
 
-`draft` → `approved` → `in-design` → `implemented`
+`draft` → `approved`
 
 | Status | Meaning |
 |---|---|
 | draft | Being specced — not yet agreed by stakeholders |
 | approved | Spec agreed; ready for design-blueprint |
-| in-design | design-blueprint session in progress or complete |
-| implemented | code-forge complete; feature shipped |
 
-requirement-forge sets `draft` when it first writes a feature file, and `approved` when the user confirms the finished spec — or a person sets `approved` after stakeholder review. `in-design` and `implemented` are set by a person; design-blueprint and code-forge never write requirement status.
+requirement-forge sets `draft` when it first writes a feature file, and `approved` when the user confirms the finished spec — or a person sets `approved` after stakeholder review. Progress after that is not tracked here: the spec's `- Design:` link leads to the context doc, whose own status shows whether the design is approved or the feature built. design-blueprint and code-forge never write requirement status.
 
 ---
 
