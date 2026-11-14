@@ -115,7 +115,7 @@ A SaaS product adding notification preferences: invoices by email, product activ
 
 **Initialize.** `lattice-init` scans the codebase, identifies existing configuration, and suggests refiners in priority order. The team captures project identity, architecture conventions, and review expectations in `.lattice/`. This happens once per project but shapes every feature that follows.
 
-**Design.** `design-blueprint` loads project context and walks through five progressive design levels. The team decides where preference rules belong, whether notification settings live inside an existing user aggregate or deserve their own boundary, how channel-specific rules flow through contracts and validation. The approved blueprint is persisted as a living document. No code is written yet.
+**Design.** `design-blueprint` loads project context and walks through four progressive design levels. The team decides where preference rules belong, whether notification settings live inside an existing user aggregate or deserve their own boundary, how channel-specific rules flow through contracts and validation. The approved blueprint is persisted as a living document. No code is written yet.
 
 **Implement.** `code-forge` loads the blueprint plus prior operational learnings. It generates the domain model, application flow, persistence changes, and tests inside the project's architectural boundaries. Each component is verified against atom checklists after generation. The living document is enriched with implementation decisions.
 

@@ -21,12 +21,12 @@ last_updated: [Date]
 **Epic:** [from loaded standards or built-in default]
 **Feature:** [from loaded standards or built-in default]
 
-<!-- If loaded standards include §10 Domain Terminology, add: -->
+<!-- If loaded standards include a Domain Terminology section, add: -->
 ## Glossary
 
 | Term | Definition |
 |---|---|
-| [Term] | [Project-specific definition from standards §10] |
+| [Term] | [Project-specific definition from the standards' Domain Terminology section] |
 
 ---
 
@@ -45,7 +45,7 @@ last_updated: [Date]
 
 ## Epic File: `.lattice/requirements/epics/{epic-slug}.md`
 
-Header is hand-authored (written once at Step 3, rarely revisited). Feature table is generated at Step 6 — never hand-append a row.
+Header is hand-authored (written once at Step 3, rarely revisited). `## Planned Features` is written at Step 4 and shrinks as Step 5 writes each feature file. Feature table is generated at Step 6 — never hand-append a row.
 
 ```markdown
 ---
@@ -68,6 +68,11 @@ epic: [Epic Name]
 Content from source materials intentionally not mapped to any feature in this cycle.
 
 - [Item] — reason for deferral
+
+<!-- Written at Step 4 (or the single-feature fast path); Step 5 deletes each line as it writes that feature's file; delete the section when empty: -->
+## Planned Features
+
+- [Feature Name] — one-line description. Depends on: [feature names, or none]
 
 ## Features
 

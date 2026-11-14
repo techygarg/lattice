@@ -34,7 +34,7 @@ Feature is independently specced when ALL of the following hold:
 2. **No external design dependency** — design-blueprint can begin without waiting for another feature to be designed first.
 3. **Coherent user value** — delivers something a user can do on its own. Partial value is acceptable; zero value without another feature is not.
 
-Feature that cannot meet (1) → incomplete, do not write file.
+Feature that cannot meet (1) → incomplete: it stays `draft`, with each blocking question under Open Questions, until resolved.
 Feature that cannot meet (2) → record dependency in `depends_on` frontmatter and note the constraint.
 Feature that cannot meet (3) → challenge whether it is a feature or an internal technical slice.
 
@@ -105,6 +105,8 @@ Priority lives at the feature level (frontmatter). Not at the scenario level.
 | in-design | design-blueprint session in progress or complete |
 | implemented | code-forge complete; feature shipped |
 
+requirement-forge sets `draft` when it first writes a feature file, and `approved` when the user confirms the finished spec — or a person sets `approved` after stakeholder review. `in-design` and `implemented` are set by a person; design-blueprint and code-forge never write requirement status.
+
 ---
 
 ## §8 Naming Conventions
@@ -116,22 +118,3 @@ Priority lives at the feature level (frontmatter). Not at the scenario level.
 | Feature file name | kebab-case | `user-login.md` |
 | Scenario name | Verb phrase, sentence case | "User submits valid credentials" |
 | Open question | Imperative sentence ending in `?` | "Should rate limiting apply per user or per IP?" |
-
----
-
-## §9 Implementation Notes (Slices)
-
-Implementation notes describe the natural build sequence for the feature — what would be built first, second, third. Ordered "what" not "how". 2–5 slices per feature.
-
-**Level of detail**: behavioral, not technical. "Core form validation and submission" not "wire the zod schema to the POST /api/forms endpoint".
-
-**Purpose**: sequencing hint for design-blueprint and code-forge — not a task list.
-
-**Format**: numbered list, each a short phrase.
-
-```
-1. Core [behavior] — [what it enables]
-2. [Next behavior] — [what it adds]
-3. [Error/edge handling] — [what it protects]
-```
-

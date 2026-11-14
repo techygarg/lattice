@@ -52,7 +52,7 @@ Use `/requirement-forge` when the feature scope, problem statement, or acceptanc
 
 ### What is the structure requirement-forge produces?
 
-Three artifacts in `.lattice/requirements/`: a thin `index.md` apex file (definitions, glossary, and a generated list of epics), one `epics/{epic-slug}.md` per epic (hand-authored header plus a generated feature table listing name and summary), and per-feature files in `features/` — each carrying its own `status`, `priority`, and `depends_on` frontmatter, which is never mirrored into the rollups. Each feature file contains a problem statement, user/personas, scope (in-scope and out-of-scope), boundary conditions, assumptions, ordered scenarios (each with acceptance criteria), implementation notes, and open questions. If source documents were provided during intake, the relevant epic file also includes a Source Materials table (tracing which documents produced which features) and a Deferred Items section (content intentionally excluded from the current feature set). The feature file is the direct input to `design-blueprint`.
+Three artifacts in `.lattice/requirements/`: a thin `index.md` apex file (definitions, glossary, and a generated list of epics), one `epics/{epic-slug}.md` per epic (hand-authored header plus a generated feature table listing name and summary), and per-feature files in `features/` — each carrying its own `status`, `priority`, and `depends_on` frontmatter, which is never mirrored into the rollups. A spec stays `draft` until you approve it — at the end of a session requirement-forge asks once about the specs finished in it. Each feature file contains a problem statement, user/personas, scope (in-scope and out-of-scope), boundary conditions, assumptions, ordered scenarios (each with acceptance criteria), technical constraints, and open questions. If source documents were provided during intake, the relevant epic file also includes a Source Materials table (tracing which documents produced which features) and a Deferred Items section (content intentionally excluded from the current feature set). Features agreed but not yet specced are listed in their epic file under Planned Features. The feature file is the direct input to `design-blueprint`.
 
 ### What is a scenario in requirement-forge?
 
@@ -68,7 +68,7 @@ The molecule opens by asking whether you have existing material before assuming 
 
 ### My requirement-forge session ended before all features were specced. What happens next time?
 
-The molecule's first action is always to scan `.lattice/requirements/` for existing work. It classifies each feature file as complete, structurally incomplete (missing sections), or quality-suspect (present but with a spec quality issue flagged by the `requirement-quality` atom). It surfaces each issue one by one and asks whether to finish it, move on, or skip — no blanket restart. When you're done resolving incomplete features, it offers explicit re-entry points: add features to an existing epic, create a new epic, or update a specific spec.
+Nothing you confirmed is lost. A feature file is written as a draft as soon as its frame is confirmed and grows scenario by scenario, and features agreed but not yet specced are listed in their epic file. The molecule's first action is always to scan `.lattice/requirements/` for existing work. It lists, once, the specs still in progress, the planned features, and any file that is structurally incomplete or quality-suspect (flagged by the `requirement-quality` atom), and asks which to work on — an in-progress spec resumes at its next scenario. It also regenerates any epic table that an interrupted session left out of date. When nothing is outstanding, it offers explicit re-entry points: add features to an existing epic, create a new epic, or update a specific spec.
 
 ### I only want to spec one feature, not design a whole product. Does requirement-forge force me through a full epic structure?
 
@@ -96,7 +96,7 @@ It goes into the relevant epic's Deferred Items section — intentionally exclud
 
 ### Can I use the `requirement-quality` atom on its own to validate specs I already wrote?
 
-Yes. The atom works standalone — it does not require the molecule. Point it at any feature spec file and it runs the 12-item self-validation checklist (problem statement, scope, boundary conditions, assumptions, scenarios, ACs, independence, implementation notes, coherence) and the 17-item anti-pattern scan. It will flag issues like vague problem statements, missing failure scenarios, persona-less specs, hidden assumptions, and wrong granularity. Use it as a quality gate before handing any spec to `design-blueprint`.
+Yes. The atom works standalone — it does not require the molecule. Point it at any feature spec file and it runs the 11-item self-validation checklist (problem statement, scope, boundary conditions, assumptions, scenarios, ACs, independence, coherence) and the 16-item anti-pattern scan. It will flag issues like vague problem statements, missing failure scenarios, persona-less specs, hidden assumptions, and wrong granularity. Use it as a quality gate before handing any spec to `design-blueprint`.
 
 ---
 
@@ -232,7 +232,7 @@ Use `/design-blueprint` when the feature involves real design decisions — new 
 
 ### What is the "inside-out implementation order" in code-forge?
 
-Inside-out means code-forge implements from the innermost layer of your architecture outward, following the dependency direction of your loaded architecture doc — with clean architecture, for example: domain entities first, then application use cases, then adapters/infrastructure, then the entry points (controllers, handlers). This order ensures outer layers always depend on already-implemented inner layers and prevents placeholder stubs from leaking into the final code.
+Inside-out means code-forge implements from the innermost layer of your architecture outward, following the dependency direction of your loaded architecture doc — with clean architecture, for example: domain entities first, then infrastructure (repositories, providers), then application services, then the entry points (controllers, handlers). This order ensures outer layers always depend on already-implemented inner layers and prevents placeholder stubs from leaking into the final code.
 
 ---
 

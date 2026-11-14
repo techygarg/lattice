@@ -98,7 +98,7 @@ Every section gets attention and appears in the output.
 - **"We use MoSCoW priorities"** → Overlay §6 only.
 - **"We call them 'use cases' not 'scenarios'"** → Overlay §4 (rename + update any description that references "scenario").
 - **"We have a longer status workflow"** → Overlay §7.
-- **"We have domain-specific terms that should be consistent"** → Overlay with additions — add §10 Domain Terminology.
+- **"We have domain-specific terms that should be consistent"** → Overlay with additions — add §9 Domain Terminology.
 - **"Our features tend to be larger"** → Overlay §2 and §4 — adjust the size signals and max scenario count.
 
 ## Section-by-Section Interview Guide
@@ -121,17 +121,17 @@ When a dependency is triggered, inform the user: "Since you changed [X], we shou
 
 ### Overlay-specific section flow
 
-For each of the 9 default sections:
+For each of the 8 default sections:
 
 1. Summarize the section's key points in 2–3 sentences.
 2. Ask: "Does this match your project?"
 3. **Yes** → Move to the next section. This section will not appear in the output.
 4. **No** → Dive into the details using the template guidance. Produce the user's version.
-5. After all 9 sections, ask about additions.
+5. After all 8 sections, ask about additions.
 
 ### Override-specific section flow
 
-For each of the 9 default sections:
+For each of the 8 default sections:
 
 1. Present the section's full content.
 2. Ask: "Does this work as-is, or would you like to modify it?"
@@ -148,14 +148,14 @@ For each of the 9 default sections:
 3. Table of contents listing only included sections
 4. Only the sections the user changed or added — each must be self-contained and complete
 5. Section headings must match `template.md` exactly (the molecule matches sections by heading)
-6. New sections (§10+) included after the default sections
+6. New sections (§9+) included after the default sections
 7. Footer with project name, date, mode
 
 ### For override mode
 
 1. YAML frontmatter: `mode: override`
 2. Override preamble (from template)
-3. Full table of contents (all 9+ sections)
+3. Full table of contents (all 8+ sections)
 4. All sections: defaults for unchanged, user's version for changed, new sections at end
 5. Footer with project name, date, mode
 
@@ -197,7 +197,7 @@ Before writing the final document, verify:
 
 ### Override mode checks
 
-- [ ] All 9 default sections are present (plus any additions)
+- [ ] All 8 default sections are present (plus any additions)
 - [ ] §2 feature size signal is consistent with §4 max scenario count
 - [ ] §4 scenario nomenclature is consistent with §8 naming conventions
 - [ ] §5 AC format is consistent with how §4 describes scenario criteria

@@ -203,7 +203,7 @@ Common additions:
 - deprecated / cancelled
 
 What is customisable: the entire workflow and status labels.
-What is fixed: a status field must exist in the feature file's frontmatter.
+What is fixed: a status field must exist in the feature file's frontmatter; requirement-forge writes only the first status and the agreed one — later statuses are set by a person.
 -->
 
 Feature status progresses in this order:
@@ -216,6 +216,8 @@ Feature status progresses in this order:
 | approved | Spec agreed; ready for design-blueprint |
 | in-design | Design work is underway or complete for this feature |
 | implemented | Feature is built and shipped |
+
+requirement-forge sets `draft` when it first writes a feature file, and `approved` when the user confirms the finished spec — or a person sets `approved` after stakeholder review. `in-design` and `implemented` are set by a person; design-blueprint and code-forge never write requirement status.
 
 ---
 
@@ -248,39 +250,7 @@ What is fixed: file names must be filesystem-safe (no spaces, lowercase preferre
 
 ---
 
-## §9 Implementation Slices
-
-<!-- INTERVIEW GUIDANCE:
-Default: High-level "what" only, ordered chronologically. Each slice describes what will be built in that step — not how it will be implemented. 2–5 slices per feature.
-
-Purpose: give developers and designers a natural build order without prescribing implementation decisions. These are ordering hints, not story breakdowns.
-
-Ask: "How much detail do you want in the implementation slices section of feature files? High-level ordering hints, or more detailed breakdown?"
-
-Probing questions:
-- "Should slices reference specific components or keep it purely behavioral?"
-- "Is a 2–5 slice range appropriate, or do your features tend to need more?"
-
-What is customisable: level of detail, count range.
-What is fixed: slices are ordered chronologically and describe "what", not "how".
--->
-
-Implementation slices are ordering hints inside a feature file — they describe the natural build sequence without prescribing technical implementation.
-
-**Level of detail:** high-level "what" only. No implementation specifics.
-**Count:** 2–5 slices per feature. More than 5 suggests the feature may be too large.
-**Format:** numbered list, each a short phrase describing what is built in that step.
-
-Example:
-```
-1. Core form render and validation
-2. Submission and success state
-3. Error states and retry logic
-```
-
----
-
-<!-- INTERVIEW GUIDANCE: §10+ are additions, not defaults. Only include if the user defines domain-specific terminology or other project-specific standards not covered by §1–§9.
+<!-- INTERVIEW GUIDANCE: §9+ are additions, not defaults. Only include if the user defines domain-specific terminology or other project-specific standards not covered by §1–§8.
 
 Ask at the end: "Is there any domain-specific terminology or project-specific conventions we should record here so the molecule uses the right language?"
 
