@@ -1,0 +1,12 @@
+{
+  "name": "lattice",
+  "version": "2.3.0",
+  "description": "Composable AI skills framework covering the full software delivery lifecycle — design, architecture, implementation, testing, and review.",
+  "author": {
+    "name": "Rahul Garg"
+  },
+  "homepage": "https://github.com/techygarg/lattice",
+  "repository": "https://github.com/techygarg/lattice",
+  "license": "MIT",
+  "keywords": ["skills","design-first","requirement-analysis","context-anchoring","collaborative-judgment","knowledge-priming","architecture","ddd","secure-coding","test-quality","clean-code","sdlc", "ai-workflow"]
+}
