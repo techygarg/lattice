@@ -53,7 +53,7 @@ An authenticated user can view and update their profile. The system must:
 - **Phone Number**: E.164 format validation -- another value object candidate
 - **Account Lockout**: Tracks failed attempts and lockout expiry -- an invariant the User aggregate should enforce
 
-## Constraints
+## Technical Constraints
 
 - No external API calls -- this is a standalone service
 - No event publishing (keep it simple for now)

@@ -67,7 +67,7 @@ export default function Story() {
           <p className={styles.calloutTitle}>Before you write a line of code</p>
           <p className={styles.calloutText}>
             Run <span className={styles.commandChip}>/design-blueprint</span> on your next real feature. It puts
-            the AI in the seat of a design partner, not a code generator: five levels of design, ending in an
+            the AI in the seat of a design partner, not a code generator: four levels of design, ending in an
             actual artifact you approve before any coding agent touches the keyboard. Hand that blueprint to{' '}
             <span className={styles.commandChip}>/code-forge</span> next. That handoff, approving the design
             before a single line of code gets written, is where Lattice actually starts. It&apos;s the step most

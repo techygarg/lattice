@@ -44,7 +44,7 @@ All skills and their invocation commands. Invoke any skill in your AI tool's cha
 | context-anchoring | `/context-anchoring` | Per-feature living documents that capture decisions and reasoning across sessions |
 | collaborative-judgment | `/collaborative-judgment` | Surfaces genuine judgment calls or missing/conflicting knowledge instead of silently assuming |
 | learning-harvest | `/learning-harvest` | Manages operational learnings lifecycle — load prior patterns, harvest new experiential insights, keep the document tight |
-| requirement-quality | `/requirement-quality` | Feature specification quality — completeness, scenario structure, AC verifiability, independence, and implementation slice quality |
+| requirement-quality | `/requirement-quality` | Feature specification quality — completeness, scenario structure, AC verifiability, and independence |
 
 ### Molecules — invoke to run a full workflow
 
@@ -53,7 +53,7 @@ All skills and their invocation commands. Invoke any skill in your AI tool's cha
 | lattice-init | `/lattice-init` | Guided setup — scans project, detects config, suggests refiners, creates `.lattice/config.yaml` |
 | refiners-update | `/refiners-update` | Update-mode counterpart to lattice-init — scans existing standards, captures what changed, routes each affected one to its refiner's revise mode, records a git-native change note |
 | requirement-forge | `/requirement-forge` | Collaborative feature specification as a senior PM + BA pair — produces epic/feature hierarchy in `.lattice/requirements/` as direct input to design-blueprint |
-| design-blueprint | `/design-blueprint` | Complete design workflow through 5 levels, produces an approved blueprint before any code is written |
+| design-blueprint | `/design-blueprint` | Complete design workflow through design levels 1–4, produces an approved blueprint before any code is written |
 | code-forge | `/code-forge` | Implements from an approved blueprint or verbal requirements using inside-out layer ordering |
 | refactor-safely | `/refactor-safely` | Restructures existing code without changing observable behavior; uses characterization tests as safety net |
 | bug-fix | `/bug-fix` | Investigates, reproduces with a failing test, then applies minimal safe repair |
@@ -182,15 +182,15 @@ Collaborative feature specification as a senior PM + BA pair. Upstream in the pi
 
 **Two modes**: collaborative (confirmation gates per phase) or autonomous (drafts everything, then presents).
 
-**Workflow**: Standards check → session resume → intake (existing material or verbal) → epic definition → feature discovery per epic → feature spec per feature (frame confirmed before scenarios) → refresh generated epic and index views. Output: `.lattice/requirements/` folder feeding directly into design-blueprint.
+**Workflow**: Standards check → session resume → intake (existing material or verbal) → epic definition → feature discovery per epic → feature spec per feature (frame confirmed before scenarios; saved as a draft as it goes) → refresh generated epic and index views → approve finished specs. Output: `.lattice/requirements/` folder feeding directly into design-blueprint.
 
 ### design-blueprint
 
 Produces an approved blueprint before any code is written.
 
-**Unique atoms**: design-first, architecture, domain-driven-design
+**Unique atoms**: design-first, architecture, domain-driven-design (conditional: the design has domain-layer components)
 
-**What distinguishes it**: Drives through design-first's 5 progressive levels. At Levels 2-4, applies architecture (layer assignments, dependency direction) and DDD (aggregate identification, entity/value object classification). Each level is persisted to the context document after user approval — the context document *is* the blueprint. Stops at Level 4 (Contracts). Hands off to code-forge.
+**What distinguishes it**: Drives through the first four of design-first's 5 progressive levels. At Levels 2-4, applies architecture (layer assignments, dependency direction) and DDD (aggregate identification, entity/value object classification). Each level is persisted to the context document after user approval — the context document *is* the blueprint. Stops at Level 4 (Contracts). Hands off to code-forge.
 
 ### code-forge
 
@@ -202,7 +202,9 @@ Generates implementation from an approved blueprint or verbal requirements.
 - Plans an inside-out build order following the dependency direction of the loaded architecture doc (innermost layer first — with clean architecture: Domain → Infrastructure → Application → Interface)
 - Generates code and tests together per component
 - Post-generation verification: runs atom self-validation checklists and anti-pattern scans, fixes violations before presenting
-- Cross-component verification: architectural coherence, dependency direction, no unplanned scope, past learnings don't recur
+- Cross-component verification: architectural coherence, dependency direction, no unplanned scope, acceptance criteria covered when a spec is linked, past learnings don't recur
+- A small contract change is agreed with the user and written back into the Level 4 section; a change to components or interactions goes back to `/design-blueprint`
+- Records key files and decisions after each layer, so an interrupted session resumes at the first unbuilt component
 - User chooses review mode: layer-by-layer (recommended), full autonomy, or component-by-component
 - Recommends `/review` on completion
 
@@ -314,7 +316,7 @@ Feature work starts from requirements and produces an approved blueprint before 
 
 Each stage both consumes and produces artifacts in `.lattice/` -- the pipeline is the engine that grows the living context layer. Context anchoring ties the stages together: the context document created during design carries the approved blueprint into implementation, captures approved refactor plans and bug root causes, informs review, and restores full context in any future session.
 
-The context document lifecycle is: **Create** (new feature) → **Load** (resume work) → **Enrich** (capture decisions). All three behaviors require explicit user confirmation -- the AI proposes, the user disposes.
+The context document lifecycle is: **Create** (new feature) → **Load** (resume work) → **Enrich** (capture decisions). All three behaviors require the user's confirmation -- the AI proposes, the user disposes. `design-blueprint` and `code-forge` count the user's request (and, in `design-blueprint`, each design gate) as that confirmation, so they load an exact-match document, and write what was just approved, without asking again.
 
 ## The `.lattice/` Folder
 

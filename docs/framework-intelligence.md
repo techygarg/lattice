@@ -48,7 +48,7 @@ Level 3: Review          ──→  Independent assessment
 
 **Level 1 — Component** (code-forge Step 3): "Did I write this piece well?" Run atom self-validation checklists against every function and class in the component. Catches: SRP violations, naming issues, missing validation, primitive obsession, security gaps.
 
-**Level 2 — Cross-Component** (code-forge Step 4): "Does everything fit together?" Verify dependency direction, interaction flows, security boundaries, and adherence to the approved blueprint. Catches: wrong dependency direction, leaking abstractions, missing integration points, recurring patterns flagged in learnings.
+**Level 2 — Cross-Component** (code-forge Step 4): "Does everything fit together?" Verify dependency direction, interaction flows, security boundaries, adherence to the approved blueprint, and acceptance-criteria coverage when a spec is linked. Catches: wrong dependency direction, leaking abstractions, missing integration points, recurring patterns flagged in learnings.
 
 **Level 3 — Review** (separate invocation): "Independent quality assessment." Fresh eyes on the delta with no generation bias. Catches: issues the generator is blind to, cross-cutting concerns, patterns that only emerge when viewing the whole.
 

@@ -79,7 +79,7 @@ Skills form a delivery lifecycle: `requirement-forge` → `design-blueprint` →
 
 3. **Spec** *(optional but recommended)* — `/requirement-forge` acts as a senior PM + BA pair to define epics and feature specs before any design begins. Accepts existing PRDs, feature lists, or a verbal description. Produces `.lattice/requirements/` as direct input to design-blueprint.
 
-4. **Design** — `/design-blueprint` walks through five progressive design levels before any code is written.
+4. **Design** — `/design-blueprint` walks through four progressive design levels (Capabilities, Components, Interactions, Contracts) before any code is written.
 
 5. **Implement** — `/code-forge` generates implementation from the approved blueprint, applying all quality atoms.
 

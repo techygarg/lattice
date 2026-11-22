@@ -1,6 +1,6 @@
 ---
 name: requirement-quality
-description: "Apply requirement quality principles when generating or validating feature specifications. Enforces feature completeness, scenario structure, AC verifiability, feature independence, and implementation slice quality. Use when writing feature specs, validating existing requirements, or when the user mentions 'validate this spec', 'check this feature', 'requirement quality', 'is this spec complete', or 'requirement-quality'. This skill governs the craft of writing individual feature specifications — not technical design (see design-blueprint), not implementation (see code-forge)."
+description: "Apply requirement quality principles when generating or validating feature specifications. Enforces feature completeness, scenario structure, AC verifiability, and feature independence. Use when writing feature specs, validating existing requirements, or when the user mentions 'validate this spec', 'check this feature', 'requirement quality', 'is this spec complete', or 'requirement-quality'. This skill governs the craft of writing individual feature specifications — not technical design (see design-blueprint), not implementation (see code-forge)."
 ---
 
 # Requirement Quality
@@ -25,7 +25,7 @@ Custom standards produced by `requirement-forge-refiner` → consumed by this at
 
 **If validating an existing spec** (not generating), same checks apply — "fix before writing" means "fix before marking approved." Present findings as a quality report with severity.
 
-**Draft vs approved enforcement**: For `status: draft` — items 1, 2, 10 are required. Items 3–9, 11, 12 are advisories: flag findings but do not block write. For `status: approved` — all items required, no exceptions.
+**Draft vs approved enforcement**: For `status: draft` — items 1 and 2 are required. Items 3–11 are advisories: flag findings but do not block write. For `status: approved` — all items required, no exceptions.
 
 1. **PROBLEM STATEMENT**: Names a specific user need or pain — not a solution in disguise, not a vague improvement? Identifies WHO has the problem (specific user type or role, not "users")?
 2. **SCOPE**: Has explicit out-of-scope items — not just in-scope?
@@ -37,8 +37,7 @@ Custom standards produced by `requirement-forge-refiner` → consumed by this at
 8. **SCENARIO COUNT**: Feature has no more than the agreed max (default: 5) scenarios? If at or over → challenge whether this is one feature or two.
 9. **AC COUNT**: Each scenario has no more than the agreed max (default: 6) ACs? If at or over → challenge whether this scenario is too broad.
 10. **INDEPENDENCE**: Feature is self-contained — no unresolved external unknowns required before design-blueprint can begin? Any unresolved Open Questions affecting scope, behavior, or ACs are blockers unless each is marked non-blocking with a stated reason.
-11. **IMPLEMENTATION NOTES**: Slices ordered chronologically, at the "what" level — no technical implementation specifics?
-12. **COHERENCE**: All scenarios address the same user need in the Problem Statement? If a scenario serves a different need, it belongs in a separate feature.
+11. **COHERENCE**: All scenarios address the same user need in the Problem Statement? If a scenario serves a different need, it belongs in a separate feature.
 
 Project-specific checks: if loaded doc contains a validation checklist section, apply those after base checklist.
 
@@ -63,7 +62,6 @@ When all checks pass: output "Spec passes requirement-quality — ready for writ
 - [ ] **Technical task as feature**: feature name or problem statement describes infrastructure, tooling, or engineering work ("Set up database schema", "Configure CI/CD", "Write unit tests") → redirect to implementation layer, challenge what user need it serves
 - [ ] **Wrong granularity — too fine**: feature is actually a single acceptance criterion or a micro-behavior ("Show error on wrong password") → merge into a larger feature representing the complete user-facing behavior
 - [ ] **Wrong granularity — too coarse**: feature encompasses an entire product area with 10+ implicit behaviors ("User management") → decompose into discrete independently-implementable features
-- [ ] **Generic slices**: Implementation notes use placeholder labels that apply to any feature ("Core functionality", "Error handling", "Edge cases") → each slice must name the specific behavior being built for THIS feature
 - [ ] **Undefined domain terms**: Scenarios use specialized/domain terms not defined anywhere in the spec → add inline definitions or a Glossary section
 
 ## Ambiguity Signals
@@ -76,4 +74,4 @@ Flag these — present options and reasoning. If `framework:collaborative-judgme
 - **Independence borderline**: feature depends on another feature but the dependency is well-understood and stable → judgment call whether to mark dependent or proceed as independent.
 - **Assumption vs. requirement**: a statement reads as both an assumption and a requirement → surface for product decision.
 
-See `./references/defaults.md` for epic/feature/scenario definitions, AC format examples, priority notation, status workflow, naming conventions, and implementation slice guidance.
+See `./references/defaults.md` for epic/feature/scenario definitions, AC format examples, priority notation, status workflow, and naming conventions.

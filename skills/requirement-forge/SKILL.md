@@ -45,16 +45,16 @@ When lines are found:
 
 Trigger `framework:requirement-quality` — it handles config resolution and loads the active standards. Do not re-implement or recite its logic here.
 
-If no standards document is found at `paths.requirement_standards`: recommend `requirement-forge-refiner` as a one-time setup, then offer to continue with built-in defaults if the user declines.
+If no standards document is found at `paths.requirement_standards`: do not stop. Say in one line which built-in defaults govern the session and that `/requirement-forge-refiner` tailors them, then continue.
 
 **1b — Session resume**
 
 Scan `.lattice/requirements/` for existing documents.
 
 - **Legacy format check** — if `index.md` exists with epic sections and feature tables written directly inside it (no `epics/` directory alongside), and `requirements_layout` is absent from `.lattice/config.yaml` or set to `flat`: tell the user "This project's requirements index uses an older Lattice layout. Run `/lattice-init` to check for and apply available upgrades." **STOP:** do not attempt migration in this molecule.
-- **If `index.md` exists** (sharded layout) → read it plus `epics/*.md`, inventory all feature files under `features/`. Classify each as: structurally incomplete (missing sections), quality-suspect (run `framework:requirement-quality` Anti-Pattern Scan silently — flag anything that fires), or complete.
-- **If issues found** → surface per file. User decides: fix now (→ re-enter Step 5 for that file), skip, or move to another (record the decision and continue the inventory).
-- **If everything complete** → ask what to do next, then re-enter at the right step:
+- **If `index.md` exists** (sharded layout) → read it plus `epics/*.md`, inventory all feature files under `features/`. Classify each as: unfinished (its `## Scenarios` still carries the in-progress line), structurally incomplete (missing sections), quality-suspect (run `framework:requirement-quality` Anti-Pattern Scan silently — flag anything that fires), or complete. Collect each epic's `## Planned Features` — features agreed earlier but not yet specced; delete a planned line whose feature file already exists. A feature file its epic's generated table does not list → regenerate that table now, per Step 6.
+- **If anything is unfinished, planned, or has issues** → list it once (feature — state or issue) and ask which to work on now. Each pick → Step 5 for it: an unfinished file resumes at its next scenario, a planned feature starts at its frame, a file with issues is fixed in place. The rest wait for a later session.
+- **Everything complete, or nothing picked** → ask what to do next, then re-enter at the right step:
   - Add features to existing epic → **Step 4**
   - Create new epic → **Step 3**
   - Update a spec → **Step 5**
@@ -81,7 +81,7 @@ Present synthesis: *"Here's what I understand from [N] documents: [epic list wit
 
 **If no material** — *"Tell me what you're building — the problem, who has that problem, any constraints. Don't worry about structure yet."* Listen, synthesize, present the same hypothesis format.
 
-**Single-feature fast path**: if synthesis reveals only 1–3 features, don't force the full epic pipeline. Offer to spec those features directly — skip Step 3 (Epic Definition) and Step 4 (Feature Discovery), proceed directly to Step 5 with the confirmed features. Before starting Step 5, create a placeholder epic: one `.lattice/requirements/epics/{epic-slug}.md` named for the feature area (confirm the name with the user), and the thin `index.md` pointing to it, same as Step 3's write sequence.
+**Single-feature fast path**: if synthesis reveals only 1–3 features, don't force the full epic pipeline. Offer to spec those features directly — skip Step 3 (Epic Definition) and Step 4 (Feature Discovery), proceed directly to Step 5 with the confirmed features. Before starting Step 5, create a placeholder epic: one `.lattice/requirements/epics/{epic-slug}.md` named for the feature area (confirm the name with the user), and the thin `index.md` pointing to it, same as Step 3's write sequence. List the confirmed features under the epic's `## Planned Features`, as Step 4 does.
 
 **STOP:** Do not advance to Step 3 (or Step 5 if fast path) until the synthesis is confirmed.
 
@@ -105,7 +105,7 @@ Ask: *"Does this epic structure reflect how you think about the product?"*
 3. Write `.lattice/requirements/index.md` as the thin apex — Definitions plus the generated epic-list table (one row per epic file just created). Read `references/output-templates.md` for the exact structure.
 4. Ensure `.lattice/config.yaml` has `requirements_layout: sharded`. Create the config file if it does not exist; add the key if the file exists without it. Never overwrite an existing `sharded` value.
 
-**STOP: do not write feature tables into `index.md` or hand-append rows to an epic file at any point** — see Step 6.
+**STOP: do not write feature tables into `index.md` or hand-append rows to an epic file's generated `## Features` table at any point** — see Step 6.
 
 ---
 
@@ -117,7 +117,7 @@ Apply `framework:requirement-quality` anti-pattern scan proactively here — sur
 
 Ask: *"Does this feature breakdown feel right for [Epic Name]?"*
 
-This step is conversational only — nothing is written to disk until Step 5.
+**Record the plan**: once an epic's feature list is confirmed, write it into that epic file's `## Planned Features` — one line per feature with its description and dependencies (see `references/output-templates.md`). Step 5 deletes each line as it writes that feature's file, so a session that stops early leaves the rest on disk.
 
 **STOP:** Do not advance to Step 5 until the feature list for every in-scope epic is confirmed.
 
@@ -127,43 +127,39 @@ This step is conversational only — nothing is written to disk until Step 5.
 
 Work through confirmed features one at a time.
 
-**Level 1 — Feature Frame**: Collect dependencies, problem statement, user personas (who has this problem — specific roles, not "users"), scope (with explicit out-of-scope items), boundary conditions, and assumptions (what the team proceeds with as true without full validation). Challenge each field: wrong problem, wrong user, inflated scope. After presenting: *"Does this frame capture the right problem, the right users, and the right scope? Let's lock this before scenarios."*
+**Level 1 — Feature Frame**: Collect dependencies, problem statement, user personas (who has this problem — specific roles, not "users"), scope (with explicit out-of-scope items), boundary conditions, assumptions (what the team proceeds with as true without full validation), technical constraints (fixed external interfaces, existing contracts that cannot change, hard platform limits — or none), and a proposed priority in the loaded standards' notation. Challenge each field: wrong problem, wrong user, inflated scope. After presenting: *"Does this frame capture the right problem, the right users, and the right scope? Let's lock this before scenarios."*
 
 **STOP:** Do not begin scenarios until the frame is confirmed.
 
-**Level 2 — Scenarios**: Spec scenarios one at a time in implementation order. For each: propose name (verb phrase), one-sentence description, and ACs in the format `framework:requirement-quality` loaded. After the first success-path scenario, probe: *"Where's the failure path? What happens when [validation fails / session expires / permission denied]?"*
+**Write the draft** once the frame is confirmed (an existing file → see *Updating an existing file* below): write `.lattice/requirements/features/{feature-name}.md` with `status: draft`. Read `references/output-templates.md` for the exact file structure; create the `features/` directory if it does not exist. Populate the frontmatter: `depends_on` from the dependencies confirmed in Step 4 (Feature Discovery) or the frame; `personas` from the frame; `source_docs` from intake documents; `priority` as confirmed with the frame — never assign it silently. Under `## Scenarios` put the in-progress line `*(In progress — scenarios not yet confirmed.)*`. A section with nothing to record gets `None.` — never leave the template's guidance text in the file. Delete this feature's line from its epic's `## Planned Features`, and the section once it is empty.
 
-After all scenarios: *"Does this fully cover [Feature Name]? Anything missed?"*
+**Level 2 — Scenarios**: Spec scenarios one at a time in implementation order. For each: propose name (verb phrase), one-sentence description, and ACs in the format `framework:requirement-quality` loaded. Add each scenario to the file once the user confirms it. After the first success-path scenario, probe: *"Where's the failure path? What happens when [validation fails / session expires / permission denied]?"*
 
-**STOP:** Do not begin implementation slices until all scenarios are confirmed.
+After all scenarios: *"Does this fully cover [Feature Name]? Anything missed?"* Confirmed → delete the in-progress line.
 
-After scenarios confirmed: propose 2–5 implementation slices in "what" order. *"Here's how I'd sequence building this: [list]. Does this feel right?"*
+**Check the finished spec**: apply the `framework:requirement-quality` Self-Validation Checklist and Anti-Pattern Scan. Failures → fix with the user; a failure the user leaves open keeps the spec `draft`, and Step 6 will not offer it for approval. Ambiguity signals → surface via `framework:collaborative-judgment`. The writes before this point (the frame, each scenario) need only the checks a `draft` requires — do not flag advisories on a spec still in progress.
 
-**STOP:** Do not write the feature file until implementation slices are confirmed.
+**Updating an existing file** → edit it in place: keep every `## Links` line that is not a template placeholder, and keep its `status` — except that changing the scope, scenarios, or ACs of an `approved` spec sets it back to `draft` until Step 6 re-approves it. The file has a `- Design:` link that is not the template placeholder → tell the user the linked design was made from the earlier spec and may need `/design-blueprint` to reopen it.
 
-**Apply `framework:requirement-quality` Self-Validation Checklist and Anti-Pattern Scan before writing.** Failures → fix. Ambiguity signals → surface via `framework:collaborative-judgment`.
-
-**Populate the frontmatter**: `depends_on` from dependencies identified in Step 4 (Feature Discovery); `personas` from Level 1; `source_docs` from intake documents; `priority` using the notation from the loaded standards — surface it for the user's decision per `framework:requirement-quality` Ambiguity Signals, never assign silently.
-
-Write the confirmed feature file to `.lattice/requirements/features/{feature-name}.md`. Read `references/output-templates.md` for the exact file structure. Create the `features/` directory if it does not exist.
-
-**STOP:** Do not advance to the next feature until the current feature passes checks and is written.
+**STOP:** Do not advance to the next feature until the current one is confirmed complete, checked, and written.
 
 ---
 
 ### Step 6: Refresh Generated Views
 
-After all features for the current session scope are confirmed and written, regenerate the derived sections — never hand-edit them:
+Run this step once the features in this session's scope are written — or when the user stops early, for those written so far (the rest stay in `## Planned Features`). Regenerate the derived sections — never hand-edit them:
 
-- **For each epic touched this session**: regenerate `epics/{epic-slug}.md`'s feature table by scanning every `features/*.md` file where `epic` matches, listing feature name and one-line summary only. **Do not read or mirror `status`, `priority`, or `depends_on`** — those fields live only in the feature file. Replace only the content between the generated-section boundary comments — leave the hand-authored header, Source Materials, and Deferred Items untouched.
+- **For each epic touched this session**: regenerate `epics/{epic-slug}.md`'s feature table by scanning every `features/*.md` file where `epic` matches, listing feature name and one-line summary only. **Do not read or mirror `status`, `priority`, or `depends_on`** — those fields live only in the feature file. Replace only the content between the generated-section boundary comments — leave the hand-authored header, Source Materials, Deferred Items, and Planned Features untouched.
 - **Regenerate `index.md`'s epic-list table** the same way, scanning `epics/*.md` headers.
-- **STOP: this regeneration is triggered only by a feature being added, removed, or renamed under an epic in this session — never by a status, priority, or dependency change alone.** A feature's own status/priority/depends_on edit is a single-file write with no downstream regeneration.
+- **STOP: this regeneration is triggered only by a feature being added, removed, or renamed under an epic in this session, or by the resume check finding a table out of sync with the feature files — never by a status, priority, or dependency change alone.** A feature's own status/priority/depends_on edit is a single-file write with no downstream regeneration.
 - **Hand-authored additions** (not generated, appended directly to the relevant epic file):
   - If source documents were provided during intake, add/update a `## Source Materials` table mapping each document to the features derived from it.
   - Add a `## Deferred Items` section listing content intentionally excluded from the current feature set, with reasons.
-- If standards include §10 Domain Terminology, include a `## Glossary` section in `index.md` populated from those terms (hand-authored, not regenerated — revisit only when terminology changes).
+- If the standards include a Domain Terminology section, include a `## Glossary` section in `index.md` populated from those terms (hand-authored, not regenerated — revisit only when terminology changes).
 
-Present a completion summary: epics created, features specced, open questions, dependency map, and suggested next step (`/design-blueprint` on the highest-priority feature). Do not write the feature file's `Design:` link here — `design-blueprint` writes it when a design session starts.
+**Approve finished specs**: take the specs finished this session (no in-progress line) that are still `draft`. Those that pass every `framework:requirement-quality` check an `approved` spec requires → ask once, for all of them: *"Mark [specs] approved — agreed and ready for design — or leave them draft for stakeholder review?"* Approved → write `status: approved` into each, a status-only edit. A spec that fails a check stays `draft`; name the check. None → skip. **STOP:** requirement-forge writes only `draft` and `approved` (or the loaded workflow's equivalents) and never changes any other status a person has set.
+
+Present a completion summary: epics created, features specced and their status, features still in progress or planned, open questions, dependency map, and suggested next step (`/design-blueprint` on the highest-priority feature — name its feature file path so the design session can link it). Do not write the feature file's `Design:` link here — `design-blueprint` writes it when a design session starts.
 
 ---
 
@@ -180,4 +176,4 @@ Do NOT pause for: naming choices, priority assignments, scope boundary judgment 
 
 **Phase 2 — Review**: Present the decisions log first, then the epic list, then the feature list per epic, then feature specs one by one. User corrects, adds, or removes.
 
-**Phase 3 — Write**: After confirmation, write all files, then run Step 6 to regenerate the derived views. `framework:requirement-quality` checks run before each write.
+**Phase 3 — Write**: Phases 1–2 write nothing. After confirmation, write all files — every feature file complete, with `status: draft` — then run Step 6 to regenerate the derived views and ask the approval question. `framework:requirement-quality` checks run before each write.

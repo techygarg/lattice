@@ -48,11 +48,11 @@ Three behaviors govern the context anchor doc's lifecycle. Each is triggered rea
 
 Every context doc carries a `status` frontmatter field. Never infer status from body prose.
 
-| Value | Set by |
-|---|---|
-| `draft` | `context-anchoring` Create — design not yet complete |
-| `approved` | `design-blueprint` Step 3 — L1–L4 complete, design reviewed |
-| `complete` | `code-forge` Step 5 — implementation done |
+| Value | Set by | Read by |
+|---|---|---|
+| `draft` | `context-anchoring` Create, or `design-blueprint` when a level is reopened — design not yet complete | `design-blueprint` Step 1: resumes the design. `code-forge` Step 1: asks before building on it. |
+| `approved` | `design-blueprint` Step 3 — L1–L4 complete, design reviewed | `design-blueprint` Step 1: finished; reopens only on request or a code-forge `[for design]` note. `code-forge` Step 1: builds against it. |
+| `complete` | `code-forge` Step 5 — every planned component built | `design-blueprint` Step 1: closed; new scope gets a new context doc. `code-forge` Step 1: follow-ups on the existing design only, once the user confirms. |
 
 **STOP: Check this field before acting on a context doc.** `draft` ≠ approved. `approved` ≠ complete. Deviation from an approved design → update the doc and re-approve — no new status values exist.
 

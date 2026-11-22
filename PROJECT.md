@@ -90,6 +90,7 @@ Any reference to a host-provided path (e.g. `CLAUDE_PLUGIN_ROOT`) must sit in an
 - Numbered workflow steps; never inline atom content — reference and apply atoms
 - Canonical example: source/molecules/code-forge/SKILL.md
 - Workflow molecules (all except `lattice-init`, `refiners-update`) carry `<!-- include: additional-instructions -->` on its own line directly before `## Workflow`. `tools/install.sh` expands it from `source/shared/additional-instructions.md`, with `__SKILL_KEY__` replaced by the folder name in snake_case. The section reads `additional_instructions.{molecule_key}` from config: user lines with highest priority over everything, gates included, shown verbatim at session start, no runtime policing. Never write the section inline — edit the snippet. Placement guidance (vs `AGENTS.md`/`CLAUDE.md` vs standards) lives in docs/configuration.md.
+- A molecule may carry a `**Where this workflow overrides its atoms**` list directly after Required Skills and before the include line (canonical: `design-blueprint`, `code-forge`). One bullet per atom behaviour it replaces, naming the atom and the wording overridden; never restate atom rules there. A config `additional_instructions` line still outranks it.
 
 Two distinct molecule types — apply the right conventions for each:
 
