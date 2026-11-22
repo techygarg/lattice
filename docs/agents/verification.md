@@ -40,7 +40,7 @@ Point 3 is also the direct answer to a natural question: why bother with a subag
 
 ## How It's Set Up
 
-`/lattice-init` offers verification setup whenever `.lattice/verification.yaml` or the vendored script is missing — declining is a supported outcome; many projects won't want automated gating, and nothing else in Lattice depends on it existing. Accepting produces three things in the project, in order: a confirmed `.lattice/verification.yaml` built from detected stack commands, a vendored copy of the runner at `.lattice/scripts/run-verification.sh`, and (if agreed) the gate block below appended to the project's instruction file. Exact step-by-step behavior lives in `lattice-init`'s own SKILL.md (Step 8) — treat that as the source of truth if this summary and that file ever disagree.
+`/lattice-init` offers verification setup whenever `.lattice/verification.yaml` or the vendored script is missing — unless the runner is not part of the Lattice build in use (the Claude.ai directory listing ships without it), in which case the offer is skipped silently. Declining is a supported outcome; many projects won't want automated gating, and nothing else in Lattice depends on it existing. Accepting produces three things in the project, in order: a confirmed `.lattice/verification.yaml` built from detected stack commands, a vendored copy of the runner at `.lattice/scripts/run-verification.sh`, and (if agreed) the gate block below appended to the project's instruction file. Exact step-by-step behavior lives in `lattice-init`'s own SKILL.md (Step 8) — treat that as the source of truth if this summary and that file ever disagree.
 
 Two host-specific details worth knowing going in, since they're easy to get wrong by hand:
 

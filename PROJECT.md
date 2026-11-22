@@ -29,7 +29,10 @@ docs/                                          # roles documented in full under 
 knowledge-base/                               # design workspace; don't read until asked explicitly
 tools/
 ├── install.sh                                # Copies all skills flattened into the provided skills directory; expands includes
-└── build-skills.sh                           # Regenerates the shared root skills/ from source/
+├── build-skills.sh                           # Regenerates the shared root skills/ from source/
+└── claude-directory/                         # Builds, checks and publishes the Claude.ai directory branch (see "Claude.ai Directory Build")
+    ├── build.sh, check.sh, publish.sh
+    └── README.md                             # The directory listing's own README (links back to the main README)
 agents/
 └── verifier.md                               # Claude Code subagent: runs .lattice/verification.yaml stages, returns a JSON verdict
 scripts/
@@ -59,6 +62,16 @@ Lattice ships to multiple AI coding tools (Claude Code, Cursor, Codex, Grok, Kim
 - **Graceful degradation** — capabilities degrade, they don't break. The verification suite must work on any host that can run shell and read files; subagent-based context isolation (Claude Code) is an optimization, never a requirement.
 
 Any reference to a host-provided path (e.g. `CLAUDE_PLUGIN_ROOT`) must sit in an explicit fallback chain whose last link is host-independent (the vendored copy `.lattice/scripts/run-verification.sh`, written by `/lattice-init`, then the development checkout). Naming avoids "harness" — in agentic-system vocabulary that word means the runtime scaffolding around a model, not a test runner.
+
+## Claude.ai Directory Build
+
+The Anthropic plugin directory (claude.ai) accepts only Markdown, text, JSON, YAML and a few image types from organizations that are not Verified — no scripts, JS/CSS, package files, `.claude/skills`, or extra manifests. The repository root holds all of those, so the directory does not track `main`. It tracks the generated `claude-ai-directory` branch, which holds exactly: `.claude-plugin/plugin.json`, `.claude-plugin/icon.png`, `LICENSE`, a hand-written `README.md` (source: `tools/claude-directory/README.md`), and `skills/`. There is no `agents/verifier.md` and no verification runner, so `/lattice-init` skips its verification step in that build.
+
+- **Never edit the branch by hand.** `.github/workflows/claude-ai-directory.yml` publishes it: a `v*` tag (or a manual run) builds the tree, checks it, and adds one commit. `plugin.json`'s `version` must change whenever the content does — the publisher refuses otherwise, because installed copies only update when the version changes.
+- **`tools/claude-directory/`**: `build.sh <dir>` copies a fixed allowlist (never a pattern over the repo); `check.sh <dir>` enforces the directory's rules (allowed file types, no `#!`, at most 512 files, text files under 256 KiB, valid UTF-8, no commands that download or run code, absolute README links plus an install line); `publish.sh <dir>` pushes to the branch. Locally: `tools/claude-directory/build.sh /tmp/dir && tools/claude-directory/check.sh /tmp/dir`, then `claude plugin validate /tmp/dir`. `check.sh` is a stand-in for the directory's review, which also runs a security scan and a policy review — confirm with Validate in the developer portal.
+- **Adding a file to the directory build** takes edits to `build.sh` and to the allowlist in `check.sh`. A file added to the repository never reaches the directory otherwise.
+- **Pull request check**: PRs that touch `skills/`, `.claude-plugin/`, `LICENSE` or `tools/claude-directory/` run build + check. Set the repository variable `CLAUDE_AI_DIRECTORY_PR_CHECK` to `false` to switch it off; releases are unaffected.
+- **First publish** creates the branch: run the workflow manually from `main`. Every later release is a `v*` tag.
 
 ## Skill Conventions
 

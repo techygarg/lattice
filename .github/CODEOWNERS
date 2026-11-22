@@ -5,3 +5,5 @@ skills/                @techygarg
 tools/install.sh       @techygarg
 .claude-plugin/        @techygarg
 .cursor-plugin/        @techygarg
+tools/claude-directory/                   @techygarg
+.github/workflows/claude-ai-directory.yml @techygarg
