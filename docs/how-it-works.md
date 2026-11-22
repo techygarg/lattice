@@ -188,7 +188,7 @@ Collaborative feature specification as a senior PM + BA pair. Upstream in the pi
 
 Produces an approved blueprint before any code is written.
 
-**Unique atoms**: design-first, architecture, domain-driven-design
+**Unique atoms**: design-first, architecture, domain-driven-design (conditional: the design has domain-layer components)
 
 **What distinguishes it**: Drives through the first four of design-first's 5 progressive levels. At Levels 2-4, applies architecture (layer assignments, dependency direction) and DDD (aggregate identification, entity/value object classification). Each level is persisted to the context document after user approval — the context document *is* the blueprint. Stops at Level 4 (Contracts). Hands off to code-forge.
 
@@ -316,7 +316,7 @@ Feature work starts from requirements and produces an approved blueprint before 
 
 Each stage both consumes and produces artifacts in `.lattice/` -- the pipeline is the engine that grows the living context layer. Context anchoring ties the stages together: the context document created during design carries the approved blueprint into implementation, captures approved refactor plans and bug root causes, informs review, and restores full context in any future session.
 
-The context document lifecycle is: **Create** (new feature) → **Load** (resume work) → **Enrich** (capture decisions). All three behaviors require explicit user confirmation -- the AI proposes, the user disposes.
+The context document lifecycle is: **Create** (new feature) → **Load** (resume work) → **Enrich** (capture decisions). All three behaviors require the user's confirmation -- the AI proposes, the user disposes. `design-blueprint` and `code-forge` count the user's request (and, in `design-blueprint`, each design gate) as that confirmation, so they load an exact-match document, and write what was just approved, without asking again.
 
 ## The `.lattice/` Folder
 
