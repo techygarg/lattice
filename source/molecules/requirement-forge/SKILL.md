@@ -132,7 +132,7 @@ After all scenarios: *"Does this fully cover [Feature Name]? Anything missed?"* 
 
 **Check the finished spec**: apply the `framework:requirement-quality` Self-Validation Checklist and Anti-Pattern Scan. Failures → fix with the user; a failure the user leaves open keeps the spec `draft`, and Step 6 will not offer it for approval. Ambiguity signals → surface via `framework:collaborative-judgment`. The writes before this point (the frame, each scenario) need only the checks a `draft` requires — do not flag advisories on a spec still in progress.
 
-**Updating an existing file** → edit it in place: keep every `## Links` line that is not a template placeholder, and keep its `status` — except that changing the scope, scenarios, or ACs of an `approved` spec sets it back to `draft` until Step 6 re-approves it. The file has a `- Design:` link → tell the user the linked design was made from the earlier spec and may need `/design-blueprint` to reopen it.
+**Updating an existing file** → edit it in place: keep every `## Links` line that is not a template placeholder, and keep its `status` — except that changing the scope, scenarios, or ACs of an `approved` spec sets it back to `draft` until Step 6 re-approves it. The file has a `- Design:` link that is not the template placeholder → tell the user the linked design was made from the earlier spec and may need `/design-blueprint` to reopen it.
 
 **STOP:** Do not advance to the next feature until the current one is confirmed complete, checked, and written.
 

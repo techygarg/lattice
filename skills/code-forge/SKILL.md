@@ -124,11 +124,11 @@ After generating each component, before presenting it to the user:
 - **Full autonomy**: implement all layers continuously; present the complete implementation (all code + tests) at the end, then skip to Step 4.
 - **Component-by-component**: present each component with its tests individually; wait for approval before the next.
 - **Exception (all modes)**: a component needs a significant deviation from the plan (new dependency, changed contract, unexpected complexity) → **STOP:** pause immediately and discuss before continuing, regardless of the chosen review mode.
-  - **Small design change** — it stays inside Level 4 (a signature, type, field, or error case of an existing interface) and Levels 2–3 still hold → once the user agrees, update the affected `## Design: Level 4` text in place (and the Design Summary where it repeats that contract) so the doc matches the code, log it as a `[Level 4]` decision with the reason, leave `status` as `approved`, and continue.
-  - **Bigger design change** — it adds, removes, or re-scopes a component or interaction (Levels 2–3), or replaces an interface → do not edit the design here; design-blueprint owns that change. Record the finding under the context doc's `## Open Questions` as `[for design] …` and tell the user: "This changes the approved design. Run `/design-blueprint` to reopen Level [N], then `/code-forge` to continue." Stop work on the affected components; components the change does not touch may continue.
+  - **Small design change** — it stays inside Level 4 (a signature, type, field, or error case of an existing interface) and Levels 2–3 still hold → once the user agrees, update the affected `## Design: Level 4` text in place (and the Design Summary where it repeats that contract) so the doc matches the code, log it as a `[Level 4]` decision with the reason, leave `status` unchanged, and continue.
+  - **Bigger design change** — it adds, removes, or re-scopes a component or interaction (Levels 2–3), or replaces an interface → do not edit the design here; design-blueprint owns that change. Record the finding under the context doc's `## Open Questions` as `[for design] …` and tell the user: "This changes the approved design. Run `/design-blueprint` to reopen Level [N], then `/code-forge` to continue." The doc's `status` is `complete` → design-blueprint never reopens it: skip the `[for design]` entry and say instead: "This changes the implemented design. Run `/design-blueprint` to design the change in a new context doc, then `/code-forge` on that doc." Stop work on the affected components; components the change does not touch may continue.
   - Any other deviation (new dependency, unexpected complexity) → agree it with the user, log it as a decision, and continue.
 
-**Record as you go** (all review modes): after each layer — each component in component-by-component mode — use `framework:context-anchoring` Enrich before starting the next, so an interrupted session leaves the doc current:
+**Record as you go** (all review modes): after each layer — each component in component-by-component mode — use `framework:context-anchoring` Enrich before starting the next, so an interrupted session leaves the doc current (no context doc exists → skip this; Step 5 suggests creating one):
 
 - **Add key files** as created — path + role in the doc's Key Files table (skip a path already listed).
 - **Capture implementation decisions** — library choices, pattern selections, agreed deviations from the plan, tradeoffs made, as Decisions Log entries (decision, reasoning, alternatives considered).
@@ -155,6 +155,6 @@ Use `framework:context-anchoring` Enrich to write anything from Step 3's "Record
 
 **STOP: do not write status to `requirement_doc`.** The requirement's status belongs to whoever manages it — a human, or an external system it may live in. This molecule manages only its own context doc.
 
-After enriching the context doc, recommend review:
+After enriching the context doc, recommend review (work remains → replace "Implementation complete." with a one-line list of what remains):
 
 > "Implementation complete. Recommend running `/review` on the generated code before considering the feature done — it provides an independent quality assessment against the same atom standards, catches issues the generator may be blind to, and captures learnings for future sessions."
